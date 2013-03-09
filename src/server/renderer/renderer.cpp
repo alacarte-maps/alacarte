@@ -86,6 +86,7 @@ public:
 
 	virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface)
 	{
+		surface->flush();
 		surface->write_to_png_stream(sigc::mem_fun(*this, &Renderer::PNGWriter::cairoWriter));
 	}
 };
@@ -130,7 +131,43 @@ public:
 
 	virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface)
 	{
+		surface->flush();
 		/* do nothing because surface->flush() will call cairoWriter */
+	}
+};
+
+struct Renderer::CairoLayer
+{
+	Cairo::RefPtr<Cairo::Context> cr;
+	Cairo::RefPtr<Cairo::Surface> surface;
+	CairoLayer() {}
+
+	/**
+	 * Create buffered layer so that the buffer can be converted to image format
+	 * Used for the base layer LAYER_FILL.
+	 */
+	CairoLayer(const shared_ptr<ImageWriter>& writer, const Tile::ImageType& buffer)
+	{
+		surface = writer->createSurface(buffer);
+		cr = Cairo::Context::create(surface);
+	}
+
+	//! utility layers don't need a buffer
+	CairoLayer(const shared_ptr<ImageWriter>& writer)
+	{
+		surface = writer->createSurface();
+		cr = Cairo::Context::create(surface);
+	}
+
+	void clear()
+	{
+		cr->save();
+
+		cr->set_operator(Cairo::OPERATOR_CLEAR);
+		cr->set_source_rgba(1.0, 1.0, 1.0, 1.0);
+		cr->paint();
+
+		cr->restore();
 	}
 };
 
@@ -549,23 +586,67 @@ void Renderer::compositeLayers(CairoLayer layers[]) const
 	Cairo::RefPtr<Cairo::Context> cr = layers[0].cr;
 
 	cr->save();
+	cr->set_identity_matrix();
+
 	for (int i = 1; i < LAYER_NUM; i++) {
+		layers[i].surface->flush();
 		cr->set_source(layers[i].surface, 0.0, 0.0);
 		cr->paint();
+		layers[i].clear();
 	}
-	cr->show_page();
+
 	cr->restore();
+}
+
+
+void Renderer::setupLayers(CairoLayer layers[], RenderAttributes& map,
+						   const Cairo::Matrix& trans,
+						   const shared_ptr<ImageWriter>& writer,
+						   const Tile::ImageType& buffer) const
+{
+	const Style* s = map.getCanvasStyle();
+
+	layers[LAYER_FILL] = CairoLayer(writer, buffer);
+	layers[LAYER_FILL].cr->set_source_rgba(s->fill_color.r,
+										   s->fill_color.g,
+										   s->fill_color.b,
+										   s->fill_color.a);
+	if (s->fill_image.str().size() > 0)
+	{
+		Cairo::RefPtr<Cairo::ImageSurface> image = Cairo::ImageSurface::create_from_png(s->fill_image.str());
+		Cairo::RefPtr<Cairo::SurfacePattern> pattern = Cairo::SurfacePattern::create(image);
+		pattern->set_extend(Cairo::Extend::EXTEND_REPEAT);
+		layers[LAYER_FILL].cr->set_source(pattern);
+	}
+	layers[LAYER_FILL].cr->paint();
+	layers[LAYER_FILL].cr->transform(trans);
+
+	for (int i = LAYER_FILL + 1; i < LAYER_NUM; i++) {
+		layers[i] = CairoLayer(writer);
+		layers[i].clear();
+
+		// set coord transformation: mercator -> image
+		layers[i].cr->transform(trans);
+	}
+
+	// setup default font
+	Cairo::FontOptions fontOpts;
+	fontOpts.set_hint_style(Cairo::HINT_STYLE_NONE);
+	fontOpts.set_hint_metrics(Cairo::HINT_METRICS_OFF);
+	layers[LAYER_LABELS].cr->set_font_options(fontOpts);
+	Cairo::RefPtr<Cairo::ToyFontFace> font = Cairo::ToyFontFace::create(DEFAULT_FONT,
+						Cairo::FONT_SLANT_NORMAL, Cairo::FONT_WEIGHT_NORMAL);
+	layers[LAYER_LABELS].cr->set_font_face(font);
 }
 
 void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
 {
-	// sort objects into layers
+	// sort objects into acroding to z-index
 	std::vector<NodeId> nodes;
 	std::vector<WayId>  ways;
 	std::vector<RelId>  relations;
 	sortObjects(map, nodes, ways, relations);
 
-	// Start painting the layers
 	shared_ptr<TileIdentifier> id = tile->getIdentifier();
 
 	Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
@@ -586,50 +667,7 @@ void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
 #endif
 
 	CairoLayer layers[LAYER_NUM];
-	const Style* s = map.getCanvasStyle();
-	for (int i = 0; i < LAYER_NUM; i++) {
-		// we want to be layer 0 our final surface
-		if (i > 0)
-			layers[i].surface = writer->createSurface();
-		else
-			layers[0].surface = writer->createSurface(buffer);
-		layers[i].cr = Cairo::Context::create(layers[i].surface);
-		layers[i].cr->set_source_rgba(0.0, 0.0, 0.0, 1.0);
-
-
-		layers[i].cr->save();
-		if (i > 0) {
-			layers[i].cr->set_operator(Cairo::OPERATOR_CLEAR);
-			layers[i].cr->set_source_rgba(1.0, 1.0, 1.0, 1.0);
-		} else {
-			layers[i].cr->set_source_rgba(s->fill_color.r,
-										  s->fill_color.g,
-										  s->fill_color.b,
-										  s->fill_color.a);
-			if (s->fill_image.str().size() > 0)
-			{
-				Cairo::RefPtr<Cairo::ImageSurface> image = Cairo::ImageSurface::create_from_png(s->fill_image.str());
-				Cairo::RefPtr<Cairo::SurfacePattern> pattern = Cairo::SurfacePattern::create(image);
-				pattern->set_extend(Cairo::Extend::EXTEND_REPEAT);
-				layers[i].cr->set_source(pattern);
-			}
-		}
-		layers[i].cr->paint();
-		layers[i].cr->restore();
-
-		// set coord transformation: mercator -> image
-		layers[i].cr->save();
-		layers[i].cr->transform(trans);
-	}
-
-	// setup default font
-	Cairo::FontOptions fontOpts;
-	fontOpts.set_hint_style(Cairo::HINT_STYLE_NONE);
-	fontOpts.set_hint_metrics(Cairo::HINT_METRICS_OFF);
-	layers[LAYER_LABELS].cr->set_font_options(fontOpts);
-	Cairo::RefPtr<Cairo::ToyFontFace> font = Cairo::ToyFontFace::create(DEFAULT_FONT,
-						Cairo::FONT_SLANT_NORMAL, Cairo::FONT_WEIGHT_NORMAL);
-	layers[LAYER_LABELS].cr->set_font_face(font);
+	setupLayers(layers, map, trans, writer, buffer);
 
 	std::list<shared_ptr<Label> > labels;
 	std::list<shared_ptr<Shield> > shields;
@@ -655,14 +693,7 @@ void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
 	printTileId(layers[LAYER_LABELS].cr, tile->getIdentifier());
 #endif
 
-	// remove transformation matrix
-	for (int i = 0; i < LAYER_NUM; i++) {
-		layers[i].cr->restore();
-		layers[i].surface->flush();
-	}
-
 	compositeLayers(layers);
-
 
 #if OLD_CAIRO
 	renderLock.unlock();

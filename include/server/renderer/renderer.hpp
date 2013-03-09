@@ -68,11 +68,9 @@ private:
 	FloatRect neighbourRequests[8];
 
 	//! Stores cairo data for each painting layer of a tile (fill, casing, stroke, ..)
-	struct CairoLayer {
-		Cairo::RefPtr<Cairo::Context> cr;
-		Cairo::RefPtr<Cairo::Surface> surface;
-	};
+	class CairoLayer;
 
+	//! Abstract base class for PNG and SVG writers
 	class ImageWriter {
 	public:
 		virtual Cairo::RefPtr<Cairo::Surface> createSurface() = 0;
@@ -95,6 +93,10 @@ private:
 	void sortObjects(RenderAttributes& map, std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations) const;
 	bool isCutOff(const FloatRect& box, const FloatRect& owner);
 	void compositeLayers(CairoLayer layers[]) const;
+	void setupLayers(CairoLayer layers[], RenderAttributes& map,
+					 const Cairo::Matrix& trans,
+					 const shared_ptr<ImageWriter>& writer,
+					 const Tile::ImageType& buffer) const;
 	void renderObjects(CairoLayer layers[], RenderAttributes& map,
 					   std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations,
 					   std::list<shared_ptr<Label>>& labels,
