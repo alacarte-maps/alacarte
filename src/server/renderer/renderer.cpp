@@ -315,8 +315,8 @@ void Renderer::renderObjects(CairoLayer layers[],
 	const boost::unordered_map<RelId, Style*> &relationStyles = map.getRelationMap();
 
 	/* find min and max z_index */
-	int minZ = 0.0;
-	int maxZ = 0.0;
+	int minZ = 0;
+	int maxZ = 0;
 	if (ways.size() > 0) {
 		minZ = std::min(minZ, wayStyles.at(ways.front())->z_index);
 		maxZ = std::max(maxZ, wayStyles.at(ways.back())->z_index);
@@ -335,8 +335,14 @@ void Renderer::renderObjects(CairoLayer layers[],
 	auto wid = ways.begin();
 	auto nid = nodes.begin();
 	int nextZ; // used to skip empty z-index
+	int layer = minZ / 100; // z-index = osm_layer * 100 + mapcss_z_index
 	for (int z = minZ; z <= maxZ; z = nextZ)
 	{
+		if (z/100 != layer) {
+			layer = z/100;
+			compositeLayers(layers);
+		}
+
 		// if nextZ is not overwritten we have reached the end
 		nextZ = INT_MAX;
 
