@@ -97,6 +97,10 @@ public:
 		return (maxY - minY) * (maxX - minX);
 	}
 
+	inline basic_vector2<T> getCenter() const {
+		return basic_vector2<T>((minX + maxX) / 2.0, (minY + maxY) / 2.0);
+	}
+
 	inline basic_rect<T> getIntersection(const basic_rect<T>& other) const {
 		T x0 = std::max(other.minX, minX);
 		T y0 = std::max(other.minY, minY);

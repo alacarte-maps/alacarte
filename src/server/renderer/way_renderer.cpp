@@ -47,6 +47,19 @@ void WayRenderer::addWayPath(const Cairo::RefPtr<Cairo::Context>& cr)
 	paintLine(cr, children);
 
 	path = cr->copy_path();
+
+	cr->save();
+
+	cr->set_identity_matrix();
+
+	double x0, y0, x1, y1;
+	cr->get_path_extents(x0, y0, x1, y1);
+
+	bounds = FloatRect(x0, y0, x1, y1);
+
+	transformedPath = cr->copy_path();
+
+	cr->restore();
 }
 
 //! Find the best fitting segment on a cairo path and return angle.
@@ -138,6 +151,7 @@ void WayRenderer::getShieldPosition(Cairo::Path* transformedPath, std::list<Floa
 WayRenderer::WayRenderer(const shared_ptr<Geodata>& data, WayId wid, const Style* s)
 	: ObjectRenderer(data, s),
 	  path(NULL),
+	  transformedPath(NULL),
 	  way(data->getWay(wid))
 {
 }
@@ -146,6 +160,8 @@ WayRenderer::~WayRenderer()
 {
 	if (path != NULL)
 		delete path;
+	if (transformedPath != NULL)
+		delete transformedPath;
 }
 
 void WayRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
@@ -230,6 +246,7 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 		return;
 
 	addWayPath(cr);
+	cr->begin_new_path();
 
 	cr->save();
 
@@ -242,28 +259,14 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 
 	if (s->text_position == Style::POSITION_CENTER)
 	{
-		double x0, y0, x1, y1;
-		cr->get_path_extents(x0, y0, x1, y1);
-		cr->begin_new_path();
-
 		// request a centered label
-		double x = (x0 + x1)/2.0 - textSize.width/2.0;
-		double y = (y0 + y1)/2.0 - textSize.height/2.0;
-		double border = s->text_halo_radius;
-		FloatPoint origin  = FloatPoint(x - textSize.x_bearing, y - textSize.y_bearing);
-		FloatRect box      = FloatRect(FloatPoint(x, y), textSize.width, textSize.height).grow(border, border);
-		FloatRect ownerBox = FloatRect(x0, y0, x1, y1);
-		labels.push_back(boost::make_shared<Label>(box, ownerBox, s->text, s, origin));
+		addLabel(labels, bounds.getCenter(), textSize);
 	}
 	else if (s->text_position == Style::POSITION_LINE)
 	{
-		Cairo::Path* transformedPath = cr->copy_path_flat();
-		cr->begin_new_path();
-
 		FloatPoint best;
 		double angle = 0;
 		bool placed = getTextPosition(transformedPath, textSize.width, best, angle);
-		delete transformedPath;
 
 		if (placed) {
 			cr->translate(best.x, best.y);
@@ -296,6 +299,7 @@ void WayRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 		return;
 
 	addWayPath(cr);
+	cr->begin_new_path();
 
 	cr->save();
 
@@ -306,31 +310,12 @@ void WayRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 	Cairo::TextExtents textSize;
 	cr->get_text_extents(s->shield_text.str(), textSize);
 
-	double x0, y0, x1, y1;
-	cr->get_path_extents(x0, y0, x1, y1);
-
-	Cairo::Path* transformedPath = cr->copy_path_flat();
-	cr->begin_new_path();
-
 	std::list<FloatPoint> positions;
 	getShieldPosition(transformedPath, positions);
-	delete transformedPath;
 
-	FloatRect ownerBox = FloatRect(x0, y0, x1, y1);
-	double border = ceil(s->shield_frame_width + s->shield_casing_width + 3.0);
-	double x, y;
 	for (FloatPoint& p : positions)
 	{
-		x = floor(p.x - textSize.width / 2.0);
-		y = floor(p.y - textSize.height / 2.0);
-		FloatPoint origin  = FloatPoint(x - textSize.x_bearing, y - textSize.y_bearing);
-		FloatRect shield   = FloatRect(FloatPoint(x - border, y - border),
-									   ceil(textSize.width + 2*border),
-									   ceil(textSize.height + 2*border));
-		FloatRect box = FloatRect(FloatPoint(p.x - RENDERER_SHIELD_DISTANCE / 2.0,
-											 p.y - RENDERER_SHIELD_DISTANCE / 2.0),
-								  RENDERER_SHIELD_DISTANCE, RENDERER_SHIELD_DISTANCE);
-		shields.push_back(boost::make_shared<Shield>(box, ownerBox, s->shield_text, s, origin, shield));
+		addShield(shields, p, textSize);
 	}
 
 	cr->restore();

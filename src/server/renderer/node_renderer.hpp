@@ -37,6 +37,10 @@ class Label;
 class NodeRenderer : public ObjectRenderer {
 private:
 	const FixedPoint& location;
+	FloatPoint transformedLocation;
+
+	void transformLocation(const Cairo::RefPtr<Cairo::Context>& cr);
+
 public:
 	NodeRenderer(const shared_ptr<Geodata>& data, NodeId nid, const Style* s);
 

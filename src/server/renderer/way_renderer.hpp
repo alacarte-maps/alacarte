@@ -46,6 +46,7 @@ class WayRenderer : public ObjectRenderer
 {
 private:
 	Cairo::Path* path;
+	Cairo::Path* transformedPath;
 	Way* way;
 
 	void addWayPath(const Cairo::RefPtr<Cairo::Context>& cr);

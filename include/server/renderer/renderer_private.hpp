@@ -63,13 +63,6 @@ struct Label {
 		  text(text),
 		  style(s),
 		  origin(origin) {}
-	Label(const FloatRect& box, const FloatPoint& owner, const MaybeCachedString& text,
-		  const Style* s, const FloatPoint& origin)
-		: box(box),
-		  owner(FloatRect(owner.x, owner.y, owner.x, owner.y)),
-		  text(text),
-		  style(s),
-		  origin(origin) {}
 
 	//! bounding box in device-space coordinates
 	FloatRect box;
@@ -82,6 +75,7 @@ struct Label {
 	//! The text that should be used (don't use the style text to make it generic)
 	const MaybeCachedString& text;
 
+	//! used by the placement algorith to move the label
 	void translate(double dx, double dy)
 	{
 		box = box.translate(dx, dy);
@@ -95,20 +89,15 @@ struct Shield : public Label {
 		   const Style* s, const FloatPoint& origin, const FloatRect& shield)
 		: Label(box, owner, text, s, origin),
 		  shield(shield) {}
-	Shield(const FloatRect& box, const FloatPoint& owner, const MaybeCachedString& text,
-		   const Style* s, const FloatPoint& origin, const FloatRect& shield)
-		: Label(box, owner, text, s, origin),
-		  shield(shield) {}
 
 	//! Dimensions of the shield that should be painted
 	FloatRect shield;
 
+	//! used by the placement algorith to move the shield
 	void translate(double dx, double dy)
 	{
-		box = box.translate(dx, dy);
+		Label::translate(dx, dy);
 		shield = shield.translate(dx, dy);
-		origin.x += dx;
-		origin.y += dy;
 	}
 };
 
