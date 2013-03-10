@@ -23,14 +23,3 @@
 #include "general/way.hpp"
 
 
-Way::Way(const std::vector<NodeId>& nodeIDs, const DataMap<CachedString, CachedString>& tags)
-	: GeoObject(tags)
-	, nodeIDs(nodeIDs)
-{
-
-}
-Way::Way(){}
-const std::vector<NodeId>& Way::getNodeIDs() const
-{
-	return nodeIDs;
-}
