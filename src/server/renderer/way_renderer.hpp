@@ -46,9 +46,41 @@ class WayRenderer : public ObjectRenderer
 {
 private:
 	Cairo::Path* path;
-	WayId wid;
+	Way* way;
 
-	bool addWayPath(const Cairo::RefPtr<Cairo::Context>& cr, WayId wid);
+	void addWayPath(const Cairo::RefPtr<Cairo::Context>& cr);
+	inline void setLineCap(const Cairo::RefPtr<Cairo::Context>& cr, Style::LineCap cap)
+	{
+		switch(cap) {
+			case Style::CAP_NONE:
+				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+				break;
+			case Style::CAP_ROUND:
+				cr->set_line_cap(Cairo::LINE_CAP_ROUND);
+				break;
+			case Style::CAP_SQUARE:
+				cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
+				break;
+		}
+	}
+	inline void setLineJoin(const Cairo::RefPtr<Cairo::Context>& cr, Style::LineJoin join)
+	{
+		switch(join) {
+			case Style::JOIN_MITER:
+				cr->set_line_join(Cairo::LINE_JOIN_MITER);
+				break;
+			case Style::JOIN_BEVEL:
+				cr->set_line_join(Cairo::LINE_JOIN_BEVEL);
+				break;
+			case Style::JOIN_ROUND:
+				cr->set_line_join(Cairo::LINE_JOIN_ROUND);
+				break;
+		}
+	}
+	inline void setColor(const Cairo::RefPtr<Cairo::Context>& cr, Color c)
+	{
+		cr->set_source_rgba(c.r, c.g, c.b, c.a);
+	}
 	bool getTextPosition(Cairo::Path* transformedPath, int width, FloatPoint& best, double& angle);
 	void getShieldPosition(Cairo::Path* transformedPath, std::list<FloatPoint>& positions);
 

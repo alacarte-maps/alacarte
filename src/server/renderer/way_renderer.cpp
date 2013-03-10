@@ -36,23 +36,17 @@
  * @brief Adds the path of the given way to current path, if path is not set it creates it form the data
  * @param cr the cairo contetx to add the path to
  *
- * @return true if the path is closed
  */
-bool WayRenderer::addWayPath(const Cairo::RefPtr<Cairo::Context>& cr, WayId wid)
+void WayRenderer::addWayPath(const Cairo::RefPtr<Cairo::Context>& cr)
 {
 	cr->begin_new_path();
-	if (path != NULL) {
+	if (path != NULL)
 		cr->append_path(*path);
-		// FIXME this needs to be remove but doesn't cause problems yet
-		return false;
-	}
 
-	Way* way = data->getWay(wid);
 	const std::vector<NodeId>& children = way->getNodeIDs();
 	paintLine(cr, children);
 
 	path = cr->copy_path();
-	return (children.front() == children.back());
 }
 
 //! Find the best fitting segment on a cairo path and return angle.
@@ -144,7 +138,7 @@ void WayRenderer::getShieldPosition(Cairo::Path* transformedPath, std::list<Floa
 WayRenderer::WayRenderer(const shared_ptr<Geodata>& data, WayId wid, const Style* s)
 	: ObjectRenderer(data, s),
 	  path(NULL),
-	  wid(wid)
+	  way(data->getWay(wid))
 {
 }
 
@@ -156,20 +150,17 @@ WayRenderer::~WayRenderer()
 
 void WayRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-	bool closed = addWayPath(cr, wid);
+	addWayPath(cr);
 
-	// TODO replace with real attribute
-	if (!closed) {
+	if (!way->isClosed()) {
 		cr->begin_new_path();
 		return;
 	}
 
 	cr->save();
 
-	cr->set_source_rgba(s->fill_color.r,
-						s->fill_color.g,
-						s->fill_color.b,
-						s->fill_color.a);
+	setColor(cr, s->fill_color);
+
 	cr->fill();
 
 	cr->restore();
@@ -181,40 +172,22 @@ void WayRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 	if (s->casing_width <= 0.0)
 		return;
 
-	addWayPath(cr, wid);
+	addWayPath(cr);
 
 	cr->save();
 	cr->set_identity_matrix();
 
-	cr->set_source_rgba(s->casing_color.r,
-						s->casing_color.g,
-						s->casing_color.b,
-						s->casing_color.a);
+	setLineCap(cr,  s->casing_linecap);
+	setLineJoin(cr, s->casing_linejoin);
+	setColor(cr,    s->casing_color);
+
 	if (s->casing_dashes.size() > 0)
 		cr->set_dash(s->casing_dashes, 0.0);
-	switch(s->casing_linecap) {
-		case Style::CAP_NONE:
-			cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-			break;
-		case Style::CAP_ROUND:
-			cr->set_line_cap(Cairo::LINE_CAP_ROUND);
-			break;
-		case Style::CAP_SQUARE:
-			cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
-			break;
-	}
-	switch(s->casing_linejoin) {
-		case Style::JOIN_MITER:
-			cr->set_line_join(Cairo::LINE_JOIN_MITER);
-			break;
-		case Style::JOIN_BEVEL:
-			cr->set_line_join(Cairo::LINE_JOIN_BEVEL);
-			break;
-		case Style::JOIN_ROUND:
-			cr->set_line_join(Cairo::LINE_JOIN_ROUND);
-			break;
-	}
 	cr->set_line_width(s->casing_width*2 + s->width);
+
+	// override cap (e.g. needed when for bridges on high osm layer)
+	if (way->getType() == Way::WayType::CONNECTED_BOTH)
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
 
 	cr->stroke();
 
@@ -227,42 +200,23 @@ void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 	if (s->width <= 0.0)
 		return;
 
-	addWayPath(cr, wid);
+	addWayPath(cr);
 
 	cr->save();
 	cr->set_identity_matrix();
 
-	cr->set_source_rgba(s->color.r,
-						s->color.g,
-						s->color.b,
-						s->color.a);
+	setLineCap(cr,  s->linecap);
+	setLineJoin(cr, s->linejoin);
+	setColor(cr,    s->color);
+
 	if (s->dashes.size() > 0)
 		cr->set_dash(s->dashes, 0.0);
-	switch(s->linecap) {
-		case Style::CAP_NONE:
-			cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-			break;
-		case Style::CAP_ROUND:
-			cr->set_line_cap(Cairo::LINE_CAP_ROUND);
-			break;
-		case Style::CAP_SQUARE:
-			cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
-			break;
-	}
-	switch(s->linejoin) {
-		case Style::JOIN_MITER:
-			cr->set_line_join(Cairo::LINE_JOIN_MITER);
-			break;
-		case Style::JOIN_BEVEL:
-			cr->set_line_join(Cairo::LINE_JOIN_BEVEL);
-			break;
-		case Style::JOIN_ROUND:
-			cr->set_line_join(Cairo::LINE_JOIN_ROUND);
-			break;
-	}
 	cr->set_line_width(s->width);
 
-	// reset transformation matrix for stroking
+	// override cap (e.g. needed when for bridges on higher osm layer)
+	if (way->getType() == Way::WayType::CONNECTED_BOTH)
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+
 	cr->stroke();
 
 	cr->restore();
@@ -275,7 +229,7 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 	if (s->text.str().size() == 0 || s->font_size <= 0.0)
 		return;
 
-	addWayPath(cr, wid);
+	addWayPath(cr);
 
 	cr->save();
 
@@ -322,17 +276,11 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 			if (s->text_halo_radius > 0.0)
 			{
 				cr->set_line_join(Cairo::LINE_JOIN_ROUND);
-				cr->set_source_rgba(s->text_halo_color.r,
-									s->text_halo_color.g,
-									s->text_halo_color.b,
-									s->text_halo_color.a);
 				cr->set_line_width(s->text_halo_radius*2.0);
+				setColor(cr, s->text_halo_color);
 				cr->stroke_preserve();
 			}
-			cr->set_source_rgba(s->text_color.r,
-								s->text_color.g,
-								s->text_color.b,
-								s->text_color.a);
+			setColor(cr, s->text_color);
 			cr->fill();
 		}
 	}
@@ -347,7 +295,7 @@ void WayRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 	if (s->shield_text.str().size() == 0 || s->font_size <= 0.0)
 		return;
 
-	addWayPath(cr, wid);
+	addWayPath(cr);
 
 	cr->save();
 
