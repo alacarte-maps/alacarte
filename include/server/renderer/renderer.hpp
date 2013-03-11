@@ -94,10 +94,10 @@ private:
 	bool isCutOff(const FloatRect& box, const FloatRect& owner);
 	void compositeLayers(CairoLayer layers[]) const;
 	void setupLayers(CairoLayer layers[], RenderAttributes& map,
-					 const Cairo::Matrix& trans,
 					 const shared_ptr<ImageWriter>& writer,
 					 const Tile::ImageType& buffer) const;
 	void renderObjects(CairoLayer layers[], RenderAttributes& map,
+					   const Cairo::Matrix& transform,
 					   std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations,
 					   std::list<shared_ptr<Label>>& labels,
 					   std::list<shared_ptr<Shield>>& shields);

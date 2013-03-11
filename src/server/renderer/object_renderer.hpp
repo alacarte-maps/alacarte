@@ -42,6 +42,7 @@ class ObjectRenderer
 {
 protected:
 	const shared_ptr<Geodata>& data;
+	const Cairo::Matrix& transform;
 	const Style* s;
 	//! is set by addWayPath for ways or in transformLocation for nodes
 	FloatRect bounds;
@@ -53,9 +54,15 @@ protected:
 	void addLabel(std::list<shared_ptr<Label> >& labels,
 				   const FloatPoint& p,
 				   const Cairo::TextExtents& textSize) const;
+	inline void setColor(const Cairo::RefPtr<Cairo::Context>& cr, Color c)
+	{
+		cr->set_source_rgba(c.r, c.g, c.b, c.a);
+	}
 
 public:
-	ObjectRenderer(const shared_ptr<Geodata>& data, const Style* s);
+	ObjectRenderer(const shared_ptr<Geodata>& data,
+				   const Style* s,
+				   const Cairo::Matrix& transform);
 
 };
 

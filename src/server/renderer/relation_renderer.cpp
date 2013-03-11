@@ -34,9 +34,12 @@
 #include "relation_renderer.hpp"
 
 
-RelationRenderer::RelationRenderer(const shared_ptr<Geodata>& data, RelId rid, const Style* s)
-	: ObjectRenderer(data, s),
-	  rid(rid)
+RelationRenderer::RelationRenderer(const shared_ptr<Geodata>& data,
+								   RelId rid,
+								   const Style* s,
+								   const Cairo::Matrix& transform)
+	: ObjectRenderer(data, s, transform)
+	, relation(data->getRelation(rid))
 {
 }
 
@@ -90,7 +93,6 @@ void RelationRenderer::addRingPath(const Cairo::RefPtr<Cairo::Context>& cr, cons
 
 void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-	Relation* relation = data->getRelation(rid);
 	cr->begin_new_path();
 
 	const std::vector<WayId>& ids = relation->getWayIDs();
@@ -110,14 +112,12 @@ void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 	delete[] used;
 
 	cr->push_group();
-	cr->set_identity_matrix();
 
 	cr->set_fill_rule(Cairo::FILL_RULE_EVEN_ODD);
-	cr->set_source_rgba(s->fill_color.r,
-						s->fill_color.g,
-						s->fill_color.b,
-						s->fill_color.a);
+	setColor(cr, s->fill_color);
+
 	cr->fill();
+
 	cr->pop_group_to_source();
 	cr->paint();
 }

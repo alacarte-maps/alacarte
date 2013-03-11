@@ -45,11 +45,14 @@ class Label;
 class RelationRenderer : public ObjectRenderer
 {
 private:
-	RelId rid;
+	Relation* relation;
 	void addRingPath(const Cairo::RefPtr<Cairo::Context>& cr, const std::vector<WayId>& ids, int& idx, bool* used);
 
 public:
-	RelationRenderer(const shared_ptr<Geodata>& data, RelId rid, const Style* s);
+	RelationRenderer(const shared_ptr<Geodata>& data,
+					 RelId rid,
+					 const Style* s,
+					 const Cairo::Matrix& transform);
 
 	void fill(const Cairo::RefPtr<Cairo::Context>& cr);
 };

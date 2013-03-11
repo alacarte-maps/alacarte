@@ -235,7 +235,7 @@ void Renderer::printTileId(const Cairo::RefPtr<Cairo::Context>& cr,
 						   const shared_ptr<TileIdentifier>& id)
 {
 	cr->save();
-	cr->set_identity_matrix();
+
 	cr->set_font_size(10);
 	cr->move_to(5.0, TILE_SIZE - 10);
 
@@ -251,6 +251,7 @@ void Renderer::printTileId(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->stroke_preserve();
 	cr->set_source_rgba(0.0, 0.0, 0.0, 1.0);
 	cr->fill();
+
 	cr->restore();
 }
 
@@ -304,6 +305,7 @@ void Renderer::sortObjects(RenderAttributes& map,
 //! Renders a OSM layer onto the given cairo surface
 void Renderer::renderObjects(CairoLayer layers[],
 							 RenderAttributes& map,
+							 const Cairo::Matrix& transform,
 							 std::vector<NodeId>& nodes,
 							 std::vector<WayId>& ways,
 							 std::vector<RelId>& relations,
@@ -353,7 +355,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 				nextZ = std::min(nextZ, s->z_index);
 				break;
 			}
-			RelationRenderer renderer(data, *rid, s);
+			RelationRenderer renderer(data, *rid, s, transform);
 
 			renderer.fill(layers[LAYER_FILL].cr);
 		}
@@ -365,7 +367,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 				nextZ = std::min(nextZ, s->z_index);
 				break;
 			}
-			WayRenderer renderer(data, *wid, s);
+			WayRenderer renderer(data, *wid, s, transform);
 
 			renderer.fill(layers[LAYER_FILL].cr);
 			renderer.casing(layers[LAYER_CASING].cr);
@@ -381,7 +383,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 				nextZ = std::min(nextZ, s->z_index);
 				break;
 			}
-			NodeRenderer renderer(data, *nid, s);
+			NodeRenderer renderer(data, *nid, s, transform);
 
 			renderer.casing(layers[LAYER_CASING].cr);
 			renderer.stroke(layers[LAYER_STROKE].cr);
@@ -397,7 +399,7 @@ void Renderer::renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
 							 std::vector<shared_ptr<Shield> >& shields)
 {
 	cr->save();
-	cr->set_identity_matrix();
+
 	cr->set_line_join(Cairo::LINE_JOIN_ROUND);
 
 	for (auto& shield : shields)
@@ -457,7 +459,7 @@ void Renderer::renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
 							std::vector<shared_ptr<LabelType> >& labels)
 {
 	cr->save();
-	cr->set_identity_matrix();
+
 	cr->set_line_join(Cairo::LINE_JOIN_ROUND);
 
 	for (auto it = labels.rbegin(); it != labels.rend(); it++)
@@ -592,7 +594,6 @@ void Renderer::compositeLayers(CairoLayer layers[]) const
 	Cairo::RefPtr<Cairo::Context> cr = layers[0].cr;
 
 	cr->save();
-	cr->set_identity_matrix();
 
 	for (int i = 1; i < LAYER_NUM; i++) {
 		layers[i].surface->flush();
@@ -606,7 +607,6 @@ void Renderer::compositeLayers(CairoLayer layers[]) const
 
 
 void Renderer::setupLayers(CairoLayer layers[], RenderAttributes& map,
-						   const Cairo::Matrix& trans,
 						   const shared_ptr<ImageWriter>& writer,
 						   const Tile::ImageType& buffer) const
 {
@@ -625,14 +625,10 @@ void Renderer::setupLayers(CairoLayer layers[], RenderAttributes& map,
 		layers[LAYER_FILL].cr->set_source(pattern);
 	}
 	layers[LAYER_FILL].cr->paint();
-	layers[LAYER_FILL].cr->transform(trans);
 
 	for (int i = LAYER_FILL + 1; i < LAYER_NUM; i++) {
 		layers[i] = CairoLayer(writer);
 		layers[i].clear();
-
-		// set coord transformation: mercator -> image
-		layers[i].cr->transform(trans);
 	}
 
 	// setup default font
@@ -673,12 +669,12 @@ void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
 #endif
 
 	CairoLayer layers[LAYER_NUM];
-	setupLayers(layers, map, trans, writer, buffer);
+	setupLayers(layers, map, writer, buffer);
 
 	std::list<shared_ptr<Label> > labels;
 	std::list<shared_ptr<Shield> > shields;
 	// render objects and collect label positions
-	renderObjects(layers, map, nodes, ways, relations, labels, shields);
+	renderObjects(layers, map, trans, nodes, ways, relations, labels, shields);
 
 	// sort, place and render shields
 	std::vector<shared_ptr<Shield> > placedShields;

@@ -36,13 +36,14 @@ class Label;
 
 class NodeRenderer : public ObjectRenderer {
 private:
-	const FixedPoint& location;
-	FloatPoint transformedLocation;
-
-	void transformLocation(const Cairo::RefPtr<Cairo::Context>& cr);
+	FloatPoint location;
+	Node* node;
 
 public:
-	NodeRenderer(const shared_ptr<Geodata>& data, NodeId nid, const Style* s);
+	NodeRenderer(const shared_ptr<Geodata>& data,
+				 NodeId nid,
+				 const Style* s,
+				 const Cairo::Matrix& transform);
 
 	void casing(const Cairo::RefPtr<Cairo::Context>& cr);
 	void stroke(const Cairo::RefPtr<Cairo::Context>& cr);

@@ -34,10 +34,16 @@
 
 /**
  * @brief Adds the path of the given way to current path, if path is not set it creates it form the data
- * @param cr the cairo contetx to add the path to
+ * @param reverse paint the path in reverse order (used by relations)
+ * @param connect to the last current point on the context (set by relations)
   */
-void ObjectRenderer::paintLine(const Cairo::RefPtr<Cairo::Context>& cr,  const std::vector<NodeId>& nodeIDs, bool reverse, bool connect) const
+void ObjectRenderer::paintLine(const Cairo::RefPtr<Cairo::Context>& cr,
+							   const std::vector<NodeId>& nodeIDs,
+							   bool reverse, bool connect) const
 {
+	cr->save();
+	cr->set_matrix(transform);
+
 	Node* n;
 	bool first = true;
 	int size = nodeIDs.size();
@@ -58,6 +64,8 @@ void ObjectRenderer::paintLine(const Cairo::RefPtr<Cairo::Context>& cr,  const s
 
 		first = false;
 	}
+
+	cr->restore();
 }
 
 /**
@@ -98,7 +106,9 @@ void ObjectRenderer::addLabel(std::list<shared_ptr<Label> >& labels,
 	labels.push_back(boost::make_shared<Label>(box, bounds, s->text, s, origin));
 }
 
-ObjectRenderer::ObjectRenderer(const shared_ptr<Geodata>& data, const Style* s)
-	: data(data), s(s)
+ObjectRenderer::ObjectRenderer(const shared_ptr<Geodata>& data, const Style* s, const Cairo::Matrix& transform)
+	: data(data)
+	, s(s)
+	, transform(transform)
 {
 }

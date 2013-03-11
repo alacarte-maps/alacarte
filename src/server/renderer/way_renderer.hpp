@@ -46,7 +46,6 @@ class WayRenderer : public ObjectRenderer
 {
 private:
 	Cairo::Path* path;
-	Cairo::Path* transformedPath;
 	Way* way;
 
 	void addWayPath(const Cairo::RefPtr<Cairo::Context>& cr);
@@ -78,15 +77,14 @@ private:
 				break;
 		}
 	}
-	inline void setColor(const Cairo::RefPtr<Cairo::Context>& cr, Color c)
-	{
-		cr->set_source_rgba(c.r, c.g, c.b, c.a);
-	}
 	bool getTextPosition(Cairo::Path* transformedPath, int width, FloatPoint& best, double& angle);
 	void getShieldPosition(Cairo::Path* transformedPath, std::list<FloatPoint>& positions);
 
 public:
-	WayRenderer(const shared_ptr<Geodata>& data, WayId wid, const Style* s);
+	WayRenderer(const shared_ptr<Geodata>& data,
+				WayId wid,
+				const Style* s,
+				const Cairo::Matrix& transform);
 	virtual ~WayRenderer();
 
 	void fill(const Cairo::RefPtr<Cairo::Context>& cr);

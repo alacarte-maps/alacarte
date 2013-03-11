@@ -48,18 +48,9 @@ void WayRenderer::addWayPath(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	path = cr->copy_path();
 
-	cr->save();
-
-	cr->set_identity_matrix();
-
 	double x0, y0, x1, y1;
 	cr->get_path_extents(x0, y0, x1, y1);
-
 	bounds = FloatRect(x0, y0, x1, y1);
-
-	transformedPath = cr->copy_path();
-
-	cr->restore();
 }
 
 //! Find the best fitting segment on a cairo path and return angle.
@@ -148,11 +139,13 @@ void WayRenderer::getShieldPosition(Cairo::Path* transformedPath, std::list<Floa
 	}
 }
 
-WayRenderer::WayRenderer(const shared_ptr<Geodata>& data, WayId wid, const Style* s)
-	: ObjectRenderer(data, s),
-	  path(NULL),
-	  transformedPath(NULL),
-	  way(data->getWay(wid))
+WayRenderer::WayRenderer(const shared_ptr<Geodata>& data,
+						 WayId wid,
+						 const Style* s,
+						 const Cairo::Matrix& transform)
+	: ObjectRenderer(data, s, transform)
+	, path(NULL)
+	, way(data->getWay(wid))
 {
 }
 
@@ -160,18 +153,14 @@ WayRenderer::~WayRenderer()
 {
 	if (path != NULL)
 		delete path;
-	if (transformedPath != NULL)
-		delete transformedPath;
 }
 
 void WayRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-	addWayPath(cr);
-
-	if (!way->isClosed()) {
-		cr->begin_new_path();
+	if (!way->isClosed())
 		return;
-	}
+
+	addWayPath(cr);
 
 	cr->save();
 
@@ -184,14 +173,12 @@ void WayRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 
 void WayRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-	// nothing to render
 	if (s->casing_width <= 0.0)
 		return;
 
 	addWayPath(cr);
 
 	cr->save();
-	cr->set_identity_matrix();
 
 	setLineCap(cr,  s->casing_linecap);
 	setLineJoin(cr, s->casing_linejoin);
@@ -212,14 +199,12 @@ void WayRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 
 void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-	// nothing to stroke
 	if (s->width <= 0.0)
 		return;
 
 	addWayPath(cr);
 
 	cr->save();
-	cr->set_identity_matrix();
 
 	setLineCap(cr,  s->linecap);
 	setLineJoin(cr, s->linejoin);
@@ -241,16 +226,14 @@ void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 		std::list<shared_ptr<Label> >& labels)
 {
-	// nothing to print
 	if (s->text.str().size() == 0 || s->font_size <= 0.0)
 		return;
 
+	// make sure path is initialized
 	addWayPath(cr);
 	cr->begin_new_path();
 
 	cr->save();
-
-	cr->set_identity_matrix();
 
 	cr->set_font_size(s->font_size);
 
@@ -266,7 +249,7 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 	{
 		FloatPoint best;
 		double angle = 0;
-		bool placed = getTextPosition(transformedPath, textSize.width, best, angle);
+		bool placed = getTextPosition(path, textSize.width, best, angle);
 
 		if (placed) {
 			cr->translate(best.x, best.y);
@@ -294,16 +277,14 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 void WayRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 		std::list<shared_ptr<Shield> >& shields)
 {
-	// nothing to print
 	if (s->shield_text.str().size() == 0 || s->font_size <= 0.0)
 		return;
 
+	// make sure path is initialized
 	addWayPath(cr);
 	cr->begin_new_path();
 
 	cr->save();
-
-	cr->set_identity_matrix();
 
 	cr->set_font_size(s->font_size);
 
@@ -311,7 +292,7 @@ void WayRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->get_text_extents(s->shield_text.str(), textSize);
 
 	std::list<FloatPoint> positions;
-	getShieldPosition(transformedPath, positions);
+	getShieldPosition(path, positions);
 
 	for (FloatPoint& p : positions)
 	{
