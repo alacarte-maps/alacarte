@@ -164,7 +164,7 @@ void WayRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	cr->save();
 
-	setColor(cr, s->fill_color);
+	cr->set_source_color(s->fill_color);
 
 	cr->fill();
 
@@ -182,7 +182,7 @@ void WayRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	setLineCap(cr,  s->casing_linecap);
 	setLineJoin(cr, s->casing_linejoin);
-	setColor(cr,    s->casing_color);
+	cr->set_source_color(   s->casing_color);
 
 	if (s->casing_dashes.size() > 0)
 		cr->set_dash(s->casing_dashes, 0.0);
@@ -208,7 +208,7 @@ void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	setLineCap(cr,  s->linecap);
 	setLineJoin(cr, s->linejoin);
-	setColor(cr,    s->color);
+	cr->set_source_color(   s->color);
 
 	if (s->dashes.size() > 0)
 		cr->set_dash(s->dashes, 0.0);
@@ -263,10 +263,10 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 			{
 				cr->set_line_join(Cairo::LINE_JOIN_ROUND);
 				cr->set_line_width(s->text_halo_radius*2.0);
-				setColor(cr, s->text_halo_color);
+				cr->set_source_color(s->text_halo_color);
 				cr->stroke_preserve();
 			}
-			setColor(cr, s->text_color);
+			cr->set_source_color(s->text_color);
 			cr->fill();
 		}
 	}

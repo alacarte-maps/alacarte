@@ -63,10 +63,8 @@ void NodeRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 	cr->save();
 
 	cr->arc(location.x, location.y, s->width/2.0 + s->casing_width, 0, 2*M_PI);
-	cr->set_source_rgba(s->casing_color.r,
-						s->casing_color.g,
-						s->casing_color.b,
-						s->casing_color.a);
+
+	cr->set_source_color(s->casing_color);
 
 	cr->fill();
 	cr->restore();
@@ -82,10 +80,8 @@ void NodeRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	cr->arc(location.x, location.y, s->width/2.0, 0, 2*M_PI);
 
-	cr->set_source_rgba(s->color.r,
-						s->color.g,
-						s->color.b,
-						s->color.a);
+	cr->set_source_color(s->color);
+
 	cr->fill();
 	cr->restore();
 }

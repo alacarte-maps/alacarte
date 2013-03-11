@@ -35,6 +35,8 @@
 #define RENDERER_SHIELD_OVERLAP 0.1
 #define RENDERER_LABEL_OVERLAP 0.1
 
+#define set_source_color(_X) set_source_rgba(_X.r, _X.g, _X.b, _X.a)
+
 class Style;
 
 // TODO make thread safe

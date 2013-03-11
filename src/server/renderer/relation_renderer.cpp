@@ -114,7 +114,7 @@ void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 	cr->push_group();
 
 	cr->set_fill_rule(Cairo::FILL_RULE_EVEN_ODD);
-	setColor(cr, s->fill_color);
+	cr->set_source_color(s->fill_color);
 
 	cr->fill();
 

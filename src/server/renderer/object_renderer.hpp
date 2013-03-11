@@ -54,10 +54,6 @@ protected:
 	void addLabel(std::list<shared_ptr<Label> >& labels,
 				   const FloatPoint& p,
 				   const Cairo::TextExtents& textSize) const;
-	inline void setColor(const Cairo::RefPtr<Cairo::Context>& cr, Color c)
-	{
-		cr->set_source_rgba(c.r, c.g, c.b, c.a);
-	}
 
 public:
 	ObjectRenderer(const shared_ptr<Geodata>& data,

@@ -427,26 +427,17 @@ void Renderer::renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
 
 		// shield casing
 		if (s->shield_casing_width > 0) {
-			cr->set_source_rgba(s->shield_casing_color.r,
-					s->shield_casing_color.g,
-					s->shield_casing_color.b,
-					s->shield_casing_color.a);
+			cr->set_source_color(s->shield_casing_color),
 			cr->set_line_width(s->shield_frame_width + s->shield_casing_width * 2.0);
 			cr->stroke_preserve();
 		}
 
 		// shield background
-		cr->set_source_rgba(s->shield_color.r,
-				s->shield_color.g,
-				s->shield_color.b,
-				s->shield_color.a);
+		cr->set_source_color(s->shield_color),
 		cr->fill_preserve();
 
 		// shield frame
-		cr->set_source_rgba(s->shield_frame_color.r,
-				s->shield_frame_color.g,
-				s->shield_frame_color.b,
-				s->shield_frame_color.a);
+		cr->set_source_color(s->shield_frame_color),
 		cr->set_line_width(s->shield_frame_width);
 		cr->stroke();
 	}
@@ -474,18 +465,12 @@ void Renderer::renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
 
 		if (s->text_halo_radius > 0.0)
 		{
-			cr->set_source_rgba(s->text_halo_color.r,
-								s->text_halo_color.g,
-								s->text_halo_color.b,
-								s->text_halo_color.a);
+			cr->set_source_color(s->text_halo_color);
 			cr->set_line_width(s->text_halo_radius*2.0);
 			cr->stroke_preserve();
 		}
 
-		cr->set_source_rgba(s->text_color.r,
-							s->text_color.g,
-							s->text_color.b,
-							s->text_color.a);
+		cr->set_source_color(s->text_color);
 		cr->fill();
 	}
 
@@ -613,10 +598,7 @@ void Renderer::setupLayers(CairoLayer layers[], RenderAttributes& map,
 	const Style* s = map.getCanvasStyle();
 
 	layers[LAYER_FILL] = CairoLayer(writer, buffer);
-	layers[LAYER_FILL].cr->set_source_rgba(s->fill_color.r,
-										   s->fill_color.g,
-										   s->fill_color.b,
-										   s->fill_color.a);
+	layers[LAYER_FILL].cr->set_source_color(s->fill_color);
 	if (s->fill_image.str().size() > 0)
 	{
 		Cairo::RefPtr<Cairo::ImageSurface> image = Cairo::ImageSurface::create_from_png(s->fill_image.str());
