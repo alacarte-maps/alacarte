@@ -106,6 +106,10 @@ private:
 					  std::vector<shared_ptr<LabelType> >& labels);
 	void renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
 					  std::vector<shared_ptr<Shield> >& shields);
+	void renderArea(const FixedRect& area,
+					CairoLayer layers[],
+					double width, double height,
+					RenderAttributes& map);
 
 	//! lock calls to cairo for old versions that are not thread-safe.
 	static boost::mutex renderLock;

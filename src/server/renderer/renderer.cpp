@@ -623,7 +623,10 @@ void Renderer::setupLayers(CairoLayer layers[], RenderAttributes& map,
 	layers[LAYER_LABELS].cr->set_font_face(font);
 }
 
-void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
+void Renderer::renderArea(const FixedRect& area,
+						  CairoLayer layers[],
+						  double width, double height,
+						  RenderAttributes& map)
 {
 	// sort objects into acroding to z-index
 	std::vector<NodeId> nodes;
@@ -631,27 +634,10 @@ void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
 	std::vector<RelId>  relations;
 	sortObjects(map, nodes, ways, relations);
 
-	shared_ptr<TileIdentifier> id = tile->getIdentifier();
-
-	Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
-	// optimized for png images in the default stylesheet
-	buffer->reserve(100*1024);
-	shared_ptr<ImageWriter> writer = getWriter(id->getImageFormat());
-
 	// transform Mercator to tile coordinates
-	coord_t x0, y0, x1, y1;
-	tileToMercator(id->getX(),   id->getY(),   id->getZoom(), x0, y0);
-	tileToMercator(id->getX()+1, id->getY()+1, id->getZoom(), x1, y1);
-	Cairo::Matrix trans = Cairo::scaling_matrix(TILE_SIZE / (double) (x1 - x0),
-												TILE_SIZE / (double) (y1 - y0));
-	trans.translate(-x0, -y0);
-
-#if OLD_CAIRO
-	renderLock.lock();
-#endif
-
-	CairoLayer layers[LAYER_NUM];
-	setupLayers(layers, map, writer, buffer);
+	Cairo::Matrix trans = Cairo::scaling_matrix(width  / (double) area.getWidth(),
+												height / (double) area.getHeight());
+	trans.translate(-area.minX, -area.minY);
 
 	std::list<shared_ptr<Label> > labels;
 	std::list<shared_ptr<Shield> > shields;
@@ -673,11 +659,35 @@ void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
 	placeLabels(labels, placedLabels);
 	renderLabels<Label>(layers[LAYER_LABELS].cr, placedLabels);
 
+	compositeLayers(layers);
+}
+
+void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
+{
+	shared_ptr<TileIdentifier> id = tile->getIdentifier();
+
+	shared_ptr<ImageWriter> writer = getWriter(id->getImageFormat());
+
+	Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
+	// optimized for png images in the default stylesheet
+	buffer->reserve(100*1024);
+
+	FixedRect area;
+	tileToMercator(id->getX(),   id->getY(),   id->getZoom(), area.minX, area.minY);
+	tileToMercator(id->getX()+1, id->getY()+1, id->getZoom(), area.maxX, area.maxY);
+
+#if OLD_CAIRO
+	renderLock.lock();
+#endif
+
+	CairoLayer layers[LAYER_NUM];
+	setupLayers(layers, map, writer, buffer);
+
+	renderArea(area, layers, TILE_SIZE, TILE_SIZE, map);
+
 #if DEBUG_BUILD
 	printTileId(layers[LAYER_LABELS].cr, tile->getIdentifier());
 #endif
-
-	compositeLayers(layers);
 
 #if OLD_CAIRO
 	renderLock.unlock();
