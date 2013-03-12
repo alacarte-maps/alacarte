@@ -31,7 +31,7 @@
 #include "server/style_template.hpp"
 #include "server/eval/eval.hpp"
 #include "server/rule.hpp"
-#include "server/jobs/job.hpp"
+#include "server/job.hpp"
 #include <math.h>
 #include "server/parser/parser_logger.hpp"
 
@@ -52,9 +52,7 @@ StylesheetManager::~StylesheetManager()
 void StylesheetManager::startStylesheetObserving(const shared_ptr<RequestManager>& manager)
 {
 	this->manager = manager;
-
-	StylesheetManager::FallbackStylesheet = StylesheetManager::makeFallbackStylesheet(manager->getGeodata());
-
+	parsedStylesheets[".fallback"] = StylesheetManager::makeFallbackStylesheet(manager->getGeodata());
 
 	fs::directory_iterator end_iter;
 
@@ -78,11 +76,20 @@ void StylesheetManager::stopStylesheetObserving()
 	monitorThread.join();
 }
 
-
-shared_ptr<Stylesheet> StylesheetManager::getStylesheet(const shared_ptr<TileIdentifier>& ti)
+bool StylesheetManager::hasStylesheet(const string& path)
 {
 	parsedStylesheetsLock.lock();
-	auto entry = parsedStylesheets.find(ti->getStylesheetPath());
+	auto entry = parsedStylesheets.find(path);
+	bool contained = (entry != parsedStylesheets.end());
+	parsedStylesheetsLock.unlock();
+
+	return contained;
+}
+
+shared_ptr<Stylesheet> StylesheetManager::getStylesheet(const string& path)
+{
+	parsedStylesheetsLock.lock();
+	auto entry = parsedStylesheets.find(path);
 	shared_ptr<Stylesheet> result;
 	if (entry != parsedStylesheets.end()) {
 		result = entry->second;
@@ -282,8 +289,3 @@ shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const shared_pt
 	return boost::make_shared<Stylesheet>(geodata, rules, canvasStyle);
 }
 
-shared_ptr<Stylesheet> StylesheetManager::FallbackStylesheet;
-
-shared_ptr<Stylesheet> StylesheetManager::getFallbackStylesheet() {
-	return StylesheetManager::FallbackStylesheet;
-}

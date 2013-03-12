@@ -30,7 +30,6 @@
 
 #include "settings.hpp"
 
-class TileIdentifier;
 class RequestManager;
 class Stylesheet;
 class Configuration;
@@ -74,19 +73,13 @@ public:
 	TESTABLE void stopStylesheetObserving();
 
 	/**
-	 * @brief Returns the Stylesheet Object for the Stylesheet specified in the given TileIdentifier.
+	 * @brief Returns the Stylesheet Object for the Stylesheet specified.
 	 * 
-	 * @param ti the TileIdentifier for the Tile to get the Stylesheet Object for
-	 * @return the Stylesheet specified in the TileIdentifier or the default Stylesheet
+	 * @param path path of the stylesheet
+	 * @return the Stylesheet specified or the default Stylesheet
 	 */
-	TESTABLE shared_ptr<Stylesheet> getStylesheet(const shared_ptr<TileIdentifier>& ti);
-
-	/**
-	 * @brief Returns a fallback Stylesheet to be used when the user specified default Stylesheet doesn't exist.
-	 * 
-	 * @return a simple, hard coded Stylesheet
-	 */
-	shared_ptr<Stylesheet> getFallbackStylesheet();
+	TESTABLE shared_ptr<Stylesheet> getStylesheet(const string& path);
+	TESTABLE bool hasStylesheet(const string& path);
 
 private:
 	/**
@@ -114,7 +107,6 @@ private:
 
 	fs::path stylesheetFolder;
 
-	static shared_ptr<Stylesheet> FallbackStylesheet;
 	static shared_ptr<Stylesheet> makeFallbackStylesheet(const shared_ptr<Geodata>& geodata);
 
 	boost::asio::io_service						ioService;

@@ -215,32 +215,3 @@ void Cache::deleteTiles(const string path)
 	}
 }
 
-/**
- * @brief Returns a hash for the TileIdentifier.
- * 
- * @return Hash usable for boost::unordered_map.
- **/
-std::size_t hash_value(const TileIdentifier &ti)
-{
-	std::size_t seed = 0;
-	boost::hash_combine(seed, ti.getX());
-	boost::hash_combine(seed, ti.getY());
-	boost::hash_combine(seed, ti.getZoom());
-	boost::hash_combine(seed, ti.getImageFormat());
-	boost::hash_combine(seed, ti.getStylesheetPath()); // ?
-	return seed;
-}
-
-/**
- * @brief Equals operator for two TileIdentifiers.
- * 
- * @return True if TileIdentifiers have equal values.
- **/
-bool operator==(const TileIdentifier &a, const TileIdentifier &b)
-{
-	return a.getX() == b.getX() &&
-		a.getY() == b.getY() &&
-		a.getZoom() == b.getZoom() &&
-		a.getImageFormat() == b.getImageFormat() &&
-		a.getStylesheetPath() == b.getStylesheetPath(); // ?
-}

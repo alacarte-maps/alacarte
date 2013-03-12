@@ -42,6 +42,8 @@
 #include "server/render_attributes.hpp"
 #include "server/style.hpp"
 #include "server/tile.hpp"
+#include "server/meta_tile.hpp"
+#include "server/meta_identifier.hpp"
 #include "server/tile_identifier.hpp"
 
 #include "server/renderer/renderer.hpp"
@@ -59,6 +61,8 @@ boost::mutex Renderer::renderLock;
 class Renderer::PNGWriter : public Renderer::ImageWriter {
 private:
 	Tile::ImageType buffer;
+	int width;
+	int height;
 
 	Cairo::ErrorStatus cairoWriter(const unsigned char* data,
 								   unsigned int length)
@@ -68,7 +72,9 @@ private:
 	}
 
 public:
-	PNGWriter()
+	PNGWriter(int width, int height)
+		: width(width)
+		, height(height)
 	{
 	}
 
@@ -76,12 +82,12 @@ public:
 	virtual Cairo::RefPtr<Cairo::Surface> createSurface(const Tile::ImageType& buffer)
 	{
 		this->buffer = buffer;
-		return Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, TILE_SIZE, TILE_SIZE);
+		return Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
 	}
 
 	virtual Cairo::RefPtr<Cairo::Surface> createSurface()
 	{
-		return Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, TILE_SIZE, TILE_SIZE);
+		return Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
 	}
 
 	virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface)
@@ -94,6 +100,8 @@ public:
 class Renderer::SVGWriter : public Renderer::ImageWriter {
 private:
 	Tile::ImageType buffer;
+	int width;
+	int height;
 
 	Cairo::ErrorStatus cairoWriter(const unsigned char* data,
 								   unsigned int length)
@@ -109,7 +117,9 @@ private:
 	}
 
 public:
-	SVGWriter()
+	SVGWriter(int width, int height)
+		: width(width)
+		, height(height)
 	{
 	}
 
@@ -119,14 +129,14 @@ public:
 		this->buffer = buffer;
 		return Cairo::SvgSurface::create_for_stream(sigc::mem_fun(*this,
 									 &Renderer::SVGWriter::cairoWriter),
-									 TILE_SIZE, TILE_SIZE);
+									 width, height);
 	}
 
 	virtual Cairo::RefPtr<Cairo::Surface> createSurface()
 	{
 		return Cairo::SvgSurface::create_for_stream(sigc::mem_fun(*this,
 									 &Renderer::SVGWriter::doNothing),
-									 TILE_SIZE, TILE_SIZE);
+									 width, height);
 	}
 
 	virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface)
@@ -201,7 +211,7 @@ bool CompareLabels(const shared_ptr<LabelType>& first, const shared_ptr<LabelTyp
 
 
 Renderer::Renderer(const shared_ptr<Geodata>& data)
-	: 	data(data), bounds(FloatRect(0.0, 0.0, TILE_SIZE, TILE_SIZE))
+	: 	data(data), bounds(FloatRect(0.0, 0.0, TILE_SIZE*META_TILE_SIZE, TILE_SIZE*META_TILE_SIZE))
 {
 	double borderX = bounds.getWidth() * TILE_OVERLAP;
 	double borderY = bounds.getHeight() * TILE_OVERLAP;
@@ -255,14 +265,15 @@ void Renderer::printTileId(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->restore();
 }
 
-shared_ptr<Renderer::ImageWriter> Renderer::getWriter(TileIdentifier::Format format) const {
+shared_ptr<Renderer::ImageWriter> Renderer::getWriter(TileIdentifier::Format format,
+													  int width, int height) const {
 	shared_ptr<ImageWriter> writer;
 	switch (format) {
 		case TileIdentifier::Format::PNG:
-			writer = boost::dynamic_pointer_cast<ImageWriter>(boost::make_shared<PNGWriter>());
+			writer = boost::dynamic_pointer_cast<ImageWriter>(boost::make_shared<PNGWriter>(width, height));
 			break;
 		case TileIdentifier::Format::SVG:
-			writer = boost::dynamic_pointer_cast<ImageWriter>(boost::make_shared<SVGWriter>());
+			writer = boost::dynamic_pointer_cast<ImageWriter>(boost::make_shared<SVGWriter>(width, height));
 			break;
 		default:
 			// TODO add exception
@@ -593,11 +604,14 @@ void Renderer::compositeLayers(CairoLayer layers[]) const
 
 void Renderer::setupLayers(CairoLayer layers[], RenderAttributes& map,
 						   const shared_ptr<ImageWriter>& writer,
-						   const Tile::ImageType& buffer) const
+						   Tile::ImageType buffer) const
 {
 	const Style* s = map.getCanvasStyle();
 
-	layers[LAYER_FILL] = CairoLayer(writer, buffer);
+	if (buffer)
+		layers[LAYER_FILL] = CairoLayer(writer, buffer);
+	else
+		layers[LAYER_FILL] = CairoLayer(writer);
 	layers[LAYER_FILL].cr->set_source_color(s->fill_color);
 	if (s->fill_image.str().size() > 0)
 	{
@@ -664,9 +678,9 @@ void Renderer::renderArea(const FixedRect& area,
 
 void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
 {
-	shared_ptr<TileIdentifier> id = tile->getIdentifier();
+	const shared_ptr<TileIdentifier>& id = tile->getIdentifier();
 
-	shared_ptr<ImageWriter> writer = getWriter(id->getImageFormat());
+	shared_ptr<ImageWriter> writer = getWriter(id->getImageFormat(), TILE_SIZE, TILE_SIZE);
 
 	Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
 	// optimized for png images in the default stylesheet
@@ -695,4 +709,64 @@ void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
 
 	writer->write(layers[0].surface);
 	tile->setImage(buffer);
+}
+
+void Renderer::sliceTiles(Cairo::RefPtr<Cairo::Surface> surface, const shared_ptr<MetaTile>& meta) const
+{
+	const std::vector<shared_ptr<Tile>>& tiles = meta->getTiles();
+	const shared_ptr<MetaIdentifier>& mid = meta->getIdentifier();
+	const shared_ptr<Tile>& origin = meta->getOrigin();
+	int tx0 = mid->getX();
+	int ty0 = mid->getY();
+
+	surface->flush();
+	for (auto& tile : tiles) {
+		const shared_ptr<TileIdentifier>& tid = tile->getIdentifier();
+		int dx = (tid->getX() - tx0) * TILE_SIZE;
+		int dy = (tid->getY() - ty0) * TILE_SIZE;
+		shared_ptr<ImageWriter> writer = getWriter(origin->getIdentifier()->getImageFormat(),
+											   TILE_SIZE, TILE_SIZE);
+		Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
+		// optimized for png images in the default stylesheet
+		buffer->reserve(100*1024);
+		CairoLayer layer = CairoLayer(writer, buffer);
+
+		layer.cr->set_source(surface, -dx, -dy);
+		layer.cr->paint();
+
+		writer->write(layer.surface);
+		tile->setImage(buffer);
+	}
+}
+
+void Renderer::renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>& tile)
+{
+	const shared_ptr<MetaIdentifier>& id = tile->getIdentifier();
+	int width = id->getWidth() * TILE_SIZE;
+	int height = id->getHeight() * TILE_SIZE;
+	int zoom = id->getIdentifiers()[0]->getZoom();
+	TileIdentifier::Format format = id->getIdentifiers()[0]->getImageFormat();
+
+	shared_ptr<ImageWriter> writer = getWriter(format, width, height);
+
+	FixedRect area;
+	tileToMercator(id->getX(), id->getY(), zoom, area.minX, area.minY);
+	tileToMercator(id->getX() + id->getWidth(),
+				   id->getY() + id->getHeight(),
+				   zoom, area.maxX, area.maxY);
+
+#if OLD_CAIRO
+	renderLock.lock();
+#endif
+
+	CairoLayer layers[LAYER_NUM];
+	setupLayers(layers, map, writer, shared_ptr<Tile::ImageType::element_type>());
+
+	renderArea(area, layers, width, height, map);
+
+#if OLD_CAIRO
+	renderLock.unlock();
+#endif
+
+	sliceTiles(layers[0].surface, tile);
 }

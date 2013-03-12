@@ -24,11 +24,15 @@
 
 #include "settings.hpp"
 
-class TileIdentifier;
+#include "server/tile_identifier.hpp"
+
+class MetaIdentifier;
+class MetaTile;
 class Tile;
 class RequestManager;
 class Configuration;
 class Stylesheet;
+class HttpRequest;
 
 /**
  * @brief Abstract Class which computes Tiles by a given TileIdentifier.
@@ -36,24 +40,40 @@ class Stylesheet;
 class Job
 {
 public:
-	Job(const shared_ptr<Configuration>& config, const shared_ptr<RequestManager>& manager);
+	Job(const shared_ptr<MetaIdentifier>& mid,
+		const shared_ptr<Configuration>& config,
+		const shared_ptr<RequestManager>& manager);
 	virtual ~Job();
 
-	/**
-	 * @brief Processes the Job.
-	 **/
-	virtual void process() = 0;
-	
-protected:
-	TESTABLE shared_ptr<Tile> computeTile(const shared_ptr<TileIdentifier>& ti);
-	TESTABLE shared_ptr<Tile> computeTileNoneData(const shared_ptr<TileIdentifier>& ti);
-	TESTABLE shared_ptr<Stylesheet> getStylesheet(const shared_ptr<TileIdentifier>& orginalTI, shared_ptr<TileIdentifier>& newti);
-	TESTABLE FixedRect computeRect(const shared_ptr<TileIdentifier>& ti);
+	void process();
+	void deliver();
+	void addRequest(const shared_ptr<HttpRequest>& req, const shared_ptr<TileIdentifier>& id)
+	{
+		requests[*id].push_back(req);
+	}
+	const shared_ptr<MetaIdentifier>& getIdentifier()
+	{
+		return mid;
+	}
 
-protected:
+private:
+	TESTABLE void computeTiles(const FixedRect& r);
+	TESTABLE void computeEmpty();
+	TESTABLE FixedRect computeRect(const shared_ptr<TileIdentifier>& ti);
+	TESTABLE FixedRect computeRect(const shared_ptr<MetaIdentifier>& ti);
+
+private:
 	//! RequestManager which holds all important components.
 	shared_ptr<RequestManager> manager;
 	shared_ptr<Configuration> config;
+	shared_ptr<MetaIdentifier> mid;
+	boost::unordered_map<TileIdentifier, std::list<shared_ptr<HttpRequest>>> requests;
+	//! set in process
+	bool isEmpty;
+	std::vector<shared_ptr<Tile>> tiles;
+
+	//! used to generate statistics
+	shared_ptr<Statistic::JobMeasurement> measurement;
 };
 
 #endif

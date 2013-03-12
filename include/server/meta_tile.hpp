@@ -15,40 +15,30 @@
  *  along with alaCarte. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Copyright alaCarte 2012-2013 Simon Dreher, Florian Jacob, Tobias Kahlert, Patrick Niklaus, Bernhard Scheirle, Lisa Winter
- *  Maintainer: Bernhard Scheirle
- **/
+ *  Maintainer: Tobias Kahlert
+ */
 
 #pragma once
-#ifndef PRE_RENDER_JOB_HPP
-#define PRE_RENDER_JOB_HPP
+#ifndef META_TILE_HPP
+#define META_TILE_HPP
 
 #include "settings.hpp"
-#include "job.hpp"
 
+class MetaIdentifier;
 
-class RequestManager;
-class TileIdentifier;
-
-/**
- * @brief Handles computation of Tiles which should be pre rendered.
- **/
-class PreRenderJob : public Job
+class MetaTile
 {
 public:
-	PreRenderJob(const shared_ptr<Configuration>& config, const shared_ptr<TileIdentifier>& tileIdentifier, const shared_ptr<RequestManager>& manager);
-	~PreRenderJob();
+	MetaTile(const std::vector<shared_ptr<Tile> >& tiles,
+			 const shared_ptr<MetaIdentifier>& mid);
 
-	virtual void process();
-	bool prerenderingFinished();
+	TESTABLE const std::vector<shared_ptr<Tile> >& getTiles() const;
+	TESTABLE const shared_ptr<Tile>& getOrigin() const;
+	TESTABLE const shared_ptr<MetaIdentifier>& getIdentifier() const;
 
-protected:
-	//! TileIdentifier which identifies the Tile which should be computed.
-	shared_ptr<TileIdentifier> tileIdentifier;
-	bool finished;
-	//log4cpp::Category& log;
+private:
+	const std::vector<shared_ptr<Tile> >& tiles;
+	shared_ptr<MetaIdentifier> mid;
 };
-
-
-
 
 #endif

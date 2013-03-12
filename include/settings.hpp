@@ -111,6 +111,7 @@ typedef std::int32_t	coord_t;
 
 #define DEFAULT_FONT "DejaVu Sans"
 #define TILE_OVERLAP 0.25
+#define META_TILE_SIZE 4
 #define ALAC_ZOOM_BOTTOM 0
 #define ALAC_ZOOM_TOP 18
 

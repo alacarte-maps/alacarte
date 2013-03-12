@@ -21,6 +21,7 @@
 #include "includes.hpp"
 
 #include "server/tile_identifier.hpp"
+#include "server/stylesheet_manager.hpp"
 #include "utils/exceptions.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -57,10 +58,11 @@ int TileIdentifier::stringToInt(const char *p) {
  * @brief Constructs a new TileIdentifier with the given url
  *
  * @param url The url which should be parsed.
+ * @param StylesheetManager used to validate the stylsheet parameter
  * @return A new TileIdentifier
  * @throws MalformedURLException if some part of the url isn't parseable.
  **/
-shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url)
+shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, shared_ptr<StylesheetManager> stylesheetManager)
 {
 	int x, y, zoom;
 	string styleSheetpath;
@@ -124,6 +126,12 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url)
 		}
 		styleSheetpath += parts.at(i);
 	}
+	if (styleSheetpath == "")
+		styleSheetpath = "default";
+
+	if (!stylesheetManager->hasStylesheet(styleSheetpath))
+		styleSheetpath = ".fallback";
+
 	return boost::make_shared<TileIdentifier>(x, y, zoom, styleSheetpath, imageFormat);
 }
 
@@ -132,9 +140,9 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url)
  * 
  * @return shared_ptr to TileIdentifier
  **/
-shared_ptr<TileIdentifier> TileIdentifier::CreateNoneDataTID(const shared_ptr<TileIdentifier>& ti)
+shared_ptr<TileIdentifier> TileIdentifier::CreateEmptyTID(const string& stylesheetPath, TileIdentifier::Format format)
 {
-	return boost::make_shared<TileIdentifier>(-2, -2, -2, ti->getStylesheetPath(), PNG);
+	return boost::make_shared<TileIdentifier>(-2, -2, -2, stylesheetPath, format);
 }
 
 /**
@@ -231,6 +239,22 @@ bool TileIdentifier::isNoneDataIdentifier() const
 {
 	return x==-2 && y==-2 && zoom==-2;
 }
+
+/**
+ * @brief get all tiles that are below this tile on the next zoom level.
+ */
+void TileIdentifier::getSubIdentifiers(std::vector<shared_ptr<TileIdentifier>>& tiles) const
+{
+	int z = this->zoom + 1;
+	int x = this->x*2;
+	int y = this->getY()*2;
+
+	tiles.push_back(boost::make_shared<TileIdentifier>(x,   y,   z, styleSheetpath, imageFormat));
+	tiles.push_back(boost::make_shared<TileIdentifier>(x+1, y,   z, styleSheetpath, imageFormat));
+	tiles.push_back(boost::make_shared<TileIdentifier>(x,   y+1, z, styleSheetpath, imageFormat));
+	tiles.push_back(boost::make_shared<TileIdentifier>(x+1, y+1, z, styleSheetpath, imageFormat));
+}
+
 /**
  * @brief toString method for TileIdentifier (overloading << operator).
  * 
@@ -245,4 +269,34 @@ std::ostream& operator<<(std::ostream& out, const TileIdentifier& ti)
 							<< ", z=" << ti.getZoom()
 							<< ", css=" << ti.getStylesheetPath()
 							<< ", format=" << ti.getImageFormatString() << ")";
+}
+
+/**
+ * @brief Returns a hash for the TileIdentifier.
+ * 
+ * @return Hash usable for boost::unordered_map.
+ **/
+std::size_t hash_value(const TileIdentifier &ti)
+{
+	std::size_t seed = 0;
+	boost::hash_combine(seed, ti.getX());
+	boost::hash_combine(seed, ti.getY());
+	boost::hash_combine(seed, ti.getZoom());
+	boost::hash_combine(seed, ti.getImageFormat());
+	boost::hash_combine(seed, ti.getStylesheetPath());
+	return seed;
+}
+
+/**
+ * @brief Equals operator for two TileIdentifiers.
+ * 
+ * @return True if TileIdentifiers have equal values.
+ **/
+bool operator==(const TileIdentifier &a, const TileIdentifier &b)
+{
+	return a.getX() == b.getX() &&
+		a.getY() == b.getY() &&
+		a.getZoom() == b.getZoom() &&
+		a.getImageFormat() == b.getImageFormat() &&
+		a.getStylesheetPath() == b.getStylesheetPath();
 }
