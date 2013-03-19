@@ -64,10 +64,11 @@ private:
 	int width;
 	int height;
 
-	Cairo::ErrorStatus cairoWriter(const unsigned char* data,
+	static Cairo::ErrorStatus cairoWriter(void* closure, const unsigned char* data,
 								   unsigned int length)
 	{
-		buffer->insert(buffer->end(), data, data+length);
+		Tile::ImageType::element_type* b = (Tile::ImageType::element_type*) closure;
+		b->insert(b->end(), data, data+length);
 		return CAIRO_STATUS_SUCCESS;
 	}
 
@@ -93,7 +94,8 @@ public:
 	virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface)
 	{
 		surface->flush();
-		surface->write_to_png_stream(sigc::mem_fun(*this, &Renderer::PNGWriter::cairoWriter));
+		//surface->write_to_png_stream(sigc::mem_fun(*this, &Renderer::PNGWriter::cairoWriter));
+		cairo_surface_write_to_png_stream(surface->cobj(), cairoWriter, (void*) buffer.get());
 	}
 };
 
@@ -715,27 +717,29 @@ void Renderer::sliceTiles(Cairo::RefPtr<Cairo::Surface> surface, const shared_pt
 {
 	const std::vector<shared_ptr<Tile>>& tiles = meta->getTiles();
 	const shared_ptr<MetaIdentifier>& mid = meta->getIdentifier();
-	const shared_ptr<Tile>& origin = meta->getOrigin();
 	int tx0 = mid->getX();
 	int ty0 = mid->getY();
 
 	surface->flush();
+
+	shared_ptr<ImageWriter> writer = getWriter(mid->getImageFormat(), TILE_SIZE, TILE_SIZE);
+	Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
+	// optimized for png images in the default stylesheet
+	buffer->reserve(100*1024);
+	CairoLayer layer = CairoLayer(writer, buffer);
+
 	for (auto& tile : tiles) {
 		const shared_ptr<TileIdentifier>& tid = tile->getIdentifier();
 		int dx = (tid->getX() - tx0) * TILE_SIZE;
 		int dy = (tid->getY() - ty0) * TILE_SIZE;
-		shared_ptr<ImageWriter> writer = getWriter(origin->getIdentifier()->getImageFormat(),
-											   TILE_SIZE, TILE_SIZE);
-		Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
-		// optimized for png images in the default stylesheet
-		buffer->reserve(100*1024);
-		CairoLayer layer = CairoLayer(writer, buffer);
 
 		layer.cr->set_source(surface, -dx, -dy);
 		layer.cr->paint();
 
 		writer->write(layer.surface);
-		tile->setImage(buffer);
+		Tile::ImageType img = boost::make_shared<Tile::ImageType::element_type>(*buffer);
+		tile->setImage(img);
+		buffer->clear();
 	}
 }
 
