@@ -27,9 +27,6 @@
 #include <cairomm/context.h>
 
 #define DEBUG(...) (log4cpp::Category::getInstance("Renderer").info(__VA_ARGS__));
-#define TIMER_START(_X) timeval _X##_start, _X##_stop; gettimeofday(&_X##_start, NULL)
-#define TIMER_STOP(_X) gettimeofday(&_X##_stop, NULL);
-#define TIMER_MSEC(_X) (_X##_stop.tv_sec - _X##_start.tv_sec) * 1000.0 + (_X##_stop.tv_usec - _X##_start.tv_usec) / 1000.0
 
 #define RENDERER_SHIELD_DISTANCE 128.0
 #define RENDERER_SHIELD_OVERLAP 0.1
