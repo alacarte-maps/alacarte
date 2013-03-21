@@ -1,0 +1,14 @@
+Files in alaCarte are licensed under the Affero General Public License version 3,
+the text of which can be found in COPYING-AGPL, or any later version of the AGPL,
+unless otherwise noted.
+
+Licensing of used libraries:
+	* boost: Boost Software License
+	* cairo: LGPL / MPL
+	* cairomm: LGPL
+	* dirwatch: Boost Software License
+	* log4cpp: LGPL
+	* eaglexml: MIT
+	* SigC++: LGPL
+
+Attribution information for alaCarte is contained in the AUTHORS file.

@@ -1,0 +1,3 @@
+//@fail
+
+relation-area{ color: black; }

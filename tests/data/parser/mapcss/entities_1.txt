@@ -1,0 +1,8 @@
+//@success
+
+* { color: black; }
+node { color: black; }
+way { color: black; }
+relation { color: black; }
+line { color: black; }
+area { color: black; }

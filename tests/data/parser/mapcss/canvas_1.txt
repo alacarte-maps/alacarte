@@ -1,0 +1,5 @@
+//@success
+
+canvas {
+	fill-color: #000000;
+}

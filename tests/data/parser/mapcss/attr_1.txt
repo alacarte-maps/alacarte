@@ -1,0 +1,40 @@
+//@success
+
+node {
+		fill-color: #000000;
+		fill-image: "../text/hallo";
+		z-index: 34;
+		width: 1;
+		color: #000000;
+		casing-width: 3;
+		casing-color: #000000;
+		font-size: 12;
+		text-color: #000000;
+		text-position: center;
+		text: name;
+
+		text-halo-color: #000000;
+		text-halo-radius: 3;
+
+		icon: "../text/hallo";
+		icon-width: 4;
+		icon-height: 3;
+
+		shield-color: #000000;
+		shield-opacity: 12;
+		shield-frame-color: #000000;
+		shield-frame-width: 9;
+		shield-casing-color: #000000;
+		shield-casing-width: 4;
+		shield-text: text;
+		shield-image: "../text/hallo";
+		shield-shape: rounded;
+
+		linecap: none;
+		linejoin: miter;
+		casing-linecap: none;
+		casing-linejoin: miter;
+
+		dashes: 3, 4, 5;
+		casing-dashes: 3, 4,5;
+}

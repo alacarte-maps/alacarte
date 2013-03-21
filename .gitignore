@@ -1,0 +1,42 @@
+# vim swap dateien
+.*.swp
+# kate swap dateien
+.*.kate-swp
+# sicherungsdateien
+*~
+*.backup
+
+.directory
+
+# Statisitics
+doc/statistics/*.log
+doc/statistics/*.htm
+doc/statistics/images/*.png
+doc/statistics/html.pyc
+
+
+tests/data/importer/*.xml
+tests/data/rendered/
+tests/data/diff/
+tests/config.hpp
+include/config.hpp
+
+# ctags, cscope
+tags
+cscope.*
+
+# vim session
+*.vim
+
+# Implementation
+build/
+release/
+doc/doxygen/
+
+# Kdevelop
+.kdev4 #folder
+*.kdev4
+
+# Stylesheet
+*.error
+

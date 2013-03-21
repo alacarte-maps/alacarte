@@ -1,0 +1,24 @@
+Das PSE-Projekt alaCarte wurde am KIT im WS 2012/13 am
+
+Institut für Theoretische Informatik,
+Lehrstuhl für Algorithmik II, Prof. Dr. Peter Sanders
+
+mit den Betreuern Veit Batz und Dennis Luxen realisiert.
+
+alaCarte is written by:
+	* Simon Dreher
+	* Florian Jacob
+	* Tobias Kahlert,
+	* Patrick Niklaus
+	* Bernhard Scheirle
+	* Lisa Winter
+
+With help from many libraries and frameworks including:
+	* boost
+	* cairo / cairomm
+	* dirwatch
+	* log4cpp
+	* eaglexml
+	* SigC++
+
+und unendlich vielen sehr hilfreichen Threads auf auf stackoverflow.

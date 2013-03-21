@@ -1,0 +1,52 @@
+# What is alaCarte? #
+
+alaCarte is a tile renderer for OpenStreetMap data written in C++11, using Cairo for
+rendering and Boost-Spirit for [MapCSS](http://wiki.openstreetmap.org/wiki/MapCSS) parsing.
+
+The rendered tiles are served over HTTP using the [Slippy map tilename](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) convention.
+
+To compute which data is needed for rendering a tile, alaCarte uses a variant of
+a kd-Tree.
+
+alaCarte was designed with medium dataset size in mind. On a typical machine with
+at leat 8GB RAM, alaCarte can handle a unfiltered export from the federal state
+of Baden-Wuerttemberg (Germany).
+
+## Features ##
+
+* easy to use
+* most MapCSS attributes are implemented
+* no need to filter OSM exports, you have full access to all attributes at runtime
+* stylesheets are updated at runtime (changes are detected automatically)
+* tiles can be rendered in groups ("meta tile") to speed up rendering _(not in 0.2)_
+
+# How to build #
+
+	mkdir build
+	cmake .. -DCMAKE_BUILD_TYPE=Release
+	make
+
+## Dependencies ##
+* Cairo (>=1.12.0), Cairomm
+* Boost (Spriti)
+* SigC++
+* libpng
+
+## Useage ##
+
+(from build directory)
+
+	./alacarte-importer osm_export.osm data.carte
+	./alacarte-server -g data.carte -s ../data/mapcss
+
+You can download fresh OSM exports from [Geofabrik](http://download.geofabrik.de/).
+
+# To Do #
+* Real database backend
+* Better font rendering (Pango?)
+* Unicode support
+* Bette label placement (e.g. above icons)
+* Implement MapCSS-include
+* Better caching of fonts and icons
+* Option to "tune" imported data for specific stylesheets
+

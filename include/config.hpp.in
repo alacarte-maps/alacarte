@@ -1,0 +1,9 @@
+#pragma once
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
+
+#define OLD_CAIRO @OLD_CAIRO@
+#define DEBUG_BUILD @DEBUG_BUILD@
+
+
+#endif

@@ -1,0 +1,7 @@
+#pragma once
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
+
+#define TEST_DIRECTORY "@TEST_DIRECTORY@"
+
+#endif

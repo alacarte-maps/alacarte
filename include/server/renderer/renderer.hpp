@@ -1,0 +1,112 @@
+/**
+ *  This file is part of alaCarte.
+ *
+ *  alaCarte is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  alaCarte is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with alaCarte. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Copyright alaCarte 2012-2013 Simon Dreher, Florian Jacob, Tobias Kahlert, Patrick Niklaus, Bernhard Scheirle, Lisa Winter
+ *  Maintainer: Patrick Niklaus
+ */
+
+#ifndef RENDERER_HPP
+#define RENDERER_HPP
+
+#include "settings.hpp"
+
+#include <cairomm/surface.h>
+#include <cairomm/context.h>
+
+#include "server/tile_identifier.hpp"
+#include "server/tile.hpp"
+
+#define TILE_SIZE 256
+
+class RenderAttributes;
+class Geodata;
+class GeoObject;
+class Tile;
+class Node;
+class Way;
+class Style;
+class Label;
+class Shield;
+
+class Renderer
+{
+public:
+	Renderer(const shared_ptr<Geodata>& data);
+	~Renderer();
+
+	TESTABLE void renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile);
+
+
+protected:
+	void placeLabels(const std::list<shared_ptr<Label> >& labels,
+					 std::vector<shared_ptr<Label> >& placed);
+	void placeShields(const std::list<shared_ptr<Shield> >& shields,
+					 std::vector<shared_ptr<Shield> >& placed);
+
+private:
+	class PNGWriter;
+	class ImageWriter;
+	class SVGWriter;
+
+	//! stores the actual data
+	const shared_ptr<Geodata> data;
+	FloatRect bounds;
+	FloatRect neighbours[8];
+	FloatRect neighbourRequests[8];
+
+	//! Stores cairo data for each painting layer of a tile (fill, casing, stroke, ..)
+	struct CairoLayer {
+		Cairo::RefPtr<Cairo::Context> cr;
+		Cairo::RefPtr<Cairo::Surface> surface;
+	};
+
+	class ImageWriter {
+	public:
+		virtual Cairo::RefPtr<Cairo::Surface> createSurface() = 0;
+		virtual Cairo::RefPtr<Cairo::Surface> createSurface(const Tile::ImageType& buffer) = 0;
+		virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface) = 0;
+	};
+
+	//! Layers to paint onto
+	enum {
+		LAYER_FILL = 0,
+		LAYER_CASING,
+		LAYER_STROKE,
+		LAYER_ICONS,
+		LAYER_LABELS,
+		LAYER_NUM
+	};
+
+	shared_ptr<ImageWriter> getWriter(TileIdentifier::Format format) const;
+	void printTileId(const Cairo::RefPtr<Cairo::Context>& cr, const shared_ptr<TileIdentifier>& id);
+	void sortObjects(RenderAttributes& map, std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations) const;
+	bool isCutOff(const FloatRect& box, const FloatRect& owner);
+	void compositeLayers(CairoLayer layers[]) const;
+	void renderObjects(CairoLayer layers[], RenderAttributes& map,
+					   std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations,
+					   std::list<shared_ptr<Label>>& labels,
+					   std::list<shared_ptr<Shield>>& shields);
+	template <typename LabelType>
+	void renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
+					  std::vector<shared_ptr<LabelType> >& labels);
+	void renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
+					  std::vector<shared_ptr<Shield> >& shields);
+
+	//! lock calls to cairo for old versions that are not thread-safe.
+	static boost::mutex renderLock;
+};
+
+#endif
