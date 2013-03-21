@@ -63,7 +63,6 @@ public:
 	TESTABLE const string& getStylesheetPath() const;
 	TESTABLE bool isDefaultIdentifier() const;
 	TESTABLE bool isNoneDataIdentifier() const;
-	TESTABLE void getSubIdentifiers(std::vector<shared_ptr<TileIdentifier>>& tiles) const;
 
 protected:
 	//! x coordinate of the Tile.

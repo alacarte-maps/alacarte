@@ -24,21 +24,22 @@
 
 #include "settings.hpp"
 
+#include <cairomm/surface.h>
+
 class MetaIdentifier;
 
 class MetaTile
 {
 public:
-	MetaTile(const std::vector<shared_ptr<Tile> >& tiles,
-			 const shared_ptr<MetaIdentifier>& mid);
+	MetaTile(const shared_ptr<MetaIdentifier>& mid);
 
-	TESTABLE const std::vector<shared_ptr<Tile> >& getTiles() const;
-	TESTABLE const shared_ptr<Tile>& getOrigin() const;
 	TESTABLE const shared_ptr<MetaIdentifier>& getIdentifier() const;
+	TESTABLE const Cairo::RefPtr<Cairo::Surface>& getData() const;
+	TESTABLE void setData(const Cairo::RefPtr<Cairo::Surface>& surface);
 
 private:
-	const std::vector<shared_ptr<Tile> >& tiles;
 	shared_ptr<MetaIdentifier> mid;
+	Cairo::RefPtr<Cairo::Surface> surface;
 };
 
 #endif

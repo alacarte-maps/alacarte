@@ -713,10 +713,10 @@ void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
 	tile->setImage(buffer);
 }
 
-void Renderer::sliceTiles(Cairo::RefPtr<Cairo::Surface> surface, const shared_ptr<MetaTile>& meta) const
+void Renderer::sliceTile(const shared_ptr<MetaTile>& meta, const shared_ptr<Tile>& tile) const
 {
-	const std::vector<shared_ptr<Tile>>& tiles = meta->getTiles();
 	const shared_ptr<MetaIdentifier>& mid = meta->getIdentifier();
+	const Cairo::RefPtr<Cairo::Surface>& surface = meta->getData();
 	int tx0 = mid->getX();
 	int ty0 = mid->getY();
 
@@ -725,22 +725,18 @@ void Renderer::sliceTiles(Cairo::RefPtr<Cairo::Surface> surface, const shared_pt
 	shared_ptr<ImageWriter> writer = getWriter(mid->getImageFormat(), TILE_SIZE, TILE_SIZE);
 	Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
 	// optimized for png images in the default stylesheet
-	buffer->reserve(100*1024);
+	buffer->reserve(10*1024);
 	CairoLayer layer = CairoLayer(writer, buffer);
 
-	for (auto& tile : tiles) {
-		const shared_ptr<TileIdentifier>& tid = tile->getIdentifier();
-		int dx = (tid->getX() - tx0) * TILE_SIZE;
-		int dy = (tid->getY() - ty0) * TILE_SIZE;
+	const shared_ptr<TileIdentifier>& tid = tile->getIdentifier();
+	int dx = (tid->getX() - tx0) * TILE_SIZE;
+	int dy = (tid->getY() - ty0) * TILE_SIZE;
 
-		layer.cr->set_source(surface, -dx, -dy);
-		layer.cr->paint();
+	layer.cr->set_source(surface, -dx, -dy);
+	layer.cr->paint();
 
-		writer->write(layer.surface);
-		Tile::ImageType img = boost::make_shared<Tile::ImageType::element_type>(*buffer);
-		tile->setImage(img);
-		buffer->clear();
-	}
+	writer->write(layer.surface);
+	tile->setImage(buffer);
 }
 
 void Renderer::renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>& tile)
@@ -772,5 +768,5 @@ void Renderer::renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>&
 	renderLock.unlock();
 #endif
 
-	sliceTiles(layers[0].surface, tile);
+	tile->setData(layers[0].surface);
 }

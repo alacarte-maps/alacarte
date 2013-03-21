@@ -22,6 +22,7 @@
 
 #include "server/stylesheet_manager.hpp"
 #include "server/tile_identifier.hpp"
+#include "server/meta_identifier.hpp"
 #include "server/stylesheet.hpp"
 #include "server/cache.hpp"
 #include "server/request_manager.hpp"
@@ -147,7 +148,7 @@ void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 	parsedStylesheetsLock.unlock();
 
 	// prerenders the upmost tile as well as all higher zoomlevels that are specified in the configuration
-	manager->enqueue(boost::make_shared<TileIdentifier>(0, 0, 0, stylesheet_path.string(), TileIdentifier::PNG));
+	manager->enqueue(boost::make_shared<MetaIdentifier>(TileIdentifier(0, 0, 0, stylesheet_path.string(), TileIdentifier::PNG)));
 }
 
 void StylesheetManager::onRemovedStylesheet(const fs::path& stylesheet_path)

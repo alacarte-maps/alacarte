@@ -43,8 +43,8 @@ MetaIdentifier::MetaIdentifier(const TileIdentifier& origin)
 	int y0 = origin.getY() / META_TILE_SIZE * META_TILE_SIZE;
 	int x1 = x0 + META_TILE_SIZE;
 	int y1 = y0 + META_TILE_SIZE;
-	x1 = std::min(x1, (2 << origin.getZoom()) - 1);
-	y1 = std::min(y1, (2 << origin.getZoom()) - 1);
+	x1 = std::min(x1, (1 << origin.getZoom()));
+	y1 = std::min(y1, (1 << origin.getZoom()));
 	this->width  = x1 - x0;
 	this->height = y1 - y0;
 	this->x = x0;
@@ -84,4 +84,24 @@ bool MetaIdentifier::contains(const shared_ptr<TileIdentifier> tid) const
 	     && y <= ty && ty < y+height
 		 && tid->getZoom() == zoom
 		 && tid->getStylesheetPath() == styleSheetpath);
+}
+
+/**
+ * @brief get all tiles that are below this tile on the next zoom level.
+ *        Used by RequestManager to enqueue meta tile for pre-rendering.
+ */
+void MetaIdentifier::getSubIdentifiers(std::vector<shared_ptr<MetaIdentifier>>& tiles) const
+{
+	int z = this->zoom + 1;
+	int x = this->x*2;
+	int y = this->y*2;
+	int n = META_TILE_SIZE;
+
+	tiles.push_back(boost::make_shared<MetaIdentifier>(TileIdentifier(x,   y,   z, styleSheetpath, imageFormat)));
+	if (x+n < (1 << z))
+		tiles.push_back(boost::make_shared<MetaIdentifier>(TileIdentifier(x+n, y,   z, styleSheetpath, imageFormat)));
+	if (y+n < (1 << z))
+		tiles.push_back(boost::make_shared<MetaIdentifier>(TileIdentifier(x,   y+n, z, styleSheetpath, imageFormat)));
+	if (x+n < (1 << z) && y+n < (1 << z))
+		tiles.push_back(boost::make_shared<MetaIdentifier>(TileIdentifier(x+n, y+n, z, styleSheetpath, imageFormat)));
 }

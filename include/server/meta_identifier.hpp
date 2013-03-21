@@ -39,6 +39,7 @@ public:
 	bool contains(const shared_ptr<TileIdentifier> tid) const;
 
 	TESTABLE const std::vector<shared_ptr<TileIdentifier>>& getIdentifiers() const;
+	TESTABLE void getSubIdentifiers(std::vector<shared_ptr<MetaIdentifier>>& tiles) const;
 
 private:
 	//! with of the meta tile in tiles

@@ -26,30 +26,10 @@
 
 /**
  * @brief Constructs a new MetaTile that is several tiles big.
- *
- * @param mid The MetaIdentifier at the center of the meta-tile
- **/
-MetaTile::MetaTile(const std::vector<shared_ptr<Tile> >& tiles,
-				   const shared_ptr<MetaIdentifier>& mid)
-	: tiles(tiles)
-	, mid(mid)
-{
-}
-
-/**
- * @return tiles in rows. tile at (x,y) is at index = y*width + x
  */
-const std::vector<shared_ptr<Tile> >& MetaTile::getTiles() const
+MetaTile::MetaTile(const shared_ptr<MetaIdentifier>& mid)
+	: mid(mid)
 {
-	return tiles;
-}
-
-/**
- * @return origin of the meta tile
- */
-const shared_ptr<Tile>& MetaTile::getOrigin() const
-{
-	return tiles[0];
 }
 
 /**
@@ -58,4 +38,20 @@ const shared_ptr<Tile>& MetaTile::getOrigin() const
 const shared_ptr<MetaIdentifier>& MetaTile::getIdentifier() const
 {
 	return mid;
+}
+
+/**
+ * @return surface that contains rendered tiles
+ */
+const Cairo::RefPtr<Cairo::Surface>& MetaTile::getData() const
+{
+	return surface;
+}
+
+/**
+ * @brief set cairo surface that contains the rendered tiles
+ */
+void MetaTile::setData(const Cairo::RefPtr<Cairo::Surface>& data)
+{
+	this->surface = data;
 }

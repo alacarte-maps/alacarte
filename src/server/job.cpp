@@ -56,6 +56,7 @@ Job::Job(const shared_ptr<MetaIdentifier>& mid,
 	: manager(manager)
 	, config(config)
 	, mid(mid)
+	, meta(boost::make_shared<MetaTile>(mid))
 	, measurement(Statistic::instance().startNewMeasurement(mid->getZoom()))
 {
 }
@@ -114,7 +115,7 @@ FixedRect Job::computeRect(const shared_ptr<MetaIdentifier>& ti)
  * @brief Computes an empty Tile.
  *
  **/
-void Job::computeEmpty()
+shared_ptr<Tile> Job::computeEmpty()
 {
 	const string& path = mid->getStylesheetPath();
 	const TileIdentifier::Format format = mid->getImageFormat();
@@ -133,92 +134,98 @@ void Job::computeEmpty()
 		manager->getRenderer()->renderTile(renderAttributes, tile);
 	}
 
-	tiles.push_back(tile);
+	return tile;
+}
+
+/**
+ * @brief Inits the internal list of tiles that are part of the MetaTile.
+ * @return true if all contained tiles are in cache
+ */
+bool Job::initTiles()
+{
+	bool rendered = true;
+	for (auto& id : mid->getIdentifiers())
+	{
+		shared_ptr<Tile> tile = manager->getCache()->getTile(id);
+		rendered = rendered && tile->isRendered();
+		tiles.push_back(tile);
+	}
+
+	return rendered;
 }
 
 /**
  * @brief Computes a all tiles contained in the MetaIdentifier.
  *
  **/
-void Job::computeTiles(const FixedRect& rect)
+void Job::process()
 {
-	STAT_START(Statistic::Cache);
-		bool complete = true;
-		for (auto& id : mid->getIdentifiers()) {
-			shared_ptr<Tile> tile = manager->getCache()->getTile(id);
-			tiles.push_back(tile);
-			complete = complete && tile->isRendered();
-		}
-		shared_ptr<MetaTile> meta = boost::make_shared<MetaTile>(tiles, mid);
-	STAT_STOP(Statistic::Cache);
+	shared_ptr<Geodata> geodata = manager->getGeodata();
 
-	if(!complete) {
-		shared_ptr<Geodata> geodata = manager->getGeodata();
+	FixedRect rect = computeRect(mid);
+	STAT_START(Statistic::GeoContainsData);
+		empty = !geodata->containsData(rect);
+	STAT_STOP(Statistic::GeoContainsData);
 
-		STAT_START(Statistic::GeoNodes);
-			auto nodeIDs = geodata->getNodeIDs(rect);
-		STAT_STOP(Statistic::GeoNodes);
-
-		STAT_START(Statistic::GeoWays);
-			auto wayIDs = geodata->getWayIDs(rect);
-		STAT_STOP(Statistic::GeoWays);
-
-		STAT_START(Statistic::GeoRelation);
-			auto relationIDs = geodata->getRelationIDs(rect);
-		STAT_STOP(Statistic::GeoRelation);
-
-		STAT_STATS(nodeIDs->size(), wayIDs->size(), relationIDs->size());
-
-		shared_ptr<Stylesheet> stylesheet = manager->getStylesheetManager()->getStylesheet(mid->getStylesheetPath());
-		RenderAttributes renderAttributes;
-		STAT_START(Statistic::StylesheetMatch);
-			stylesheet->match(nodeIDs, wayIDs, relationIDs, mid, &renderAttributes);
-		STAT_STOP(Statistic::StylesheetMatch);
-
-		STAT_START(Statistic::Renderer);
-			manager->getRenderer()->renderMetaTile(renderAttributes, meta);
-		STAT_STOP(Statistic::Renderer);
+	if(empty) {
+		STAT_WRITE();
+		return;
 	}
+
+	bool inCache = initTiles();
+	if (inCache) {
+		STAT_WRITE();
+		return;
+	}
+
+	STAT_START(Statistic::GeoNodes);
+		auto nodeIDs = geodata->getNodeIDs(rect);
+	STAT_STOP(Statistic::GeoNodes);
+
+	STAT_START(Statistic::GeoWays);
+		auto wayIDs = geodata->getWayIDs(rect);
+	STAT_STOP(Statistic::GeoWays);
+
+	STAT_START(Statistic::GeoRelation);
+		auto relationIDs = geodata->getRelationIDs(rect);
+	STAT_STOP(Statistic::GeoRelation);
+
+	STAT_STATS(nodeIDs->size(), wayIDs->size(), relationIDs->size());
+
+	shared_ptr<Stylesheet> stylesheet = manager->getStylesheetManager()->getStylesheet(mid->getStylesheetPath());
+	RenderAttributes renderAttributes;
+	STAT_START(Statistic::StylesheetMatch);
+		stylesheet->match(nodeIDs, wayIDs, relationIDs, mid, &renderAttributes);
+	STAT_STOP(Statistic::StylesheetMatch);
+
+	const shared_ptr<Renderer>& renderer = manager->getRenderer();
+	STAT_START(Statistic::Renderer);
+		renderer->renderMetaTile(renderAttributes, meta);
+	STAT_STOP(Statistic::Renderer);
+
 	STAT_WRITE();
 }
 
-/**
- * @brief Processes the job.
- *
- **/
-void Job::process()
-{
-	FixedRect rect = computeRect(mid);
-
-	shared_ptr<Geodata> geodata = manager->getGeodata();
-	STAT_START(Statistic::GeoContainsData);
-		isEmpty = !geodata->containsData(rect);
-	STAT_STOP(Statistic::GeoContainsData);
-
-	if (isEmpty) {
-		STAT_WRITE();
-		computeEmpty();
-	} else
-		computeTiles(rect);
-}
-
 /*
- * @brief answers the requets for the computed tiles.
+ * @brief answers the requets for the computed tiles. Called by RequestManager
  */
 void Job::deliver()
 {
-	// deliver the same tile to all if empty
-	if (isEmpty)
+	if (empty)
 	{
-		for (auto& pair : requests)
-			for (auto& req : pair.second)
-				req->answer(tiles[0]);
-	}
-	else
-	{
+		shared_ptr<Tile> tile = computeEmpty();
+		for (auto& id : mid->getIdentifiers())
+		{
+			for (auto& req : requests[*id])
+				req->answer(tile);
+		}
+	} else {
+		const shared_ptr<Renderer>& renderer = manager->getRenderer();
 		for (auto& tile : tiles) {
-			const shared_ptr<TileIdentifier> tid = tile->getIdentifier();
-			for (auto& req : requests[*tid])
+			if (!tile->isRendered())
+				renderer->sliceTile(meta, tile);
+
+			for (auto& req : requests[*tile->getIdentifier()])
 				req->answer(tile);
 		}
 	}

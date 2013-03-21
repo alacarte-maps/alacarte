@@ -240,20 +240,6 @@ bool TileIdentifier::isNoneDataIdentifier() const
 	return x==-2 && y==-2 && zoom==-2;
 }
 
-/**
- * @brief get all tiles that are below this tile on the next zoom level.
- */
-void TileIdentifier::getSubIdentifiers(std::vector<shared_ptr<TileIdentifier>>& tiles) const
-{
-	int z = this->zoom + 1;
-	int x = this->x*2;
-	int y = this->getY()*2;
-
-	tiles.push_back(boost::make_shared<TileIdentifier>(x,   y,   z, styleSheetpath, imageFormat));
-	tiles.push_back(boost::make_shared<TileIdentifier>(x+1, y,   z, styleSheetpath, imageFormat));
-	tiles.push_back(boost::make_shared<TileIdentifier>(x,   y+1, z, styleSheetpath, imageFormat));
-	tiles.push_back(boost::make_shared<TileIdentifier>(x+1, y+1, z, styleSheetpath, imageFormat));
-}
 
 /**
  * @brief toString method for TileIdentifier (overloading << operator).

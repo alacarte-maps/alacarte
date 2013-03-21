@@ -51,7 +51,7 @@ public:
 
 	TESTABLE void renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile);
 	TESTABLE void renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>& tile);
-
+	TESTABLE void sliceTile(const shared_ptr<MetaTile>& meta, const shared_ptr<Tile>& tile) const;
 
 protected:
 	void placeLabels(const std::list<shared_ptr<Label> >& labels,
@@ -96,7 +96,6 @@ private:
 	void sortObjects(RenderAttributes& map, std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations) const;
 	bool isCutOff(const FloatRect& box, const FloatRect& owner);
 	void compositeLayers(CairoLayer layers[]) const;
-	void sliceTiles(Cairo::RefPtr<Cairo::Surface> surface, const shared_ptr<MetaTile>& meta) const;
 	void setupLayers(CairoLayer layers[], RenderAttributes& map,
 					 const shared_ptr<ImageWriter>& writer,
 					 Tile::ImageType buffer) const;

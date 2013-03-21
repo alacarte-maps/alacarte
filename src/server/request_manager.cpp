@@ -36,41 +36,31 @@ private:
 	std::list<Job*> jobs;
 
 public:
+	bool start(Job* job, const shared_ptr<MetaIdentifier>& mid)
+	{
+		boost::mutex::scoped_lock lock(runningMutex);
+		for (auto j : jobs) {
+			if (j->getIdentifier() == mid)
+				return false;
+		}
+
+		jobs.push_back(job);
+		return true;
+	}
+
 	//! @return true if the job needs to be executed
 	bool start(Job* job, const shared_ptr<TileIdentifier>& ti, const shared_ptr<HttpRequest>& r)
 	{
 		boost::mutex::scoped_lock lock(runningMutex);
 		for (auto j : jobs) {
 			if (j->getIdentifier()->contains(ti)) {
-				if (r) {
-				/*
-					DEBUG("Adding Request %s/%i/%i/%i to job %s/%i/%i/%i",
-						ti->getStylesheetPath().c_str(),
-						ti->getZoom(),
-						ti->getX(),
-						ti->getY(),
-						j->getIdentifier()->getStylesheetPath().c_str(),
-						j->getIdentifier()->getZoom(),
-						j->getIdentifier()->getX(),
-						j->getIdentifier()->getY());
-				*/
-					j->addRequest(r, ti);
-				}
+				j->addRequest(r, ti);
 				return false;
 			}
 		}
 
-		/*
-		DEBUG("New job: %s/%i/%i/%i",
-			job->getIdentifier()->getStylesheetPath().c_str(),
-			job->getIdentifier()->getZoom(),
-			job->getIdentifier()->getX(),
-			job->getIdentifier()->getY());
-		*/
-
 		jobs.push_back(job);
-		if (r)
-			job->addRequest(r, ti);
+		job->addRequest(r, ti);
 		return true;
 	}
 
@@ -120,7 +110,6 @@ RequestManager::RequestManager( const shared_ptr<Configuration>& config,
  *
  **/
 RequestManager::~RequestManager() {
-	delete running;
 	stop();
 	log.debugStream() << "RequestManager destructed";
 }
@@ -161,9 +150,9 @@ void RequestManager::enqueue(const shared_ptr<HttpRequest>& r)
 /**
  * @brief Enqueues the TileIdentifier.
  *
- * @param ti The TileIdentifier which identifies the Tile which should be renderer.
+ * @param ti The MetaIdentifier which identifies the Tile which should be renderer.
  **/
-void RequestManager::enqueue(const shared_ptr<TileIdentifier>& ti)
+void RequestManager::enqueue(const shared_ptr<MetaIdentifier>& ti)
 {
 	preRJMutex.lock();
 	preRenderRequests.push(ti);
@@ -180,29 +169,6 @@ void RequestManager::processNextRequest()
 	if (!nextUserRequest())
 		if (!nextPreRenderRequest())
 			log << log4cpp::Priority::ERROR << "Trying to run a job, but there is none.";
-}
-
-/**
- * @brief creates and runs the job to process a request.
- * @param req might be empty when called for Prerendering
- * @return true if the given tile was not already computed.
- */
-bool RequestManager::runJob(const shared_ptr<TileIdentifier>& ti, const shared_ptr<HttpRequest>& req)
-{
-	shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(ti);
-	Job job(mid, config, shared_from_this());
-
-	// check if tiles are already in progress
-	if (!running->start(&job, ti, req))
-		return false;
-
-	job.process();
-
-	running->finished(&job);
-
-	job.deliver();
-
-	return true;
 }
 
 /**
@@ -239,7 +205,23 @@ bool RequestManager::nextUserRequest()
 		req->answer(HttpRequest::Reply::not_implemented);
 	}
 
-	runJob(ti, req);
+	// identifier could not be parsed
+	if (!ti)
+		return true;
+
+	shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(ti);
+	Job job(mid, config, shared_from_this());
+
+	// check if tiles are already in progress
+	if (running->start(&job, ti, req))
+	{
+		job.process();
+
+		running->finished(&job);
+
+		job.deliver();
+	}
+
 	return true;
 }
 
@@ -249,12 +231,29 @@ bool RequestManager::nextPreRenderRequest()
 	if (preRenderRequests.empty())
 		return false;
 
-	shared_ptr<TileIdentifier> ti = preRenderRequests.front();
+	shared_ptr<MetaIdentifier> mid = preRenderRequests.front();
 	preRenderRequests.pop();
 	currentPrerenderingThreads++;
 	preLock.unlock();
 
-	runJob(ti, shared_ptr<HttpRequest>());
+	Job job(mid, config, shared_from_this());
+
+	// check if tiles are already in progress
+	if (running->start(&job, mid))
+	{
+		job.process();
+
+		running->finished(&job);
+
+		job.deliver();
+	}
+
+	if (!job.isEmpty() && mid->getZoom() < config->get<int>(opt::server::prerender_level)) {
+		std::vector<shared_ptr<MetaIdentifier>> children;
+		mid->getSubIdentifiers(children);
+		for (auto& c : children)
+			enqueue(c);
+	}
 
 	preLock.lock();
 	currentPrerenderingThreads--;
@@ -263,15 +262,6 @@ bool RequestManager::nextPreRenderRequest()
 	if (currentPrerenderingThreads == 0 && preRenderRequests.size() == 0)
 		log.infoStream() << "Prerendering finished.";
 
-/*
- *  FIXME PreRendering broken because too many TI are enqueued
-	if (ti->getZoom() < config->get<int>(opt::server::prerender_level)) {
-		std::vector<shared_ptr<TileIdentifier>> children;
-		ti->getSubIdentifiers(children);
-		for (auto& c : children)
-			enqueue(c);
-	}
-*/
 	return true;
 }
 

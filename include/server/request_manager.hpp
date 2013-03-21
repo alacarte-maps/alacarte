@@ -46,7 +46,7 @@ public:
 	void stop();
 
 	TESTABLE void enqueue(const shared_ptr<HttpRequest>& r);
-	TESTABLE void enqueue(const shared_ptr<TileIdentifier>& ti);
+	TESTABLE void enqueue(const shared_ptr<MetaIdentifier>& ti);
 	TESTABLE shared_ptr<Geodata> getGeodata() const;
 	TESTABLE shared_ptr<StylesheetManager> getStylesheetManager() const;
 	TESTABLE shared_ptr<Cache> getCache() const;
@@ -54,7 +54,6 @@ public:
 
 private:
 	void processNextRequest();
-	bool runJob(const shared_ptr<TileIdentifier>& ti, const shared_ptr<HttpRequest>& req);
 	bool nextUserRequest();
 	bool nextPreRenderRequest();
 	
@@ -72,11 +71,11 @@ private:
 	boost::mutex userRJMutex;
 	boost::mutex preRJMutex;
 	std::queue< shared_ptr<HttpRequest> > userRequests;
-	std::queue< shared_ptr<TileIdentifier> > preRenderRequests;
+	std::queue< shared_ptr<MetaIdentifier> > preRenderRequests;
 
 	//! thread-safe queue of running jobs
 	class RunningQueue;
-	RunningQueue* running;
+	scoped_ptr<RunningQueue> running;
 
 	unsigned int currentPrerenderingThreads;
 

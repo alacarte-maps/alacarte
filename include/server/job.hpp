@@ -51,26 +51,25 @@ public:
 	{
 		requests[*id].push_back(req);
 	}
-	const shared_ptr<MetaIdentifier>& getIdentifier()
-	{
-		return mid;
-	}
+	bool isEmpty() { return empty; }
+	const shared_ptr<MetaIdentifier>& getIdentifier() { return mid; }
 
 private:
-	TESTABLE void computeTiles(const FixedRect& r);
-	TESTABLE void computeEmpty();
+	TESTABLE shared_ptr<Tile> computeEmpty();
 	TESTABLE FixedRect computeRect(const shared_ptr<TileIdentifier>& ti);
 	TESTABLE FixedRect computeRect(const shared_ptr<MetaIdentifier>& ti);
+	bool initTiles();
 
 private:
 	//! RequestManager which holds all important components.
 	shared_ptr<RequestManager> manager;
 	shared_ptr<Configuration> config;
 	shared_ptr<MetaIdentifier> mid;
-	boost::unordered_map<TileIdentifier, std::list<shared_ptr<HttpRequest>>> requests;
-	//! set in process
-	bool isEmpty;
+	bool empty;
+	//! initialized by initTiles
 	std::vector<shared_ptr<Tile>> tiles;
+	shared_ptr<MetaTile> meta;
+	boost::unordered_map<TileIdentifier, std::list<shared_ptr<HttpRequest>>> requests;
 
 	//! used to generate statistics
 	shared_ptr<Statistic::JobMeasurement> measurement;
