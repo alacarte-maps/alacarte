@@ -35,16 +35,30 @@
 #include <cairomm/context.h>
 
 class Geodata;
+class Label;
+class Shield;
 
 class ObjectRenderer
 {
 protected:
 	const shared_ptr<Geodata>& data;
+	const Cairo::Matrix& transform;
 	const Style* s;
+	//! is set by addWayPath for ways or in transformLocation for nodes
+	FloatRect bounds;
+
 	void paintLine(const Cairo::RefPtr<Cairo::Context>& cr,  const std::vector<NodeId>& nodeIDs, bool reverse=false, bool connect=false) const;
+	void addShield(std::list<shared_ptr<Shield> >& shields,
+				   const FloatPoint& p,
+				   const Cairo::TextExtents& textSize) const;
+	void addLabel(std::list<shared_ptr<Label> >& labels,
+				   const FloatPoint& p,
+				   const Cairo::TextExtents& textSize) const;
 
 public:
-	ObjectRenderer(const shared_ptr<Geodata>& data, const Style* s);
+	ObjectRenderer(const shared_ptr<Geodata>& data,
+				   const Style* s,
+				   const Cairo::Matrix& transform);
 
 };
 

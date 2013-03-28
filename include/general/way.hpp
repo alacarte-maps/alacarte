@@ -33,19 +33,37 @@ class Way : public GeoObject
 private:
     friend class boost::serialization::access;
 public:
-	Way(const std::vector<NodeId>& nodeIDs, const DataMap<CachedString, CachedString>& tags);
+	enum WayType {
+		UNCONNECTED     = 0,
+		CONNECTED_START = 1,
+		CONNECTED_END   = 2,
+		CONNECTED_BOTH  = 3,
+		CLOSED          = 4
+	};
 
-	TESTABLE const std::vector<NodeId>& getNodeIDs() const;
+	Way(const std::vector<NodeId>& nodeIDs, const DataMap<CachedString, CachedString>& tags)
+	: GeoObject(tags)
+	, nodeIDs(nodeIDs)
+	, type(WayType::UNCONNECTED)
+	{ }
+
+	inline WayType getType() const { return type; }
+	inline void    setType(WayType type) { this->type = type; }
+	inline const std::vector<NodeId>& getNodeIDs() const { return nodeIDs; }
+	inline bool isClosed() const { return type & WayType::CLOSED; }
+
 private:
 	template<typename Archive>
 	void serialize(Archive &ar, const unsigned int version){
 		GeoObject::serialize(ar, version);
 		ar & nodeIDs;
+		ar & type;
 	}
+	Way(){}
 
-	Way();
 private:
 	std::vector<NodeId> nodeIDs;
+	WayType type;
 };
 
 #endif

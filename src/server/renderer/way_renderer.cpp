@@ -36,23 +36,21 @@
  * @brief Adds the path of the given way to current path, if path is not set it creates it form the data
  * @param cr the cairo contetx to add the path to
  *
- * @return true if the path is closed
  */
-bool WayRenderer::addWayPath(const Cairo::RefPtr<Cairo::Context>& cr, WayId wid)
+void WayRenderer::addWayPath(const Cairo::RefPtr<Cairo::Context>& cr)
 {
 	cr->begin_new_path();
-	if (path != NULL) {
+	if (path != NULL)
 		cr->append_path(*path);
-		// FIXME this needs to be remove but doesn't cause problems yet
-		return false;
-	}
 
-	Way* way = data->getWay(wid);
 	const std::vector<NodeId>& children = way->getNodeIDs();
 	paintLine(cr, children);
 
 	path = cr->copy_path();
-	return (children.front() == children.back());
+
+	double x0, y0, x1, y1;
+	cr->get_path_extents(x0, y0, x1, y1);
+	bounds = FloatRect(x0, y0, x1, y1);
 }
 
 //! Find the best fitting segment on a cairo path and return angle.
@@ -141,10 +139,13 @@ void WayRenderer::getShieldPosition(Cairo::Path* transformedPath, std::list<Floa
 	}
 }
 
-WayRenderer::WayRenderer(const shared_ptr<Geodata>& data, WayId wid, const Style* s)
-	: ObjectRenderer(data, s),
-	  path(NULL),
-	  wid(wid)
+WayRenderer::WayRenderer(const shared_ptr<Geodata>& data,
+						 WayId wid,
+						 const Style* s,
+						 const Cairo::Matrix& transform)
+	: ObjectRenderer(data, s, transform)
+	, path(NULL)
+	, way(data->getWay(wid))
 {
 }
 
@@ -156,20 +157,15 @@ WayRenderer::~WayRenderer()
 
 void WayRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-	bool closed = addWayPath(cr, wid);
-
-	// TODO replace with real attribute
-	if (!closed) {
-		cr->begin_new_path();
+	if (!way->isClosed())
 		return;
-	}
+
+	addWayPath(cr);
 
 	cr->save();
 
-	cr->set_source_rgba(s->fill_color.r,
-						s->fill_color.g,
-						s->fill_color.b,
-						s->fill_color.a);
+	cr->set_source_color(s->fill_color);
+
 	cr->fill();
 
 	cr->restore();
@@ -177,44 +173,24 @@ void WayRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 
 void WayRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-	// nothing to render
 	if (s->casing_width <= 0.0)
 		return;
 
-	addWayPath(cr, wid);
+	addWayPath(cr);
 
 	cr->save();
-	cr->set_identity_matrix();
 
-	cr->set_source_rgba(s->casing_color.r,
-						s->casing_color.g,
-						s->casing_color.b,
-						s->casing_color.a);
+	setLineCap(cr,  s->casing_linecap);
+	setLineJoin(cr, s->casing_linejoin);
+	cr->set_source_color(   s->casing_color);
+
 	if (s->casing_dashes.size() > 0)
 		cr->set_dash(s->casing_dashes, 0.0);
-	switch(s->casing_linecap) {
-		case Style::CAP_NONE:
-			cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-			break;
-		case Style::CAP_ROUND:
-			cr->set_line_cap(Cairo::LINE_CAP_ROUND);
-			break;
-		case Style::CAP_SQUARE:
-			cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
-			break;
-	}
-	switch(s->casing_linejoin) {
-		case Style::JOIN_MITER:
-			cr->set_line_join(Cairo::LINE_JOIN_MITER);
-			break;
-		case Style::JOIN_BEVEL:
-			cr->set_line_join(Cairo::LINE_JOIN_BEVEL);
-			break;
-		case Style::JOIN_ROUND:
-			cr->set_line_join(Cairo::LINE_JOIN_ROUND);
-			break;
-	}
 	cr->set_line_width(s->casing_width*2 + s->width);
+
+	// override cap (e.g. needed when for bridges on high osm layer)
+	if (way->getType() == Way::WayType::CONNECTED_BOTH)
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
 
 	cr->stroke();
 
@@ -223,46 +199,25 @@ void WayRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 
 void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 {
-	// nothing to stroke
 	if (s->width <= 0.0)
 		return;
 
-	addWayPath(cr, wid);
+	addWayPath(cr);
 
 	cr->save();
-	cr->set_identity_matrix();
 
-	cr->set_source_rgba(s->color.r,
-						s->color.g,
-						s->color.b,
-						s->color.a);
+	setLineCap(cr,  s->linecap);
+	setLineJoin(cr, s->linejoin);
+	cr->set_source_color(   s->color);
+
 	if (s->dashes.size() > 0)
 		cr->set_dash(s->dashes, 0.0);
-	switch(s->linecap) {
-		case Style::CAP_NONE:
-			cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-			break;
-		case Style::CAP_ROUND:
-			cr->set_line_cap(Cairo::LINE_CAP_ROUND);
-			break;
-		case Style::CAP_SQUARE:
-			cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
-			break;
-	}
-	switch(s->linejoin) {
-		case Style::JOIN_MITER:
-			cr->set_line_join(Cairo::LINE_JOIN_MITER);
-			break;
-		case Style::JOIN_BEVEL:
-			cr->set_line_join(Cairo::LINE_JOIN_BEVEL);
-			break;
-		case Style::JOIN_ROUND:
-			cr->set_line_join(Cairo::LINE_JOIN_ROUND);
-			break;
-	}
 	cr->set_line_width(s->width);
 
-	// reset transformation matrix for stroking
+	// override cap (e.g. needed when for bridges on higher osm layer)
+	if (way->getType() == Way::WayType::CONNECTED_BOTH)
+		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+
 	cr->stroke();
 
 	cr->restore();
@@ -271,15 +226,14 @@ void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 		std::list<shared_ptr<Label> >& labels)
 {
-	// nothing to print
 	if (s->text.str().size() == 0 || s->font_size <= 0.0)
 		return;
 
-	addWayPath(cr, wid);
+	// make sure path is initialized
+	addWayPath(cr);
+	cr->begin_new_path();
 
 	cr->save();
-
-	cr->set_identity_matrix();
 
 	cr->set_font_size(s->font_size);
 
@@ -288,28 +242,14 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 
 	if (s->text_position == Style::POSITION_CENTER)
 	{
-		double x0, y0, x1, y1;
-		cr->get_path_extents(x0, y0, x1, y1);
-		cr->begin_new_path();
-
 		// request a centered label
-		double x = (x0 + x1)/2.0 - textSize.width/2.0;
-		double y = (y0 + y1)/2.0 - textSize.height/2.0;
-		double border = s->text_halo_radius;
-		FloatPoint origin  = FloatPoint(x - textSize.x_bearing, y - textSize.y_bearing);
-		FloatRect box      = FloatRect(FloatPoint(x, y), textSize.width, textSize.height).grow(border, border);
-		FloatRect ownerBox = FloatRect(x0, y0, x1, y1);
-		labels.push_back(boost::make_shared<Label>(box, ownerBox, s->text, s, origin));
+		addLabel(labels, bounds.getCenter(), textSize);
 	}
 	else if (s->text_position == Style::POSITION_LINE)
 	{
-		Cairo::Path* transformedPath = cr->copy_path_flat();
-		cr->begin_new_path();
-
 		FloatPoint best;
 		double angle = 0;
-		bool placed = getTextPosition(transformedPath, textSize.width, best, angle);
-		delete transformedPath;
+		bool placed = getTextPosition(path, textSize.width, best, angle);
 
 		if (placed) {
 			cr->translate(best.x, best.y);
@@ -322,17 +262,11 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 			if (s->text_halo_radius > 0.0)
 			{
 				cr->set_line_join(Cairo::LINE_JOIN_ROUND);
-				cr->set_source_rgba(s->text_halo_color.r,
-									s->text_halo_color.g,
-									s->text_halo_color.b,
-									s->text_halo_color.a);
 				cr->set_line_width(s->text_halo_radius*2.0);
+				cr->set_source_color(s->text_halo_color);
 				cr->stroke_preserve();
 			}
-			cr->set_source_rgba(s->text_color.r,
-								s->text_color.g,
-								s->text_color.b,
-								s->text_color.a);
+			cr->set_source_color(s->text_color);
 			cr->fill();
 		}
 	}
@@ -343,46 +277,26 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 void WayRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 		std::list<shared_ptr<Shield> >& shields)
 {
-	// nothing to print
 	if (s->shield_text.str().size() == 0 || s->font_size <= 0.0)
 		return;
 
-	addWayPath(cr, wid);
+	// make sure path is initialized
+	addWayPath(cr);
+	cr->begin_new_path();
 
 	cr->save();
-
-	cr->set_identity_matrix();
 
 	cr->set_font_size(s->font_size);
 
 	Cairo::TextExtents textSize;
 	cr->get_text_extents(s->shield_text.str(), textSize);
 
-	double x0, y0, x1, y1;
-	cr->get_path_extents(x0, y0, x1, y1);
-
-	Cairo::Path* transformedPath = cr->copy_path_flat();
-	cr->begin_new_path();
-
 	std::list<FloatPoint> positions;
-	getShieldPosition(transformedPath, positions);
-	delete transformedPath;
+	getShieldPosition(path, positions);
 
-	FloatRect ownerBox = FloatRect(x0, y0, x1, y1);
-	double border = ceil(s->shield_frame_width + s->shield_casing_width + 3.0);
-	double x, y;
 	for (FloatPoint& p : positions)
 	{
-		x = floor(p.x - textSize.width / 2.0);
-		y = floor(p.y - textSize.height / 2.0);
-		FloatPoint origin  = FloatPoint(x - textSize.x_bearing, y - textSize.y_bearing);
-		FloatRect shield   = FloatRect(FloatPoint(x - border, y - border),
-									   ceil(textSize.width + 2*border),
-									   ceil(textSize.height + 2*border));
-		FloatRect box = FloatRect(FloatPoint(p.x - RENDERER_SHIELD_DISTANCE / 2.0,
-											 p.y - RENDERER_SHIELD_DISTANCE / 2.0),
-								  RENDERER_SHIELD_DISTANCE, RENDERER_SHIELD_DISTANCE);
-		shields.push_back(boost::make_shared<Shield>(box, ownerBox, s->shield_text, s, origin, shield));
+		addShield(shields, p, textSize);
 	}
 
 	cr->restore();
