@@ -40,9 +40,18 @@
 #include "server/renderer/renderer_private.hpp"
 #include "node_renderer.hpp"
 
-NodeRenderer::NodeRenderer(const shared_ptr<Geodata>& data, NodeId nid, const Style* s)
-	: ObjectRenderer(data, s), location(data->getNode(nid)->getLocation())
+NodeRenderer::NodeRenderer(const shared_ptr<Geodata>& data,
+						  NodeId nid,
+						  const Style* s,
+						  const Cairo::Matrix& transform)
+	: ObjectRenderer(data, s, transform)
+	, node(data->getNode(nid))
 {
+	const FixedPoint& coord = node->getLocation();
+	location.x = coord.x;
+	location.y = coord.y;
+	transform.transform_point(location.x, location.y);
+	bounds = FloatRect(location.x, location.y, location.x, location.y);
 }
 
 void NodeRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
@@ -51,18 +60,11 @@ void NodeRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 	if (s->casing_width <= 0.0)
 		return;
 
-	cr->move_to(location.x, location.y);
-
 	cr->save();
-	cr->set_identity_matrix();
 
-	double x, y;
-	cr->get_current_point(x, y);
-	cr->arc(x, y, s->width/2.0 + s->casing_width, 0, 2*M_PI);
-	cr->set_source_rgba(s->casing_color.r,
-						s->casing_color.g,
-						s->casing_color.b,
-						s->casing_color.a);
+	cr->arc(location.x, location.y, s->width/2.0 + s->casing_width, 0, 2*M_PI);
+
+	cr->set_source_color(s->casing_color);
 
 	cr->fill();
 	cr->restore();
@@ -74,19 +76,12 @@ void NodeRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 	if (s->width <= 0.0)
 		return;
 
-	cr->move_to(location.x, location.y);
-
 	cr->save();
-	cr->set_identity_matrix();
 
-	double x, y;
-	cr->get_current_point(x, y);
-	cr->arc(x, y, s->width/2.0, 0, 2*M_PI);
+	cr->arc(location.x, location.y, s->width/2.0, 0, 2*M_PI);
 
-	cr->set_source_rgba(s->color.r,
-						s->color.g,
-						s->color.b,
-						s->color.a);
+	cr->set_source_color(s->color);
+
 	cr->fill();
 	cr->restore();
 }
@@ -98,24 +93,14 @@ void NodeRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 	if (s->text.str().size() == 0 || s->font_size <= 0)
 		return;
 
-	double x0 = location.x;
-	double y0 = location.y;
-	cr->user_to_device(x0, y0);
-
 	cr->save();
-	cr->set_identity_matrix();
 
 	cr->set_font_size(s->font_size);
 
 	Cairo::TextExtents textSize;
 	cr->get_text_extents(s->text.str(), textSize);
 
-	double x = x0 - textSize.width/2.0;
-	double y = y0 - textSize.height/2.0;
-	double border = s->text_halo_radius;
-	FloatPoint origin = FloatPoint(x - textSize.x_bearing, y - textSize.y_bearing);
-	FloatRect box     = FloatRect(FloatPoint(x, y), textSize.width, textSize.height).grow(border, border);
-	labels.push_back(boost::make_shared<Label>(box, FloatPoint(x0, y0), s->text, s, origin));
+	addLabel(labels, location, textSize);
 
 	cr->restore();
 }
@@ -127,29 +112,14 @@ void NodeRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 	if (s->shield_text.str().size() == 0 || s->font_size <= 0)
 		return;
 
-	double x0 = location.x;
-	double y0 = location.y;
-	cr->user_to_device(x0, y0);
-
 	cr->save();
-	cr->set_identity_matrix();
 
 	cr->set_font_size(s->font_size);
 
 	Cairo::TextExtents textSize;
 	cr->get_text_extents(s->shield_text.str(), textSize);
 
-	double x = x0 - textSize.width/2.0;
-	double y = y0 - textSize.height/2.0;
-	double border = s->shield_frame_width/2.0 + s->shield_casing_width + 2.0;
-	FloatPoint origin = FloatPoint(x - textSize.x_bearing, y - textSize.y_bearing);
-	FloatRect shield  = FloatRect(FloatPoint(x - border, y - border),
-								   textSize.width  + 2*border,
-								   textSize.height + 2*border);
-	FloatRect box = FloatRect(FloatPoint(x0 - RENDERER_SHIELD_DISTANCE / 2.0,
-										 y0 - RENDERER_SHIELD_DISTANCE / 2.0),
-							  RENDERER_SHIELD_DISTANCE, RENDERER_SHIELD_DISTANCE);
-	shields.push_back(boost::make_shared<Shield>(box, FloatPoint(x0, y0), s->shield_text, s, origin, shield));
+	addShield(shields, location, textSize);
 
 	cr->restore();
 }
@@ -160,18 +130,13 @@ void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, IconCache& cach
 	if (s->icon.str().size() == 0 || s->icon_width == 0.0 || s->icon_height == 0.0)
 		return;
 
-	double x = location.x;
-	double y = location.y;
-	cr->user_to_device(x, y);
-
 	cr->save();
-	cr->set_identity_matrix();
 
 	Cairo::RefPtr<Cairo::ImageSurface> image = cache.getIcon(s->icon.str());
 	double width = s->icon_width < 0 ? image->get_width() : s->icon_width;
 	double height = s->icon_height < 0 ? image->get_height() : s->icon_height;
-	double x0 = floor(x - width/2.0);
-	double y0 = floor(y - height/2.0);
+	double x0 = floor(location.x - width/2.0);
+	double y0 = floor(location.y - height/2.0);
 	cr->translate(x0, y0);
 	cr->scale(width / image->get_width(),
 			  height / image->get_height());

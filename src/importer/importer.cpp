@@ -136,6 +136,10 @@ public:
 		{
 			BOOST_THROW_EXCEPTION(excp::InputFormatException() << excp::InfoFileName(xml_file.string()) << excp::InfoWhat(e.what()));
 		}
+
+		log.infoStream() << "Precompute attributes...";
+
+		precomputeAttributes();
 	}
 
 	/**
@@ -200,6 +204,44 @@ private:
 			}catch(excp::BadOsmIdException& e) {
 				log.warnStream() << "Bad osm id[" << *boost::get_error_info<excp::InfoUnresolvableId>(e)  << "]. Entity is skipped!";
 			}
+		}
+	}
+
+	/**
+	 * @brief adds additional information to the objects that should not be computed at runtime.
+	 *
+	 */
+	void precomputeAttributes()
+	{
+		boost::unordered_map<NodeId, unsigned int> references;
+
+		unsigned int count;
+		for (auto& way : *ways)
+		{
+			auto& nodes = way.getNodeIDs();
+			count = references[nodes.front()];
+			references[nodes.front()] = count+1;
+			count = references[nodes.back()];
+			references[nodes.back()] = count+1;
+
+			if (nodes.front() == nodes.back())
+				way.setType(Way::WayType::CLOSED);
+		}
+
+		for (auto& way : *ways)
+		{
+			auto& nodes = way.getNodeIDs();
+
+			Way::WayType type = way.getType();
+
+			count = references[nodes.front()];
+			if (count > 1)
+				type = (Way::WayType) (type | Way::WayType::CONNECTED_START);
+			count = references[nodes.back()];
+			if (count > 1)
+				type = (Way::WayType) (type | Way::WayType::CONNECTED_END);
+
+			way.setType(type);
 		}
 	}
 	
