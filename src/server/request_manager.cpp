@@ -103,6 +103,9 @@ RequestManager::RequestManager( const shared_ptr<Configuration>& config,
 			)
 		);
 	}
+
+	// start prerender timing
+	gettimeofday(&prerender_start, NULL);
 }
 
 /**
@@ -259,8 +262,10 @@ bool RequestManager::nextPreRenderRequest()
 	currentPrerenderingThreads--;
 	preLock.unlock();
 
-	if (currentPrerenderingThreads == 0 && preRenderRequests.size() == 0)
-		log.infoStream() << "Prerendering finished.";
+	if (currentPrerenderingThreads == 0 && preRenderRequests.size() == 0) {
+		TIMER_STOP(prerender);
+		log.info("Prerendering finished in %02i:%02i", (int) TIMER_MIN(prerender), ((int) TIMER_SEC(prerender)) % 60);
+	}
 
 	return true;
 }

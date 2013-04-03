@@ -80,6 +80,8 @@ private:
 	unsigned int currentPrerenderingThreads;
 
 	log4cpp::Category& log;
+
+	timeval prerender_start, prerender_stop;
 };
 
 
