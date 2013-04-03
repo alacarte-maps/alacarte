@@ -25,6 +25,7 @@
 #include "settings.hpp"
 
 #include "server/tile_identifier.hpp"
+#include "utils/statistic.hpp"
 
 class MetaIdentifier;
 class MetaTile;

@@ -39,10 +39,10 @@
 #include "utils/statistic.hpp"
 
 #define DEBUG(...) (log4cpp::Category::getInstance("Job").info(__VA_ARGS__));
-#define STAT_START(_X) Statistic::instance().start(measurement, _X)
-#define STAT_STOP(_X) Statistic::instance().stop(measurement, _X)
-#define STAT_STATS(_X, _Y, _Z) Statistic::instance().setStats(measurement, _X, _Y, _Z)
-#define STAT_WRITE() Statistic::instance().writeToFile(measurement, mid->getStylesheetPath(), config)
+#define STAT_START(_X) 			Statistic::Get()->start(measurement, _X)
+#define STAT_STOP(_X) 			Statistic::Get()->stop(measurement, _X)
+#define STAT_STATS(_X, _Y, _Z) 	Statistic::Get()->setStats(measurement, _X, _Y, _Z)
+#define STAT_WRITE() 			Statistic::Get()->finished(measurement)
 
 /**
  * @brief Creates a new Job and sets the RequestManager.
@@ -57,7 +57,7 @@ Job::Job(const shared_ptr<MetaIdentifier>& mid,
 	, config(config)
 	, mid(mid)
 	, meta(boost::make_shared<MetaTile>(mid))
-	, measurement(Statistic::instance().startNewMeasurement(mid->getZoom()))
+	, measurement(Statistic::Get()->startNewMeasurement(mid->getStylesheetPath(), mid->getZoom()))
 {
 }
 

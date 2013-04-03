@@ -23,12 +23,15 @@
 #include "utils/statistic.hpp"
 #include <general/configuration.hpp>
 
+shared_ptr<Statistic> Statistic::instance;
+
 Statistic::duration Statistic::JobMeasurement::getDuration(int i)
 {
 	return stopTime[i] - startTime[i];
 }
 
-Statistic::Statistic()
+Statistic::Statistic(const shared_ptr<Configuration>& config)
+	: config(config)
 {
 #ifndef Statistic_Less_Memory
 	log4cpp::Category &log = log4cpp::Category::getInstance("Statistic");
@@ -36,10 +39,15 @@ Statistic::Statistic()
 #endif
 }
 
-shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(int zoom)
+Statistic::~Statistic()
+{
+	writeToFile(config->get<string>(opt::server::performance_log).c_str());
+}
+
+shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const string& stylesheet, int zoom)
 {
 #ifdef Statistic_Activated
-	shared_ptr<Statistic::JobMeasurement> jm = boost::make_shared<JobMeasurement>(zoom);
+	shared_ptr<Statistic::JobMeasurement> jm = boost::make_shared<JobMeasurement>(stylesheet, zoom);
 	jm->jobStartTime = boost::posix_time::microsec_clock::universal_time();
 	#ifndef Statistic_Less_Memory
 		lock.lock();
@@ -50,7 +58,10 @@ shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(int zoom)
 #endif
 	return boost::make_shared<JobMeasurement>();
 }
-void Statistic::setStats(shared_ptr<Statistic::JobMeasurement>& job, unsigned int nodes, unsigned int ways, unsigned int relations)
+void Statistic::setStats(shared_ptr<Statistic::JobMeasurement>& job,
+						 unsigned int nodes,
+						 unsigned int ways,
+						 unsigned int relations)
 {
 #ifdef Statistic_Activated
 	job->nodes = nodes;
@@ -115,21 +126,38 @@ void Statistic::printStatistic() const
 #endif
 }
 
-void Statistic::writeToFile(shared_ptr<Statistic::JobMeasurement>& job, const string& stylesheet, const shared_ptr<Configuration>& config) const
+void Statistic::finished(shared_ptr<Statistic::JobMeasurement>& job)
+{
+	if (!config->has(opt::server::performance_log))
+		return;
+
+	boost::mutex::scoped_lock scoped(bufferLock);
+
+	measurementsBuffer.push_back(job);
+	if(measurementsBuffer.size() > 100)
+	{
+		writeToFile(config->get<string>(opt::server::performance_log).c_str());
+		measurementsBuffer.clear();
+	}
+}
+
+void Statistic::writeToFile(const char* filename)
 {
 #ifdef Statistic_Activated
-	if (!config->has(opt::server::performance_log)) return;
-	std::stringstream ss;
-	ss << "JobStart " << job->jobStartTime.time_of_day().total_microseconds() << " ";
-	for(int i = 0; i < Component::Size; i++) {
-		if(job->stopped[i])
-			ss << componentToName((Component)i) << " " << job->getDuration(i).total_microseconds() << " ";
-	}
-	ss << "Stylesheet " << stylesheet << " Zoom " << job->zoom << " Nodes " << job->nodes << " Ways " << job->ways << " Relations " << job->relations << "\n";
 	std::ofstream file;
-	//file.open("../doc/statistics/performance.log", std::fstream::app);
-	file.open(config->get<string>(opt::server::performance_log).c_str(), std::fstream::app);	
-	file << ss.str();
+	file.open(filename, std::fstream::app);
+
+	for (auto& job : measurementsBuffer) {
+		std::stringstream ss;
+		ss << "JobStart " << job->jobStartTime.time_of_day().total_microseconds() << " ";
+		for(int i = 0; i < Component::Size; i++) {
+			if(job->stopped[i])
+				ss << componentToName((Component)i) << " " << job->getDuration(i).total_microseconds() << " ";
+		}
+		ss << "Stylesheet " << job->stylesheet << " Zoom " << job->zoom << " Nodes " << job->nodes << " Ways " << job->ways << " Relations " << job->relations << "\n";
+		file << ss.str();
+	}
+
 	file.close();
 #endif
 }

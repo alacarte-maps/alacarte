@@ -103,7 +103,6 @@ typedef std::int32_t	coord_t;
 #include "utils/exceptions.hpp"
 #include "utils/color.hpp"
 #include "utils/rect.hpp"
-#include "utils/statistic.hpp"
 #include "utils/typedId.hpp"
 #include "utils/cached_string.hpp"
 
