@@ -1,5 +1,7 @@
 # What is alaCarte? #
 
+![screenshot of Karlsruhe](http://github.com/TheMarex/alacarte/raw/master/screenshot.png "Karlsruhe")
+
 alaCarte is a tile renderer for OpenStreetMap data written in C++11, using Cairo for
 rendering and Boost-Spirit for [MapCSS](http://wiki.openstreetmap.org/wiki/MapCSS) parsing.
 
@@ -39,7 +41,20 @@ of Baden-Wuerttemberg (Germany).
 	./alacarte-importer osm_export.osm data.carte
 	./alacarte-server -g data.carte -s ../data/mapcss
 
+You can use the test Leaftlet-Page located in *tests/html/Leaflet/index.html*
+to view the rendered tiles.
+
 You can download fresh OSM exports from [Geofabrik](http://download.geofabrik.de/).
+
+## Install ##
+
+(as root)
+
+	make install
+
+The config-file is located in */etc/alacarte.conf*. You should make sure the user
+running alacarte has permissions to write to the specified directories for caching
+and logging.
 
 # To Do #
 * Real database backend
