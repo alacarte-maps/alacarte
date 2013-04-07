@@ -48,7 +48,6 @@ using boost::program_options::options_description;
 using boost::make_shared;
 
 
-
 /**
  * @brief Represents the Server-Application                                                                     
  *
@@ -69,7 +68,7 @@ public:
 
 		cmd_desc.add_options()
 			(OPT(opt::help, "h"),																			"produce help message")
-			(OPT(opt::config, "c"),	value<string>()->default_value("alacarte.ini")/*->value_name("path")*/,	"specifies a config file which will be loaded at program start")
+			(OPT(opt::config, "c"),	value<string>()->default_value(DEFAULT_CONFIG_PATH)/*->value_name("path")*/,	"specifies a config file which will be loaded at program start")
 			;
 
 		// in cmd and config
@@ -107,10 +106,7 @@ protected:
 		if (config->has(opt::config)) {
 			boost::filesystem::path config_path = config->get<string>(opt::config);
 			if (!boost::filesystem::exists(config_path)) {
-				if (config_path != "alacarte.ini") {
-					log.errorStream() << opt::config << " = \"" << config_path.string() << "\"  not found.";
-					return false;
-				}
+				log.errorStream() << opt::config << " = \"" << config_path.string() << "\"  not found.";
 			}
 		}
 		

@@ -53,7 +53,7 @@ public:
 		// only in cmd
 		cmd_desc.add_options()
 			(OPT(opt::help, "h"),																			"produce help message")
-			(OPT(opt::config, "c"),	value<string>()->default_value("alacarte.ini")/*->value_name("path")*/,		"specifies a config file which will be loaded at program start")
+			(OPT(opt::config, "c"),	value<string>()->default_value(DEFAULT_CONFIG_PATH)/*->value_name("path")*/,		"specifies a config file which will be loaded at program start")
 			;
 
 		// in cmd and config
