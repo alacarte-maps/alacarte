@@ -174,5 +174,6 @@ string Statistic::componentToName(Component component) const
 		case StylesheetMatch: 	return "StylesheetMatch";
 		case Renderer: 			return "Renderer";
 		case GeoContainsData: 	return "GeoContainsData";
+		case Slicing: 			return "Slicing";
 	}
 }
