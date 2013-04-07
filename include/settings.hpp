@@ -104,6 +104,8 @@ typedef std::int32_t	coord_t;
 #include "utils/typedId.hpp"
 #include "utils/cached_string.hpp"
 
+#define DEFAULT_CONFIG_PATH "/etc/alacarte.conf"
+
 #define DEFAULT_FONT "DejaVu Sans"
 #define TILE_OVERLAP 0.25
 #define ALAC_ZOOM_BOTTOM 0

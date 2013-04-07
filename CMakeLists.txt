@@ -59,15 +59,15 @@ file(GLOB_RECURSE UnitTests_shared_sources 		tests/shared/*.cpp)
 
 add_executable(alacarte-server 		src/alacarte_server.cpp 	${server_sources}	${alacarte_sources})
 add_executable(alacarte-importer 	src/alacarte_importer.cpp 	${importer_sources} ${alacarte_sources})
-add_executable(unitTests_utils 		${UnitTests_utils_sources} ${alacarte_sources} ${UnitTests_shared_sources})
-add_executable(unitTests_parser		${UnitTests_parser_sources} ${alacarte_sources} ${server_sources} ${UnitTests_shared_sources})
-add_executable(unitTests_general 	${UnitTests_general_sources} ${alacarte_sources} ${UnitTests_shared_sources})
-add_executable(unitTests_importer 	${UnitTests_importer_sources} ${UnitTests_shared_sources} ${importer_source} ${alacarte_sources})
-add_executable(unitTests_server 	${UnitTests_server_sources} ${UnitTests_shared_sources} ${server_sources} ${alacarte_sources})
+add_executable(unitTests_utils 		EXCLUDE_FROM_ALL ${UnitTests_utils_sources} ${alacarte_sources} ${UnitTests_shared_sources})
+add_executable(unitTests_parser		EXCLUDE_FROM_ALL ${UnitTests_parser_sources} ${alacarte_sources} ${server_sources} ${UnitTests_shared_sources})
+add_executable(unitTests_general 	EXCLUDE_FROM_ALL ${UnitTests_general_sources} ${alacarte_sources} ${UnitTests_shared_sources})
+add_executable(unitTests_importer 	EXCLUDE_FROM_ALL ${UnitTests_importer_sources} ${UnitTests_shared_sources} ${importer_source} ${alacarte_sources})
+add_executable(unitTests_server 	EXCLUDE_FROM_ALL ${UnitTests_server_sources} ${UnitTests_shared_sources} ${server_sources} ${alacarte_sources})
 IF(GMOCK_FOUND)
-	add_executable(unitTests_mapcss 	${UnitTests_mapcss_sources} ${UnitTests_shared_sources} ${server_sources} ${alacarte_sources})
+	add_executable(unitTests_mapcss 	EXCLUDE_FROM_ALL ${UnitTests_mapcss_sources} ${UnitTests_shared_sources} ${server_sources} ${alacarte_sources})
 ENDIF(GMOCK_FOUND)
-add_executable(unitTests_eval	 	${UnitTests_eval_sources} ${UnitTests_shared_sources} ${server_sources} ${alacarte_sources})
+add_executable(unitTests_eval	 	EXCLUDE_FROM_ALL ${UnitTests_eval_sources} ${UnitTests_shared_sources} ${server_sources} ${alacarte_sources})
 
 set_target_properties(unitTests_eval PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
 set_target_properties(unitTests_general PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
@@ -108,6 +108,7 @@ message(STATUS "Debug: ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "Profile: ${CMAKE_CXX_FLAGS_PROFILE}")
 message(STATUS "Release: ${CMAKE_CXX_FLAGS_RELEASE}")
 
+configure_file("data/config/alacarte.conf.in" "${CMAKE_SOURCE_DIR}/data/config/alacarte.conf")
 configure_file("tests/config.hpp.in" "${CMAKE_SOURCE_DIR}/tests/config.hpp")
 configure_file("include/config.hpp.in" "${CMAKE_SOURCE_DIR}/include/config.hpp")
 
@@ -138,6 +139,11 @@ target_link_libraries(unitTests_eval 		${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} $
 
 install(TARGETS alacarte-server RUNTIME DESTINATION bin)
 install(TARGETS alacarte-importer RUNTIME DESTINATION bin)
+install(FILES data/config/alacarte.conf DESTINATION /etc)
+install(FILES data/default.png DESTINATION share/alacarte/default.png)
+install(DIRECTORY data/mapcss/ DESTINATION share/alacarte/styles)
+install(DIRECTORY data/img DESTINATION share/alacarte)
+install(DIRECTORY data/icons DESTINATION share/alacarte)
 
 # add a target to generate API documentation with Doxygen
 find_package(Doxygen)

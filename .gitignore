@@ -20,6 +20,7 @@ tests/data/rendered/
 tests/data/diff/
 tests/config.hpp
 include/config.hpp
+data/config/alacarte.conf
 
 # ctags, cscope
 tags
