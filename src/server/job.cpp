@@ -202,8 +202,6 @@ void Job::process()
 	STAT_START(Statistic::Renderer);
 		renderer->renderMetaTile(renderAttributes, meta);
 	STAT_STOP(Statistic::Renderer);
-
-	STAT_WRITE();
 }
 
 /*
@@ -221,6 +219,7 @@ void Job::deliver()
 		}
 	} else {
 		const shared_ptr<Renderer>& renderer = manager->getRenderer();
+		STAT_START(Statistic::Slicing);
 		for (auto& tile : tiles) {
 			if (!tile->isRendered())
 				renderer->sliceTile(meta, tile);
@@ -228,6 +227,9 @@ void Job::deliver()
 			for (auto& req : requests[*tile->getIdentifier()])
 				req->answer(tile);
 		}
+		STAT_STOP(Statistic::Slicing);
 	}
+
+	STAT_WRITE();
 }
 

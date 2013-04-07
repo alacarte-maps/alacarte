@@ -39,7 +39,15 @@ public:
 	enum Component{
 		//Change the order of the following Components will change the output order (file and log),
 		//you have to update /alacarte/doc/statistics/stat2html.py
-		Cache = 0, ComputeRect, GeoNodes, GeoWays, GeoRelation, StylesheetMatch, Renderer, GeoContainsData, 
+		Cache = 0,
+		ComputeRect,
+		GeoNodes,
+		GeoWays,
+		GeoRelation,
+		StylesheetMatch,
+		Renderer,
+		GeoContainsData,
+		Slicing,
 		Size //amount of Components
 	};
 	
