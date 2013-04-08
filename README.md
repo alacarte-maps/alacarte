@@ -14,7 +14,7 @@ alaCarte was designed with medium dataset size in mind. On a typical machine wit
 at leat 8GB RAM, alaCarte can handle a unfiltered export from the federal state
 of Baden-Wuerttemberg (Germany).
 
-alaCarte was developed as part of a software project at [KIT](http://www.kit.edu).
+alaCarte was developed as part of a software project at [KIT](http://algo2.iti.kit.edu).
 For the old project files (mostely in German) see the [old project repository](https://bitbucket.org/TheMarex/alacarte).
 
 ## Features ##
