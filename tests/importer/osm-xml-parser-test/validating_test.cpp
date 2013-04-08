@@ -106,7 +106,7 @@ void PrintTags(std::ofstream& xml, const DataMap<CachedString, CachedString>& ma
 struct ValidatingFixture
 {
 	ValidatingFixture(int seed, const string& tempFile)
-		: path(getTestDirectory() / "importer" / tempFile)
+		: path(getOutputDirectory() / "importer" / tempFile)
 	{
 		srand(seed);
 

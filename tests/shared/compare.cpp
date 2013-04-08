@@ -20,9 +20,33 @@ path getTestDirectory()
 	return dir;
 }
 
+path getDataDirectory()
+{
+	path dir = getTestDirectory() / "data";
+	if(!boost::filesystem::exists(dir))
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
+	return dir;
+}
+
+path getOutputDirectory()
+{
+	path dir = getDataDirectory() / "output";
+	if(!boost::filesystem::exists(dir))
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
+	return dir;
+}
+
+path getInputDirectory()
+{
+	path dir = getDataDirectory() / "input";
+	if(!boost::filesystem::exists(dir))
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
+	return dir;
+}
+
 path getRenderedDirectory()
 {
-	path dir = getTestDirectory() / "rendered";
+	path dir = getOutputDirectory() / "rendered";
 	if(!boost::filesystem::exists(dir))
 		boost::filesystem::create_directory(dir);
 	return dir;
@@ -30,7 +54,7 @@ path getRenderedDirectory()
 
 path getDiffDirectory()
 {
-	path dir = getTestDirectory() / "diff";
+	path dir = getOutputDirectory() / "diff";
 	if(!boost::filesystem::exists(dir))
 		boost::filesystem::create_directory(dir);
 	return dir;
@@ -38,7 +62,7 @@ path getDiffDirectory()
 
 path getValidDirectory()
 {
-	path dir = getTestDirectory() / "valid";
+	path dir = getInputDirectory() / "valid";
 	BOOST_CHECK(boost::filesystem::exists(dir));
 	return dir;
 }

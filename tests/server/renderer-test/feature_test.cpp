@@ -45,7 +45,7 @@ struct feature_test
 	 */
 	feature_test(const char* input)
 	{
-		path testData = getTestDirectory() / input;
+		path testData = getInputDirectory() / input;
 		BOOST_TEST_MESSAGE("Loading data: " << testData.string());
 		BOOST_CHECK(boost::filesystem::exists(testData));
 
@@ -465,9 +465,9 @@ struct icon_test : feature_test {
 		Style nodeStyleDefault = Style();
 		nodeStyleDefault.color = Color(1.0f, 0.0f, 0.0f, 1.0f);
 		nodeStyleDefault.width = 2.0;
-		nodeStyleDefault.icon = (getTestDirectory() / "input/food_bar.png").string();
-		nodeStyleDefault.icon_width = 16.0;
-		nodeStyleDefault.icon_height = 16.0;
+		nodeStyleDefault.icon = (getInputDirectory() / "icons/fast-food-24.png").string();
+		nodeStyleDefault.icon_width = 24.0;
+		nodeStyleDefault.icon_height = 24.0;
 
 		// height and width set
 		nodeStyle = nodeStyleDefault;
@@ -493,14 +493,14 @@ struct icon_test : feature_test {
 		// different size
 		nodeStyle = nodeStyleDefault;
 		nodeStyle.icon_width = 32.0;
-		nodeStyle.icon_height = 16.0;
+		nodeStyle.icon_height = 24.0;
 		styles[CachedString("point_20")] = nodeStyle;
 		// different icons
 		nodeStyle = nodeStyleDefault;
-		nodeStyleDefault.icon = (getTestDirectory() / "input/biergarten.png").string();
+		nodeStyleDefault.icon = (getInputDirectory() / "icons/beer-24.png").string();
 		styles[CachedString("point_21")] = nodeStyle;
 		nodeStyle = nodeStyleDefault;
-		nodeStyleDefault.icon = (getTestDirectory() / "input/aerodrome.png").string();
+		nodeStyleDefault.icon = (getInputDirectory() / "icons/airport-24.png").string();
 		styles[CachedString("point_22")] = nodeStyle;
 	}
 };
@@ -566,37 +566,37 @@ struct shield_test : feature_test {
 	}
 };
 
-ALAC_START_FIXTURE_TEST(fill_test, "input/renderer_test.carte")
+ALAC_START_FIXTURE_TEST(fill_test, "renderer_test.carte")
 	ALAC_FIXTURE_TEST_NAMED(checkTile, fill, "fill", boost::make_shared<TileIdentifier>(4287, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
-ALAC_START_FIXTURE_TEST(line_test, "input/renderer_test.carte")
+ALAC_START_FIXTURE_TEST(line_test, "renderer_test.carte")
 	ALAC_FIXTURE_TEST_NAMED(checkTile, line, "line", boost::make_shared<TileIdentifier>(4286, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
-ALAC_START_FIXTURE_TEST(linecaps_test, "input/renderer_test.carte")
+ALAC_START_FIXTURE_TEST(linecaps_test, "renderer_test.carte")
 	ALAC_FIXTURE_TEST_NAMED(checkTile, linecaps, "linecaps", boost::make_shared<TileIdentifier>(4286, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
-ALAC_START_FIXTURE_TEST(linejoins_test, "input/renderer_test.carte")
+ALAC_START_FIXTURE_TEST(linejoins_test, "renderer_test.carte")
 	ALAC_FIXTURE_TEST_NAMED(checkTile, linejoins, "linejoins", boost::make_shared<TileIdentifier>(4286, 2811, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
-ALAC_START_FIXTURE_TEST(dashes_test, "input/renderer_test.carte")
+ALAC_START_FIXTURE_TEST(dashes_test, "renderer_test.carte")
 	ALAC_FIXTURE_TEST_NAMED(checkTile, dashes, "dashes", boost::make_shared<TileIdentifier>(4286, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
-ALAC_START_FIXTURE_TEST(icon_test, "input/renderer_test.carte")
+ALAC_START_FIXTURE_TEST(icon_test, "renderer_test.carte")
 	ALAC_FIXTURE_TEST_NAMED(checkTile, icon_size, "icon_size", boost::make_shared<TileIdentifier>(4288, 2811, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
-ALAC_START_FIXTURE_TEST(shield_test, "input/renderer_test.carte")
+ALAC_START_FIXTURE_TEST(shield_test, "renderer_test.carte")
 	ALAC_FIXTURE_TEST_NAMED(checkTile, shield_node_1, "shield_node_1", boost::make_shared<TileIdentifier>(4288, 2810, 13, "none", TileIdentifier::PNG));
 	ALAC_FIXTURE_TEST_NAMED(checkTile, shield_node_2, "shield_node_2", boost::make_shared<TileIdentifier>(4288, 2809, 13, "none", TileIdentifier::PNG));
 	ALAC_FIXTURE_TEST_NAMED(checkTile, shield_way, "shield_way", boost::make_shared<TileIdentifier>(4288, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
-ALAC_START_FIXTURE_TEST(text_test, "input/renderer_test.carte")
+ALAC_START_FIXTURE_TEST(text_test, "renderer_test.carte")
 	ALAC_FIXTURE_TEST_NAMED(checkTile, text_node, "text_node", boost::make_shared<TileIdentifier>(4288, 2811, 13, "none", TileIdentifier::PNG));
 	ALAC_FIXTURE_TEST_NAMED(checkTile, text_way, "text_way", boost::make_shared<TileIdentifier>(4287, 2811, 13, "none", TileIdentifier::PNG));
 	ALAC_FIXTURE_TEST_NAMED(checkTile, text_find, "text_find", boost::make_shared<TileIdentifier>(4288, 2812, 13, "none", TileIdentifier::PNG));

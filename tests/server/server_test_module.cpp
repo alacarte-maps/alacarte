@@ -1,5 +1,7 @@
 ﻿// Simply define the module
 #define BOOST_TEST_MODULE server test
+
+
 #include <boost/test/unit_test.hpp>
 
 #include <log4cpp/Appender.hh>

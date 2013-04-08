@@ -7,6 +7,9 @@
 using boost::filesystem::path;
 
 path getTestDirectory();
+path getDataDirectory();
+path getInputDirectory();
+path getOutputDirectory();
 path getRenderedDirectory();
 path getDiffDirectory();
 path getValidDirectory();

@@ -4,7 +4,8 @@
 #include "../shared/compare.hpp"
 #include "../shared/test_config.hpp"
 
-#include <server/request_manager.hpp>
+#include "server/request_manager.hpp"
+#include "server/meta_identifier.hpp"
 #include "server/http_request.hpp"
 #include "server/tile_identifier.hpp"
 #include "server/cache.hpp"
@@ -52,7 +53,9 @@ struct test_requestManage
 		DefaultConfig = TestConfig::Create()
 		->add<int>(opt::server::max_queue_size, 1)
 		->add<int>(opt::server::prerender_level, 0)
-		->add<string>(opt::server::path_to_geodata, 	(getTestDirectory() / "/input/karlsruhe_big.carte").string());
+		->add<string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").string());
+
+		Statistic::Init(DefaultConfig);
 		
 		shared_ptr<Geodata> geodata = boost::make_shared<Geodata>();
 		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<string>(opt::server::path_to_geodata)));
@@ -93,13 +96,23 @@ struct test_requestManage
 		int x = 68595;
 		int y = 45006;
 		int z = 17;
-		req_manager->enqueue(boost::make_shared<TileIdentifier>(x,y,z,"default", 	TileIdentifier::PNG));
+		shared_ptr<TileIdentifier> ti = boost::make_shared<TileIdentifier>(x,y,z,"default", 	TileIdentifier::PNG);
+		shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(ti);
+
+		req_manager->enqueue(mid);
 		//wait for prerendering
 		boost::this_thread::sleep(boost::posix_time::milliseconds(5000));
-		
+
 		//now ask for a prerenderd Tile
-		auto tile = cache->getTile(boost::make_shared<TileIdentifier>(x*2,y*2,z+1,"default", 	TileIdentifier::PNG));
-		BOOST_CHECK(tile->isRendered());
+		std::vector<shared_ptr<MetaIdentifier>> children;
+		mid->getSubIdentifiers(children);
+		for (auto& c : children)
+		{
+			for (auto& id : c->getIdentifiers()) {
+				auto tile = cache->getTile(id);
+				BOOST_CHECK(tile->isRendered());
+			}
+		}
 	}
 	// teardown
 	~test_requestManage()
@@ -114,7 +127,6 @@ ALAC_START_FIXTURE_TEST(test_requestManage)
 	// functionname, name of test, arguments of function...
 	ALAC_FIXTURE_TEST(isPrerendered);
 	ALAC_FIXTURE_TEST(enqueueHttpRequest);
-	
 ALAC_END_FIXTURE_TEST()
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -31,7 +31,7 @@ pkg_check_modules(SigC++ sigc++-2.0)
 add_subdirectory(extras/pch)
 add_subdirectory(extras/log4cpp)
 
-set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests/data")
+set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
 
 link_directories(${Boost_LIBRARY_DIRS} ${Cairomm_LIBRARY_DIRS})
 

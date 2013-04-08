@@ -44,8 +44,9 @@ public:
 			s->text = text;
 			styles.push_back(s);
 			FloatPoint center = pair.second + FloatPoint(textSize.width/2.0, textSize.height/2.0);
+			FloatRect owner = FloatRect(center.x, center.y, center.x, center.y);
 			FloatPoint origin = pair.second - FloatPoint(textSize.x_bearing, textSize.y_bearing);
-			shared_ptr<Label> l = boost::make_shared<Label>(FloatRect(pair.second, textSize.width, textSize.height), center, s->text, s.get(), origin);
+			shared_ptr<Label> l = boost::make_shared<Label>(FloatRect(pair.second, textSize.width, textSize.height), owner, s->text, s.get(), origin);
 
 			cr->rectangle(l->box.minX, l->box.minY, l->box.getWidth(), l->box.getHeight());
 			cr->stroke();
@@ -86,7 +87,8 @@ struct placement_test
 	{
 		BOOST_TEST_MESSAGE("Render: " << path);
 
-		Cairo::RefPtr<Cairo::Surface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, TILE_SIZE, TILE_SIZE);
+		Cairo::RefPtr<Cairo::Surface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32,
+			META_TILE_SIZE * TILE_SIZE, META_TILE_SIZE * TILE_SIZE);
 		Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(surface);
 		cr->set_source_rgba(0.0, 0.0, 0.0, 1.0);
 
