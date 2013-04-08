@@ -69,7 +69,7 @@ struct tile_identifier_test
 		BOOST_CHECK_EQUAL(ti->getX(), -2);
 		BOOST_CHECK_EQUAL(ti->getY(), -2);
 		BOOST_CHECK_EQUAL(ti->getZoom(), -2);
-		BOOST_CHECK_EQUAL(ti->getImageFormat(), TileIdentifier::Format::PNG);
+		BOOST_CHECK_EQUAL(ti->getImageFormat(), TileIdentifier::Format::SVG);
 		BOOST_CHECK_EQUAL(ti->getStylesheetPath(), "folder/stylesheet");
 		BOOST_CHECK(ti->isNoneDataIdentifier());
 	}
