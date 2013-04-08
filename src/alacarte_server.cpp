@@ -84,7 +84,7 @@ public:
 			(OPT(opt::server::parse_timeout, "o"),	value<int>()->default_value(750)/*->value_name("ms")*/,									"maximal time in ms to parse a stylesheet")
 			//(OPT(opt::server::request_timeout, "r"),	value<int>()/*->value_name("ms")*/,													"maximal time in ms to process a request")
 			(OPT(opt::server::prerender_level, "z"),	value<int>()->default_value(12)/*->value_name("ms")*/,								"highest zoomlevel to enqueue for prerendering")
-			(opt::server::server_address,				value<string>()->default_value("localhost")/*->value_name("addr")*/,				"Address of the server")
+			(opt::server::server_address,				value<string>()->default_value("0.0.0.0")/*->value_name("addr")*/,				"Address of the server")
 			(OPT(opt::server::server_port, "p"),		value<string>()->required()->default_value("8080")/*->value_name("port")*/,			"port to bind the server")
 			(OPT(opt::server::max_queue_size, "q"),		value<int>()->default_value(1024)/*->value_name("size")*/,							"size for server queue")
 			(opt::server::cache_size,					value<int>()->default_value(1024)/*->value_name("size")*/,							"maximal amount of tiles in cache")
