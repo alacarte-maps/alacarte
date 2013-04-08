@@ -23,6 +23,8 @@
 #include "utils/statistic.hpp"
 #include <general/configuration.hpp>
 
+#define DEBUG(...) (log4cpp::Category::getInstance("Statistic").info(__VA_ARGS__));
+
 shared_ptr<Statistic> Statistic::instance;
 
 Statistic::duration Statistic::JobMeasurement::getDuration(int i)
@@ -41,7 +43,8 @@ Statistic::Statistic(const shared_ptr<Configuration>& config)
 
 Statistic::~Statistic()
 {
-	writeToFile(config->get<string>(opt::server::performance_log).c_str());
+	if (config->has(opt::server::performance_log))
+		writeToFile(config->get<string>(opt::server::performance_log).c_str());
 }
 
 shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const string& stylesheet, int zoom)
