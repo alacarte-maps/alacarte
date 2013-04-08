@@ -97,7 +97,6 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 	if (cacheIt != AllCaches.end()) {
 		// Found cache for Stylesheet.
 		cache = cacheIt->second;
-		log << log4cpp::Priority::DEBUG << "Stylesheetcache " << stylesheet << " found.";
 	} else {
 		// Creating a new cache for stylesheet.
 		cache = boost::make_shared<CacheOfOneStylesheet>();
@@ -112,7 +111,6 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 	if (tileIt != cache->end()) {
 		// Cache hit
 		tile = tileIt->second.first;
-		log << log4cpp::Priority::DEBUG << "Tile found. " << *tile->getIdentifier() << ".";
 		RecentlyUsedList.erase(tileIt->second.second);
 		RecentlyUsedList.push_front(tileIt->second.first);
 		tileIt->second.second = RecentlyUsedList.begin();
@@ -126,7 +124,6 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 			Tile::ImageType image = boost::make_shared<Tile::ImageType::element_type>();
 			try {
 				readFile(image, path.str().c_str());
-				log << log4cpp::Priority::DEBUG << "Tile found in " << path.str().c_str();
 				tile->setImage(image);
 			} catch (excp::FileNotFoundException) {
 				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.str().c_str();
@@ -145,7 +142,6 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 			path << Config->get<string>(opt::server::cache_path) << "/" << tiToDelete->getStylesheetPath() << "/" << tiToDelete->getZoom() << "-" << tiToDelete->getX() << "-" << tiToDelete->getY() << ".png";
 			try {
 				writeFile(tileToDelete, path.str().c_str());
-				log << log4cpp::Priority::DEBUG << "WriteFile: Written to " << path.str();
 			} catch (excp::FileNotFoundException) {
 				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path.str();
 				// Disk is full
