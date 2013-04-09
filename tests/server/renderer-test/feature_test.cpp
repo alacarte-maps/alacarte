@@ -14,6 +14,8 @@
 #include "server/tile.hpp"
 #include "server/style.hpp"
 #include "server/tile_identifier.hpp"
+#include "server/meta_identifier.hpp"
+#include "server/meta_tile.hpp"
 #include "server/render_attributes.hpp"
 
 #include <cairomm/surface.h>
@@ -122,7 +124,6 @@ struct feature_test
 	void renderTile(const char* tilePath, shared_ptr<TileIdentifier> id)
 	{
 		BOOST_TEST_MESSAGE("Render: " << tilePath);
-		shared_ptr<Tile> tile = boost::make_shared<Tile>(id);
 		RenderAttributes attr;
 		Style* canvas = attr.getCanvasStyle();
 		canvas->fill_color = Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -147,7 +148,11 @@ struct feature_test
 		BOOST_TEST_MESSAGE(" - relations " << relations->size());
 		styleRelations(relations, attr);
 
-		renderer->renderTile(attr, tile);
+		shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(id);
+		shared_ptr<MetaTile> meta = boost::make_shared<MetaTile>(mid);
+		renderer->renderMetaTile(attr, meta);
+		shared_ptr<Tile> tile = boost::make_shared<Tile>(id);
+		renderer->sliceTile(meta, tile);
 
 		BOOST_TEST_MESSAGE("Writing the tile:");
 		std::ofstream out;
