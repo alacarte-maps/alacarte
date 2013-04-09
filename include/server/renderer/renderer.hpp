@@ -49,7 +49,7 @@ public:
 	Renderer(const shared_ptr<Geodata>& data);
 	~Renderer();
 
-	TESTABLE void renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile);
+	TESTABLE void renderEmptyTile(RenderAttributes& map, const shared_ptr<Tile>& tile);
 	TESTABLE void renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>& tile);
 	TESTABLE void sliceTile(const shared_ptr<MetaTile>& meta, const shared_ptr<Tile>& tile) const;
 
@@ -96,19 +96,18 @@ private:
 	void sortObjects(RenderAttributes& map, std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations) const;
 	bool isCutOff(const FloatRect& box, const FloatRect& owner);
 	void compositeLayers(CairoLayer layers[]) const;
-	void setupLayers(CairoLayer layers[], RenderAttributes& map,
-					 const shared_ptr<ImageWriter>& writer,
-					 Tile::ImageType buffer) const;
+	void setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& writer) const;
+	void paintBackground(const CairoLayer& layer, const Style* canvasStyle) const;
 	void renderObjects(CairoLayer layers[], RenderAttributes& map,
 					   const Cairo::Matrix& transform,
 					   std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations,
 					   std::list<shared_ptr<Label>>& labels,
-					   std::list<shared_ptr<Shield>>& shields);
+					   std::list<shared_ptr<Shield>>& shields) const;
 	template <typename LabelType>
 	void renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
-					  std::vector<shared_ptr<LabelType> >& labels);
+					  std::vector<shared_ptr<LabelType> >& labels) const;
 	void renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
-					  std::vector<shared_ptr<Shield> >& shields);
+					  std::vector<shared_ptr<Shield> >& shields) const;
 	void renderArea(const FixedRect& area,
 					CairoLayer layers[],
 					double width, double height,

@@ -131,7 +131,7 @@ shared_ptr<Tile> Job::computeEmpty()
 		RenderAttributes renderAttributes;
 
 		stylesheet->match(nodeIDs, wayIDs, relationIDs, mid, &renderAttributes);
-		manager->getRenderer()->renderTile(renderAttributes, tile);
+		manager->getRenderer()->renderEmptyTile(renderAttributes, tile);
 	}
 
 	return tile;
