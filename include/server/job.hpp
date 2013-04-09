@@ -67,6 +67,7 @@ private:
 	shared_ptr<Configuration> config;
 	shared_ptr<MetaIdentifier> mid;
 	bool empty;
+	bool cached;
 	//! initialized by initTiles
 	std::vector<shared_ptr<Tile>> tiles;
 	shared_ptr<MetaTile> meta;

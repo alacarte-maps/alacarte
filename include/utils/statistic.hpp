@@ -50,7 +50,8 @@ public:
 		Slicing,
 		Size //amount of Components
 	};
-	
+
+
 	class JobMeasurement {
 		friend class Statistic;
 	public:
@@ -74,14 +75,14 @@ public:
 		ptime startTime[Component::Size];
 		ptime stopTime[Component::Size];
 	};
-	
+
 	shared_ptr<JobMeasurement> startNewMeasurement(const string& stylesheet, int zoom);
 	void start(shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
 	void stop(shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
 	void finished(shared_ptr<Statistic::JobMeasurement>& job);
 	void setStats(shared_ptr<Statistic::JobMeasurement>& job, unsigned int nodes, unsigned int ways, unsigned int relations);
 	void printStatistic() const;
-	
+
 	static const shared_ptr<Statistic>& Get()
 	{
 		assert(instance);
@@ -106,10 +107,17 @@ private:
 
 private:
 	shared_ptr<Configuration> config;
-	boost::mutex lock;
-	std::vector<shared_ptr<JobMeasurement>> measurements;
 	boost::mutex bufferLock;
 	std::vector<shared_ptr<JobMeasurement>> measurementsBuffer;
+
+	struct AvgMeasurement
+	{
+		// for every zoomlevel an average value
+		uint32_t count[19] {};
+		float average[19] {};
+	};
+	boost::mutex avgLock;
+	AvgMeasurement componentAvgs[Component::Size];
 };
 
 #endif

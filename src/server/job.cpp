@@ -172,8 +172,8 @@ void Job::process()
 		return;
 	}
 
-	bool inCache = initTiles();
-	if (inCache) {
+	cached = initTiles();
+	if (cached) {
 		STAT_WRITE();
 		return;
 	}
@@ -227,7 +227,8 @@ void Job::deliver()
 			for (auto& req : requests[*tile->getIdentifier()])
 				req->answer(tile);
 		}
-		STAT_STOP(Statistic::Slicing);
+		if (!cached)
+			STAT_STOP(Statistic::Slicing);
 	}
 
 	STAT_WRITE();
