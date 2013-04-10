@@ -45,11 +45,11 @@ void NodeKdTree::buildTree(const shared_ptr<std::vector<Node> >& ns)
 	log.infoStream() << "Nodes: " << ns->size();
 
 	log.infoStream() << " - creating leaves";
-	std::vector<shared_ptr<kdData> > nodes;
+	std::vector<NodeId> nodes;
 	nodes.reserve(ns->size());
 	for (unsigned int i = 0; i < ns->size(); i++ ) {
-		boost::shared_ptr<kdData> data = boost::make_shared<kdData>(i, ns->at(i).getLocation());
-		nodes.push_back ( data );
+		points.push_back( ns->at(i).getLocation() );
+		nodes.push_back ( NodeId(i) );
 	}
 
 	log.infoStream() << " - building tree";
@@ -66,7 +66,7 @@ void NodeKdTree::buildTree(const shared_ptr<std::vector<Node> >& ns)
  *
  * left and right refers to the child nodes not sides
  */
-shared_ptr<NodeKdTree::kdNode> NodeKdTree::buildKDtree ( std::vector<shared_ptr<kdData> >&  toInsert ) {
+shared_ptr<NodeKdTree::kdNode> NodeKdTree::buildKDtree ( std::vector<NodeId>&  toInsert ) {
 
 	std::stack<BuildStackEntry> buildStack;
 	shared_ptr<kdNode> root = boost::make_shared<kdNode>();
@@ -77,40 +77,37 @@ shared_ptr<NodeKdTree::kdNode> NodeKdTree::buildKDtree ( std::vector<shared_ptr<
 		buildStack.pop();
 
 		shared_ptr<kdNode> newNode = se.node;
-		std::vector<shared_ptr<kdData>>& nodes = se.toInsert;
+		std::vector<NodeId>& nodes = se.toInsert;
 		int depth = se.depth;
 
 		if ( nodes.size() <= 1024 ) {
 			newNode->ids.reserve(nodes.size());
-			newNode->points.reserve(nodes.size());
-			for (auto& n : nodes) {
-				newNode->ids.push_back(n->id);
-				newNode->points.push_back(n->pos);
-			}
+			for (auto& n : nodes)
+				newNode->ids.push_back(n);
 			continue;
 		}
 
 		coord_t median;
-		std::vector<shared_ptr<kdData>> leftL;
-		std::vector<shared_ptr<kdData>> rightL;
+		std::vector<NodeId> leftL;
+		std::vector<NodeId> rightL;
 		// split along median
 		if ( ( depth % 2 ) == 0 )
 		{
 			median =  getMedianX ( nodes );
-			for (auto& n : nodes)
-				if ( n->pos.x <= median )
-					leftL.push_back ( n );
+			for (auto id : nodes)
+				if ( points[id.getRaw()].x <= median )
+					leftL.push_back ( id );
 				else
-					rightL.push_back ( n );
+					rightL.push_back ( id );
 		}
 		else
 		{
 			median =  getMedianY ( nodes );
-			for (auto& n : nodes)
-				if ( n->pos.y <= median )
-					leftL.push_back ( n );
+			for (auto id : nodes)
+				if ( points[id.getRaw()].y <= median )
+					leftL.push_back ( id );
 				else
-					rightL.push_back ( n );
+					rightL.push_back ( id );
 		}
 		newNode->key = median;
 
@@ -154,10 +151,10 @@ bool NodeKdTree::search ( boost::shared_ptr<std::vector<NodeId> >& result, const
 
 		// no child nodes
 		if (!node->left && !node->right) {
-			for (int i = 0; i < node->points.size(); i++) {
-				if (searchRect.contains( node->points[i] )) {
+			for (auto id : node->ids) {
+				if (searchRect.contains( points[id.getRaw()] )) {
 					if (returnOnFirst) return true;
-					result->push_back( node->ids[i] );
+					result->push_back( id );
 				}
 			}
 			continue;
@@ -228,23 +225,27 @@ bool NodeKdTree::contains(const FixedRect& rect) const
 	return search(nodeIDs, rect, true);
 }
 
-coord_t NodeKdTree::getMedianX ( std::vector<shared_ptr<kdData > > &  points )
+coord_t NodeKdTree::getMedianX ( std::vector<NodeId> & ids )
 {
-	size_t n = points.size() / 2;
-	std::nth_element(points.begin(), points.begin()+n, points.end(), &NodeKdTree::operatorSortX);
-	return points[n]->pos.x;
+	size_t n = ids.size() / 2;
+	std::nth_element(ids.begin(), ids.begin()+n, ids.end(),
+		[&](NodeId a, NodeId b)
+		{
+			return (this->points[a.getRaw()].x < this->points[b.getRaw()].x);
+		}
+	);
+	return points[ids[n].getRaw()].x;
 }
 
-coord_t NodeKdTree::getMedianY ( std::vector<shared_ptr<kdData > > &  points )
+coord_t NodeKdTree::getMedianY ( std::vector<NodeId> & ids )
 {
-	size_t n = points.size() / 2;
-	std::nth_element(points.begin(), points.begin()+n, points.end(), &NodeKdTree::operatorSortY);
-	return points[n]->pos.y;
+	size_t n = ids.size() / 2;
+	std::nth_element(ids.begin(), ids.begin()+n, ids.end(),
+		[&](NodeId a, NodeId b)
+		{
+			return (this->points[a.getRaw()].y < this->points[b.getRaw()].y);
+		}
+	);
+	return points[ids[n].getRaw()].y;
 }
 
-bool NodeKdTree::operatorSortY ( const shared_ptr<kdData>& a, const shared_ptr<kdData>& b ) {
-	return (a->pos.y < b->pos.y);
-}
-bool NodeKdTree::operatorSortX ( const shared_ptr<kdData>& a, const shared_ptr<kdData>& b ) {
-	return (a->pos.x < b->pos.x);
-}

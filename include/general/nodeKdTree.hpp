@@ -44,17 +44,9 @@ public:
 	bool contains(const FixedRect& rect) const;
 
 protected:
-	// is not writen to disk
-	struct kdData {
-		kdData(int i, const FixedPoint& p) : id(NodeId(i)), pos(p) {}
-		NodeId id;
-		const FixedPoint& pos;
-	};
-
 	class kdNode {
 		public:
 			std::vector<NodeId> ids;
-			std::vector<FixedPoint> points;
 			coord_t key;
 			shared_ptr<kdNode> left;
 			shared_ptr<kdNode> right;
@@ -63,7 +55,6 @@ protected:
 			template<typename Archive>
 				void serialize(Archive &ar, const unsigned int version){
 					ar & ids;
-					ar & points;
 					ar & left;
 					ar & right;
 					ar & key;
@@ -83,26 +74,27 @@ protected:
 	};
 
 	struct BuildStackEntry {
-		BuildStackEntry(shared_ptr<kdNode> node,std::vector<shared_ptr<kdData> >&  toInsert, int depth)
+		BuildStackEntry(shared_ptr<kdNode> node,std::vector<NodeId>&  toInsert, int depth)
 			: node(node)
 			, toInsert(toInsert)
 			, depth(depth)
 		{ };
 
 		shared_ptr<kdNode> node;
-		std::vector<shared_ptr<kdData> >  toInsert;
+		std::vector<NodeId>  toInsert;
 		int depth;
 	};
 
 	shared_ptr<kdNode> root;
+	std::vector<FixedPoint> points;
 
 private:
-	shared_ptr<kdNode> buildKDtree ( std::vector<shared_ptr<kdData> >&  toInsert );
+	shared_ptr<kdNode> buildKDtree ( std::vector<NodeId>&  toInsert );
 	void getSubTree(shared_ptr<std::vector<NodeId> >& result, const shared_ptr<kdNode>& node) const;
-	coord_t getMedianX ( std::vector<shared_ptr<kdData > > &  points );
-	coord_t getMedianY ( std::vector<shared_ptr<kdData > > &  points );
-	static bool operatorSortY ( const shared_ptr<kdData>& a, const shared_ptr<kdData>& b );
-	static bool operatorSortX ( const shared_ptr<kdData>& a, const shared_ptr<kdData>& b );
+	coord_t getMedianX ( std::vector<NodeId> &  points );
+	coord_t getMedianY ( std::vector<NodeId> &  points );
+	static bool operatorSortY ( NodeId a, NodeId b );
+	static bool operatorSortX ( NodeId a, NodeId b );
 
 private:
 	friend class boost::serialization::access;
@@ -110,6 +102,7 @@ private:
 		void serialize(Archive &ar, const unsigned int version)
 		{
 			ar & root;
+			ar & points;
 		}
 };
 #endif
