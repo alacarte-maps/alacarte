@@ -43,7 +43,6 @@
 #include <limits>
 
 
-
 Geodata::Geodata()
 {
 }
@@ -54,8 +53,8 @@ Geodata::~Geodata()
 
 void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
 {
-	this->nodesTree = boost::make_shared<NodeKdTree>(nodes);
-	nodesTree->buildTree();
+	this->nodesTree = boost::make_shared<NodeKdTree>();
+	nodesTree->buildTree(nodes);
 	this->nodes = nodes;
 }
 
