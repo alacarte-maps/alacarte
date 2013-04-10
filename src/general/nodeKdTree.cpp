@@ -57,8 +57,11 @@ NodeKdTree::NodeKdTree ( const shared_ptr<std::vector<Node> >& ns ) {
 void NodeKdTree::buildTree() {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	log.infoStream() << " - building tree";
+	TIMER_START(building);
 	if (nodes.size() > 0)
 		root = buildKDtree ( nodes, 0 );
+	TIMER_STOP(building);
+	log.info("Build in: %2i:%2i", (int) TIMER_MIN(building), (int) TIMER_SEC(building) % 60);
 }
 
 /**
@@ -89,36 +92,29 @@ shared_ptr<NodeKdTree::kdNode> NodeKdTree::buildKDtree ( std::vector<shared_ptr<
 			continue;
 		}
 
-		FixedPoint helpP;
-		unsigned int count = 0;
+		FixedPoint median;
 		std::vector<shared_ptr<kdNode>> leftL;
 		std::vector<shared_ptr<kdNode>> rightL;
-		//To get a balaced tree I need to gain the median x-value or y value
-		if ( ( depth % 2 ) == 0 ) {
-			std::sort ( nodes.begin(), nodes.end(), &NodeKdTree::operatorSortX ); // refer to x
-			helpP =  getMedian ( nodes );
-			while ( count < nodes.size() && nodes[count]->refPoints[0].x <= helpP.x) {
-				leftL.push_back ( nodes[count] );
-				count++;
-			}
-			while ( count < nodes.size() ) {
-				rightL.push_back ( nodes[count] );
-				count++;
-			}
-		} else if ( ( depth % 2 ) == 1 ) {				  //refer to y
-			std::sort ( nodes.begin(), nodes.end(), &NodeKdTree::operatorSortY );
-			helpP =  getMedian ( nodes );
-			while ( count < nodes.size() && nodes[count]->refPoints[0].y <= helpP.y ) {
-				leftL.push_back ( nodes[count] );
-				count++;
-			}
-
-			while ( count < nodes.size() ) {
-				rightL.push_back ( nodes[count] );
-				count++;
-			}
+		// split along median
+		if ( ( depth % 2 ) == 0 )
+		{
+			median =  getMedianX ( nodes );
+			for (auto n : nodes)
+				if ( n->refPoints[0].x <= median.x )
+					leftL.push_back ( n );
+				else
+					rightL.push_back ( n );
 		}
-		newNode->refPoints.push_back(helpP);
+		else if ( ( depth % 2 ) == 1 )
+		{
+			median =  getMedianY ( nodes );
+			for (auto n : nodes)
+				if ( n->refPoints[0].y <= median.y )
+					leftL.push_back ( n );
+				else
+					rightL.push_back ( n );
+		}
+		newNode->refPoints.push_back(median);
 
 		if (leftL.size() > 0) {
 			newNode->left = boost::make_shared<kdNode>();
@@ -234,24 +230,18 @@ bool NodeKdTree::contains(const FixedRect& rect) const
 	return search(nodeIDs, rect, true);
 }
 
-/**
- * This Methode finds the Point of a vector of Points, which is best to split in Order to get a balaced tree
- */
-FixedPoint NodeKdTree::getMedian ( const std::vector<shared_ptr<kdNode > > &  points ) {
-	FixedPoint helpP;
-	if (points.size() < 2)
-		return points[0]->refPoints[0];
+FixedPoint NodeKdTree::getMedianX ( std::vector<shared_ptr<kdNode > > &  points )
+{
+	size_t n = points.size() / 2;
+	std::nth_element(points.begin(), points.begin()+n, points.end(), &NodeKdTree::operatorSortX);
+	return points[n]->refPoints[0];
+}
 
-	if ( points.size() %2 == 0 ) {   // even number of values
-		helpP.x = ( points[points.size() / 2 - 1]->refPoints[0].x + points[ points.size() /2]->refPoints[0].x ) /2;			 // takes the Point which is in the Middle of the vector  zB: a,b,c -> b
-		helpP.y = ( points[points.size() / 2 - 1]->refPoints[0].y + points[ points.size() /2]->refPoints[0].y ) /2;
-	} else if ( points.size() %2 == 1 ) { // uneven number of values	// take the Point right of the middle zB: length: 4  a,b,c,d  4/2  -1 = 1  -> take second element of vector -> b
-		helpP.x  = points[ ( points.size() - 1 ) /2 ]->refPoints[0].x;
-		helpP.y  = points[ ( points.size() - 1 ) /2 ]->refPoints[0].y;
-	}
-
-	return helpP;
-
+FixedPoint NodeKdTree::getMedianY ( std::vector<shared_ptr<kdNode > > &  points )
+{
+	size_t n = points.size() / 2;
+	std::nth_element(points.begin(), points.begin()+n, points.end(), &NodeKdTree::operatorSortY);
+	return points[n]->refPoints[0];
 }
 
 bool NodeKdTree::operatorSortY ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b ) {

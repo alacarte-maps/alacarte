@@ -94,7 +94,8 @@ protected:
 private:
 	shared_ptr<kdNode> buildKDtree ( std::vector<shared_ptr<kdNode> >&  toInsert, int depth );
 	void getSubTree(shared_ptr<std::vector<NodeId> >& result, const shared_ptr<kdNode>& node) const;
-	FixedPoint getMedian ( const std::vector<shared_ptr<kdNode > > &  points );
+	FixedPoint getMedianX ( std::vector<shared_ptr<kdNode > > &  points );
+	FixedPoint getMedianY ( std::vector<shared_ptr<kdNode > > &  points );
 	static bool operatorSortY ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b );
 	static bool operatorSortX ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b );
 
