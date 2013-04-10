@@ -93,8 +93,6 @@ private:
 	void getSubTree(shared_ptr<std::vector<NodeId> >& result, const shared_ptr<kdNode>& node) const;
 	coord_t getMedianX ( std::vector<NodeId> &  points );
 	coord_t getMedianY ( std::vector<NodeId> &  points );
-	static bool operatorSortY ( NodeId a, NodeId b );
-	static bool operatorSortX ( NodeId a, NodeId b );
 
 private:
 	NodeKdTree(){};
