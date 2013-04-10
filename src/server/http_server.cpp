@@ -150,6 +150,6 @@ void HttpServer::quit()
 	std::for_each(requests.begin(), requests.end(), boost::bind(&HttpRequest::close, _1));
 	requests.clear();
 
-	Statistic::instance().printStatistic();
+	Statistic::Get()->printStatistic();
 }
 

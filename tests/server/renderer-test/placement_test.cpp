@@ -9,6 +9,7 @@
 #include "server/renderer/renderer.hpp"
 #include "server/renderer/renderer_private.hpp"
 #include "server/style.hpp"
+#include "server/meta_tile.hpp"
 
 #include <cairomm/surface.h>
 #include <cairomm/context.h>
@@ -29,7 +30,7 @@ public:
 		cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
 		Cairo::RefPtr<Cairo::ToyFontFace> font = Cairo::ToyFontFace::create(DEFAULT_FONT, Cairo::FONT_SLANT_NORMAL, Cairo::FONT_WEIGHT_NORMAL);
 		cr->set_font_face(font);
-		cr->set_font_size(30.0);
+		cr->set_font_size(120.0);
 		cr->set_line_width(2.0);
 
 		Cairo::TextExtents textSize;
@@ -44,8 +45,9 @@ public:
 			s->text = text;
 			styles.push_back(s);
 			FloatPoint center = pair.second + FloatPoint(textSize.width/2.0, textSize.height/2.0);
+			FloatRect owner = FloatRect(center.x, center.y, center.x, center.y);
 			FloatPoint origin = pair.second - FloatPoint(textSize.x_bearing, textSize.y_bearing);
-			shared_ptr<Label> l = boost::make_shared<Label>(FloatRect(pair.second, textSize.width, textSize.height), center, s->text, s.get(), origin);
+			shared_ptr<Label> l = boost::make_shared<Label>(FloatRect(pair.second, textSize.width, textSize.height), owner, s->text, s.get(), origin);
 
 			cr->rectangle(l->box.minX, l->box.minY, l->box.getWidth(), l->box.getHeight());
 			cr->stroke();
@@ -86,7 +88,8 @@ struct placement_test
 	{
 		BOOST_TEST_MESSAGE("Render: " << path);
 
-		Cairo::RefPtr<Cairo::Surface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, TILE_SIZE, TILE_SIZE);
+		Cairo::RefPtr<Cairo::Surface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32,
+			META_TILE_SIZE * TILE_SIZE, META_TILE_SIZE * TILE_SIZE);
 		Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(surface);
 		cr->set_source_rgba(0.0, 0.0, 0.0, 1.0);
 
@@ -96,18 +99,18 @@ struct placement_test
 		cr->restore();
 
 		std::vector<std::pair<string, FloatPoint>> toPlace;
-		toPlace.push_back(std::pair<string, FloatPoint>("Karlsruhe", FloatPoint(10, 50)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Mannheim", FloatPoint(100, 50)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Stuttgard", FloatPoint(50, 65)));
-		toPlace.push_back(std::pair<string, FloatPoint>("München", FloatPoint(95, 165)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Pforzheim", FloatPoint(50, 150)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Wien", FloatPoint(60, 170)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Paris", FloatPoint(10, 220)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Rom", FloatPoint(-10, 220)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Nothing", FloatPoint(100, 190)));
-		toPlace.push_back(std::pair<string, FloatPoint>("To See", FloatPoint(180, 220)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Here", FloatPoint(180, 240)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Bielefeld", FloatPoint(105, 210)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Karlsruhe", FloatPoint(40, 200)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Mannheim", FloatPoint(400, 200)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Stuttgard", FloatPoint(200, 260)));
+		toPlace.push_back(std::pair<string, FloatPoint>("München", FloatPoint(380, 660)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Pforzheim", FloatPoint(200, 600)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Wien", FloatPoint(240, 680)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Paris", FloatPoint(40, 880)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Rom", FloatPoint(-40, 880)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Nothing", FloatPoint(400, 760)));
+		toPlace.push_back(std::pair<string, FloatPoint>("To See", FloatPoint(720, 880)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Here", FloatPoint(720, 560)));
+		toPlace.push_back(std::pair<string, FloatPoint>("Bielefeld", FloatPoint(420, 840)));
 		renderer->renderLabels(cr, toPlace);
 
 		BOOST_TEST_MESSAGE("Writing.");

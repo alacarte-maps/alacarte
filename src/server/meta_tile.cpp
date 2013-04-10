@@ -15,40 +15,43 @@
  *  along with alaCarte. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Copyright alaCarte 2012-2013 Simon Dreher, Florian Jacob, Tobias Kahlert, Patrick Niklaus, Bernhard Scheirle, Lisa Winter
- *  Maintainer: Bernhard Scheirle
+ *  Maintainer: Tobias Kahlert
  */
 
-#pragma once
-#ifndef USER_REQUEST_JOB_HPP
-#define USER_REQUEST_JOB_HPP
+#include "includes.hpp"
 
-#include "settings.hpp"
-#include "job.hpp"
-
-class HttpRequest;
-class RequestManager;
+#include "server/tile.hpp"
+#include "server/meta_tile.hpp"
+#include "server/meta_identifier.hpp"
 
 /**
- * @brief Handles computation of Tiles which are requested by a user.
- **/
-class UserRequestJob : public Job
+ * @brief Constructs a new MetaTile that is several tiles big.
+ */
+MetaTile::MetaTile(const shared_ptr<MetaIdentifier>& mid)
+	: mid(mid)
 {
-public:
-	UserRequestJob(const shared_ptr<Configuration>& config, const shared_ptr<HttpRequest>& request, const shared_ptr<RequestManager>& manager);
-	~UserRequestJob();
+}
 
-	virtual void process();
+/**
+ * @return the identifier that describes the meta tile
+ */
+const shared_ptr<MetaIdentifier>& MetaTile::getIdentifier() const
+{
+	return mid;
+}
 
-private:
-	//! The HttpRequest which should be processed.
-	shared_ptr<HttpRequest> req;
-};
+/**
+ * @return surface that contains rendered tiles
+ */
+const Cairo::RefPtr<Cairo::Surface>& MetaTile::getData() const
+{
+	return surface;
+}
 
-
-
-
-
-
-
-
-#endif
+/**
+ * @brief set cairo surface that contains the rendered tiles
+ */
+void MetaTile::setData(const Cairo::RefPtr<Cairo::Surface>& data)
+{
+	this->surface = data;
+}
