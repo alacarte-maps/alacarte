@@ -119,9 +119,13 @@ protected:
 		}
 		
 		int threads = config->get<int>(opt::server::num_threads);
-		if (threads > std::thread::hardware_concurrency()) {
+		if (threads < 1) {
+			log.errorStream() << ". It's not possible to use less then 1 thread for rendering. " << opt::server::num_threads << " = " << threads;
+			return false;
+		} else if (threads > std::thread::hardware_concurrency()) {
 			log.infoStream() << ". It's not recommended to use more than " << std::thread::hardware_concurrency() << " (amount of cores) threads.";
 		}
+
 		
 		int parse_timeout = config->get<int>(opt::server::parse_timeout);
 		if (parse_timeout < 50) {
