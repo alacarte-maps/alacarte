@@ -82,6 +82,27 @@ void Cache::writeFile(shared_ptr<Tile> tile, const string& path) {
 	}
 }
 
+string Cache::identifierToPath(const shared_ptr<TileIdentifier>& ti)
+{
+	std::stringstream path;
+	path << Config->get<string>(opt::server::cache_path) << "/"
+		 << ti->getStylesheetPath() << "/"
+		 << ti->getZoom() << "-" << ti->getX() << "-" << ti->getY();
+	switch (ti->getImageFormat())
+	{
+		case TileIdentifier::Format::PNG:
+			path << ".png";
+		break;
+		case TileIdentifier::Format::SVG:
+			path << ".svg";
+		break;
+		default:
+			log << log4cpp::Priority::DEBUG << "Unknown image format.";
+	}
+
+	return path.str();
+}
+
 /**
  * @brief Gets a Tile where the image data can be stored. If the Tile isn't cached a new Tile is returned.
  * 
@@ -119,14 +140,13 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 		tile = boost::make_shared<Tile>(ti);
 		if (ti->getZoom() <= Config->get<int>(opt::server::cache_keep_tile)) {
 			// Try to load prerendered image data from file.
-			std::stringstream path;
-			path << Config->get<string>(opt::server::cache_path) << "/" << ti->getStylesheetPath() << "/" << ti->getZoom() << "-" << ti->getX() << "-" << ti->getY() << ".png";
 			Tile::ImageType image = boost::make_shared<Tile::ImageType::element_type>();
+			string path = identifierToPath(ti);
 			try {
-				readFile(image, path.str().c_str());
+				readFile(image, path.c_str());
 				tile->setImage(image);
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.str().c_str();
+				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.c_str();
 			}
 		}
 		RecentlyUsedList.push_front(tile);
@@ -137,13 +157,12 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 		// Evict a Tile when cache is full.
 		if (tileToDelete->getIdentifier()->getZoom() <= Config->get<int>(opt::server::cache_keep_tile)) {
 			// Evict to hard drive.
-			std::stringstream path;
 			shared_ptr<TileIdentifier> tiToDelete = tileToDelete->getIdentifier();
-			path << Config->get<string>(opt::server::cache_path) << "/" << tiToDelete->getStylesheetPath() << "/" << tiToDelete->getZoom() << "-" << tiToDelete->getX() << "-" << tiToDelete->getY() << ".png";
+			string path = identifierToPath(tiToDelete);
 			try {
-				writeFile(tileToDelete, path.str().c_str());
+				writeFile(tileToDelete, path.c_str());
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path.str();
+				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path;
 				// Disk is full
 			} catch (excp::InputFormatException) {
 				log << log4cpp::Priority::DEBUG << "WriteFile: PNG not yet rendered " << *tile->getIdentifier();
