@@ -41,58 +41,55 @@ class Way;
 class Relation;
 class Geodata;
 
-
-
-
 template <class geoO, class geoId >
 class RectKdTree {
 public:
-		RectKdTree ( const shared_ptr<std::vector<geoO> >& ns, const Geodata* geo ) ;
+	RectKdTree ( const shared_ptr<std::vector<geoO> >& ns, const Geodata* geo ) ;
 
 private:
-		class kdNode {                            // Defines a kd-tree node
+	class kdNode {                            // Defines a kd-tree node
 		public:
-				std::vector<geoId> ids;
-				FixedPoint refPoint;
-				shared_ptr<kdNode> left;                            //Defines the left child of a Node
-				shared_ptr<kdNode> right;                        //Defines the right child of a Node
+			std::vector<geoId> ids;
+			FixedPoint refPoint;
+			shared_ptr<kdNode> left;                            //Defines the left child of a Node
+			shared_ptr<kdNode> right;                        //Defines the right child of a Node
 		private:
-				friend class boost::serialization::access;
-				template<typename Archive>
-					void serialize(Archive &ar, const unsigned int version){
-						ar & ids;
-						ar & refPoint;
-						ar & left;
-						ar & right;
-					}
-		};
-		
-		struct SearchStackEntry {
-	
-			 SearchStackEntry(shared_ptr<kdNode> node, FixedRect rect, int depth)
+			friend class boost::serialization::access;
+			template<typename Archive>
+				void serialize(Archive &ar, const unsigned int version){
+					ar & ids;
+					ar & refPoint;
+					ar & left;
+					ar & right;
+				}
+	};
+
+	struct SearchStackEntry {
+
+		SearchStackEntry(shared_ptr<kdNode> node, FixedRect rect, int depth)
 			: node(node)
-			, rect(rect)
-			, depth(depth)
-			{
-			};
-			
-			FixedRect rect;
-			shared_ptr<kdNode> node;
-			int depth;
+			  , rect(rect)
+			  , depth(depth)
+		{
 		};
 
-		struct BuildStackEntry {
-			BuildStackEntry(shared_ptr<kdNode> node,std::vector<shared_ptr<kdNode> >&  toInsert, int depth)
-				: node(node)
-				, toInsert(toInsert)
-				, depth(depth)
-			{
-			};
-	
-			shared_ptr<kdNode> node;
-			std::vector<shared_ptr<kdNode> >  toInsert;
-			int depth;
+		FixedRect rect;
+		shared_ptr<kdNode> node;
+		int depth;
+	};
+
+	struct BuildStackEntry {
+		BuildStackEntry(shared_ptr<kdNode> node,std::vector<shared_ptr<kdNode> >&  toInsert, int depth)
+			: node(node)
+			  , toInsert(toInsert)
+			  , depth(depth)
+		{
 		};
+
+		shared_ptr<kdNode> node;
+		std::vector<shared_ptr<kdNode> >  toInsert;
+		int depth;
+	};
 
 public:
 	bool search ( boost::shared_ptr<std::vector<geoId> >& result, const FixedRect& rect, bool returnOnFirst = false) const;
@@ -104,32 +101,32 @@ public:
 	};
 
 private:
-		std::vector<shared_ptr<kdNode> > nodes;
-		std::vector<FixedRect> rects;
-		shared_ptr<kdNode> root;
-		const Geodata* geo;
+	std::vector<shared_ptr<kdNode> > nodes;
+	std::vector<FixedRect> rects;
+	shared_ptr<kdNode> root;
+	const Geodata* geo;
 
-		shared_ptr<kdNode> buildKDtree ( std::vector<shared_ptr<kdNode> >&  toInsert, int depth );
-		bool searchKdTree ( boost::shared_ptr<std::vector<geoId> >& result,  const FixedRect& rect, const FixedRect& current, int depth, bool returnOnFirst = false ) const;
-		void getSubTree ( const shared_ptr<kdNode>& startN, boost::shared_ptr<std::vector<geoId> >& geoIds ) const;
-		FixedPoint getMedian ( const std::vector<shared_ptr<kdNode > > &  points );
-		static bool operatorSortY ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b );
-		static bool operatorSortX ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b );
-		static bool operatorSortGeoId ( const geoId& a, const geoId& b );
-		void insertGeoIds (  const FixedRect& rect, const FixedRect& current, shared_ptr<kdNode>& startN, int depth, int id);
-		void insertInSubTree ( shared_ptr<kdNode>& startN, int id, const FixedRect& rect);
+	shared_ptr<kdNode> buildKDtree ( std::vector<shared_ptr<kdNode> >&  toInsert, int depth );
+	bool searchKdTree ( boost::shared_ptr<std::vector<geoId> >& result,  const FixedRect& rect, const FixedRect& current, int depth, bool returnOnFirst = false ) const;
+	void getSubTree ( const shared_ptr<kdNode>& startN, boost::shared_ptr<std::vector<geoId> >& geoIds ) const;
+	FixedPoint getMedian ( const std::vector<shared_ptr<kdNode > > &  points );
+	static bool operatorSortY ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b );
+	static bool operatorSortX ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b );
+	static bool operatorSortGeoId ( const geoId& a, const geoId& b );
+	void insertGeoIds (  const FixedRect& rect, const FixedRect& current, shared_ptr<kdNode>& startN, int depth, int id);
+	void insertInSubTree ( shared_ptr<kdNode>& startN, int id, const FixedRect& rect);
 
-		RectKdTree(){};
-		friend class boost::serialization::access;
-		template<typename Archive>
-			void serialize(Archive &ar, const unsigned int version){
-				ar & rects;
-				ar & nodes;
-				ar & root;
-			}
+	RectKdTree(){};
+	friend class boost::serialization::access;
+	template<typename Archive>
+		void serialize(Archive &ar, const unsigned int version){
+			ar & rects;
+			ar & nodes;
+			ar & root;
+		}
 };
 
-template<class geoO, class geoId> 
+template<class geoO, class geoId>
 RectKdTree<geoO, geoId>::RectKdTree ( const shared_ptr<std::vector<geoO> >& ns, const Geodata* geo) : geo(geo) {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	log.infoStream() << "Objects: " << ns->size();
@@ -142,14 +139,14 @@ RectKdTree<geoO, geoId>::RectKdTree ( const shared_ptr<std::vector<geoO> >& ns, 
 		rects.push_back(bBox);
 		// empty bounding box don't insert
 		if (bBox.minX == 0.0 && bBox.maxX == 0.0
-		 && bBox.minY == 0.0 && bBox.maxY == 0.0)
+				&& bBox.minY == 0.0 && bBox.maxY == 0.0)
 		{
 			log.warnStream() << "Empty bounding box!";
 			continue;
 		}
 		shared_ptr<kdNode> nodeKDMdl = boost::make_shared<kdNode>();
 		nodeKDMdl->refPoint = FixedPoint((bBox.minX+bBox.maxX)/2.0,
-									(bBox.minY+bBox.maxY)/2.0);
+				(bBox.minY+bBox.maxY)/2.0);
 		nodeKDMdl->left = shared_ptr<kdNode>();
 		nodeKDMdl->right = shared_ptr<kdNode>();
 		nodes.push_back ( nodeKDMdl );
@@ -159,9 +156,9 @@ RectKdTree<geoO, geoId>::RectKdTree ( const shared_ptr<std::vector<geoO> >& ns, 
 template<class geoO, class geoId>
 void RectKdTree<geoO, geoId>::buildTree(const shared_ptr<std::vector<geoO> >& ns) {
 	FixedRect current = FixedRect (std::numeric_limits<coord_t>::min(),
-								   std::numeric_limits<coord_t>::min(),
-								   std::numeric_limits<coord_t>::max(),
-								   std::numeric_limits<coord_t>::max());
+			std::numeric_limits<coord_t>::min(),
+			std::numeric_limits<coord_t>::max(),
+			std::numeric_limits<coord_t>::max());
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	log.infoStream() << " - building tree";
 	if (nodes.size() > 0)
@@ -172,13 +169,14 @@ void RectKdTree<geoO, geoId>::buildTree(const shared_ptr<std::vector<geoO> >& ns
 		}
 	}
 }
+
 /**
  * This Methode builds the kd-tree
  * it has an vector which stores all kd Tree nodes
  *
  * left and right refers to the child nodes not sides
  */
-template<class geoO, class geoId>
+	template<class geoO, class geoId>
 shared_ptr<typename RectKdTree<geoO, geoId>::kdNode> RectKdTree<geoO, geoId>::buildKDtree ( std::vector<shared_ptr<kdNode> >&  toInsert, int depth )
 {
 	shared_ptr<kdNode> root = boost::make_shared<kdNode>();
@@ -251,8 +249,8 @@ template<class geoO, class geoId>
 void RectKdTree<geoO, geoId>::insertGeoIds ( const FixedRect& rect, const FixedRect& current, shared_ptr<kdNode>& startN, int depth, int id) {
 	FixedRect leftRect = current;
 	FixedRect rightRect = current;
-	
-	
+
+
 	std::stack<SearchStackEntry> insertGstack;
 	insertGstack.push(SearchStackEntry(startN, current,0));
 
@@ -299,7 +297,7 @@ void RectKdTree<geoO, geoId>::insertGeoIds ( const FixedRect& rect, const FixedR
 
 template<class geoO, class geoId>
 void RectKdTree<geoO, geoId>::insertInSubTree ( shared_ptr<kdNode>& startN, int id, const FixedRect& rect) {
-	
+
 	std::stack<SearchStackEntry> insertsubT;
 	insertsubT.push(SearchStackEntry(startN, rect, 0));
 
@@ -310,16 +308,16 @@ void RectKdTree<geoO, geoId>::insertInSubTree ( shared_ptr<kdNode>& startN, int 
 		FixedRect rect = se.rect;
 		startN = se.node;
 
-	if ( ! ( startN->left ) && ! ( startN->right ) ) {
-		startN->ids.push_back(geoId(id));
-		return;
-	}
-	if ( startN->left )
-		insertsubT.push(SearchStackEntry(startN->left, rect, 0));
-		
-	if ( startN->right )
-		insertsubT.push(SearchStackEntry(startN->right, rect, 0));
-	
+		if ( ! ( startN->left ) && ! ( startN->right ) ) {
+			startN->ids.push_back(geoId(id));
+			return;
+		}
+		if ( startN->left )
+			insertsubT.push(SearchStackEntry(startN->left, rect, 0));
+
+		if ( startN->right )
+			insertsubT.push(SearchStackEntry(startN->right, rect, 0));
+
 	} while(!insertsubT.empty());
 }
 
@@ -334,9 +332,9 @@ bool RectKdTree<geoO, geoId>::search ( shared_ptr<std::vector<geoId> >& result, 
 	if (!root)
 		return false;
 	FixedRect current = FixedRect (std::numeric_limits<coord_t>::min(),
-								   std::numeric_limits<coord_t>::min(),
-								   std::numeric_limits<coord_t>::max(),
-								   std::numeric_limits<coord_t>::max());
+			std::numeric_limits<coord_t>::min(),
+			std::numeric_limits<coord_t>::max(),
+			std::numeric_limits<coord_t>::max());
 	bool containsData = searchKdTree ( result, rect, current, 0, returnOnFirst);
 	if (returnOnFirst) {
 		return containsData;
@@ -367,9 +365,6 @@ bool RectKdTree<geoO, geoId>::searchKdTree (boost::shared_ptr<std::vector<geoId>
 		shared_ptr<kdNode> startN = se.node;
 		int depth = se.depth;
 
-
-
-
 		if ( ! ( startN->left ) && ! ( startN->right ) ) {
 			for (unsigned int i = 0; i < startN->ids.size(); i++)
 				if (rects[startN->ids[i].getRaw()].intersects(rect)) {
@@ -384,7 +379,7 @@ bool RectKdTree<geoO, geoId>::searchKdTree (boost::shared_ptr<std::vector<geoId>
 				leftRect.maxY = startN->refPoint.y;
 				rightRect.minY = startN->refPoint.y;
 			}
-	
+
 			if(startN->left) {
 				if ( rect.contains ( leftRect ) ) {
 					if (returnOnFirst) return true;
@@ -393,7 +388,7 @@ bool RectKdTree<geoO, geoId>::searchKdTree (boost::shared_ptr<std::vector<geoId>
 					stack.push(SearchStackEntry(startN->left, leftRect, depth+1));
 				}
 			}
-	
+
 			if(startN->right) {
 				if ( rect.contains ( rightRect ) ) {
 					if (returnOnFirst) return true;
@@ -405,7 +400,6 @@ bool RectKdTree<geoO, geoId>::searchKdTree (boost::shared_ptr<std::vector<geoId>
 		}
 	} while (!stack.empty());
 
-	
 	return returnOnFirst ? false : result->size();
 }
 
@@ -469,7 +463,6 @@ template<class geoO, class geoId>
 bool RectKdTree<geoO, geoId>::operatorSortX ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b ) {
 	return (a->refPoint.x < b->refPoint.x);
 }
-
 
 template<class geoO, class geoId>
 bool RectKdTree<geoO, geoId>::operatorSortGeoId ( const geoId& a, const geoId& b ) {

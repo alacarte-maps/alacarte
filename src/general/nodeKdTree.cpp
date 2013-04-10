@@ -44,14 +44,14 @@ NodeKdTree::NodeKdTree ( const shared_ptr<std::vector<Node> >& ns ) {
 
 	log.infoStream() << " - creating leaves";
 	nodes.reserve(ns->size());
-    for (unsigned int i = 0; i < ns->size(); i++ ) {
-            boost::shared_ptr<kdNode> nodeKD = boost::make_shared<kdNode>();
-            nodeKD->ids.push_back(NodeId(i));
-            nodeKD->refPoints.push_back(( *ns ) [i].getLocation());
-            nodeKD->left = shared_ptr<kdNode>() ;
-            nodeKD->right = shared_ptr<kdNode>() ;
-            nodes.push_back ( nodeKD );
-    }
+	for (unsigned int i = 0; i < ns->size(); i++ ) {
+		boost::shared_ptr<kdNode> nodeKD = boost::make_shared<kdNode>();
+		nodeKD->ids.push_back(NodeId(i));
+		nodeKD->refPoints.push_back(( *ns ) [i].getLocation());
+		nodeKD->left = shared_ptr<kdNode>() ;
+		nodeKD->right = shared_ptr<kdNode>() ;
+		nodes.push_back ( nodeKD );
+	}
 }
 
 void NodeKdTree::buildTree() {
@@ -140,11 +140,11 @@ bool NodeKdTree::search ( boost::shared_ptr<std::vector<NodeId> >& result, const
 	if (!root) return false;
 
 	FixedRect globalRect = FixedRect (
-		 std::numeric_limits<coord_t>::min(),
-		 std::numeric_limits<coord_t>::min(),
-		 std::numeric_limits<coord_t>::max(),
-		 std::numeric_limits<coord_t>::max()
-					  );
+			std::numeric_limits<coord_t>::min(),
+			std::numeric_limits<coord_t>::min(),
+			std::numeric_limits<coord_t>::max(),
+			std::numeric_limits<coord_t>::max()
+			);
 
 	std::stack< SearchStackEntry> stack;
 	stack.push( SearchStackEntry(root, globalRect, 0));
@@ -238,25 +238,25 @@ bool NodeKdTree::contains(const FixedRect& rect) const
  * This Methode finds the Point of a vector of Points, which is best to split in Order to get a balaced tree
  */
 FixedPoint NodeKdTree::getMedian ( const std::vector<shared_ptr<kdNode > > &  points ) {
-    FixedPoint helpP;
+	FixedPoint helpP;
 	if (points.size() < 2)
 		return points[0]->refPoints[0];
 
-    if ( points.size() %2 == 0 ) {   // even number of values
-        helpP.x = ( points[points.size() / 2 - 1]->refPoints[0].x + points[ points.size() /2]->refPoints[0].x ) /2;			 // takes the Point which is in the Middle of the vector  zB: a,b,c -> b
-        helpP.y = ( points[points.size() / 2 - 1]->refPoints[0].y + points[ points.size() /2]->refPoints[0].y ) /2;
-    } else if ( points.size() %2 == 1 ) { // uneven number of values	// take the Point right of the middle zB: length: 4  a,b,c,d  4/2  -1 = 1  -> take second element of vector -> b
-        helpP.x  = points[ ( points.size() - 1 ) /2 ]->refPoints[0].x;
-        helpP.y  = points[ ( points.size() - 1 ) /2 ]->refPoints[0].y;
-    }
+	if ( points.size() %2 == 0 ) {   // even number of values
+		helpP.x = ( points[points.size() / 2 - 1]->refPoints[0].x + points[ points.size() /2]->refPoints[0].x ) /2;			 // takes the Point which is in the Middle of the vector  zB: a,b,c -> b
+		helpP.y = ( points[points.size() / 2 - 1]->refPoints[0].y + points[ points.size() /2]->refPoints[0].y ) /2;
+	} else if ( points.size() %2 == 1 ) { // uneven number of values	// take the Point right of the middle zB: length: 4  a,b,c,d  4/2  -1 = 1  -> take second element of vector -> b
+		helpP.x  = points[ ( points.size() - 1 ) /2 ]->refPoints[0].x;
+		helpP.y  = points[ ( points.size() - 1 ) /2 ]->refPoints[0].y;
+	}
 
-    return helpP;
+	return helpP;
 
 }
 
 bool NodeKdTree::operatorSortY ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b ) {
-   return (a->refPoints[0].y < b->refPoints[0].y);
+	return (a->refPoints[0].y < b->refPoints[0].y);
 }
 bool NodeKdTree::operatorSortX ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b ) {
-    return (a->refPoints[0].x < b->refPoints[0].x);
+	return (a->refPoints[0].x < b->refPoints[0].x);
 }
