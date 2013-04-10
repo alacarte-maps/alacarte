@@ -24,6 +24,8 @@
 
 #include "settings.hpp"
 
+class StylesheetManager;
+
 /**
  * @brief A TileIdentifier identifies a Tile
  **/
@@ -45,8 +47,9 @@ public:
 private:
 	static const string FormatString[enumSize];
 public:
-	static shared_ptr<TileIdentifier> Create(const string& url);
-	static shared_ptr<TileIdentifier> CreateNoneDataTID(const shared_ptr<TileIdentifier>& ti);
+	static shared_ptr<TileIdentifier> Create(const string& url, shared_ptr<StylesheetManager> StylesheetManager);
+	static shared_ptr<TileIdentifier> CreateEmptyTID(const string& stylesheetPath,
+												 	 TileIdentifier::Format format);
 	static int stringToInt(const char* c);
 
 	TileIdentifier(int x, int y, int zoom, string styleSheetpath, Format imageFormat);
@@ -61,7 +64,7 @@ public:
 	TESTABLE bool isDefaultIdentifier() const;
 	TESTABLE bool isNoneDataIdentifier() const;
 
-private:
+protected:
 	//! x coordinate of the Tile.
 	int x;
 	//! y coordinate of the Tile.
@@ -75,5 +78,7 @@ private:
 };
 
 std::ostream& operator<<(std::ostream& out, const TileIdentifier& ti);
+std::size_t hash_value(const TileIdentifier &ti);
+bool operator==(const TileIdentifier &a, const TileIdentifier &b);
 
 #endif

@@ -42,7 +42,7 @@ struct cache_test
 		shared_ptr<Cache> cache = shared_ptr<Cache>(new Cache(config));
 		// Delete not existing cache.
 		BOOST_CHECK_NO_THROW(cache->deleteTiles("nothing"));
-		shared_ptr<TileIdentifier> ti = TileIdentifier::Create("/default/0/0/0.png");
+		shared_ptr<TileIdentifier> ti = boost::make_shared<TileIdentifier>(0, 0, 0, "default", TileIdentifier::Format::PNG);
 		BOOST_CHECK_NO_THROW(cache->getTile(ti));
 		// Delete existing cache.
 		BOOST_CHECK_NO_THROW(cache->deleteTiles("/default"));
@@ -68,9 +68,7 @@ struct cache_test
 		BOOST_CHECK_NO_THROW(cache->getTile(ti1));
 		// Access a lot of tiles to bring tile ^ to evict.
 		for(int i = 1; i < 20; i++) {
-			std::stringstream path;
-			path << "/default/15/1/" << i << ".png";
-			shared_ptr<TileIdentifier> ti2 = TileIdentifier::Create(path.str().c_str());
+			shared_ptr<TileIdentifier> ti2 = boost::make_shared<TileIdentifier>(1, i, 15, "default", TileIdentifier::Format::PNG);
 			BOOST_CHECK_NO_THROW(cache->getTile(ti2));
 		}
 		// Main tile should not be evicted, because its not rendered yet.So check if theres no image on harddisk
@@ -79,9 +77,7 @@ struct cache_test
 		tile->setImage(image);
 		// One more time access many tile to evict main tile.
 		for(int i = 1; i < 20; i++) {
-			std::stringstream path;
-			path << "/default/15/1/" << i << ".png";
-			shared_ptr<TileIdentifier> ti2 = TileIdentifier::Create(path.str().c_str());
+			shared_ptr<TileIdentifier> ti2 = boost::make_shared<TileIdentifier>(1, i, 15, "default", TileIdentifier::Format::PNG);
 			BOOST_CHECK_NO_THROW(cache->getTile(ti2));
 		}
 		// Check if main tile has been written to harddrive.

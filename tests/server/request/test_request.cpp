@@ -26,8 +26,10 @@ struct test_request
     test_request()
 	{
 		DefaultConfig = TestConfig::Create()
-		->add<string>(opt::server::path_to_geodata, 	(getTestDirectory() / "/input/karlsruhe_big.carte").string());
+		->add<string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").string());
 		
+		Statistic::Init(DefaultConfig);
+
 		shared_ptr<Geodata> geodata = boost::make_shared<Geodata>();
 		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<string>(opt::server::path_to_geodata)));
 		geodata->load(DefaultConfig->get<string>(opt::server::path_to_geodata));

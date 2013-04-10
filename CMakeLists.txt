@@ -31,7 +31,7 @@ pkg_check_modules(SigC++ sigc++-2.0)
 add_subdirectory(extras/pch)
 add_subdirectory(extras/log4cpp)
 
-set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests/data")
+set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
 
 link_directories(${Boost_LIBRARY_DIRS} ${Cairomm_LIBRARY_DIRS})
 
@@ -84,7 +84,6 @@ ADD_DEFINITIONS(-DALACARTE_USE_PRECOMPILED_HEADER)
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 ADD_DEFINITIONS(${LOG4CPP_DEFINITIONS})
 ADD_DEFINITIONS(-DStatistic_Activated)
-ADD_DEFINITIONS(-DStatistic_Less_Memory)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -135,6 +134,25 @@ IF(GMOCK_FOUND)
 	target_link_libraries(unitTests_mapcss 		${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} ${Cairomm_LIBRARIES} ${SigC++_LIBRARIES} pthread gmock gtest)
 ENDIF(GMOCK_FOUND)
 target_link_libraries(unitTests_eval 		${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} ${Cairomm_LIBRARIES} ${SigC++_LIBRARIES} pthread)
+
+set(test_files "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte")
+
+add_custom_command(
+	OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte"
+	COMMAND alacarte-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte"
+)
+add_custom_command(
+	OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte"
+	COMMAND alacarte-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte"
+)
+add_custom_command(
+	OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte"
+	COMMAND alacarte-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte"
+)
+
+add_custom_target(tests
+	DEPENDS alacarte-importer unitTests_server unitTests_importer unitTests_general unitTests_parser unitTests_utils ${test_files}
+)
 
 
 install(TARGETS alacarte-server RUNTIME DESTINATION bin)

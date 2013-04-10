@@ -42,6 +42,8 @@
 #include "server/render_attributes.hpp"
 #include "server/style.hpp"
 #include "server/tile.hpp"
+#include "server/meta_tile.hpp"
+#include "server/meta_identifier.hpp"
 #include "server/tile_identifier.hpp"
 
 #include "server/renderer/renderer.hpp"
@@ -59,16 +61,21 @@ boost::mutex Renderer::renderLock;
 class Renderer::PNGWriter : public Renderer::ImageWriter {
 private:
 	Tile::ImageType buffer;
+	int width;
+	int height;
 
-	Cairo::ErrorStatus cairoWriter(const unsigned char* data,
+	static Cairo::ErrorStatus cairoWriter(void* closure, const unsigned char* data,
 								   unsigned int length)
 	{
-		buffer->insert(buffer->end(), data, data+length);
+		Tile::ImageType::element_type* b = (Tile::ImageType::element_type*) closure;
+		b->insert(b->end(), data, data+length);
 		return CAIRO_STATUS_SUCCESS;
 	}
 
 public:
-	PNGWriter()
+	PNGWriter(int width, int height)
+		: width(width)
+		, height(height)
 	{
 	}
 
@@ -76,24 +83,27 @@ public:
 	virtual Cairo::RefPtr<Cairo::Surface> createSurface(const Tile::ImageType& buffer)
 	{
 		this->buffer = buffer;
-		return Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, TILE_SIZE, TILE_SIZE);
+		return Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
 	}
 
 	virtual Cairo::RefPtr<Cairo::Surface> createSurface()
 	{
-		return Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, TILE_SIZE, TILE_SIZE);
+		return Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
 	}
 
 	virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface)
 	{
 		surface->flush();
-		surface->write_to_png_stream(sigc::mem_fun(*this, &Renderer::PNGWriter::cairoWriter));
+		//surface->write_to_png_stream(sigc::mem_fun(*this, &Renderer::PNGWriter::cairoWriter));
+		cairo_surface_write_to_png_stream(surface->cobj(), cairoWriter, (void*) buffer.get());
 	}
 };
 
 class Renderer::SVGWriter : public Renderer::ImageWriter {
 private:
 	Tile::ImageType buffer;
+	int width;
+	int height;
 
 	Cairo::ErrorStatus cairoWriter(const unsigned char* data,
 								   unsigned int length)
@@ -109,7 +119,9 @@ private:
 	}
 
 public:
-	SVGWriter()
+	SVGWriter(int width, int height)
+		: width(width)
+		, height(height)
 	{
 	}
 
@@ -119,14 +131,14 @@ public:
 		this->buffer = buffer;
 		return Cairo::SvgSurface::create_for_stream(sigc::mem_fun(*this,
 									 &Renderer::SVGWriter::cairoWriter),
-									 TILE_SIZE, TILE_SIZE);
+									 width, height);
 	}
 
 	virtual Cairo::RefPtr<Cairo::Surface> createSurface()
 	{
 		return Cairo::SvgSurface::create_for_stream(sigc::mem_fun(*this,
 									 &Renderer::SVGWriter::doNothing),
-									 TILE_SIZE, TILE_SIZE);
+									 width, height);
 	}
 
 	virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface)
@@ -201,7 +213,7 @@ bool CompareLabels(const shared_ptr<LabelType>& first, const shared_ptr<LabelTyp
 
 
 Renderer::Renderer(const shared_ptr<Geodata>& data)
-	: 	data(data), bounds(FloatRect(0.0, 0.0, TILE_SIZE, TILE_SIZE))
+	: 	data(data), bounds(FloatRect(0.0, 0.0, TILE_SIZE*META_TILE_SIZE, TILE_SIZE*META_TILE_SIZE))
 {
 	double borderX = bounds.getWidth() * TILE_OVERLAP;
 	double borderY = bounds.getHeight() * TILE_OVERLAP;
@@ -255,14 +267,15 @@ void Renderer::printTileId(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->restore();
 }
 
-shared_ptr<Renderer::ImageWriter> Renderer::getWriter(TileIdentifier::Format format) const {
+shared_ptr<Renderer::ImageWriter> Renderer::getWriter(TileIdentifier::Format format,
+													  int width, int height) const {
 	shared_ptr<ImageWriter> writer;
 	switch (format) {
 		case TileIdentifier::Format::PNG:
-			writer = boost::dynamic_pointer_cast<ImageWriter>(boost::make_shared<PNGWriter>());
+			writer = boost::dynamic_pointer_cast<ImageWriter>(boost::make_shared<PNGWriter>(width, height));
 			break;
 		case TileIdentifier::Format::SVG:
-			writer = boost::dynamic_pointer_cast<ImageWriter>(boost::make_shared<SVGWriter>());
+			writer = boost::dynamic_pointer_cast<ImageWriter>(boost::make_shared<SVGWriter>(width, height));
 			break;
 		default:
 			// TODO add exception
@@ -310,7 +323,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 							 std::vector<WayId>& ways,
 							 std::vector<RelId>& relations,
 							 std::list<shared_ptr<Label>>& labels,
-							 std::list<shared_ptr<Shield>>& shields)
+							 std::list<shared_ptr<Shield>>& shields) const
 {
 	const boost::unordered_map<WayId, Style*> &wayStyles = map.getWayMap();
 	const boost::unordered_map<NodeId, Style*> &nodeStyles = map.getNodeMap();
@@ -396,7 +409,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 
 //! Only renders the shield background, the text is rendered in renderLabels
 void Renderer::renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
-							 std::vector<shared_ptr<Shield> >& shields)
+							 std::vector<shared_ptr<Shield> >& shields) const
 {
 	cr->save();
 
@@ -447,7 +460,7 @@ void Renderer::renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
 
 template <typename LabelType>
 void Renderer::renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
-							std::vector<shared_ptr<LabelType> >& labels)
+							std::vector<shared_ptr<LabelType> >& labels) const
 {
 	cr->save();
 
@@ -590,25 +603,23 @@ void Renderer::compositeLayers(CairoLayer layers[]) const
 	cr->restore();
 }
 
-
-void Renderer::setupLayers(CairoLayer layers[], RenderAttributes& map,
-						   const shared_ptr<ImageWriter>& writer,
-						   const Tile::ImageType& buffer) const
+void Renderer::paintBackground(const CairoLayer& layer, const Style* canvasStyle) const
 {
-	const Style* s = map.getCanvasStyle();
-
-	layers[LAYER_FILL] = CairoLayer(writer, buffer);
-	layers[LAYER_FILL].cr->set_source_color(s->fill_color);
-	if (s->fill_image.str().size() > 0)
+	layer.cr->set_source_color(canvasStyle->fill_color);
+	const string& bg = canvasStyle->fill_image.str();
+	if (bg.size() > 0)
 	{
-		Cairo::RefPtr<Cairo::ImageSurface> image = Cairo::ImageSurface::create_from_png(s->fill_image.str());
+		Cairo::RefPtr<Cairo::ImageSurface> image = Cairo::ImageSurface::create_from_png(bg);
 		Cairo::RefPtr<Cairo::SurfacePattern> pattern = Cairo::SurfacePattern::create(image);
 		pattern->set_extend(Cairo::Extend::EXTEND_REPEAT);
-		layers[LAYER_FILL].cr->set_source(pattern);
+		layer.cr->set_source(pattern);
 	}
-	layers[LAYER_FILL].cr->paint();
+	layer.cr->paint();
+}
 
-	for (int i = LAYER_FILL + 1; i < LAYER_NUM; i++) {
+void Renderer::setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& writer) const
+{
+	for (int i = 0; i < LAYER_NUM; i++) {
 		layers[i] = CairoLayer(writer);
 		layers[i].clear();
 	}
@@ -621,6 +632,34 @@ void Renderer::setupLayers(CairoLayer layers[], RenderAttributes& map,
 	Cairo::RefPtr<Cairo::ToyFontFace> font = Cairo::ToyFontFace::create(DEFAULT_FONT,
 						Cairo::FONT_SLANT_NORMAL, Cairo::FONT_WEIGHT_NORMAL);
 	layers[LAYER_LABELS].cr->set_font_face(font);
+}
+
+void Renderer::renderEmptyTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
+{
+	const shared_ptr<TileIdentifier>& id = tile->getIdentifier();
+	shared_ptr<ImageWriter> writer = getWriter(id->getImageFormat(), TILE_SIZE, TILE_SIZE);
+
+	Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
+	// optimized for png images in the default stylesheet
+	buffer->reserve(10*1024);
+
+#if OLD_CAIRO
+	renderLock.lock();
+#endif
+
+	CairoLayer layer(writer, buffer);
+	paintBackground(layer, map.getCanvasStyle());
+
+#if DEBUG_BUILD
+	printTileId(layers[LAYER_LABELS].cr, tile->getIdentifier());
+#endif
+
+#if OLD_CAIRO
+	renderLock.unlock();
+#endif
+
+	writer->write(layer.surface);
+	tile->setImage(buffer);
 }
 
 void Renderer::renderArea(const FixedRect& area,
@@ -662,37 +701,63 @@ void Renderer::renderArea(const FixedRect& area,
 	compositeLayers(layers);
 }
 
-void Renderer::renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile)
+
+void Renderer::sliceTile(const shared_ptr<MetaTile>& meta, const shared_ptr<Tile>& tile) const
 {
-	shared_ptr<TileIdentifier> id = tile->getIdentifier();
+	const shared_ptr<MetaIdentifier>& mid = meta->getIdentifier();
+	const Cairo::RefPtr<Cairo::Surface>& surface = meta->getData();
+	int tx0 = mid->getX();
+	int ty0 = mid->getY();
 
-	shared_ptr<ImageWriter> writer = getWriter(id->getImageFormat());
+	surface->flush();
 
+	shared_ptr<ImageWriter> writer = getWriter(mid->getImageFormat(), TILE_SIZE, TILE_SIZE);
 	Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
 	// optimized for png images in the default stylesheet
-	buffer->reserve(100*1024);
+	buffer->reserve(10*1024);
+	CairoLayer layer = CairoLayer(writer, buffer);
+
+	const shared_ptr<TileIdentifier>& tid = tile->getIdentifier();
+	int dx = (tid->getX() - tx0) * TILE_SIZE;
+	int dy = (tid->getY() - ty0) * TILE_SIZE;
+
+	layer.cr->set_source(surface, -dx, -dy);
+	layer.cr->paint();
+
+	writer->write(layer.surface);
+	tile->setImage(buffer);
+}
+
+void Renderer::renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>& tile)
+{
+	const shared_ptr<MetaIdentifier>& id = tile->getIdentifier();
+	int width = id->getWidth() * TILE_SIZE;
+	int height = id->getHeight() * TILE_SIZE;
+	int zoom = id->getZoom();
+	TileIdentifier::Format format = id->getIdentifiers()[0]->getImageFormat();
+
+	shared_ptr<ImageWriter> writer = getWriter(format, width, height);
 
 	FixedRect area;
-	tileToMercator(id->getX(),   id->getY(),   id->getZoom(), area.minX, area.minY);
-	tileToMercator(id->getX()+1, id->getY()+1, id->getZoom(), area.maxX, area.maxY);
+	tileToMercator(id->getX(), id->getY(), zoom, area.minX, area.minY);
+	tileToMercator(id->getX() + id->getWidth(),
+				   id->getY() + id->getHeight(),
+				   zoom, area.maxX, area.maxY);
 
 #if OLD_CAIRO
 	renderLock.lock();
 #endif
 
 	CairoLayer layers[LAYER_NUM];
-	setupLayers(layers, map, writer, buffer);
+	setupLayers(layers, writer);
 
-	renderArea(area, layers, TILE_SIZE, TILE_SIZE, map);
+	paintBackground(layers[0], map.getCanvasStyle());
 
-#if DEBUG_BUILD
-	printTileId(layers[LAYER_LABELS].cr, tile->getIdentifier());
-#endif
+	renderArea(area, layers, width, height, map);
 
 #if OLD_CAIRO
 	renderLock.unlock();
 #endif
 
-	writer->write(layers[0].surface);
-	tile->setImage(buffer);
+	tile->setData(layers[0].surface);
 }

@@ -25,10 +25,9 @@
 #include <boost/asio.hpp>
 #include <boost/thread/thread.hpp>
 
-#include "settings.hpp"
+#include "server/job.hpp"
 
-class UserRequestJob;
-class PreRenderJob;
+#include "settings.hpp"
 
 class Configuration;
 class Cache;
@@ -47,14 +46,16 @@ public:
 	void stop();
 
 	TESTABLE void enqueue(const shared_ptr<HttpRequest>& r);
-	TESTABLE void enqueue(const shared_ptr<TileIdentifier>& ti);
+	TESTABLE void enqueue(const shared_ptr<MetaIdentifier>& ti);
 	TESTABLE shared_ptr<Geodata> getGeodata() const;
 	TESTABLE shared_ptr<StylesheetManager> getStylesheetManager() const;
 	TESTABLE shared_ptr<Cache> getCache() const;
 	TESTABLE shared_ptr<Renderer> getRenderer() const;
 
 private:
-	void processNextJob();
+	void processNextRequest();
+	bool nextUserRequest();
+	bool nextPreRenderRequest();
 	
 private:
 	shared_ptr<Geodata> data;
@@ -66,15 +67,21 @@ private:
 	boost::asio::io_service jobPool;
 	boost::asio::io_service::work preventStop;
 	std::vector< shared_ptr<boost::thread> > workers;
-	
+
 	boost::mutex userRJMutex;
 	boost::mutex preRJMutex;
-	std::queue< shared_ptr<UserRequestJob> > userRequestJobs;
-	std::queue< shared_ptr<PreRenderJob> > preRenderJobs;
-	
+	std::queue< shared_ptr<HttpRequest> > userRequests;
+	std::queue< shared_ptr<MetaIdentifier> > preRenderRequests;
+
+	//! thread-safe queue of running jobs
+	class RunningQueue;
+	scoped_ptr<RunningQueue> running;
+
 	unsigned int currentPrerenderingThreads;
-	
+
 	log4cpp::Category& log;
+
+	timeval prerender_start, prerender_stop;
 };
 
 

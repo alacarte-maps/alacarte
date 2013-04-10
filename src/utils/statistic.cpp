@@ -23,34 +23,39 @@
 #include "utils/statistic.hpp"
 #include <general/configuration.hpp>
 
+#define DEBUG(...) (log4cpp::Category::getInstance("Statistic").info(__VA_ARGS__));
+
+shared_ptr<Statistic> Statistic::instance;
+
 Statistic::duration Statistic::JobMeasurement::getDuration(int i)
 {
 	return stopTime[i] - startTime[i];
 }
 
-Statistic::Statistic()
+Statistic::Statistic(const shared_ptr<Configuration>& config)
+	: config(config)
 {
-#ifndef Statistic_Less_Memory
-	log4cpp::Category &log = log4cpp::Category::getInstance("Statistic");
-	log.infoStream() << "Statistic_Less_Memory is NOT defined, alaCarte requires a lot of Memory!";
-#endif
 }
 
-shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(int zoom)
+Statistic::~Statistic()
+{
+	if (config->has(opt::server::performance_log))
+		writeToFile(config->get<string>(opt::server::performance_log).c_str());
+}
+
+shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const string& stylesheet, int zoom)
 {
 #ifdef Statistic_Activated
-	shared_ptr<Statistic::JobMeasurement> jm = boost::make_shared<JobMeasurement>(zoom);
+	shared_ptr<Statistic::JobMeasurement> jm = boost::make_shared<JobMeasurement>(stylesheet, zoom);
 	jm->jobStartTime = boost::posix_time::microsec_clock::universal_time();
-	#ifndef Statistic_Less_Memory
-		lock.lock();
-		measurements.push_back(jm);
-		lock.unlock();
-	#endif
 	return jm;
 #endif
 	return boost::make_shared<JobMeasurement>();
 }
-void Statistic::setStats(shared_ptr<Statistic::JobMeasurement>& job, unsigned int nodes, unsigned int ways, unsigned int relations)
+void Statistic::setStats(shared_ptr<Statistic::JobMeasurement>& job,
+						 unsigned int nodes,
+						 unsigned int ways,
+						 unsigned int relations)
 {
 #ifdef Statistic_Activated
 	job->nodes = nodes;
@@ -75,63 +80,77 @@ void Statistic::stop(shared_ptr<Statistic::JobMeasurement>& job, Component compo
 void Statistic::printStatistic() const
 {
 #ifdef Statistic_Activated
-#ifndef Statistic_Less_Memory
-	unsigned int summe[Component::Size][19]; //Component , zoom 0 to 18
-	unsigned int summanden[Component::Size][19];
-	
-	for(int a = 0; a < Component::Size; a++) {
-		for(int b = 0; b < 19; b++) {
-			summe[a][b] = 0;
-			summanden[a][b] = 0;
-		}
-	}
-	
-	for(const shared_ptr<JobMeasurement> jm : measurements) {
-		for(int i = 0; i < Component::Size; i++) {
-			if(jm->stopped[i]) {
-				summe[i][jm->zoom] += jm->getDuration(i).total_microseconds();
-				summanden[i][jm->zoom]++;
-			}
-		}
-	}
 	std::stringstream ss;
 	for(int c = 0; c < Component::Size; c++) {
 		ss << "\n" << componentToName((Component)c) << ": \n";
 		for(int z = 0; z < 19; z++) {
-			if (summanden[c][z] == 0) continue;
-			summe[c][z] = summe[c][z]/(float)summanden[c][z];
-			ss << summanden[c][z] << " Measurements on Zoom: " << z << ", average: ";
-			if(summe[c][z] >= 1000) {
-				ss << summe[c][z]/1000.0 << " Milliseconds\n";
+			uint32_t n = componentAvgs[c].count[z];
+			if (n == 0)
+				continue;
+			float avg = componentAvgs[c].average[z];
+			ss << n << " Measurements on Zoom: " << z << ", average: ";
+			if(avg >= 1000) {
+				ss << avg/1000.0 << " ms\n";
 			} else {
-				ss <<summe[c][z] << " Microseconds\n";
+				ss << avg << " µs\n";
 			}
 		}
 	}
-	
+
 	log4cpp::Category &log = log4cpp::Category::getInstance("Statistic");
 	log.infoStream() << ss.str();
-#endif //Statistic_Less_Memory
 #endif
 }
 
-void Statistic::writeToFile(shared_ptr<Statistic::JobMeasurement>& job, const string& stylesheet, const shared_ptr<Configuration>& config) const
+void Statistic::finished(shared_ptr<Statistic::JobMeasurement>& job)
 {
 #ifdef Statistic_Activated
-	if (!config->has(opt::server::performance_log)) return;
-	std::stringstream ss;
-	ss << "JobStart " << job->jobStartTime.time_of_day().total_microseconds() << " ";
-	for(int i = 0; i < Component::Size; i++) {
-		if(job->stopped[i])
-			ss << componentToName((Component)i) << " " << job->getDuration(i).total_microseconds() << " ";
+	avgLock.lock();
+	uint32_t n;
+	for(int c = 0; c < Component::Size; c++) {
+		if (!job->stopped[c])
+			continue;
+
+		AvgMeasurement& m = componentAvgs[c];
+
+		n = m.count[job->zoom];
+		m.average[job->zoom] *= n/(float)(n + 1.0f);
+		m.average[job->zoom] += job->getDuration(c).total_microseconds() / (float)(n + 1.0f);
+		m.count[job->zoom]++;
 	}
-	ss << "Stylesheet " << stylesheet << " Zoom " << job->zoom << " Nodes " << job->nodes << " Ways " << job->ways << " Relations " << job->relations << "\n";
-	std::ofstream file;
-	//file.open("../doc/statistics/performance.log", std::fstream::app);
-	file.open(config->get<string>(opt::server::performance_log).c_str(), std::fstream::app);	
-	file << ss.str();
-	file.close();
+	avgLock.unlock();
+
+	if (!config->has(opt::server::performance_log))
+		return;
+
+	boost::mutex::scoped_lock scoped(bufferLock);
+
+	measurementsBuffer.push_back(job);
+	if(measurementsBuffer.size() > 100)
+	{
+		writeToFile(config->get<string>(opt::server::performance_log).c_str());
+		measurementsBuffer.clear();
+	}
 #endif
+}
+
+void Statistic::writeToFile(const char* filename)
+{
+	std::ofstream file;
+	file.open(filename, std::fstream::app);
+
+	for (auto& job : measurementsBuffer) {
+		std::stringstream ss;
+		ss << "JobStart " << job->jobStartTime.time_of_day().total_microseconds() << " ";
+		for(int i = 0; i < Component::Size; i++) {
+			if(job->stopped[i])
+				ss << componentToName((Component)i) << " " << job->getDuration(i).total_microseconds() << " ";
+		}
+		ss << "Stylesheet " << job->stylesheet << " Zoom " << job->zoom << " Nodes " << job->nodes << " Ways " << job->ways << " Relations " << job->relations << "\n";
+		file << ss.str();
+	}
+
+	file.close();
 }
 
 string Statistic::componentToName(Component component) const
@@ -146,5 +165,6 @@ string Statistic::componentToName(Component component) const
 		case StylesheetMatch: 	return "StylesheetMatch";
 		case Renderer: 			return "Renderer";
 		case GeoContainsData: 	return "GeoContainsData";
+		case Slicing: 			return "Slicing";
 	}
 }

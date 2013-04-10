@@ -31,6 +31,8 @@
 
 #define TILE_SIZE 256
 
+class MetaTile;
+class MetaIdentifier;
 class RenderAttributes;
 class Geodata;
 class GeoObject;
@@ -47,8 +49,9 @@ public:
 	Renderer(const shared_ptr<Geodata>& data);
 	~Renderer();
 
-	TESTABLE void renderTile(RenderAttributes& map, const shared_ptr<Tile>& tile);
-
+	TESTABLE void renderEmptyTile(RenderAttributes& map, const shared_ptr<Tile>& tile);
+	TESTABLE void renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>& tile);
+	TESTABLE void sliceTile(const shared_ptr<MetaTile>& meta, const shared_ptr<Tile>& tile) const;
 
 protected:
 	void placeLabels(const std::list<shared_ptr<Label> >& labels,
@@ -88,24 +91,23 @@ private:
 		LAYER_NUM
 	};
 
-	shared_ptr<ImageWriter> getWriter(TileIdentifier::Format format) const;
+	shared_ptr<ImageWriter> getWriter(TileIdentifier::Format format, int width, int height) const;
 	void printTileId(const Cairo::RefPtr<Cairo::Context>& cr, const shared_ptr<TileIdentifier>& id);
 	void sortObjects(RenderAttributes& map, std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations) const;
 	bool isCutOff(const FloatRect& box, const FloatRect& owner);
 	void compositeLayers(CairoLayer layers[]) const;
-	void setupLayers(CairoLayer layers[], RenderAttributes& map,
-					 const shared_ptr<ImageWriter>& writer,
-					 const Tile::ImageType& buffer) const;
+	void setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& writer) const;
+	void paintBackground(const CairoLayer& layer, const Style* canvasStyle) const;
 	void renderObjects(CairoLayer layers[], RenderAttributes& map,
 					   const Cairo::Matrix& transform,
 					   std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations,
 					   std::list<shared_ptr<Label>>& labels,
-					   std::list<shared_ptr<Shield>>& shields);
+					   std::list<shared_ptr<Shield>>& shields) const;
 	template <typename LabelType>
 	void renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
-					  std::vector<shared_ptr<LabelType> >& labels);
+					  std::vector<shared_ptr<LabelType> >& labels) const;
 	void renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
-					  std::vector<shared_ptr<Shield> >& shields);
+					  std::vector<shared_ptr<Shield> >& shields) const;
 	void renderArea(const FixedRect& area,
 					CairoLayer layers[],
 					double width, double height,
