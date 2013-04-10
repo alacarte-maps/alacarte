@@ -72,8 +72,9 @@ private:
 	CacheContainer AllCaches;
 	TileList RecentlyUsedList;
 	shared_ptr<Tile> DefaultTile;
-	void readFile(const Tile::ImageType& image, const string& filename);
-	void writeFile(shared_ptr<Tile> tile, const string& path);
+	void readFile(const Tile::ImageType& image, const boost::filesystem::path& filename);
+	void writeFile(shared_ptr<Tile> tile, const boost::filesystem::path& filename);
+	const boost::filesystem::path getTilePath(const shared_ptr<TileIdentifier>& ti);
 	
 	log4cpp::Category& log;
 };
