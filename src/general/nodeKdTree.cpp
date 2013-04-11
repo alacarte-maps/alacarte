@@ -39,16 +39,15 @@
 
 #define DEBUG(...) (log4cpp::Category::getInstance("NodeTree").info(__VA_ARGS__));
 
-void NodeKdTree::buildTree(const shared_ptr<std::vector<Node> >& ns)
+void NodeKdTree::buildTree()
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
-	log.infoStream() << "Nodes: " << ns->size();
+	log.infoStream() << "Nodes: " << points->size();
 
 	log.infoStream() << " - creating leaves";
 	std::vector<NodeId> nodes;
-	nodes.reserve(ns->size());
-	for (unsigned int i = 0; i < ns->size(); i++ ) {
-		points.push_back( ns->at(i).getLocation() );
+	nodes.reserve(points->size());
+	for (unsigned int i = 0; i < points->size(); i++ ) {
 		nodes.push_back ( NodeId(i) );
 	}
 
@@ -95,7 +94,7 @@ shared_ptr<NodeKdTree::kdNode> NodeKdTree::buildKDtree ( std::vector<NodeId>&  t
 		{
 			median =  getMedianX ( nodes );
 			for (auto id : nodes)
-				if ( points[id.getRaw()].x <= median )
+				if ( points->at(id.getRaw()).x <= median )
 					leftL.push_back ( id );
 				else
 					rightL.push_back ( id );
@@ -104,7 +103,7 @@ shared_ptr<NodeKdTree::kdNode> NodeKdTree::buildKDtree ( std::vector<NodeId>&  t
 		{
 			median =  getMedianY ( nodes );
 			for (auto id : nodes)
-				if ( points[id.getRaw()].y <= median )
+				if ( points->at(id.getRaw()).y <= median )
 					leftL.push_back ( id );
 				else
 					rightL.push_back ( id );
@@ -152,7 +151,7 @@ bool NodeKdTree::search ( boost::shared_ptr<std::vector<NodeId> >& result, const
 		// no child nodes
 		if (!node->left && !node->right) {
 			for (auto id : node->ids) {
-				if (searchRect.contains( points[id.getRaw()] )) {
+				if (searchRect.contains( points->at(id.getRaw()) )) {
 					if (returnOnFirst) return true;
 					result->push_back( id );
 				}
@@ -231,10 +230,10 @@ coord_t NodeKdTree::getMedianX ( std::vector<NodeId> & ids )
 	std::nth_element(ids.begin(), ids.begin()+n, ids.end(),
 		[&](NodeId a, NodeId b)
 		{
-			return (this->points[a.getRaw()].x < this->points[b.getRaw()].x);
+			return (this->points->at(a.getRaw()).x < this->points->at(b.getRaw()).x);
 		}
 	);
-	return points[ids[n].getRaw()].x;
+	return points->at(ids[n].getRaw()).x;
 }
 
 coord_t NodeKdTree::getMedianY ( std::vector<NodeId> & ids )
@@ -243,9 +242,9 @@ coord_t NodeKdTree::getMedianY ( std::vector<NodeId> & ids )
 	std::nth_element(ids.begin(), ids.begin()+n, ids.end(),
 		[&](NodeId a, NodeId b)
 		{
-			return (this->points[a.getRaw()].y < this->points[b.getRaw()].y);
+			return (this->points->at(a.getRaw()).y < this->points->at(b.getRaw()).y);
 		}
 	);
-	return points[ids[n].getRaw()].y;
+	return points->at(ids[n].getRaw()).y;
 }
 

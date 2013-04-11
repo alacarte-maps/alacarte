@@ -37,9 +37,9 @@ class Relation;
 
 class NodeKdTree {
 public:
-	NodeKdTree(){};
+	NodeKdTree(const shared_ptr<std::vector<FixedPoint>>& points) : points(points) {};
 
-	void buildTree ( const shared_ptr<std::vector<Node> >& ns );
+	void buildTree ( );
 	bool search ( boost::shared_ptr<std::vector<NodeId> >& result, const FixedRect& rect, bool returnOnFirst = false) const;
 	bool contains(const FixedRect& rect) const;
 
@@ -86,7 +86,7 @@ protected:
 	};
 
 	shared_ptr<kdNode> root;
-	std::vector<FixedPoint> points;
+	shared_ptr<std::vector<FixedPoint>> points;
 
 private:
 	shared_ptr<kdNode> buildKDtree ( std::vector<NodeId>&  toInsert );
@@ -97,6 +97,7 @@ private:
 	static bool operatorSortX ( NodeId a, NodeId b );
 
 private:
+	NodeKdTree(){};
 	friend class boost::serialization::access;
 	template<typename Archive>
 		void serialize(Archive &ar, const unsigned int version)

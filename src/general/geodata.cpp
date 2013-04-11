@@ -38,7 +38,7 @@
 #include "general/way.hpp"
 #include "general/relation.hpp"
 #include "general/nodeKdTree.hpp"
-#include "general/rectKdTree.hpp"
+#include "general/RTree.hpp"
 #include "utils/rect.hpp"
 #include <limits>
 
@@ -53,22 +53,37 @@ Geodata::~Geodata()
 
 void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
 {
-	this->nodesTree = boost::make_shared<NodeKdTree>();
-	nodesTree->buildTree(nodes);
+	shared_ptr<std::vector<FixedPoint>> points = boost::make_shared<std::vector<FixedPoint>>();
+	for (auto& n : *nodes)
+		points->push_back(n.getLocation());
+
+	this->nodesTree = boost::make_shared<NodeKdTree>(points);
+	nodesTree->buildTree();
+
 	this->nodes = nodes;
 }
 
 void Geodata::insertWays(const shared_ptr<std::vector<Way> >& ways)
 {
-	this->waysTree = boost::make_shared<RectKdTree<Way> >(ways, this);
-	waysTree->buildTree(ways);
+	shared_ptr<std::vector<FixedRect>> rects = boost::make_shared<std::vector<FixedRect>>();
+	for (auto& w : *ways)
+		rects->push_back(calculateBoundingBox(w));
+
+	this->waysTree = boost::make_shared<RTree<WayId> >(rects);
+	waysTree->buildTree();
+
 	this->ways = ways;
 }
 
 void Geodata::insertRelations(const shared_ptr<std::vector<Relation> >& relations)
-{	
-	this->relTree = boost::make_shared<RectKdTree<Relation> >(relations, this);
-	relTree->buildTree(relations);
+{
+	shared_ptr<std::vector<FixedRect>> rects = boost::make_shared<std::vector<FixedRect>>();
+	for (auto& r : *relations)
+		rects->push_back(calculateBoundingBox(r));
+
+	this->relTree = boost::make_shared<RTree<RelId>>(rects);
+	relTree->buildTree();
+
 	this->relations = relations;
 }
 
@@ -134,20 +149,19 @@ void Geodata::save(const string& path) const
 	oa << *this;
 }
 
-FixedRect Geodata::calculateBoundingBox(const Way* way) const {
-
-	return calculateBoundingBox(way->getNodeIDs());
+FixedRect Geodata::calculateBoundingBox(const Way& way) const
+{
+	return calculateBoundingBox(way.getNodeIDs());
 }
 
-FixedRect Geodata::calculateBoundingBox(const Relation* relation) const {
-
-
+FixedRect Geodata::calculateBoundingBox(const Relation& relation) const
+{
 	coord_t maxX = std::numeric_limits<coord_t>::min();
 	coord_t maxY = std::numeric_limits<coord_t>::min();
 	coord_t minX = std::numeric_limits<coord_t>::max();
 	coord_t minY = std::numeric_limits<coord_t>::max();
 
-	const std::vector<NodeId>& nodeIDs = relation->getNodeIDs();
+	const std::vector<NodeId>& nodeIDs = relation.getNodeIDs();
 	if (nodeIDs.size() > 0)
 	{
 		FixedRect result = calculateBoundingBox(nodeIDs);
@@ -157,13 +171,14 @@ FixedRect Geodata::calculateBoundingBox(const Relation* relation) const {
 		maxY = result.maxY;
 	}
 
-	const std::vector<WayId>& wayIDs = relation->getWayIDs();
-	for (WayId i : wayIDs) {
-		FixedRect bounds = calculateBoundingBox(getWay(i));
-		minX = std::min(minX, bounds.minX);
-		minY = std::min(minY, bounds.minY);
-		maxX = std::max(maxX, bounds.maxX);
-		maxY = std::max(maxY, bounds.maxY);
+	const std::vector<WayId>& wayIDs = relation.getWayIDs();
+	if (wayIDs.size() > 0)
+	{
+		FixedRect result = calculateBoundingBox(wayIDs);
+		minX = std::min(minX, result.minX);
+		minY = std::min(minY, result.minY);
+		maxX = std::max(maxX, result.maxX);
+		maxY = std::max(maxY, result.maxY);
 	}
 
 	if (maxX < minX || maxY < minY)
@@ -172,8 +187,8 @@ FixedRect Geodata::calculateBoundingBox(const Relation* relation) const {
 	return FixedRect(minX, minY, maxX, maxY);
 }
 
-FixedRect Geodata::calculateBoundingBox(const std::vector<NodeId>& nodeIDs) const {
-
+FixedRect Geodata::calculateBoundingBox(const std::vector<NodeId>& nodeIDs) const
+{
 	FixedPoint help;
 	coord_t maxX = std::numeric_limits<coord_t>::min();
 	coord_t maxY = std::numeric_limits<coord_t>::min();
@@ -181,12 +196,33 @@ FixedRect Geodata::calculateBoundingBox(const std::vector<NodeId>& nodeIDs) cons
 	coord_t minY = std::numeric_limits<coord_t>::max();
 
 	for (NodeId i : nodeIDs) {
-		help = getNode(i)->getLocation();
+		help = nodes->at(i.getRaw()).getLocation();
 
 		maxX = std::max(maxX, help.x);
 		maxY = std::max(maxY, help.y);
 		minX = std::min(minX, help.x);
 		minY = std::min(minY, help.y);
+	}
+
+	if (maxX < minX || maxY < minY)
+		return FixedRect(0, 0, 0, 0.0);
+
+	return FixedRect(minX, minY, maxX, maxY);
+}
+
+FixedRect Geodata::calculateBoundingBox(const std::vector<WayId>& wayIDs) const
+{
+	coord_t maxX = std::numeric_limits<coord_t>::min();
+	coord_t maxY = std::numeric_limits<coord_t>::min();
+	coord_t minX = std::numeric_limits<coord_t>::max();
+	coord_t minY = std::numeric_limits<coord_t>::max();
+
+	for (WayId i : wayIDs) {
+		FixedRect bounds = calculateBoundingBox(ways->at(i.getRaw()));
+		minX = std::min(minX, bounds.minX);
+		minY = std::min(minY, bounds.minY);
+		maxX = std::max(maxX, bounds.maxX);
+		maxY = std::max(maxY, bounds.maxY);
 	}
 
 	if (maxX < minX || maxY < minY)
