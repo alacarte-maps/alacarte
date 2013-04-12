@@ -37,6 +37,7 @@ For the old project files (mostly in German) see the [old project repository](ht
 * Boost (Spriti)
 * SigC++
 * libpng
+* log4cpp
 
 ## Useage ##
 
