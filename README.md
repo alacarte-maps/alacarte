@@ -5,7 +5,7 @@
 alaCarte is a tile renderer for OpenStreetMap data written in C++11, using Cairo for
 rendering and Boost-Spirit for [MapCSS](http://wiki.openstreetmap.org/wiki/MapCSS) parsing.
 
-The rendered tiles are served over HTTP using the [Slippy map tilename](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) convention.
+The rendered tiles are served over HTTP using the [Slippy map tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) convention.
 
 To compute which data is needed for rendering a tile, alaCarte uses a variant of
 a kd-Tree.
@@ -34,12 +34,12 @@ For the old project files (mostly in German) see the [old project repository](ht
 
 ## Dependencies ##
 * Cairo (>=1.12.0), Cairomm
-* Boost (Spriti)
+* Boost (Spirit)
 * SigC++
 * libpng
 * log4cpp
 
-## Useage ##
+## Usage ##
 
 (from build directory)
 
@@ -65,7 +65,7 @@ and logging.
 * Real database backend
 * Better font rendering (Pango?)
 * Unicode support
-* Bette label placement (e.g. above icons)
+* Better label placement (e.g. above icons)
 * Implement MapCSS-include
 * Better caching of fonts and icons
 * Option to "tune" imported data for specific stylesheets
