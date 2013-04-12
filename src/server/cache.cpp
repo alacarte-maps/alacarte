@@ -46,13 +46,13 @@ Cache::~Cache()
 	log.debugStream() << "Cache destructed";
 }
 
-void Cache::readFile(const Tile::ImageType& image, const string& filename) {
+void Cache::readFile(const Tile::ImageType& image, const boost::filesystem::path& filename) {
 	std::ifstream file;
-	file.open(filename, std::ios::in | std::ios::binary);
+	file.open(filename.string(), std::ios::in | std::ios::binary);
 	file.seekg(0, std::ios::end);
 	std::streampos length(file.tellg());
 	if (length == std::streampos(-1) || !file.is_open()) {
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.string()));
 	} else if (length) {
 		file.seekg(0, std::ios::beg);
 
@@ -62,15 +62,15 @@ void Cache::readFile(const Tile::ImageType& image, const string& filename) {
 	}
 }
 
-void Cache::writeFile(shared_ptr<Tile> tile, const string& path) {
-	std::ofstream out(path, std::ios::out | std::ios::binary);
+void Cache::writeFile(shared_ptr<Tile> tile, const boost::filesystem::path& filename) {
+	boost::filesystem::create_directories(filename.parent_path());
+	std::ofstream out(filename.string(), std::ios::out | std::ios::binary);
 	if(out.is_open())
 	{
 		Tile::ImageType png = tile->getImage();
 		if (png==0) {
 			out.close();
-			boost::filesystem::path file(path);
-			boost::filesystem::remove(file);
+			boost::filesystem::remove(filename);
 			BOOST_THROW_EXCEPTION(excp::InputFormatException());
 		} else {
 			auto size = png->size();
@@ -78,29 +78,20 @@ void Cache::writeFile(shared_ptr<Tile> tile, const string& path) {
 		}
 	} else {
 		// e.g. Disk full
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(path));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.string()));
 	}
 }
 
-string Cache::identifierToPath(const shared_ptr<TileIdentifier>& ti)
-{
+const boost::filesystem::path Cache::getTilePath(const shared_ptr<TileIdentifier>& ti) {
 	std::stringstream path;
-	path << Config->get<string>(opt::server::cache_path) << "/"
-		 << ti->getStylesheetPath() << "/"
-		 << ti->getZoom() << "-" << ti->getX() << "-" << ti->getY();
-	switch (ti->getImageFormat())
-	{
-		case TileIdentifier::Format::PNG:
-			path << ".png";
-		break;
-		case TileIdentifier::Format::SVG:
-			path << ".svg";
-		break;
-		default:
-			log << log4cpp::Priority::DEBUG << "Unknown image format.";
-	}
-
-	return path.str();
+	path << Config->get<string>(opt::server::cache_path) << "/";
+	path << ti->getStylesheetPath() << "/";
+	path << ti->getZoom() << "/";
+	path << ti->getX() << "/";
+	path << ti->getY();
+	path << "." << ti->getImageFormatString();
+	boost::filesystem::path file(path.str());
+	return file;
 }
 
 /**
@@ -140,13 +131,13 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 		tile = boost::make_shared<Tile>(ti);
 		if (ti->getZoom() <= Config->get<int>(opt::server::cache_keep_tile)) {
 			// Try to load prerendered image data from file.
+			boost::filesystem::path path = getTilePath(ti);
 			Tile::ImageType image = boost::make_shared<Tile::ImageType::element_type>();
-			string path = identifierToPath(ti);
 			try {
-				readFile(image, path.c_str());
+				readFile(image, path);
 				tile->setImage(image);
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.c_str();
+				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.string();
 			}
 		}
 		RecentlyUsedList.push_front(tile);
@@ -158,14 +149,14 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 		if (tileToDelete->getIdentifier()->getZoom() <= Config->get<int>(opt::server::cache_keep_tile)) {
 			// Evict to hard drive.
 			shared_ptr<TileIdentifier> tiToDelete = tileToDelete->getIdentifier();
-			string path = identifierToPath(tiToDelete);
+			boost::filesystem::path path = getTilePath(tiToDelete);
 			try {
-				writeFile(tileToDelete, path.c_str());
+				writeFile(tileToDelete, path);
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path;
+				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path.string();
 				// Disk is full
 			} catch (excp::InputFormatException) {
-				log << log4cpp::Priority::DEBUG << "WriteFile: PNG not yet rendered " << *tile->getIdentifier();
+				log << log4cpp::Priority::DEBUG << "WriteFile: Image not yet rendered " << *tile->getIdentifier();
 				RecentlyUsedList.push_front(tileToDelete);
 				cacheIt = AllCaches.find(tileToDelete->getIdentifier()->getStylesheetPath());
 				if (cacheIt != AllCaches.end()) {
