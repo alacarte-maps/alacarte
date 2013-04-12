@@ -651,7 +651,7 @@ void Renderer::renderEmptyTile(RenderAttributes& map, const shared_ptr<Tile>& ti
 	paintBackground(layer, map.getCanvasStyle());
 
 #if DEBUG_BUILD
-	printTileId(layers[LAYER_LABELS].cr, tile->getIdentifier());
+	printTileId(layer.cr, tile->getIdentifier());
 #endif
 
 #if OLD_CAIRO
