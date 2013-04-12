@@ -37,55 +37,87 @@ public:
 	typedef boost::posix_time::ptime ptime;
 
 	enum Component{
-		//Change the order of the following Components will change the output order (file and log), you have to update /alacarte/doc/statistics/stat2html.py
-		Cache = 0, ComputeRect, GeoNodes, GeoWays, GeoRelation, StylesheetMatch, Renderer, GeoContainsData, 
+		//Change the order of the following Components will change the output order (file and log),
+		//you have to update /alacarte/doc/statistics/stat2html.py
+		Cache = 0,
+		ComputeRect,
+		GeoNodes,
+		GeoWays,
+		GeoRelation,
+		StylesheetMatch,
+		Renderer,
+		GeoContainsData,
+		Slicing,
 		Size //amount of Components
 	};
-	
+
+
 	class JobMeasurement {
 		friend class Statistic;
 	public:
 		JobMeasurement(){};
-		JobMeasurement(int zoom) : zoom(zoom), nodes(0), ways(0), relations(0) {
+		JobMeasurement(const string& stylesheet, int zoom)
+			: stylesheet(stylesheet), zoom(zoom), nodes(0), ways(0), relations(0)
+		{
 			for(int i = 0; i < Component::Size; i++) {
 				stopped[i] = false;
 			}
 		};
 		duration getDuration(int i);
 	private:
-		int zoom;
-		unsigned int nodes;
-		unsigned int ways;
-		unsigned int relations;
+		uint16_t zoom;
+		uint32_t nodes;
+		uint32_t ways;
+		uint32_t relations;
+		string stylesheet;
 		bool stopped[Component::Size];
 		ptime jobStartTime;
 		ptime startTime[Component::Size];
 		ptime stopTime[Component::Size];
 	};
-	
-	shared_ptr<JobMeasurement> startNewMeasurement(int zoom);
+
+	shared_ptr<JobMeasurement> startNewMeasurement(const string& stylesheet, int zoom);
 	void start(shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
 	void stop(shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
-	void writeToFile(shared_ptr<Statistic::JobMeasurement>& job, const string& stylesheet, const shared_ptr<Configuration>& config) const;
+	void finished(shared_ptr<Statistic::JobMeasurement>& job);
 	void setStats(shared_ptr<Statistic::JobMeasurement>& job, unsigned int nodes, unsigned int ways, unsigned int relations);
 	void printStatistic() const;
-	
-	static Statistic& instance()
+
+	static const shared_ptr<Statistic>& Get()
 	{
-		static Statistic _instance;
-		return _instance;
+		assert(instance);
+		return instance;
 	}
 
+	static void Init(const shared_ptr<Configuration>& conf)
+	{
+		instance = shared_ptr<Statistic>(new Statistic(conf));
+	}
+
+
+	~Statistic();
 private:
+	void writeToFile(const char* filename);
 	string componentToName(Component component) const;
-	Statistic();
-	Statistic( const Statistic& ){};
+
+	Statistic(const shared_ptr<Configuration>& config);
+	Statistic(const Statistic&){};
+
+	static shared_ptr<Statistic> instance;
 
 private:
-#ifndef Statistic_Less_Memory
-	boost::mutex lock;
-	std::vector<shared_ptr<JobMeasurement>> measurements;
-#endif
+	shared_ptr<Configuration> config;
+	boost::mutex bufferLock;
+	std::vector<shared_ptr<JobMeasurement>> measurementsBuffer;
+
+	struct AvgMeasurement
+	{
+		// for every zoomlevel an average value
+		uint32_t count[19] = {0};
+		float average[19] = {0.0f};
+	};
+	boost::mutex avgLock;
+	AvgMeasurement componentAvgs[Component::Size];
 };
 
 #endif

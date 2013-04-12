@@ -15,40 +15,31 @@
  *  along with alaCarte. If not, see <http://www.gnu.org/licenses/>.
  *
  *  Copyright alaCarte 2012-2013 Simon Dreher, Florian Jacob, Tobias Kahlert, Patrick Niklaus, Bernhard Scheirle, Lisa Winter
- *  Maintainer: Bernhard Scheirle
- **/
+ *  Maintainer: Tobias Kahlert
+ */
 
 #pragma once
-#ifndef PRE_RENDER_JOB_HPP
-#define PRE_RENDER_JOB_HPP
+#ifndef META_TILE_HPP
+#define META_TILE_HPP
 
 #include "settings.hpp"
-#include "job.hpp"
 
+#include <cairomm/surface.h>
 
-class RequestManager;
-class TileIdentifier;
+class MetaIdentifier;
 
-/**
- * @brief Handles computation of Tiles which should be pre rendered.
- **/
-class PreRenderJob : public Job
+class MetaTile
 {
 public:
-	PreRenderJob(const shared_ptr<Configuration>& config, const shared_ptr<TileIdentifier>& tileIdentifier, const shared_ptr<RequestManager>& manager);
-	~PreRenderJob();
+	MetaTile(const shared_ptr<MetaIdentifier>& mid);
 
-	virtual void process();
-	bool prerenderingFinished();
+	TESTABLE const shared_ptr<MetaIdentifier>& getIdentifier() const;
+	TESTABLE const Cairo::RefPtr<Cairo::Surface>& getData() const;
+	TESTABLE void setData(const Cairo::RefPtr<Cairo::Surface>& surface);
 
-protected:
-	//! TileIdentifier which identifies the Tile which should be computed.
-	shared_ptr<TileIdentifier> tileIdentifier;
-	bool finished;
-	//log4cpp::Category& log;
+private:
+	shared_ptr<MetaIdentifier> mid;
+	Cairo::RefPtr<Cairo::Surface> surface;
 };
-
-
-
 
 #endif

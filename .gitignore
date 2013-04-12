@@ -5,6 +5,7 @@
 # sicherungsdateien
 *~
 *.backup
+*.carte
 
 .directory
 
@@ -15,9 +16,9 @@ doc/statistics/images/*.png
 doc/statistics/html.pyc
 
 
-tests/data/importer/*.xml
-tests/data/rendered/
-tests/data/diff/
+tests/data/output/importer/
+tests/data/output/rendered/
+tests/data/output/diff/
 tests/config.hpp
 include/config.hpp
 data/config/alacarte.conf

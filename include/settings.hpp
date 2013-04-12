@@ -82,7 +82,9 @@
 
 #define TIMER_START(_X) timeval _X##_start, _X##_stop; gettimeofday(&_X##_start, NULL)
 #define TIMER_STOP(_X) gettimeofday(&_X##_stop, NULL);
-#define TIMER_MSEC(_X) (_X##_stop.tv_sec - _X##_start.tv_sec) * 1000.0 + (_X##_stop.tv_usec - _X##_start.tv_usec) / 1000.0
+#define TIMER_MSEC(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) * 1000.0 + (_X##_stop.tv_usec - _X##_start.tv_usec) / 1000.0)
+#define TIMER_SEC(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) + (_X##_stop.tv_usec - _X##_start.tv_usec) / 1000.0 / 1000.0)
+#define TIMER_MIN(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) / 60.0)
 
 using boost::shared_ptr;
 using boost::scoped_ptr;
@@ -103,14 +105,14 @@ typedef std::int32_t	coord_t;
 #include "utils/exceptions.hpp"
 #include "utils/color.hpp"
 #include "utils/rect.hpp"
-#include "utils/statistic.hpp"
 #include "utils/typedId.hpp"
 #include "utils/cached_string.hpp"
 
 #define DEFAULT_CONFIG_PATH "/etc/alacarte.conf"
 
 #define DEFAULT_FONT "DejaVu Sans"
-#define TILE_OVERLAP 0.25
+#define TILE_OVERLAP (1.0/META_TILE_SIZE * 0.25)
+#define META_TILE_SIZE 4
 #define ALAC_ZOOM_BOTTOM 0
 #define ALAC_ZOOM_TOP 18
 

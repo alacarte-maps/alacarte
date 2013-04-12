@@ -1,6 +1,6 @@
 # What is alaCarte? #
 
-![screenshot of Karlsruhe](http://github.com/TheMarex/alacarte/raw/master/screenshot.png "Karlsruhe")
+![screenshot of Karlsruhe](http://github.com/alacarte-maps/alacarte/raw/master/screenshot.png "Karlsruhe")
 
 alaCarte is a tile renderer for OpenStreetMap data written in C++11, using Cairo for
 rendering and Boost-Spirit for [MapCSS](http://wiki.openstreetmap.org/wiki/MapCSS) parsing.
@@ -14,8 +14,8 @@ alaCarte was designed with medium dataset size in mind. On a typical machine wit
 at leat 8GB RAM, alaCarte can handle a unfiltered export from the federal state
 of Baden-Wuerttemberg (Germany).
 
-alaCarte was developed as part of a software project at [KIT](http://algo2.iti.kit.edu).
-For the old project files (mostely in German) see the [old project repository](https://bitbucket.org/TheMarex/alacarte).
+alaCarte was developed as part of a lab course student software project at [KIT](http://algo2.iti.kit.edu).
+For the old project files (mostly in German) see the [old project repository](https://bitbucket.org/TheMarex/alacarte).
 
 ## Features ##
 
@@ -68,4 +68,5 @@ and logging.
 * Implement MapCSS-include
 * Better caching of fonts and icons
 * Option to "tune" imported data for specific stylesheets
+* Speed up tree generation
 

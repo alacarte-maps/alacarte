@@ -124,7 +124,7 @@ struct distribution_test
 
 	distribution_test()
 	{
-		path testData = getTestDirectory() / "input/karlsruhe_big.carte";
+		path testData = getInputDirectory() / "karlsruhe_big.carte";
 		BOOST_CHECK(boost::filesystem::exists(testData));
 
 		data = boost::make_shared<Geodata>();

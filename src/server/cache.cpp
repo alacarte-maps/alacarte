@@ -109,7 +109,6 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 	if (cacheIt != AllCaches.end()) {
 		// Found cache for Stylesheet.
 		cache = cacheIt->second;
-		log << log4cpp::Priority::DEBUG << "Stylesheetcache " << stylesheet << " found.";
 	} else {
 		// Creating a new cache for stylesheet.
 		cache = boost::make_shared<CacheOfOneStylesheet>();
@@ -124,7 +123,6 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 	if (tileIt != cache->end()) {
 		// Cache hit
 		tile = tileIt->second.first;
-		log << log4cpp::Priority::DEBUG << "Tile found. " << *tile->getIdentifier() << ".";
 		RecentlyUsedList.erase(tileIt->second.second);
 		RecentlyUsedList.push_front(tileIt->second.first);
 		tileIt->second.second = RecentlyUsedList.begin();
@@ -137,7 +135,6 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 			Tile::ImageType image = boost::make_shared<Tile::ImageType::element_type>();
 			try {
 				readFile(image, path);
-				log << log4cpp::Priority::DEBUG << "Tile found in " << path.string();
 				tile->setImage(image);
 			} catch (excp::FileNotFoundException) {
 				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.string();
@@ -155,7 +152,6 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 			boost::filesystem::path path = getTilePath(tiToDelete);
 			try {
 				writeFile(tileToDelete, path);
-				log << log4cpp::Priority::DEBUG << "WriteFile: Written to " << path.string();
 			} catch (excp::FileNotFoundException) {
 				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path.string();
 				// Disk is full
@@ -225,32 +221,3 @@ void Cache::deleteTiles(const string path)
 	}
 }
 
-/**
- * @brief Returns a hash for the TileIdentifier.
- * 
- * @return Hash usable for boost::unordered_map.
- **/
-std::size_t hash_value(const TileIdentifier &ti)
-{
-	std::size_t seed = 0;
-	boost::hash_combine(seed, ti.getX());
-	boost::hash_combine(seed, ti.getY());
-	boost::hash_combine(seed, ti.getZoom());
-	boost::hash_combine(seed, ti.getImageFormat());
-	boost::hash_combine(seed, ti.getStylesheetPath()); // ?
-	return seed;
-}
-
-/**
- * @brief Equals operator for two TileIdentifiers.
- * 
- * @return True if TileIdentifiers have equal values.
- **/
-bool operator==(const TileIdentifier &a, const TileIdentifier &b)
-{
-	return a.getX() == b.getX() &&
-		a.getY() == b.getY() &&
-		a.getZoom() == b.getZoom() &&
-		a.getImageFormat() == b.getImageFormat() &&
-		a.getStylesheetPath() == b.getStylesheetPath(); // ?
-}

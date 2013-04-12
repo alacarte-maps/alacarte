@@ -25,7 +25,7 @@ struct tile_test {
 	shared_ptr<Geodata> geo_r;
 	shared_ptr<GeodataMock> geo_t;
 	tile_test () {
-		testData = getTestDirectory() / "input/karlsruhe_big.carte";
+		testData = getInputDirectory() / "karlsruhe_big.carte";
 		BOOST_CHECK(boost::filesystem::exists(testData));
 		geo_r = boost::make_shared<Geodata>();
 		geo_r->load(testData.string());
