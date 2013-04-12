@@ -117,19 +117,27 @@ protected:
 			log.errorStream() << ". It's not possible to use a max_queue_size(" << opt::server::max_queue_size << ") less than 1";
 			return false;
 		}
-		
+
+		int hardware_concurrency = std::thread::hardware_concurrency();
 		int threads = config->get<int>(opt::server::num_threads);
-		if (threads < 1) {
-			log.errorStream() << ". It's not possible to use less then 1 thread for rendering. " << opt::server::num_threads << " = " << threads;
-			return false;
-		} else if (threads > std::thread::hardware_concurrency()) {
-			log.infoStream() << ". It's not recommended to use more than " << std::thread::hardware_concurrency() << " (amount of cores) threads.";
+		if (hardware_concurrency  == 0)
+		{
+			log.infoStream() << "Couldn't detect amount of cores in this machine.";
+		} 
+		else if (threads > hardware_concurrency)
+		{
+			log.infoStream() << "It's not recommended to use more than " << hardware_concurrency << " (amount of cores) threads.";
 		}
 
-		
+		if (threads < 1)
+		{
+			log.errorStream() << "It's not possible to use less then 1 thread for rendering. Please set " << opt::server::num_threads << " appropriate.";
+			return false;
+		}
+
 		int parse_timeout = config->get<int>(opt::server::parse_timeout);
 		if (parse_timeout < 50) {
-			log.errorStream() << ". It's not possible to use less than 50ms for " << opt::server::parse_timeout;
+			log.errorStream() << "It's not possible to use less than 50ms for " << opt::server::parse_timeout;
 			return false;
 		}
 		/*
@@ -144,7 +152,7 @@ protected:
 		if (config->has(opt::server::style_source)) {
 			boost::filesystem::path folder = config->get<string>(opt::server::style_source);
 			if (!boost::filesystem::is_directory(folder)) {
-				log.errorStream() << opt::server::style_source << " = \"" << folder.string() << "\" is no directory.";
+				log.errorStream() << opt::server::style_source << " = \"" << folder.string() << "\" is not a directory.";
 				return false;
 			}
 			
