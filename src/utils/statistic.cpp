@@ -35,6 +35,12 @@ Statistic::duration Statistic::JobMeasurement::getDuration(int i)
 Statistic::Statistic(const shared_ptr<Configuration>& config)
 	: config(config)
 {
+
+	for (int i = 0; i < Component::Size; i++)
+	{
+		std::fill_n(componentAvgs[i].count, 19, 0);
+		std::fill_n(componentAvgs[i].average, 19, 0);
+	}
 }
 
 Statistic::~Statistic()

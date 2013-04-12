@@ -113,8 +113,8 @@ private:
 	struct AvgMeasurement
 	{
 		// for every zoomlevel an average value
-		uint32_t count[19] = {0};
-		float average[19] = {0.0f};
+		uint32_t count[19];
+		float average[19];
 	};
 	boost::mutex avgLock;
 	AvgMeasurement componentAvgs[Component::Size];
