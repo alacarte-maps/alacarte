@@ -31,16 +31,19 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/serialization/base_object.hpp>
+#include <boost/filesystem/operations.hpp>
+
+#include <limits>
 
 #include "general/geodata.hpp"
 
 #include "general/node.hpp"
 #include "general/way.hpp"
 #include "general/relation.hpp"
-#include "general/nodeKdTree.hpp"
-#include "general/RTree.hpp"
+#include "general/rtree.hpp"
 #include "utils/rect.hpp"
-#include <limits>
+
+using boost::filesystem::absolute;
 
 
 Geodata::Geodata()
@@ -53,36 +56,36 @@ Geodata::~Geodata()
 
 void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
 {
-	shared_ptr<std::vector<FixedPoint>> points = boost::make_shared<std::vector<FixedPoint>>();
+	std::vector<FixedPoint> points;;
 	for (auto& n : *nodes)
-		points->push_back(n.getLocation());
+		points.push_back(n.getLocation());
 
-	this->nodesTree = boost::make_shared<NodeKdTree>(points);
-	nodesTree->buildTree();
+	this->nodesTree = boost::make_shared<RTree<NodeId, FixedPoint> >(absolute(path("nodes.bin")));
+	nodesTree->build(points);
 
 	this->nodes = nodes;
 }
 
 void Geodata::insertWays(const shared_ptr<std::vector<Way> >& ways)
 {
-	shared_ptr<std::vector<FixedRect>> rects = boost::make_shared<std::vector<FixedRect>>();
+	std::vector<FixedRect> rects;
 	for (auto& w : *ways)
-		rects->push_back(calculateBoundingBox(w));
+		rects.push_back(calculateBoundingBox(w));
 
-	this->waysTree = boost::make_shared<RTree<WayId> >(rects);
-	waysTree->buildTree();
+	this->waysTree = boost::make_shared<RTree<WayId, FixedRect> >(absolute(path("ways.bin")));
+	waysTree->build(rects);
 
 	this->ways = ways;
 }
 
 void Geodata::insertRelations(const shared_ptr<std::vector<Relation> >& relations)
 {
-	shared_ptr<std::vector<FixedRect>> rects = boost::make_shared<std::vector<FixedRect>>();
+	std::vector<FixedRect> rects;
 	for (auto& r : *relations)
-		rects->push_back(calculateBoundingBox(r));
+		rects.push_back(calculateBoundingBox(r));
 
-	this->relTree = boost::make_shared<RTree<RelId>>(rects);
-	relTree->buildTree();
+	this->relTree = boost::make_shared<RTree<RelId, FixedRect>>(absolute(path("relations.bin")));
+	relTree->build(rects);
 
 	this->relations = relations;
 }

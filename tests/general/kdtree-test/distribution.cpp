@@ -105,6 +105,7 @@ private:
 	int maxDepth;
 };
 
+/*
 class GeodataInspector : public Geodata {
 public:
 	GeodataInspector(const shared_ptr<Geodata>& data)
@@ -117,15 +118,17 @@ public:
 		return nodesTree;
 	}
 };
+*/
 
 struct distribution_test
 {
 	shared_ptr<Geodata> data;
-	shared_ptr<GeodataInspector> geoInspector;
+	//shared_ptr<GeodataInspector> geoInspector;
 	shared_ptr<NodeKdTreeInspector> treeInspector;
 
 	distribution_test()
 	{
+	/*
 		path testData = getInputDirectory() / "karlsruhe_big.carte";
 		BOOST_CHECK(boost::filesystem::exists(testData));
 
@@ -134,16 +137,19 @@ struct distribution_test
 
 		geoInspector = boost::make_shared<GeodataInspector>(data);
 		treeInspector = boost::make_shared<NodeKdTreeInspector>(geoInspector->getNodeTree());
+	*/
 	}
 
 	void checkLog(const char* name)
 	{
+	/*
 		string file = string(name) + ".log";
 		string p = (getRenderedDirectory() / file).native();
 		treeInspector->inspect();
 		treeInspector->print(p.c_str());
 
 		compareFile(file.c_str());
+	*/
 	}
 };
 

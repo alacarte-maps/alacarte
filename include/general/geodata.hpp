@@ -35,7 +35,8 @@ class Node;
 class Way;
 class Relation;
 class NodeKdTree;
-template <class geoId> class RTree;
+template<class id_t, class data_t>
+class RTree;
 
 class Geodata
 {
@@ -64,9 +65,9 @@ protected:
 	shared_ptr<std::vector<Way> > ways;
 	shared_ptr<std::vector<Node> > nodes;
 	shared_ptr<std::vector<Relation> > relations;
-	shared_ptr<NodeKdTree> nodesTree;
-	shared_ptr<RTree<WayId>> waysTree;
-	shared_ptr<RTree<RelId>> relTree;
+	shared_ptr<RTree<NodeId, FixedPoint>> nodesTree;
+	shared_ptr<RTree<WayId, FixedRect>> waysTree;
+	shared_ptr<RTree<RelId, FixedRect>> relTree;
 
 private:
 	TESTABLE FixedRect calculateBoundingBox(const Way& way) const;

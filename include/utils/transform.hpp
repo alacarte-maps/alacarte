@@ -32,4 +32,7 @@ void mercatorToTile(coord_t x, coord_t y, int zoom, int& tx, int& ty);
 void projectMercator(const FloatPoint& p, coord_t& x, coord_t& y);
 void inverseMercator(const FixedPoint& p, double& lat, double& lon);
 
+void rot(uint32_t n, FixedPoint& p, bool rx, bool ry);
+uint64_t xy2hilbert (FixedPoint p);
+
 #endif
