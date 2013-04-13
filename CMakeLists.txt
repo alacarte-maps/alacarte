@@ -158,7 +158,7 @@ add_custom_target(tests
 install(TARGETS alacarte-server RUNTIME DESTINATION bin)
 install(TARGETS alacarte-importer RUNTIME DESTINATION bin)
 install(FILES data/config/alacarte.conf DESTINATION /etc)
-install(FILES data/default.png DESTINATION share/alacarte/default.png)
+install(FILES data/default.png DESTINATION share/alacarte)
 install(DIRECTORY data/mapcss/ DESTINATION share/alacarte/styles)
 install(DIRECTORY data/img DESTINATION share/alacarte)
 install(DIRECTORY data/icons DESTINATION share/alacarte)
