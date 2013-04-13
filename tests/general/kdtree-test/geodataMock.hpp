@@ -29,7 +29,6 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/shared_ptr_132.hpp>
-#include "utils/auto_id_select.hpp"
 #include "general/geodata.hpp"
 
 class Node;

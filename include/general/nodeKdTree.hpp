@@ -37,73 +37,72 @@ class Relation;
 
 class NodeKdTree {
 public:
-    NodeKdTree ( const shared_ptr<std::vector<Node> >& ns ) ;
-    void buildTree ();
-    bool search ( boost::shared_ptr<std::vector<NodeId> >& result, const FixedRect& rect, bool returnOnFirst = false) const;
+	NodeKdTree(const shared_ptr<std::vector<FixedPoint>>& points) : points(points) {};
+
+	void buildTree ( );
+	bool search ( boost::shared_ptr<std::vector<NodeId> >& result, const FixedRect& rect, bool returnOnFirst = false) const;
 	bool contains(const FixedRect& rect) const;
 
 protected:
-	NodeKdTree(){};
-    class kdNode {
-	public:
-        std::vector<NodeId> ids;
-        std::vector<FixedPoint> refPoints;
-        shared_ptr<kdNode> left;
-        shared_ptr<kdNode> right;
-	private:
-		friend class boost::serialization::access;
-		template<typename Archive>
-		void serialize(Archive &ar, const unsigned int version){
-			ar & ids;
-			ar & refPoints;
-			ar & left;
-			ar & right;
-		}
-     };
+	class kdNode {
+		public:
+			std::vector<NodeId> ids;
+			coord_t key;
+			shared_ptr<kdNode> left;
+			shared_ptr<kdNode> right;
+		private:
+			friend class boost::serialization::access;
+			template<typename Archive>
+				void serialize(Archive &ar, const unsigned int version){
+					ar & ids;
+					ar & left;
+					ar & right;
+					ar & key;
+				}
+	};
 
 	struct SearchStackEntry {
-	
-		 SearchStackEntry(shared_ptr<kdNode> node, FixedRect rect, int depth)
+		SearchStackEntry(shared_ptr<kdNode> node, FixedRect rect, int depth)
 			: node(node)
 			, rect(rect)
 			, depth(depth)
-		{
-		};
-		
+		{ };
+
 		FixedRect rect;
 		shared_ptr<kdNode> node;
 		int depth;
 	};
 
 	struct BuildStackEntry {
-		BuildStackEntry(shared_ptr<kdNode> node,std::vector<shared_ptr<kdNode> >&  toInsert, int depth)
+		BuildStackEntry(shared_ptr<kdNode> node,std::vector<NodeId>&  toInsert, int depth)
 			: node(node)
 			, toInsert(toInsert)
 			, depth(depth)
-		{
-		};
+		{ };
 
 		shared_ptr<kdNode> node;
-		std::vector<shared_ptr<kdNode> >  toInsert;
+		std::vector<NodeId>  toInsert;
 		int depth;
 	};
 
-    std::vector<shared_ptr<kdNode> > nodes;
-    shared_ptr<kdNode> root;
+	shared_ptr<kdNode> root;
+	shared_ptr<std::vector<FixedPoint>> points;
 
 private:
-    shared_ptr<kdNode> buildKDtree ( std::vector<shared_ptr<kdNode> >&  toInsert, int depth );
+	shared_ptr<kdNode> buildKDtree ( std::vector<NodeId>&  toInsert );
 	void getSubTree(shared_ptr<std::vector<NodeId> >& result, const shared_ptr<kdNode>& node) const;
-    FixedPoint getMedian ( const std::vector<shared_ptr<kdNode > > &  points );
-    static bool operatorSortY ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b );
-    static bool operatorSortX ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b );
+	coord_t getMedianX ( std::vector<NodeId> &  points );
+	coord_t getMedianY ( std::vector<NodeId> &  points );
 
 private:
+	NodeKdTree(){};
 	friend class boost::serialization::access;
 	template<typename Archive>
-	void serialize(Archive &ar, const unsigned int version){
-		ar & root;
-	}
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & root;
+			ar & points;
+		}
 };
 #endif
 

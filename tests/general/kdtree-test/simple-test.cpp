@@ -15,7 +15,10 @@ struct tree_test
 	tree_test(shared_ptr<std::vector<Node> > nodes)
 	: nodes(nodes)
 	{
-		tree = boost::make_shared<NodeKdTree>(nodes);
+		shared_ptr<std::vector<FixedPoint>> points = boost::make_shared<std::vector<FixedPoint>>();
+		for (auto& n : *nodes)
+			points->push_back(n.getLocation());
+		tree = boost::make_shared<NodeKdTree>(points);
 		tree->buildTree();
 	}
 
@@ -26,7 +29,7 @@ struct tree_test
 		tree->search(result, r);
 		BOOST_TEST_MESSAGE("Returned nodes: " << result->size());
 		BOOST_CHECK_EQUAL(result->size(), ids.size());
-		
+
 		std::sort(result->begin(), result->end(),
 				  [](NodeId first, NodeId second)
 					{
@@ -43,7 +46,6 @@ struct tree_test
 		BOOST_CHECK(sameResult);
 	}
 };
-
 
 struct tile_test {
 	tree_test* imp;

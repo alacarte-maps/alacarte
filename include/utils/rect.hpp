@@ -93,6 +93,14 @@ public:
 		return basic_rect<T>(minX - dx, minY - dy, maxX + dx, maxY + dy);
 	}
 
+	inline void enclose(const basic_rect<T>& other)
+	{
+		minX = std::min(minX, other.minX);
+		maxX = std::max(maxX, other.maxX);
+		minY = std::min(minY, other.minY);
+		maxY = std::max(maxY, other.maxY);
+	}
+
 	inline T getArea() const {
 		return (maxY - minY) * (maxX - minX);
 	}
