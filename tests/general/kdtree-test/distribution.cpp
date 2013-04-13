@@ -66,19 +66,19 @@ public:
 			// no child nodes
 			if (!node->left && !node->right) {
 				leafSize.push_back(node->ids.size());
-				for (unsigned int i = 0; i < node->ids.size(); i++)
-					nodes.push_back(node->refPoints[i]);
+				for (auto id : node->ids)
+					nodes.push_back(points->at(id.getRaw()));
 				continue;
 			}
 
 			// at least one child node
 			if ( ( depth % 2 ) == 0 ) {
-				coord_t x = node->refPoints[0].x;
+				coord_t x = node->key;
 				leftRect.maxX  = x;
 				rightRect.minX = x;
 				splitLines.push_back(Line(FixedPoint(x, leftRect.minY), FixedPoint(x, leftRect.maxY)));
 			} else {
-				coord_t y = node->refPoints[0].y;
+				coord_t y = node->key;
 				leftRect.maxY  = y;
 				rightRect.minY = y;
 				splitLines.push_back(Line(FixedPoint(leftRect.minX, y), FixedPoint(leftRect.maxX, y)));

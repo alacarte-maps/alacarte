@@ -37,28 +37,26 @@
 #include "utils/rect.hpp"
 #include <stack>
 
+#define DEBUG(...) (log4cpp::Category::getInstance("NodeTree").info(__VA_ARGS__));
 
-NodeKdTree::NodeKdTree ( const shared_ptr<std::vector<Node> >& ns ) {
+void NodeKdTree::buildTree()
+{
 	log4cpp::Category& log = log4cpp::Category::getRoot();
-	log.infoStream() << "Nodes: " << ns->size();
+	log.infoStream() << "Nodes: " << points->size();
 
 	log.infoStream() << " - creating leaves";
-	nodes.reserve(ns->size());
-    for (unsigned int i = 0; i < ns->size(); i++ ) {
-            boost::shared_ptr<kdNode> nodeKD = boost::make_shared<kdNode>();
-            nodeKD->ids.push_back(NodeId(i));
-            nodeKD->refPoints.push_back(( *ns ) [i].getLocation());
-            nodeKD->left = shared_ptr<kdNode>() ;
-            nodeKD->right = shared_ptr<kdNode>() ;
-            nodes.push_back ( nodeKD );
-    }
-}
+	std::vector<NodeId> nodes;
+	nodes.reserve(points->size());
+	for (unsigned int i = 0; i < points->size(); i++ ) {
+		nodes.push_back ( NodeId(i) );
+	}
 
-void NodeKdTree::buildTree() {
-	log4cpp::Category& log = log4cpp::Category::getRoot();
 	log.infoStream() << " - building tree";
+	TIMER_START(building);
 	if (nodes.size() > 0)
-		root = buildKDtree ( nodes, 0 );
+		root = buildKDtree ( nodes );
+	TIMER_STOP(building);
+	log.info("Build in: %02i:%02i", (int) TIMER_MIN(building), (int) TIMER_SEC(building) % 60);
 }
 
 /**
@@ -67,7 +65,7 @@ void NodeKdTree::buildTree() {
  *
  * left and right refers to the child nodes not sides
  */
-shared_ptr<NodeKdTree::kdNode> NodeKdTree::buildKDtree ( std::vector<shared_ptr<kdNode> >&  toInsert, int depth ) {
+shared_ptr<NodeKdTree::kdNode> NodeKdTree::buildKDtree ( std::vector<NodeId>&  toInsert ) {
 
 	std::stack<BuildStackEntry> buildStack;
 	shared_ptr<kdNode> root = boost::make_shared<kdNode>();
@@ -78,47 +76,39 @@ shared_ptr<NodeKdTree::kdNode> NodeKdTree::buildKDtree ( std::vector<shared_ptr<
 		buildStack.pop();
 
 		shared_ptr<kdNode> newNode = se.node;
-		std::vector<shared_ptr<kdNode>>& nodes = se.toInsert;
+		std::vector<NodeId>& nodes = se.toInsert;
 		int depth = se.depth;
 
 		if ( nodes.size() <= 1024 ) {
-			for (unsigned int i = 0; i < nodes.size(); i++) {
-				newNode->ids.push_back(nodes[i]->ids[0]);
-				newNode->refPoints.push_back(nodes[i]->refPoints[0]);
-			}
+			newNode->ids.reserve(nodes.size());
+			for (auto& n : nodes)
+				newNode->ids.push_back(n);
 			continue;
 		}
 
-		FixedPoint helpP;
-		unsigned int count = 0;
-		std::vector<shared_ptr<kdNode>> leftL;
-		std::vector<shared_ptr<kdNode>> rightL;
-		//To get a balaced tree I need to gain the median x-value or y value
-		if ( ( depth % 2 ) == 0 ) {
-			std::sort ( nodes.begin(), nodes.end(), &NodeKdTree::operatorSortX ); // refer to x
-			helpP =  getMedian ( nodes );
-			while ( count < nodes.size() && nodes[count]->refPoints[0].x <= helpP.x) {
-				leftL.push_back ( nodes[count] );
-				count++;
-			}
-			while ( count < nodes.size() ) {
-				rightL.push_back ( nodes[count] );
-				count++;
-			}
-		} else if ( ( depth % 2 ) == 1 ) {				  //refer to y
-			std::sort ( nodes.begin(), nodes.end(), &NodeKdTree::operatorSortY );
-			helpP =  getMedian ( nodes );
-			while ( count < nodes.size() && nodes[count]->refPoints[0].y <= helpP.y ) {
-				leftL.push_back ( nodes[count] );
-				count++;
-			}
-
-			while ( count < nodes.size() ) {
-				rightL.push_back ( nodes[count] );
-				count++;
-			}
+		coord_t median;
+		std::vector<NodeId> leftL;
+		std::vector<NodeId> rightL;
+		// split along median
+		if ( ( depth % 2 ) == 0 )
+		{
+			median =  getMedianX ( nodes );
+			for (auto id : nodes)
+				if ( points->at(id.getRaw()).x <= median )
+					leftL.push_back ( id );
+				else
+					rightL.push_back ( id );
 		}
-		newNode->refPoints.push_back(helpP);
+		else
+		{
+			median =  getMedianY ( nodes );
+			for (auto id : nodes)
+				if ( points->at(id.getRaw()).y <= median )
+					leftL.push_back ( id );
+				else
+					rightL.push_back ( id );
+		}
+		newNode->key = median;
 
 		if (leftL.size() > 0) {
 			newNode->left = boost::make_shared<kdNode>();
@@ -140,11 +130,11 @@ bool NodeKdTree::search ( boost::shared_ptr<std::vector<NodeId> >& result, const
 	if (!root) return false;
 
 	FixedRect globalRect = FixedRect (
-		 std::numeric_limits<coord_t>::min(),
-		 std::numeric_limits<coord_t>::min(),
-		 std::numeric_limits<coord_t>::max(),
-		 std::numeric_limits<coord_t>::max()
-					  );
+			std::numeric_limits<coord_t>::min(),
+			std::numeric_limits<coord_t>::min(),
+			std::numeric_limits<coord_t>::max(),
+			std::numeric_limits<coord_t>::max()
+			);
 
 	std::stack< SearchStackEntry> stack;
 	stack.push( SearchStackEntry(root, globalRect, 0));
@@ -160,10 +150,10 @@ bool NodeKdTree::search ( boost::shared_ptr<std::vector<NodeId> >& result, const
 
 		// no child nodes
 		if (!node->left && !node->right) {
-			for (unsigned int i = 0; i < node->ids.size(); i++) {
-				if (searchRect.contains( node->refPoints[i] )) {
+			for (auto id : node->ids) {
+				if (searchRect.contains( points->at(id.getRaw()) )) {
 					if (returnOnFirst) return true;
-					result->push_back(node->ids[i]);
+					result->push_back( id );
 				}
 			}
 			continue;
@@ -171,11 +161,11 @@ bool NodeKdTree::search ( boost::shared_ptr<std::vector<NodeId> >& result, const
 
 		// at least one child node
 		if ( ( depth % 2 ) == 0 ) {
-			leftRect.maxX  = node->refPoints[0].x;
-			rightRect.minX = node->refPoints[0].x;
+			leftRect.maxX  = node->key;
+			rightRect.minX = node->key;
 		} else {
-			leftRect.maxY  = node->refPoints[0].y;
-			rightRect.minY = node->refPoints[0].y;
+			leftRect.maxY  = node->key;
+			rightRect.minY = node->key;
 		}
 
 		if (node->left)
@@ -234,29 +224,27 @@ bool NodeKdTree::contains(const FixedRect& rect) const
 	return search(nodeIDs, rect, true);
 }
 
-/**
- * This Methode finds the Point of a vector of Points, which is best to split in Order to get a balaced tree
- */
-FixedPoint NodeKdTree::getMedian ( const std::vector<shared_ptr<kdNode > > &  points ) {
-    FixedPoint helpP;
-	if (points.size() < 2)
-		return points[0]->refPoints[0];
-
-    if ( points.size() %2 == 0 ) {   // even number of values
-        helpP.x = ( points[points.size() / 2 - 1]->refPoints[0].x + points[ points.size() /2]->refPoints[0].x ) /2;			 // takes the Point which is in the Middle of the vector  zB: a,b,c -> b
-        helpP.y = ( points[points.size() / 2 - 1]->refPoints[0].y + points[ points.size() /2]->refPoints[0].y ) /2;
-    } else if ( points.size() %2 == 1 ) { // uneven number of values	// take the Point right of the middle zB: length: 4  a,b,c,d  4/2  -1 = 1  -> take second element of vector -> b
-        helpP.x  = points[ ( points.size() - 1 ) /2 ]->refPoints[0].x;
-        helpP.y  = points[ ( points.size() - 1 ) /2 ]->refPoints[0].y;
-    }
-
-    return helpP;
-
+coord_t NodeKdTree::getMedianX ( std::vector<NodeId> & ids )
+{
+	size_t n = ids.size() / 2;
+	std::nth_element(ids.begin(), ids.begin()+n, ids.end(),
+		[this](NodeId a, NodeId b)
+		{
+			return (this->points->at(a.getRaw()).x < this->points->at(b.getRaw()).x);
+		}
+	);
+	return points->at(ids[n].getRaw()).x;
 }
 
-bool NodeKdTree::operatorSortY ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b ) {
-   return (a->refPoints[0].y < b->refPoints[0].y);
+coord_t NodeKdTree::getMedianY ( std::vector<NodeId> & ids )
+{
+	size_t n = ids.size() / 2;
+	std::nth_element(ids.begin(), ids.begin()+n, ids.end(),
+		[this](NodeId a, NodeId b)
+		{
+			return (this->points->at(a.getRaw()).y < this->points->at(b.getRaw()).y);
+		}
+	);
+	return points->at(ids[n].getRaw()).y;
 }
-bool NodeKdTree::operatorSortX ( const shared_ptr<kdNode>& a, const shared_ptr<kdNode>& b ) {
-    return (a->refPoints[0].x < b->refPoints[0].x);
-}
+

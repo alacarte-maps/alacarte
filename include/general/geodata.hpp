@@ -30,14 +30,12 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/shared_ptr_132.hpp>
-#include "utils/auto_id_select.hpp"
 
 class Node;
 class Way;
 class Relation;
 class NodeKdTree;
-template <class geoO, class geoId = typename AutoIdSelect<geoO>::id_type >
-class RectKdTree;
+template <class geoId> class RTree;
 
 class Geodata
 {
@@ -61,19 +59,21 @@ public:
 
 	TESTABLE void load(const string& path);
 	TESTABLE void save(const string& path) const;
-	TESTABLE FixedRect calculateBoundingBox(const std::vector<NodeId>& nodeIDs) const;
-	TESTABLE FixedRect calculateBoundingBox(const Way* way) const;
-	TESTABLE FixedRect calculateBoundingBox(const Relation* relation) const;
 
 protected:
 	shared_ptr<std::vector<Way> > ways;
 	shared_ptr<std::vector<Node> > nodes;
-	shared_ptr<NodeKdTree> nodesTree;
-	shared_ptr<RectKdTree<Way> > waysTree;
-	shared_ptr<RectKdTree<Relation> > relTree;
 	shared_ptr<std::vector<Relation> > relations;
+	shared_ptr<NodeKdTree> nodesTree;
+	shared_ptr<RTree<WayId>> waysTree;
+	shared_ptr<RTree<RelId>> relTree;
 
 private:
+	TESTABLE FixedRect calculateBoundingBox(const Way& way) const;
+	TESTABLE FixedRect calculateBoundingBox(const Relation& relation) const;
+	FixedRect calculateBoundingBox(const std::vector<NodeId>& nodeIDs) const;
+	FixedRect calculateBoundingBox(const std::vector<WayId>& nodeIDs) const;
+
 	friend class boost::serialization::access;
 	template<typename Archive>
 	void serialize(Archive &ar, const unsigned int version){
