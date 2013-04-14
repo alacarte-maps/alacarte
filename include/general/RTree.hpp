@@ -283,15 +283,14 @@ void RTree<id_t>::getSubTree ( const shared_ptr<RNode>& startN, boost::shared_pt
 template<class id_t>
 FixedRect RTree<id_t>::getBoundingBox ( const std::vector<id_t>& ids ) const
 {
-	FixedRect bound(
-	std::numeric_limits<coord_t>::max(),
-	std::numeric_limits<coord_t>::max(),
-	std::numeric_limits<coord_t>::min(),
-	std::numeric_limits<coord_t>::min());
+	if (ids.size() == 0)
+		return FixedRect();
 
-	for (auto i : ids)
+	FixedRect bound = rects->at(ids[0].getRaw());
+
+	for (int i = 1; i < ids.size(); i++)
 	{
-		const FixedRect& r = rects->at(i.getRaw());
+		const FixedRect& r = rects->at(ids[i].getRaw());
 		bound.enclose(r);
 	}
 
