@@ -67,10 +67,10 @@ MACRO(ADD_PRECOMPILED_HEADER _targetName _input)
 			#MESSAGE("${item}")
 		ENDFOREACH(item)
 
-		MESSAGE("${CMAKE_CXX_COMPILER} -DPCHCOMPILE ${_compiler_FLAGS}. -x c++-header -o ${_output} ${_source}")
+		MESSAGE("${CMAKE_CXX_COMPILER} -DPCHCOMPILE ${_compiler_FLAGS}. -x c++-header -o ${_output} -c ${_source}")
 		ADD_CUSTOM_COMMAND(
 			OUTPUT ${_output}
-			COMMAND ${CMAKE_CXX_COMPILER} ${_compiler_FLAGS} -x c++-header -o ${_output} ${_source}
+			COMMAND ${CMAKE_CXX_COMPILER} ${_compiler_FLAGS} -x c++-header -o ${_output} -c ${_source}
 			DEPENDS ${_source} )
 		ADD_CUSTOM_TARGET(${_targetName}_gch DEPENDS ${_output})
 		ADD_DEPENDENCIES(${_targetName} ${_targetName}_gch)
