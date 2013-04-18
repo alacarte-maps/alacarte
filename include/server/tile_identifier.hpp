@@ -25,6 +25,7 @@
 #include "settings.hpp"
 
 class StylesheetManager;
+class Configuration;
 
 /**
  * @brief A TileIdentifier identifies a Tile
@@ -47,7 +48,7 @@ public:
 private:
 	static const string FormatString[enumSize];
 public:
-	static shared_ptr<TileIdentifier> Create(const string& url, shared_ptr<StylesheetManager> StylesheetManager);
+	static shared_ptr<TileIdentifier> Create(const string& url, shared_ptr<StylesheetManager> StylesheetManager, const shared_ptr<Configuration>& config);
 	static shared_ptr<TileIdentifier> CreateEmptyTID(const string& stylesheetPath,
 												 	 TileIdentifier::Format format);
 	static int stringToInt(const char* c);

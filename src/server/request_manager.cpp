@@ -191,7 +191,7 @@ bool RequestManager::nextUserRequest()
 	shared_ptr<TileIdentifier> ti;
 	try
 	{
-		ti = TileIdentifier::Create(req->getURL(), this->ssm);
+		ti = TileIdentifier::Create(req->getURL(), this->ssm, config);
 	}
 	catch (excp::MalformedURLException &e)
 	{
