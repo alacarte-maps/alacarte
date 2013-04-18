@@ -57,6 +57,7 @@ public:
 	shared_ptr< eval::Eval<MaybeCachedString> > text;
 	shared_ptr< eval::Eval<Style::TextPosition> > text_position;
 	shared_ptr< eval::Eval<Color> > text_color;
+	shared_ptr< eval::Eval<double> > text_offset;
 	shared_ptr< eval::Eval<double> > font_size;
 
 	shared_ptr< eval::Eval<Color> > text_halo_color;

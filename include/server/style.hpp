@@ -80,6 +80,7 @@ public:
 	MaybeCachedString text;
 	TextPosition text_position;
 	Color text_color;
+	double text_offset;
 	double font_size;
 
 	// The colour (hex or CSS) of the 'halo' or 'pull-out' used to make the text stand out from features underneath it

@@ -243,7 +243,7 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 	if (s->text_position == Style::POSITION_CENTER)
 	{
 		// request a centered label
-		addLabel(labels, bounds.getCenter(), textSize);
+		addLabel(labels, bounds.getCenter() + FloatPoint(0.0, s->text_offset), textSize);
 	}
 	else if (s->text_position == Style::POSITION_LINE)
 	{
@@ -254,6 +254,7 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 		if (placed) {
 			cr->translate(best.x, best.y);
 			cr->rotate(angle);
+			cr->translate(0, s->text_offset);
 
 			cr->move_to(-textSize.width/2.0 - textSize.x_bearing,
 						-textSize.height/2.0 - textSize.y_bearing);

@@ -82,6 +82,7 @@ AttributeTypes::AttributeTypes()
 		("casing-color", CreateAttribute(&StyleTemplate::casing_color))
 		("font-size", CreateAttribute(&StyleTemplate::font_size))
 		("text-color", CreateAttribute(&StyleTemplate::text_color))
+		("text-offset", CreateAttribute(&StyleTemplate::text_offset))
 		("text-position", CreateAttribute(&StyleTemplate::text_position))
 		("text", CreateAttribute(&StyleTemplate::text))
 
