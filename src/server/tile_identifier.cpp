@@ -20,6 +20,7 @@
 
 #include "includes.hpp"
 
+#include "general/configuration.hpp"
 #include "server/tile_identifier.hpp"
 #include "server/stylesheet_manager.hpp"
 #include "utils/exceptions.hpp"
@@ -62,7 +63,7 @@ int TileIdentifier::stringToInt(const char *p) {
  * @return A new TileIdentifier
  * @throws MalformedURLException if some part of the url isn't parseable.
  **/
-shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, shared_ptr<StylesheetManager> stylesheetManager)
+shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, shared_ptr<StylesheetManager> stylesheetManager, const shared_ptr<Configuration>& config)
 {
 	int x, y, zoom;
 	string styleSheetpath;
@@ -127,7 +128,7 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, shared_ptr<
 		styleSheetpath += parts.at(i);
 	}
 	if (styleSheetpath == "")
-		styleSheetpath = "default";
+		styleSheetpath = config->get<string>(opt::server::path_to_default_style);
 
 	if (!stylesheetManager->hasStylesheet(styleSheetpath))
 		styleSheetpath = ".fallback";
