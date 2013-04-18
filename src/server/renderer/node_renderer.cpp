@@ -100,7 +100,7 @@ void NodeRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 	Cairo::TextExtents textSize;
 	cr->get_text_extents(s->text.str(), textSize);
 
-	addLabel(labels, location, textSize);
+	addLabel(labels, location + FloatPoint(0.0, s->text_offset), textSize);
 
 	cr->restore();
 }

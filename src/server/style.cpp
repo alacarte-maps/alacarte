@@ -48,6 +48,7 @@ void Style::overmerge(GeoObject* obj, const shared_ptr<StyleTemplate>& templ)
 	OVERMERGE_IMPL(text);
 	OVERMERGE_IMPL(text_position);
 	OVERMERGE_IMPL(text_color);
+	OVERMERGE_IMPL(text_offset);
 	OVERMERGE_IMPL(font_size);
 
 	OVERMERGE_IMPL(text_halo_color);
@@ -205,6 +206,7 @@ Style::Style()
 
 	text_position = Style::TextPosition::POSITION_CENTER;
 	text_color = Color(0.0f, 0.0f, 0.0f, 1.0f);
+	text_offset = 0.0;
 	font_size = 0.0;
 
 	text_halo_color = Color(1.0f, 1.0f, 1.0f, 0.0f);
