@@ -78,12 +78,12 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, shared_ptr<
 	// Check if there are enough parts for a valid url.
 	// /stylesheet/zoom/x/y.format -> Minimum 4 parts. (stylesheet can be omitted)
 	if (length < 4) {
-		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Too less arguments."));
+		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Not enough arguments."));
 	}
 	std::vector<string> subparts;
 	boost::split(subparts, parts.at(length-1), boost::is_any_of("."));
 	if (subparts.size() < 2) {
-		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Too less arguments (No y.format)."));
+		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Not enough arguments (No y.format)."));
 	}
 	// Convert format to enum
 	string& format = subparts.at(1);
