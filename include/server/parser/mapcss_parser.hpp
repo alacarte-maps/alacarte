@@ -46,6 +46,7 @@ struct MapCssParser
 	SelectorPtr createSelectorFromBinaryCondition(const SelectorPtr& next, const shared_ptr<Rule>& rule, const BinaryCondition& condition);
 	SelectorPtr createSelectorFromCondition(const SelectorPtr& next, const shared_ptr<Rule>& rule, const ConditionType& condition);
 	RulePtr createSelectorChain(const std::vector<SelectorItem>& items);
+	void warnUnsupportedAttribute(const string& attribute) const;
 
 	MapCssParser(const shared_ptr<Geodata>& geodata);
 	void load(const string& path);
