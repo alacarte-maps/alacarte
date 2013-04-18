@@ -237,6 +237,8 @@ struct MapCSSGrammar : public qi::grammar<GrammarIterator, StylesheetPtr(), qi::
 
 	//! Rule to parse a styleset of a rule
 	qi::rule<ItType, StylePtr(), qi::locals<shared_ptr<AttributeCreator>, ParseInfo>, Skipper> rule_styleset;
+	//! Rule to parse generic (unknown) attribute name
+	qi::rule<ItType, string(), Skipper> attribute_name;
 	//! Rule to parse the specifier
 	qi::rule<ItType, string(), Skipper> rule_specifier;
 	//! Rule to parse a value

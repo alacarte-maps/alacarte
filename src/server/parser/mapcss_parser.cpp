@@ -319,6 +319,15 @@ RulePtr MapCssParser::createSelectorChain(const std::vector<SelectorItem>& items
 }
 
 /**
+ * Emits a warning for unknown mapcss attribute
+ *
+ * \param attribute name
+ */
+void MapCssParser::warnUnsupportedAttribute(const string& attribute) const {
+	log.warnStream() << "Unsupported attribute '" << attribute << "' was ignored!";
+}
+
+/**
  *	Initializes the parser
  *
  *	\param geodata used in created rules

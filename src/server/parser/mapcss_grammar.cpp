@@ -150,14 +150,20 @@ MapCSSGrammar::MapCSSGrammar(MapCssParser& parser)
 
 	/******************************* Attributes *************************************/
 
+	attribute_name = +qi::char_("a-zA-Z_0-9-");
 	rule_specifier = ('\"' > +(qi::char_ - '\"') > '\"' ) | +(qi::char_ - ';' - '}');
 	rule_styleset = qi::eps[
 								_val = phx::construct<StylePtr>(phx::new_<StyleTemplate>())
 							]
 							>> -(
-									attributeType_[_a = _1]
-									>	':' > pip::pinfo[_b = _1]
-									>	rule_specifier[phx::bind(&MapCssParser::addAttributeToTemplate, &parser, _val, _a, _1, _b)]
+									(
+										attributeType_[_a = _1]
+										>	':' > pip::pinfo[_b = _1]
+										>	rule_specifier[phx::bind(&MapCssParser::addAttributeToTemplate, &parser, _val, _a, _1, _b)]
+									) | (
+										attribute_name[phx::bind(&MapCssParser::warnUnsupportedAttribute, &parser, _1)]
+										>   ':' > rule_specifier
+									)
 							) % ';'
 							>> -qi::lit(';');
 
