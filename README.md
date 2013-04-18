@@ -17,6 +17,9 @@ of Baden-Wuerttemberg (Germany).
 alaCarte was developed as part of a lab course student software project at [KIT](http://algo2.iti.kit.edu).
 For the old project files (mostly in German) see the [old project repository](https://bitbucket.org/TheMarex/alacarte).
 
+
+alaCarte has also has a growing website at [http://alacarte-maps.github.io](http://alacarte-maps.github.io/).
+
 ## Features ##
 
 * easy to use
