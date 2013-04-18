@@ -11,7 +11,7 @@
 #include "basic_dir_monitor.hpp" 
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) 
 #  include "windows/basic_dir_monitor_service.hpp" 
-#elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) 
+#elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) || defined(__FreeBSD__)
 #  include "inotify/basic_dir_monitor_service.hpp" 
 #else 
 #  error "Platform not supported." 
