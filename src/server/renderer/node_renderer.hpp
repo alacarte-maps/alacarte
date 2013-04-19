@@ -31,7 +31,7 @@
 class Node;
 class Geodata;
 class Style;
-class IconCache;
+class ImageCache;
 class Label;
 
 class NodeRenderer : public ObjectRenderer {
@@ -51,7 +51,7 @@ public:
 			std::list<shared_ptr<Label> >& labels);
 	void shield(const Cairo::RefPtr<Cairo::Context>& cr,
 			std::list<shared_ptr<Shield> >& shields);
-	void icon(const Cairo::RefPtr<Cairo::Context>& cr, IconCache& cache);
+	void icon(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache);
 };
 
 #endif

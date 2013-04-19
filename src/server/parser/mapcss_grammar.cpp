@@ -74,6 +74,7 @@ AttributeTypes::AttributeTypes()
 {
 	this->add
 		("fill-color", CreateAttribute(&StyleTemplate::fill_color))
+		("image", CreateAttribute(&StyleTemplate::image))
 		("fill-image", CreateAttribute(&StyleTemplate::fill_image))
 		("z-index", CreateAttribute(&StyleTemplate::z_index))
 		("width", CreateAttribute(&StyleTemplate::width))

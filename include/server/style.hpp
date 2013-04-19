@@ -69,8 +69,8 @@ public:
 
 	Color color;
 	Color fill_color;
-	
-	// only used for canvas
+
+	MaybeCachedString image;
 	MaybeCachedString fill_image;
 
 	double width;

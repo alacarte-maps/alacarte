@@ -37,11 +37,11 @@
 class Style;
 
 // TODO make thread safe
-class IconCache {
+class ImageCache {
 private:
 	boost::unordered_map<string, Cairo::RefPtr<Cairo::ImageSurface> > stored;
 public:
-	Cairo::RefPtr<Cairo::ImageSurface> getIcon(string path)
+	Cairo::RefPtr<Cairo::ImageSurface> getImage(string path)
 	{
 		auto it = stored.find(path);
 		if (it != stored.end())
