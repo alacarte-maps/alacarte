@@ -141,7 +141,11 @@ void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, IconCache& cach
 	cr->scale(width / image->get_width(),
 			  height / image->get_height());
 	cr->set_source(image, 0, 0);
-	cr->paint();
+
+	if (s->icon_opacity < 1.0)
+		cr->paint_with_alpha(s->icon_opacity);
+	else
+		cr->paint();
 
 	cr->restore();
 }
