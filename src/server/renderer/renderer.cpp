@@ -370,7 +370,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 			}
 			RelationRenderer renderer(data, *rid, s, transform);
 
-			renderer.fill(layers[LAYER_FILL].cr);
+			renderer.fill(layers[LAYER_FILL].cr, cache);
 		}
 
 		for (; wid != ways.end(); wid++)
@@ -382,7 +382,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 			}
 			WayRenderer renderer(data, *wid, s, transform);
 
-			renderer.fill(layers[LAYER_FILL].cr);
+			renderer.fill(layers[LAYER_FILL].cr, cache);
 			renderer.casing(layers[LAYER_CASING].cr);
 			renderer.stroke(layers[LAYER_STROKE].cr);
 			renderer.label(layers[LAYER_LABELS].cr, labels);

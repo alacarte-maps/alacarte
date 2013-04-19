@@ -91,7 +91,7 @@ void RelationRenderer::addRingPath(const Cairo::RefPtr<Cairo::Context>& cr, cons
 	cr->close_path();
 }
 
-void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
+void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache)
 {
 	cr->begin_new_path();
 
@@ -115,6 +115,12 @@ void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	cr->set_fill_rule(Cairo::FILL_RULE_EVEN_ODD);
 	cr->set_source_color(s->fill_color);
+	const string& bg = s->fill_image.str();
+	if (!bg.empty()) {
+		Cairo::RefPtr<Cairo::SurfacePattern> pattern = Cairo::SurfacePattern::create(cache.getImage(bg));
+		pattern->set_extend(Cairo::Extend::EXTEND_REPEAT);
+		cr->set_source(pattern);
+	}
 
 	cr->fill();
 
