@@ -63,7 +63,7 @@ public:
 	shared_ptr< eval::Eval<Color> > text_halo_color;
 	shared_ptr< eval::Eval<double> > text_halo_radius;
 
-	shared_ptr< eval::Eval<MaybeCachedString> > icon;
+	shared_ptr< eval::Eval<MaybeCachedString> > icon_image;
 	shared_ptr< eval::Eval<double> > icon_width;
 	shared_ptr< eval::Eval<double> > icon_height;
 

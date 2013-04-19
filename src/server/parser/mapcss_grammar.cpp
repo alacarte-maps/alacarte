@@ -89,7 +89,7 @@ AttributeTypes::AttributeTypes()
 		("text-halo-color", CreateAttribute(&StyleTemplate::text_halo_color))
 		("text-halo-radius", CreateAttribute(&StyleTemplate::text_halo_radius))
 
-		("icon", CreateAttribute(&StyleTemplate::icon))
+		("icon-image", CreateAttribute(&StyleTemplate::icon_image))
 		("icon-width", CreateAttribute(&StyleTemplate::icon_width))
 		("icon-height", CreateAttribute(&StyleTemplate::icon_height))
 

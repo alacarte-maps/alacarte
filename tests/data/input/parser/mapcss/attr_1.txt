@@ -16,7 +16,7 @@ node {
 		text-halo-color: #000000;
 		text-halo-radius: 3;
 
-		icon: "../text/hallo";
+		icon-image: "../text/hallo";
 		icon-width: 4;
 		icon-height: 3;
 

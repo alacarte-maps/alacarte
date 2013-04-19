@@ -59,7 +59,7 @@ void Style::overmerge(GeoObject* obj, const shared_ptr<StyleTemplate>& templ)
 	OVERMERGE_IMPL(casing_linecap);
 	OVERMERGE_IMPL(casing_linejoin);
 
-	OVERMERGE_IMPL(icon);
+	OVERMERGE_IMPL(icon_image);
 	OVERMERGE_IMPL(icon_width);
 	OVERMERGE_IMPL(icon_height);
 
@@ -82,16 +82,16 @@ void Style::overmerge(GeoObject* obj, const shared_ptr<StyleTemplate>& templ)
 void Style::finish(GeoObject* associatedObject, shared_ptr<const Stylesheet> stylesheet)
 {
 
-	if (this->icon.str().size()) {
+	if (this->icon_image.str().size()) {
 		// if the icon path is set, prepend the path to the stylesheet directory and check for existence
-		this->icon = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->icon.str())).string();
-		if (!boost::filesystem::exists(this->icon.str())) {
+		this->icon_image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->icon_image.str())).string();
+		if (!boost::filesystem::exists(this->icon_image.str())) {
 			// delete non existing icon paths so that every remaining icon path for the renderer is valid
-			this->icon = "";
+			this->icon_image = "";
 		}else{
 #ifdef WIN32
 			// HACK: It is not possible to use icons with cairo under windows
-			this->icon = "";
+			this->icon_image = "";
 #endif
 		}
 	}
