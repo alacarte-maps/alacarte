@@ -124,7 +124,7 @@ void NodeRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->restore();
 }
 
-void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, IconCache& cache)
+void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache)
 {
 	// path to icon not set
 	if (s->icon.str().size() == 0 || s->icon_width == 0.0 || s->icon_height == 0.0)
@@ -132,7 +132,7 @@ void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, IconCache& cach
 
 	cr->save();
 
-	Cairo::RefPtr<Cairo::ImageSurface> image = cache.getIcon(s->icon.str());
+	Cairo::RefPtr<Cairo::ImageSurface> image = cache.getImage(s->icon.str());
 	double width = s->icon_width < 0 ? image->get_width() : s->icon_width;
 	double height = s->icon_height < 0 ? image->get_height() : s->icon_height;
 	double x0 = floor(location.x - width/2.0);

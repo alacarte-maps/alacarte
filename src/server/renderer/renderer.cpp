@@ -345,7 +345,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 		maxZ = std::max(maxZ, relationStyles.at(relations.back())->z_index);
 	}
 
-	IconCache cache;
+	ImageCache cache;
 	auto rid = relations.begin();
 	auto wid = ways.begin();
 	auto nid = nodes.begin();
