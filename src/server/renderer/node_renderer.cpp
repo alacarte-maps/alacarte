@@ -132,7 +132,7 @@ void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cac
 
 	cr->save();
 
-	Cairo::RefPtr<Cairo::ImageSurface> image = cache.getIcon(s->icon_image.str());
+	Cairo::RefPtr<Cairo::ImageSurface> image = cache.getImage(s->icon_image.str());
 	double width = s->icon_width < 0 ? image->get_width() : s->icon_width;
 	double height = s->icon_height < 0 ? image->get_height() : s->icon_height;
 	double x0 = floor(location.x - width/2.0);
