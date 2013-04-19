@@ -91,7 +91,7 @@ void RelationRenderer::addRingPath(const Cairo::RefPtr<Cairo::Context>& cr, cons
 	cr->close_path();
 }
 
-void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache)
+void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache)
 {
 	cr->begin_new_path();
 

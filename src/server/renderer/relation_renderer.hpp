@@ -41,7 +41,7 @@ class Node;
 class Way;
 class Style;
 class Label;
-class ImageCache;
+class AssetCache;
 
 class RelationRenderer : public ObjectRenderer
 {
@@ -55,7 +55,7 @@ public:
 					 const Style* s,
 					 const Cairo::Matrix& transform);
 
-	void fill(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache);
+	void fill(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache);
 };
 
 #endif

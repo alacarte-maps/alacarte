@@ -87,7 +87,8 @@ void NodeRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 }
 
 void NodeRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
-		std::list<shared_ptr<Label> >& labels)
+		std::list<shared_ptr<Label> >& labels,
+		AssetCache& cache)
 {
 	// nothing to print
 	if (s->text.str().size() == 0 || s->font_size <= 0)
@@ -96,6 +97,12 @@ void NodeRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->save();
 
 	cr->set_font_size(s->font_size);
+
+	cr->set_font_face(cache.getFont(
+			s->font_family.str(),
+			s->font_style == Style::STYLE_ITALIC ? Cairo::FONT_SLANT_ITALIC : Cairo::FONT_SLANT_NORMAL,
+			s->font_weight == Style::WEIGHT_BOLD ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL
+		));
 
 	Cairo::TextExtents textSize;
 	cr->get_text_extents(s->text.str(), textSize);
@@ -106,7 +113,8 @@ void NodeRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 }
 
 void NodeRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
-		std::list<shared_ptr<Shield> >& shields)
+		std::list<shared_ptr<Shield> >& shields,
+		AssetCache& cache)
 {
 	// nothing to print
 	if (s->shield_text.str().size() == 0 || s->font_size <= 0)
@@ -116,6 +124,12 @@ void NodeRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 
 	cr->set_font_size(s->font_size);
 
+	cr->set_font_face(cache.getFont(
+			s->font_family.str(),
+			s->font_style == Style::STYLE_ITALIC ? Cairo::FONT_SLANT_ITALIC : Cairo::FONT_SLANT_NORMAL,
+			s->font_weight == Style::WEIGHT_BOLD ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL
+		));
+
 	Cairo::TextExtents textSize;
 	cr->get_text_extents(s->shield_text.str(), textSize);
 
@@ -124,7 +138,7 @@ void NodeRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->restore();
 }
 
-void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache)
+void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache)
 {
 	// path to icon not set
 	if (s->icon_image.str().size() == 0 || s->icon_width == 0.0 || s->icon_height == 0.0)

@@ -37,19 +37,37 @@
 class Style;
 
 // TODO make thread safe
-class ImageCache {
+class AssetCache {
 private:
-	boost::unordered_map<string, Cairo::RefPtr<Cairo::ImageSurface> > stored;
+	boost::unordered_map<string, Cairo::RefPtr<Cairo::ImageSurface> > images;
+	boost::unordered_map<
+				std::tuple<string, Cairo::FontSlant, Cairo::FontWeight>,
+				Cairo::RefPtr<Cairo::ToyFontFace>
+			> fonts;
+
 public:
 	Cairo::RefPtr<Cairo::ImageSurface> getImage(string path)
 	{
-		auto it = stored.find(path);
-		if (it != stored.end())
+		auto it = images.find(path);
+		if (it != images.end())
 			return (*it).second;
 
 		Cairo::RefPtr<Cairo::ImageSurface> image = Cairo::ImageSurface::create_from_png(path);
-		stored[path] = image;
+		images.insert(std::make_pair(path, image));
 		return image;
+	}
+
+	Cairo::RefPtr<Cairo::ToyFontFace> getFont(string family = DEFAULT_FONT,
+			Cairo::FontSlant slant = Cairo::FONT_SLANT_NORMAL,
+			Cairo::FontWeight weight = Cairo::FONT_WEIGHT_NORMAL)
+	{
+		auto it = fonts.find(std::make_tuple(family, slant, weight));
+		if (it != fonts.end())
+			return (*it).second;
+
+		Cairo::RefPtr<Cairo::ToyFontFace> font = Cairo::ToyFontFace::create(family, slant, weight);
+		fonts.insert(std::make_pair(std::make_tuple(family, slant, weight), font));
+		return font;
 	}
 };
 
