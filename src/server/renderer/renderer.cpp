@@ -384,7 +384,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 
 			renderer.fill(layers[LAYER_FILL].cr, cache);
 			renderer.casing(layers[LAYER_CASING].cr);
-			renderer.stroke(layers[LAYER_STROKE].cr);
+			renderer.stroke(layers[LAYER_STROKE].cr, cache);
 			renderer.label(layers[LAYER_LABELS].cr, labels);
 			renderer.shield(layers[LAYER_LABELS].cr, shields);
 		}

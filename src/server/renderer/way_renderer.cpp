@@ -203,7 +203,7 @@ void WayRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 	cr->restore();
 }
 
-void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
+void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache)
 {
 	if (s->width <= 0.0)
 		return;
@@ -215,6 +215,12 @@ void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 	setLineCap(cr,  s->linecap);
 	setLineJoin(cr, s->linejoin);
 	cr->set_source_color(   s->color);
+	const string& image = s->image.str();
+	if (!image.empty()) {
+		Cairo::RefPtr<Cairo::SurfacePattern> pattern = Cairo::SurfacePattern::create(cache.getImage(image));
+		pattern->set_extend(Cairo::Extend::EXTEND_REPEAT);
+		cr->set_source(pattern);
+	}
 
 	if (s->dashes.size() > 0)
 		cr->set_dash(s->dashes, 0.0);

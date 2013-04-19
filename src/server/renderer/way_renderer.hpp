@@ -90,7 +90,7 @@ public:
 
 	void fill(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache);
 	void casing(const Cairo::RefPtr<Cairo::Context>& cr);
-	void stroke(const Cairo::RefPtr<Cairo::Context>& cr);
+	void stroke(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache);
 	void label(const Cairo::RefPtr<Cairo::Context>& cr,
 			std::list<shared_ptr<Label> >& labels);
 	void shield(const Cairo::RefPtr<Cairo::Context>& cr,
