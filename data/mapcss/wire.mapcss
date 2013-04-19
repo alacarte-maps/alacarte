@@ -71,32 +71,32 @@ relation [type=route][name="1 Durlach - Oberreut"] node{
 }
 
 /* Pubs und Bars */
-node|z18 [amenity=pub] { icon: ../icons/maki/pub-24.png; }
-node|z17 [amenity=pub] { icon: ../icons/maki/pub-18.png; }
-node|z16 [amenity=pub] { icon: ../icons/maki/pub-12.png; }
-node|z18 [amenity=bar] { icon: ../icons/maki/bar-24.png; }
-node|z17 [amenity=bar] { icon: ../icons/maki/bar-18.png; }
-node|z16 [amenity=bar] { icon: ../icons/maki/bar-12.png; }
-node|z18 [amenity=cafe] { icon: ../icons/maki/cafe-24.png; }
-node|z17 [amenity=cafe] { icon: ../icons/maki/cafe-18.png; }
-node|z16 [amenity=cafe] { icon: ../icons/maki/cafe-12.png; }
-node|z18 [amenity=fast_food] { icon: ../icons/maki/fast-food-24.png; }
-node|z17 [amenity=fast_food] { icon: ../icons/maki/fast-food-18.png; }
-node|z16 [amenity=fast_food] { icon: ../icons/maki/fast-food-12.png; }
+node|z18 [amenity=pub] { icon-image: ../icons/maki/pub-24.png; }
+node|z17 [amenity=pub] { icon-image: ../icons/maki/pub-18.png; }
+node|z16 [amenity=pub] { icon-image: ../icons/maki/pub-12.png; }
+node|z18 [amenity=bar] { icon-image: ../icons/maki/bar-24.png; }
+node|z17 [amenity=bar] { icon-image: ../icons/maki/bar-18.png; }
+node|z16 [amenity=bar] { icon-image: ../icons/maki/bar-12.png; }
+node|z18 [amenity=cafe] { icon-image: ../icons/maki/cafe-24.png; }
+node|z17 [amenity=cafe] { icon-image: ../icons/maki/cafe-18.png; }
+node|z16 [amenity=cafe] { icon-image: ../icons/maki/cafe-12.png; }
+node|z18 [amenity=fast_food] { icon-image: ../icons/maki/fast-food-24.png; }
+node|z17 [amenity=fast_food] { icon-image: ../icons/maki/fast-food-18.png; }
+node|z16 [amenity=fast_food] { icon-image: ../icons/maki/fast-food-12.png; }
 
 /* Öffentliche Gebäude */
-node|z18 [amenity=place_of_worship] { icon: ../icons/maki/place-of-worship-24.png; }
-node|z17 [amenity=place_of_worship] { icon: ../icons/maki/place-of-worship-18.png; }
-node|z16 [amenity=place_of_worship] { icon: ../icons/maki/place-of-worship-12.png; }
-node|z18 [amenity=university] { icon: ../icons/maki/college-24.png; }
-node|z17 [amenity=university] { icon: ../icons/maki/college-18.png; }
-node|z16 [amenity=university] { icon: ../icons/maki/college-12.png; }
-node|z18 [amenity=library] { icon: ../icons/maki/library-24.png; }
-node|z17 [amenity=library] { icon: ../icons/maki/library-18.png; }
-node|z16 [amenity=library] { icon: ../icons/maki/library-12.png; }
-node|z18 [shop=supermarket] { icon: ../icons/maki/grocery-24.png; }
-node|z17 [shop=supermarket] { icon: ../icons/maki/grocery-18.png; }
-node|z16 [shop=supermarket] { icon: ../icons/maki/grocery-12.png; }
+node|z18 [amenity=place_of_worship] { icon-image: ../icons/maki/place-of-worship-24.png; }
+node|z17 [amenity=place_of_worship] { icon-image: ../icons/maki/place-of-worship-18.png; }
+node|z16 [amenity=place_of_worship] { icon-image: ../icons/maki/place-of-worship-12.png; }
+node|z18 [amenity=university] { icon-image: ../icons/maki/college-24.png; }
+node|z17 [amenity=university] { icon-image: ../icons/maki/college-18.png; }
+node|z16 [amenity=university] { icon-image: ../icons/maki/college-12.png; }
+node|z18 [amenity=library] { icon-image: ../icons/maki/library-24.png; }
+node|z17 [amenity=library] { icon-image: ../icons/maki/library-18.png; }
+node|z16 [amenity=library] { icon-image: ../icons/maki/library-12.png; }
+node|z18 [shop=supermarket] { icon-image: ../icons/maki/grocery-24.png; }
+node|z17 [shop=supermarket] { icon-image: ../icons/maki/grocery-18.png; }
+node|z16 [shop=supermarket] { icon-image: ../icons/maki/grocery-12.png; }
 
 /* Stadtteile */
 

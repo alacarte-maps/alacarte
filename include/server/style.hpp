@@ -92,7 +92,7 @@ public:
 	LineCap casing_linecap;
 	LineJoin casing_linejoin;
 
-	MaybeCachedString icon;
+	MaybeCachedString icon_image;
 	double icon_width;
 	double icon_height;
 
