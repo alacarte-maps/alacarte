@@ -62,6 +62,7 @@ void Style::overmerge(GeoObject* obj, const shared_ptr<StyleTemplate>& templ)
 	OVERMERGE_IMPL(icon);
 	OVERMERGE_IMPL(icon_width);
 	OVERMERGE_IMPL(icon_height);
+	OVERMERGE_IMPL(icon_opacity);
 
 	OVERMERGE_IMPL(shield_color);
 	OVERMERGE_IMPL(shield_opacity);
@@ -219,6 +220,7 @@ Style::Style()
 
 	icon_width = -1.0;
 	icon_height = -1.0;
+	icon_opacity = 1.0;
 
 
 	shield_color = Color(1.0f, 1.0f, 1.0f, 0.0f);

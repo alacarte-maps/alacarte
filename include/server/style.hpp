@@ -95,6 +95,7 @@ public:
 	MaybeCachedString icon;
 	double icon_width;
 	double icon_height;
+	double icon_opacity;
 
 
 	Color shield_color;

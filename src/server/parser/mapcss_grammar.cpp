@@ -92,6 +92,7 @@ AttributeTypes::AttributeTypes()
 		("icon", CreateAttribute(&StyleTemplate::icon))
 		("icon-width", CreateAttribute(&StyleTemplate::icon_width))
 		("icon-height", CreateAttribute(&StyleTemplate::icon_height))
+		("icon-opacity", CreateAttribute(&StyleTemplate::icon_opacity))
 
 		("shield-color", CreateAttribute(&StyleTemplate::shield_color))
 		("shield-opacity", CreateAttribute(&StyleTemplate::shield_opacity))

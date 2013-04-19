@@ -66,6 +66,7 @@ public:
 	shared_ptr< eval::Eval<MaybeCachedString> > icon;
 	shared_ptr< eval::Eval<double> > icon_width;
 	shared_ptr< eval::Eval<double> > icon_height;
+	shared_ptr< eval::Eval<double> > icon_opacity;
 
 	shared_ptr< eval::Eval<Color> > shield_color;
 	shared_ptr< eval::Eval<double> > shield_opacity;
