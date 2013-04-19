@@ -23,6 +23,8 @@
 
 #include "settings.hpp"
 
+#include <boost/thread/mutex.hpp>
+
 #include <cairomm/surface.h>
 #include <cairomm/context.h>
 

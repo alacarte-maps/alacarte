@@ -18,11 +18,14 @@
  *  Maintainer: Tobias Kahlert
  */
 
-#include "includes.hpp"
+
 
 #include <boost/fusion/include/at_c.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/thread/thread.hpp>
 
 #include "server/style.hpp"
 #include "server/stylesheet.hpp"

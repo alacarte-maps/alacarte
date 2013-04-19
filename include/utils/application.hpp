@@ -22,6 +22,7 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 
+#include <boost/program_options.hpp>
 #include <boost/exception/enable_error_info.hpp>
 #include <boost/exception/error_info.hpp>
 

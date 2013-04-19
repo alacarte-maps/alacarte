@@ -24,8 +24,9 @@
 
 #include "settings.hpp"
 
+#include <boost/thread/mutex.hpp>
 #include <boost/unordered_map.hpp>
-#include <boost/thread/thread.hpp>
+#include <boost/filesystem.hpp>
 #include <list>
 
 #include "server/tile_identifier.hpp"

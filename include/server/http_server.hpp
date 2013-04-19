@@ -22,8 +22,9 @@
 #ifndef HTTP_SERVER_HPP
 #define HTTP_SERVER_HPP
 
-
 #include "settings.hpp"
+
+#include <boost/asio.hpp>
 
 class Configuration;
 class RequestManager;

@@ -1,8 +1,9 @@
-﻿#include "includes.hpp"
+﻿
 #include "../../tests.hpp"
 #include "../../shared/compare.hpp"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include "utils/transform.hpp"
 #include "utils/point.hpp"

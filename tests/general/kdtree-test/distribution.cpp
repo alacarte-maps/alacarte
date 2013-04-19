@@ -1,6 +1,8 @@
-﻿#include "includes.hpp"
+﻿
 #include "../../tests.hpp"
 #include "../../shared/compare.hpp"
+
+#include <boost/filesystem/operations.hpp>
 
 #include "general/geodata.hpp"
 #include "general/nodeKdTree.hpp"

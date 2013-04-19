@@ -5,6 +5,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <log4cpp/Appender.hh>
+#include <log4cpp/Category.hh>
 #include <log4cpp/OstreamAppender.hh>
 
 class TestSetup

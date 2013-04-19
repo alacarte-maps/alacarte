@@ -18,7 +18,7 @@
  *  Maintainer: Simon Dreher
  */
 
-#include "includes.hpp"
+
 
 #include "server/cache.hpp"
 
@@ -30,6 +30,7 @@
 #include "utils/exceptions.hpp"
 
 #include <boost/unordered_map.hpp>
+#include <fstream>
 
 
 Cache::Cache(const shared_ptr<Configuration>& config)

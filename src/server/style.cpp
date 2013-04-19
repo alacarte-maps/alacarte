@@ -18,12 +18,13 @@
  *  Maintainer: Florian Jacob
  */
 
-#include "includes.hpp"
+
+#include <limits>
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include "server/style.hpp"
 #include "general/geo_object.hpp"
-#include <limits>
-#include <boost/algorithm/string/replace.hpp>
 #include "server/stylesheet.hpp"
 #include "server/style_template.hpp"
 #include "server/eval/eval.hpp"

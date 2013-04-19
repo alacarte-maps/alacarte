@@ -18,7 +18,7 @@
  *  Maintainer: Tobias Kahlert
  */
 
-#include "includes.hpp"
+
 #include "server/parser/color_grammar.hpp"
 
 #include "utils/colorTable.hpp"

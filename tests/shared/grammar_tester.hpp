@@ -2,6 +2,8 @@
 #ifndef _GRAMMAR_TESTER_HPP
 #define _GRAMMAR_TESTER_HPP
 
+#include <boost/lexical_cast.hpp>
+
 #include "server/parser/mapcss_def.hpp"
 
 #define TEMP_FILE "eval-test.tmp"

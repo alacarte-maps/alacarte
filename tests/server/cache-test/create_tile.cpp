@@ -23,43 +23,44 @@ public:
 BOOST_AUTO_TEST_SUITE(tile_identifier_test)
 struct tile_identifier_test
 {
+	shared_ptr<Configuration> config;
 	shared_ptr<StylesheetManager> ssm;
 	tile_identifier_test() {
 		ConfigMockup* mock = new ConfigMockup();
 		const char* argv[] = {"alacarte-server", "-g", "ala.carte"};
-		shared_ptr<Configuration> config = mock->Config((char**) argv, 3);
+		config = mock->Config((char**) argv, 3);
 		ssm = boost::dynamic_pointer_cast<StylesheetManager>(boost::make_shared<MockStylesheetManager>(config));
 
 	}
 	
 	void test_identifier() {
 		// TODO: Check for correct message.
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"", ssm), excp::MalformedURLException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/a/0/0.png", ssm), excp::MalformedURLException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/-2/0.png", ssm), excp::MalformedURLException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/a.png", ssm), excp::MalformedURLException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/apng", ssm), excp::MalformedURLException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.wrong", ssm), excp::UnknownImageFormatException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"", ssm, config), excp::MalformedURLException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/a/0/0.png", ssm, config), excp::MalformedURLException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/-2/0.png", ssm, config), excp::MalformedURLException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/a.png", ssm, config), excp::MalformedURLException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/apng", ssm, config), excp::MalformedURLException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.wrong", ssm, config), excp::UnknownImageFormatException);
 	}
 	
 	void test_image_formats() {
-		BOOST_CHECK_NO_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.png", ssm));
-		BOOST_CHECK_NO_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.svg", ssm));
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.jpg", ssm), excp::UnknownImageFormatException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.jpeg", ssm), excp::UnknownImageFormatException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.gif", ssm), excp::UnknownImageFormatException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.svgz", ssm), excp::UnknownImageFormatException);
+		BOOST_CHECK_NO_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.png", ssm, config));
+		BOOST_CHECK_NO_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.svg", ssm, config));
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.jpg", ssm, config), excp::UnknownImageFormatException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.jpeg", ssm, config), excp::UnknownImageFormatException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.gif", ssm, config), excp::UnknownImageFormatException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/0/0/0.svgz", ssm, config), excp::UnknownImageFormatException);
 	}
 	
 	void test_plausibility_check() {
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/3/2345/0.png", ssm), excp::MalformedURLException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/3/0/2345.png", ssm), excp::MalformedURLException);
-		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/28/0/0.png", ssm), excp::MalformedURLException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/3/2345/0.png", ssm, config), excp::MalformedURLException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/3/0/2345.png", ssm, config), excp::MalformedURLException);
+		BOOST_CHECK_THROW(TileIdentifier::Create((const string&)"/stylesheet/28/0/0.png", ssm, config), excp::MalformedURLException);
 	}
 	
 	void test_correct() {
 		shared_ptr<TileIdentifier> ti;
-		BOOST_CHECK_NO_THROW(ti = TileIdentifier::Create((const string&)"/folder/stylesheet/2/1/0.svg", ssm));
+		BOOST_CHECK_NO_THROW(ti = TileIdentifier::Create((const string&)"/folder/stylesheet/2/1/0.svg", ssm, config));
 		BOOST_CHECK_EQUAL(ti->getX(), 1);
 		BOOST_CHECK_EQUAL(ti->getY(), 0);
 		BOOST_CHECK_EQUAL(ti->getZoom(), 2);

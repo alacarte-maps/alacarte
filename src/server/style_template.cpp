@@ -18,7 +18,7 @@
  *  Maintainer: Tobias Kahlert
  */
 
-#include "includes.hpp"
+
 #include "server/style_template.hpp"
 #include "server/eval/eval.hpp"
 

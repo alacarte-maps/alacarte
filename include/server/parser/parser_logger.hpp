@@ -24,10 +24,9 @@
 
 
 #include <boost/enable_shared_from_this.hpp>
+#include <fstream>
 
 #include "settings.hpp"
-
-
 
 class ParserLogger
 	: public boost::enable_shared_from_this<ParserLogger>

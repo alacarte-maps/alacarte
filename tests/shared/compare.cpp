@@ -1,10 +1,11 @@
-﻿#include "includes.hpp"
+﻿
 #include "../tests.hpp"
 #include "../config.hpp"
 
 #include "compare.hpp"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <cairomm/surface.h>
 #include <cairomm/context.h>

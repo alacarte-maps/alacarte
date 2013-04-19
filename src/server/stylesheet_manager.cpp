@@ -18,7 +18,7 @@
  *  Maintainer: Florian Jacob
  */
 
-#include "includes.hpp"
+
 
 #include "server/stylesheet_manager.hpp"
 #include "server/tile_identifier.hpp"

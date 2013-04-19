@@ -23,12 +23,9 @@
 #define STATISTIC_HPP
 
 #include <settings.hpp>
+#include <boost/thread/mutex.hpp>
 
 class Configuration;
-//For Global „Statistic“ activation
-//#define Statistic_Aktivated
-//For Memory save usage
-//#define Statistic_Less_Memory
 
 class Statistic
 {

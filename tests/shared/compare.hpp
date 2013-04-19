@@ -2,7 +2,7 @@
 #ifndef COMPARE_HPP
 #define COMPARE_HPP
 
-#include <boost/algorithm/string.hpp>
+#include <boost/filesystem/path.hpp>
 
 using boost::filesystem::path;
 

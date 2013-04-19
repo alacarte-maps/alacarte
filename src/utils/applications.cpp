@@ -18,7 +18,8 @@
  *  Maintainer: Tobias Kahlert
  */
 
-#include "includes.hpp"
+
+#include <boost/filesystem.hpp>
 
 #include <log4cpp/Category.hh>
 #include <log4cpp/Appender.hh>

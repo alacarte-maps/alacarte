@@ -28,7 +28,6 @@ pkg_check_modules(SigC++ sigc++-2.0)
 
 
 # Add preprocessor makro
-add_subdirectory(extras/pch)
 add_subdirectory(extras/log4cpp)
 
 set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
@@ -47,7 +46,7 @@ include_directories(include ${Boost_INCLUDE_DIRS} ${LOG4CPP_INCLUDE_DIRS} ${SigC
 
 file(GLOB_RECURSE server_sources 				src/server/*.cpp)
 file(GLOB_RECURSE importer_sources 				src/importer/*.cpp)
-file(GLOB_RECURSE alacarte_sources 				src/general/*.cpp src/utils/*.cpp src/precompiled_header.cpp)
+file(GLOB_RECURSE alacarte_sources 				src/general/*.cpp src/utils/*.cpp)
 file(GLOB_RECURSE UnitTests_general_sources 	tests/general/*.cpp)
 file(GLOB_RECURSE UnitTests_server_sources 		tests/server/*.cpp)
 file(GLOB_RECURSE UnitTests_mapcss_sources 		tests/mapcss/*.cpp)
@@ -80,7 +79,6 @@ IF(GMOCK_FOUND)
 ENDIF(GMOCK_FOUND)
 
 ADD_DEFINITIONS("-std=c++0x")
-ADD_DEFINITIONS(-DALACARTE_USE_PRECOMPILED_HEADER)
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 ADD_DEFINITIONS(${LOG4CPP_DEFINITIONS})
 ADD_DEFINITIONS(-DStatistic_Activated)
@@ -110,18 +108,6 @@ message(STATUS "Release: ${CMAKE_CXX_FLAGS_RELEASE}")
 configure_file("data/config/alacarte.conf.in" "${CMAKE_SOURCE_DIR}/data/config/alacarte.conf")
 configure_file("tests/config.hpp.in" "${CMAKE_SOURCE_DIR}/tests/config.hpp")
 configure_file("include/config.hpp.in" "${CMAKE_SOURCE_DIR}/include/config.hpp")
-
-add_precompiled_header(alacarte-importer	"include/includes.hpp")
-add_precompiled_header(alacarte-server		"include/includes.hpp")
-add_precompiled_header(unitTests_utils		"include/includes.hpp")
-add_precompiled_header(unitTests_general	"include/includes.hpp")
-add_precompiled_header(unitTests_importer	"include/includes.hpp")
-add_precompiled_header(unitTests_server		"include/includes.hpp")
-add_precompiled_header(unitTests_parser		"include/includes.hpp")
-IF(GMOCK_FOUND)
-	add_precompiled_header(unitTests_mapcss		"include/includes.hpp")
-ENDIF(GMOCK_FOUND)
-add_precompiled_header(unitTests_eval		"include/includes.hpp")
 
 target_link_libraries(alacarte-server 		${Boost_LIBRARIES} ${Cairomm_LIBRARIES} ${LOG4CPP_LIBRARIES} ${SigC++_LIBRARIES} pthread)
 target_link_libraries(alacarte-importer 	${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} pthread)

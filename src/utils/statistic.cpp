@@ -18,10 +18,11 @@
  *  Maintainer: Bernhard Scheirle
  */
 
-#include "includes.hpp"
+
+#include <fstream>
 
 #include "utils/statistic.hpp"
-#include <general/configuration.hpp>
+#include "general/configuration.hpp"
 
 #define DEBUG(...) (log4cpp::Category::getInstance("Statistic").info(__VA_ARGS__));
 

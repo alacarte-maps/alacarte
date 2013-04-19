@@ -1,4 +1,4 @@
-#include "includes.hpp"
+
 #include "../../tests.hpp"
 #include "general/node.hpp"
 #include "general/way.hpp"
@@ -9,6 +9,8 @@
 #include "../../shared/compare.hpp"
 
 #include "geodataMock.hpp"
+
+#include <boost/filesystem/operations.hpp>
 
 BOOST_AUTO_TEST_SUITE(geodata_test)
 

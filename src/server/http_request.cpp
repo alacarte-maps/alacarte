@@ -18,7 +18,8 @@
  *  Maintainer: Bernhard Scheirle
  */
 
-#include "includes.hpp"
+
+#include <boost/lexical_cast.hpp>
 
 #include "server/http_request.hpp"
 #include "server/tile.hpp"
