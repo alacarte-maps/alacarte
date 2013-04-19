@@ -47,7 +47,8 @@ public:
 
 	shared_ptr< eval::Eval<Color> > color;
 	shared_ptr< eval::Eval<Color> > fill_color;
-	// only used for canvas
+
+	shared_ptr< eval::Eval<MaybeCachedString> > image;
 	shared_ptr< eval::Eval<MaybeCachedString> > fill_image;
 
 	shared_ptr< eval::Eval<double> > width;

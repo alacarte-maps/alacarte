@@ -40,6 +40,7 @@ void Style::overmerge(GeoObject* obj, const shared_ptr<StyleTemplate>& templ)
 	OVERMERGE_IMPL(color);
 	OVERMERGE_IMPL(fill_color);
 
+	OVERMERGE_IMPL(image);
 	OVERMERGE_IMPL(fill_image);
 
 	OVERMERGE_IMPL(width);

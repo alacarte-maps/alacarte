@@ -124,7 +124,7 @@ void NodeRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->restore();
 }
 
-void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, IconCache& cache)
+void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache)
 {
 	// path to icon not set
 	if (s->icon_image.str().size() == 0 || s->icon_width == 0.0 || s->icon_height == 0.0)
