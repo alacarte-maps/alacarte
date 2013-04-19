@@ -345,7 +345,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 		maxZ = std::max(maxZ, relationStyles.at(relations.back())->z_index);
 	}
 
-	IconCache cache;
+	ImageCache cache;
 	auto rid = relations.begin();
 	auto wid = ways.begin();
 	auto nid = nodes.begin();
@@ -370,7 +370,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 			}
 			RelationRenderer renderer(data, *rid, s, transform);
 
-			renderer.fill(layers[LAYER_FILL].cr);
+			renderer.fill(layers[LAYER_FILL].cr, cache);
 		}
 
 		for (; wid != ways.end(); wid++)
@@ -382,7 +382,7 @@ void Renderer::renderObjects(CairoLayer layers[],
 			}
 			WayRenderer renderer(data, *wid, s, transform);
 
-			renderer.fill(layers[LAYER_FILL].cr);
+			renderer.fill(layers[LAYER_FILL].cr, cache);
 			renderer.casing(layers[LAYER_CASING].cr);
 			renderer.stroke(layers[LAYER_STROKE].cr);
 			renderer.label(layers[LAYER_LABELS].cr, labels);

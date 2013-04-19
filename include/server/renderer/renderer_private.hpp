@@ -22,6 +22,7 @@
 #define RENDERER_PRIVATE_HPP
 
 #include <boost/unordered_map.hpp>
+#include <boost/thread/shared_mutex.hpp>
 
 #include <cairomm/surface.h>
 #include <cairomm/context.h>
@@ -36,19 +37,33 @@
 
 class Style;
 
-// TODO make thread safe
-class IconCache {
+class ImageCache {
 private:
 	boost::unordered_map<string, Cairo::RefPtr<Cairo::ImageSurface> > stored;
+	boost::shared_mutex mutex;
+
 public:
-	Cairo::RefPtr<Cairo::ImageSurface> getIcon(string path)
+	Cairo::RefPtr<Cairo::ImageSurface> getImage(string path)
 	{
-		auto it = stored.find(path);
-		if (it != stored.end())
-			return (*it).second;
+		{
+			boost::shared_lock<boost::shared_mutex> lock(mutex);
+
+			auto it = stored.find(path);
+			if (it != stored.end())
+				return (*it).second;
+		}
 
 		Cairo::RefPtr<Cairo::ImageSurface> image = Cairo::ImageSurface::create_from_png(path);
-		stored[path] = image;
+
+		{
+			boost::unique_lock<boost::shared_mutex> lock(mutex);
+
+			// image may have already been added to the cache by
+			// another thread, in which case this insert will just
+			// be a no-op
+			stored.insert(std::make_pair(path, image));
+		}
+
 		return image;
 	}
 };
