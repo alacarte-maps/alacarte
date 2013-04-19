@@ -26,6 +26,11 @@ endif (cairo_ver LESS 1 OR cairo_major LESS 12 OR cairo_minor LESS 2)
 pkg_check_modules(Freetype freetype2)
 pkg_check_modules(SigC++ sigc++-2.0)
 
+#Set windows version for MinGW
+IF(MINGW)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0501")
+add_definitions(-D_WIN32_WINNT=0x0501)
+ENDIF(MINGW)
 
 # Add preprocessor makro
 add_subdirectory(extras/log4cpp)
@@ -110,7 +115,11 @@ configure_file("tests/config.hpp.in" "${CMAKE_SOURCE_DIR}/tests/config.hpp")
 configure_file("include/config.hpp.in" "${CMAKE_SOURCE_DIR}/include/config.hpp")
 
 target_link_libraries(alacarte-server 		${Boost_LIBRARIES} ${Cairomm_LIBRARIES} ${LOG4CPP_LIBRARIES} ${SigC++_LIBRARIES} pthread)
+IF(MINGW)
+target_link_libraries(alacarte-importer 	${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} pthread ws2_32 wsock32)
+ELSE()
 target_link_libraries(alacarte-importer 	${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} pthread)
+ENDIF()
 target_link_libraries(unitTests_utils 		${Boost_LIBRARIES} ${Cairomm_LIBRARIES} ${LOG4CPP_LIBRARIES} pthread)
 target_link_libraries(unitTests_general 	${Boost_LIBRARIES} ${Cairomm_LIBRARIES} ${LOG4CPP_LIBRARIES} ${SigC++_LIBRARIES} pthread)
 target_link_libraries(unitTests_importer 	${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} ${Cairomm_LIBRARIES} ${SigC++_LIBRARIES} pthread)
