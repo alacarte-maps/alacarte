@@ -454,7 +454,7 @@ struct text_test : feature_test {
 
 /*
  * Tests the following style attributes:
- *  - icon
+ *  - icon_image
  *  - icon_width
  *  - icon_height
  *
@@ -470,7 +470,7 @@ struct icon_test : feature_test {
 		Style nodeStyleDefault = Style();
 		nodeStyleDefault.color = Color(1.0f, 0.0f, 0.0f, 1.0f);
 		nodeStyleDefault.width = 2.0;
-		nodeStyleDefault.icon = (getInputDirectory() / "icons/fast-food-24.png").string();
+		nodeStyleDefault.icon_image = (getInputDirectory() / "icons/fast-food-24.png").string();
 		nodeStyleDefault.icon_width = 24.0;
 		nodeStyleDefault.icon_height = 24.0;
 
@@ -502,10 +502,10 @@ struct icon_test : feature_test {
 		styles[CachedString("point_20")] = nodeStyle;
 		// different icons
 		nodeStyle = nodeStyleDefault;
-		nodeStyleDefault.icon = (getInputDirectory() / "icons/beer-24.png").string();
+		nodeStyleDefault.icon_image = (getInputDirectory() / "icons/beer-24.png").string();
 		styles[CachedString("point_21")] = nodeStyle;
 		nodeStyle = nodeStyleDefault;
-		nodeStyleDefault.icon = (getInputDirectory() / "icons/airport-24.png").string();
+		nodeStyleDefault.icon_image = (getInputDirectory() / "icons/airport-24.png").string();
 		styles[CachedString("point_22")] = nodeStyle;
 	}
 };
