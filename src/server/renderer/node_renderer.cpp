@@ -40,6 +40,8 @@
 #include "server/renderer/renderer_private.hpp"
 #include "node_renderer.hpp"
 
+#include "pi.hpp"
+
 NodeRenderer::NodeRenderer(const shared_ptr<Geodata>& data,
 						  NodeId nid,
 						  const Style* s,

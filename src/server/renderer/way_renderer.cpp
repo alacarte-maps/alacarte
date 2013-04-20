@@ -19,7 +19,6 @@
  */
 
 
-
 #include <boost/unordered_map.hpp>
 
 #include "general/geodata.hpp"
@@ -31,6 +30,8 @@
 #include "server/renderer/renderer.hpp"
 #include "server/renderer/renderer_private.hpp"
 #include "way_renderer.hpp"
+
+#include "pi.hpp"
 
 /**
  * @brief Adds the path of the given way to current path, if path is not set it creates it form the data
