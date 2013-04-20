@@ -127,11 +127,13 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, shared_ptr<
 		}
 		styleSheetpath += parts.at(i);
 	}
-	if (styleSheetpath == "")
+	if (styleSheetpath == "" || !stylesheetManager->hasStylesheet(styleSheetpath))
+	{
 		styleSheetpath = config->get<string>(opt::server::path_to_default_style);
 
-	if (!stylesheetManager->hasStylesheet(styleSheetpath))
-		styleSheetpath = ".fallback";
+		if (!stylesheetManager->hasStylesheet(styleSheetpath))
+			styleSheetpath = ".fallback";
+	}
 
 	return boost::make_shared<TileIdentifier>(x, y, zoom, styleSheetpath, imageFormat);
 }
