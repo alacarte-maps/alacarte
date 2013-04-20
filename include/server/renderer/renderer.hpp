@@ -94,7 +94,7 @@ private:
 	};
 
 	shared_ptr<ImageWriter> getWriter(TileIdentifier::Format format, int width, int height) const;
-	void printTileId(const Cairo::RefPtr<Cairo::Context>& cr, const shared_ptr<TileIdentifier>& id);
+	void printTileId(const Cairo::RefPtr<Cairo::Context>& cr, const shared_ptr<TileIdentifier>& id) const;
 	void sortObjects(RenderAttributes& map, std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations) const;
 	bool isCutOff(const FloatRect& box, const FloatRect& owner);
 	void compositeLayers(CairoLayer layers[]) const;

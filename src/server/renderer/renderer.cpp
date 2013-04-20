@@ -244,7 +244,7 @@ Renderer::~Renderer()
 
 //! Debug function that prints identifier on the tile
 void Renderer::printTileId(const Cairo::RefPtr<Cairo::Context>& cr,
-						   const shared_ptr<TileIdentifier>& id)
+						   const shared_ptr<TileIdentifier>& id) const
 {
 	cr->save();
 
@@ -723,6 +723,10 @@ void Renderer::sliceTile(const shared_ptr<MetaTile>& meta, const shared_ptr<Tile
 
 	layer.cr->set_source(surface, -dx, -dy);
 	layer.cr->paint();
+
+#if DEBUG_BUILD
+	printTileId(layer.cr, tile->getIdentifier());
+#endif
 
 	writer->write(layer.surface);
 	tile->setImage(buffer);
