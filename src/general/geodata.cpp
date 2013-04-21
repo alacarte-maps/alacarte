@@ -60,6 +60,9 @@ Geodata::~Geodata()
 
 void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
 {
+	if (nodes->size() == 0)
+		return;
+
 	std::vector<FixedPoint> points;;
 	for (auto& n : *nodes)
 		points.push_back(n.getLocation());
@@ -72,6 +75,9 @@ void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
 
 void Geodata::insertWays(const shared_ptr<std::vector<Way> >& ways)
 {
+	if (ways->size() == 0)
+		return;
+
 	std::vector<FixedRect> rects;
 	for (auto& w : *ways)
 		rects.push_back(calculateBoundingBox(w));
@@ -84,6 +90,9 @@ void Geodata::insertWays(const shared_ptr<std::vector<Way> >& ways)
 
 void Geodata::insertRelations(const shared_ptr<std::vector<Relation> >& relations)
 {
+	if (relations->size() == 0)
+		return;
+
 	std::vector<FixedRect> rects;
 	for (auto& r : *relations)
 		rects.push_back(calculateBoundingBox(r));
@@ -102,21 +111,24 @@ bool Geodata::containsData(const FixedRect &rect) const
 shared_ptr<std::vector<NodeId> > Geodata::getNodeIDs(const FixedRect& rect) const
 {
 	shared_ptr<std::vector<NodeId> > nodeIDs = boost::make_shared< std::vector<NodeId> >();
-	nodesTree->search(nodeIDs, rect);
+	if (nodesTree)
+		nodesTree->search(nodeIDs, rect);
 	return nodeIDs;
 }
 
 shared_ptr<std::vector<WayId> > Geodata::getWayIDs(const FixedRect& rect) const
 {
 	shared_ptr<std::vector<WayId> > wayIDs = boost::make_shared< std::vector<WayId> >();
-	waysTree->search(wayIDs, rect);
+	if (waysTree)
+		waysTree->search(wayIDs, rect);
 	return wayIDs;
 }
 
 shared_ptr<std::vector<RelId> > Geodata::getRelationIDs(const FixedRect& rect) const
 {
 	shared_ptr<std::vector<RelId> > relationIDs = boost::make_shared< std::vector<RelId> >();
-	relTree->search(relationIDs, rect);
+	if (relTree)
+		relTree->search(relationIDs, rect);
 	return relationIDs;
 }
 
@@ -151,9 +163,13 @@ void Geodata::load(const string& path)
 	ia >> *this;
 
 	// set offsets of leaf inside archive file
-	nodesTree->setLeafFile(path, offsets[1]);
-	waysTree->setLeafFile(path, offsets[2]);
-	relTree->setLeafFile(path, offsets[3]);
+	int i =  1;
+	if (nodesTree)
+		nodesTree->setLeafFile(path, offsets[i++]);
+	if (waysTree)
+		waysTree->setLeafFile(path, offsets[i++]);
+	if (relTree)
+		relTree->setLeafFile(path, offsets[i++]);
 }
 
 void Geodata::serialize(const string& serPath) const
@@ -178,15 +194,21 @@ void Geodata::save(const string& outPath) const
 	log.infoStream() << "Save geodata to \"" << outPath << "\"";
 	Archive a(outPath);
 	a.addFile(ser.native());
-	a.addFile(TMP_NODES);
-	a.addFile(TMP_WAYS);
-	a.addFile(TMP_RELATIONS);
+	if (nodesTree)
+		a.addFile(TMP_NODES);
+	if (waysTree)
+		a.addFile(TMP_WAYS);
+	if (relTree)
+		a.addFile(TMP_RELATIONS);
 	a.write();
 
 	remove(ser.native().c_str());
-	remove(TMP_NODES);
-	remove(TMP_WAYS);
-	remove(TMP_RELATIONS);
+	if (nodesTree)
+		remove(TMP_NODES);
+	if (waysTree)
+		remove(TMP_WAYS);
+	if (relTree)
+		remove(TMP_RELATIONS);
 }
 
 FixedRect Geodata::calculateBoundingBox(const Way& way) const
