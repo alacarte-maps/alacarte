@@ -70,6 +70,7 @@ protected:
 	shared_ptr<RTree<RelId, FixedRect>> relTree;
 
 private:
+	void serialize(const string& serPath) const;
 	TESTABLE FixedRect calculateBoundingBox(const Way& way) const;
 	TESTABLE FixedRect calculateBoundingBox(const Relation& relation) const;
 	FixedRect calculateBoundingBox(const std::vector<NodeId>& nodeIDs) const;

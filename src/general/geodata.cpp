@@ -42,9 +42,13 @@
 #include "general/relation.hpp"
 #include "general/rtree.hpp"
 #include "utils/rect.hpp"
+#include "utils/archive.hpp"
+
+#define TMP_NODES      "/tmp/nodes.bin"
+#define TMP_WAYS       "/tmp/ways.bin"
+#define TMP_RELATIONS  "/tmp/relations.bin"
 
 using boost::filesystem::absolute;
-
 
 Geodata::Geodata()
 {
@@ -60,7 +64,7 @@ void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
 	for (auto& n : *nodes)
 		points.push_back(n.getLocation());
 
-	this->nodesTree = boost::make_shared<RTree<NodeId, FixedPoint> >(absolute(path("nodes.bin")));
+	this->nodesTree = boost::make_shared<RTree<NodeId, FixedPoint> >(TMP_NODES);
 	nodesTree->build(points);
 
 	this->nodes = nodes;
@@ -72,7 +76,7 @@ void Geodata::insertWays(const shared_ptr<std::vector<Way> >& ways)
 	for (auto& w : *ways)
 		rects.push_back(calculateBoundingBox(w));
 
-	this->waysTree = boost::make_shared<RTree<WayId, FixedRect> >(absolute(path("ways.bin")));
+	this->waysTree = boost::make_shared<RTree<WayId, FixedRect> >(TMP_WAYS);
 	waysTree->build(rects);
 
 	this->ways = ways;
@@ -84,7 +88,7 @@ void Geodata::insertRelations(const shared_ptr<std::vector<Relation> >& relation
 	for (auto& r : *relations)
 		rects.push_back(calculateBoundingBox(r));
 
-	this->relTree = boost::make_shared<RTree<RelId, FixedRect>>(absolute(path("relations.bin")));
+	this->relTree = boost::make_shared<RTree<RelId, FixedRect>>(TMP_RELATIONS);
 	relTree->build(rects);
 
 	this->relations = relations;
@@ -137,19 +141,52 @@ void Geodata::load(const string& path)
 	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
 	log.infoStream() << "Load geodata from \"" << path << "\"";
 
-	std::ifstream ifs(path, std::ios::binary | std::ios::in);
-	boost::archive::binary_iarchive ia(ifs);
+	Archive a(path);
+	std::vector<uint64_t> offsets;
+	a.getOffsets(offsets);
 
+	std::ifstream ifs(path, std::ios::binary | std::ios::in);
+	ifs.seekg(offsets[0]);
+	boost::archive::binary_iarchive ia(ifs);
 	ia >> *this;
+
+	// set offsets of leaf inside archive file
+	nodesTree->setLeafFile(path, offsets[1]);
+	waysTree->setLeafFile(path, offsets[2]);
+	relTree->setLeafFile(path, offsets[3]);
 }
 
-void Geodata::save(const string& path) const
+void Geodata::serialize(const string& serPath) const
 {
 	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
-	log.infoStream() << "Save geodata to \"" << path << "\"";
-	std::ofstream ofs(path, std::ios::binary | std::ios::out);
+	log.infoStream() << "Serialize to \"" << serPath << "\"";
+
+	std::ofstream ofs(serPath, std::ios::binary | std::ios::out);
 	boost::archive::binary_oarchive oa(ofs);
 	oa << *this;
+}
+
+void Geodata::save(const string& outPath) const
+{
+	boost::filesystem::path out = absolute(path(outPath));
+	boost::filesystem::path base = out.parent_path();
+	boost::filesystem::path ser = base / "data.ser";
+
+	serialize(ser.native());
+
+	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
+	log.infoStream() << "Save geodata to \"" << outPath << "\"";
+	Archive a(outPath);
+	a.addFile(ser.native());
+	a.addFile(TMP_NODES);
+	a.addFile(TMP_WAYS);
+	a.addFile(TMP_RELATIONS);
+	a.write();
+
+	remove(ser.native().c_str());
+	remove(TMP_NODES);
+	remove(TMP_WAYS);
+	remove(TMP_RELATIONS);
 }
 
 FixedRect Geodata::calculateBoundingBox(const Way& way) const

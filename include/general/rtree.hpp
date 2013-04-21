@@ -110,10 +110,20 @@ public:
 		shared_ptr<std::vector<id_t> > geoIDs = boost::make_shared< std::vector<id_t> >();
 		return search(geoIDs, rect, true);
 	};
+	// TODO add exception if something fails
+	//! is called after deserialisation to set offets in the archive
+	void setLeafFile(const string& path, uint64_t offset)
+	{
+		input.open(path, std::ios::in | std::ios::binary);
+		if (!input.is_open())
+			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(path));
+		this->offset = offset;
+	}
 
 private:
 	std::vector<RNode> tree;
 	std::ifstream input;
+	uint64_t offset;
 	path leafPath;
 
 	bool validate ();
@@ -144,20 +154,11 @@ private:
 	template<typename Archive>
 	void load(Archive &ar, const unsigned int version){
 		ar >> tree;
-		string tmp;
-		ar >> tmp;
-		leafPath = path(tmp);
-
-		input.open(leafPath.string(), std::ios::in | std::ios::binary);
-		assert(input.is_open());
-
-		printLeaves();
 	}
 	template<typename Archive>
 	void save(Archive &ar, const unsigned int version) const
 	{
 		ar << tree;
-		ar << leafPath.string();
 	}
 	BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
@@ -361,7 +362,8 @@ bool RTree<id_t, data_t>::readLeaf (uint32_t nodeIdx,
 {
 	// reverse index, so that it correspons with the id of the saved leaves
 	uint32_t leafID = (tree.size() - 1 - nodeIdx) * NUM_CHILDREN + childIdx;
-	input.seekg(sizeof(*leaf) * leafID, std::ios::beg);
+	uint64_t leafOff = offset + sizeof(*leaf) * leafID;
+	input.seekg(leafOff);
 	input.read((char*) leaf, sizeof(*leaf));
 }
 
