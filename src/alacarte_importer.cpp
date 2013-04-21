@@ -53,7 +53,8 @@ public:
 		// only in cmd
 		cmd_desc.add_options()
 			(OPT(opt::help, "h"),																			"produce help message")
-			(OPT(opt::config, "c"),	value<string>()->default_value(DEFAULT_CONFIG_PATH)/*->value_name("path")*/,		"specifies a config file which will be loaded at program start")
+			(OPT(opt::config, "c"),	value<string>()->default_value(DEFAULT_CONFIG_NAME),
+				"specifies a config file which will be loaded at program start.  Absolute and relative paths are possible. Additionally we search in /etc/.")
 			;
 
 		// in cmd and config
@@ -61,7 +62,8 @@ public:
 			(OPT(opt::logfile, "l"), value<string>()->default_value("log.txt")/*->value_name("path")*/,										"specifies the logfile")
 			(OPT(opt::importer::path_to_osmdata, "i"),	value<string>()->required()/*->value_name("path")*/,								"path to a xml file containing osm data")
 			(OPT(opt::importer::path_to_geodata, "g"),	value<string>()->required()->default_value("ala.carte")/*->value_name("path")*/,	"path, where preprocessed data will be saved")
-			(OPT(opt::importer::check_xml_entities, "x"),	value<bool>()->required()->default_value(true)/*->value_name("path")*/,			"path to a xml file containing osm data")
+			(OPT(opt::importer::check_xml_entities, "x"),	value<bool>()->required()->default_value(true)/*->value_name("path")*/,			
+				"Specifies weather the parser should not ignore unknown entities.")
 			;
 
 

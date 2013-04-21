@@ -55,6 +55,7 @@ Configuration::Configuration(	boost::program_options::options_description& cmd_d
 								boost::program_options::options_description& config_desc,
 								boost::program_options::positional_options_description& pos_desc,
 								int argc, char** argv)
+	: ConfigFileUsed(false)
 {
 	using boost::filesystem::path;
 	using boost::filesystem::is_regular_file;
@@ -65,29 +66,30 @@ Configuration::Configuration(	boost::program_options::options_description& cmd_d
 	using boost::program_options::positional_options_description;
 
 	store(command_line_parser(argc, argv).options(cmd_desc).positional(pos_desc).run(), options);
-
-	std::queue<path> directorys;
-
+	
+	std::queue<path> directories;
 	// Iterate over different directories ans search for config file
-	directorys.push("");
-	directorys.push(path(argv[0]).parent_path());
-	//...
-
+	// Adding a Directory? So don't forget to update the help of -c command of the server and importer
+	directories.push(""); //root
+	directories.push(path(argv[0]).parent_path()); // executable path
+	directories.push("/etc");
 
 	assert(options.count(opt::config));
 	path configFile = options[opt::config].as<string>();
 
-	while(directorys.size())
+	while(directories.size())
 	{
-		path configPath = directorys.front() / configFile;
+		searchDirectories.push_back(directories.front().string());
+		path configPath = directories.front() / configFile;
 
 		if(is_regular_file(configPath))
 		{
+			ConfigFileUsed = true;
 			store(parse_config_file<char>(configPath.string().c_str(), config_desc, true), options);
 			break;
 		}
 
-		directorys.pop();
+		directories.pop();
 	}
 
 	notify(options);
@@ -104,6 +106,16 @@ bool Configuration::has(const string& key)
 	return options.count(key) != 0;
 }
 
+
+bool Configuration::usedConfigFile() const
+{
+	return ConfigFileUsed;
+}
+
+const std::vector<string> & Configuration::getSeachDirectories() const
+{
+	return searchDirectories;
+}
 /**
  * @brief Prints the given configurations to the log.
  *
@@ -123,7 +135,11 @@ void Configuration::printConfigToLog()
 			log.infoStream() << it->first << ": " << it->second.as<int>();
 		}else if (v.type() == typeid(std::string))
 		{
-			log.infoStream() << it->first << ": " << it->second.as<std::string>();
+			if (it->first == opt::config && ConfigFileUsed && !searchDirectories.back().empty()) {
+				log.infoStream() << it->first << ": " << searchDirectories.back() << "/" << it->second.as<std::string>();
+			} else {
+				log.infoStream() << it->first << ": " << it->second.as<std::string>();
+			}
 		}else if (v.type() == typeid(std::vector<string>))
 		{
 			std::stringstream ss;

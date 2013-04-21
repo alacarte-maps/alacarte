@@ -28,7 +28,7 @@
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/positional_options.hpp>
-
+#include <boost/filesystem.hpp>
 
 namespace opt {
 	// general
@@ -137,12 +137,28 @@ public:
 	}
 
 	void printConfigToLog();
-
+	
+	/**
+	 * @brief Returns true if the configuration was loaded form a file.
+	 *
+	 * @return true if the configuration was loaded form a file.
+	 **/
+	bool usedConfigFile() const;
+	/**
+	 * @brief Returns a queue of strings. Each string is a folder in which we searched for a config file.
+	 * If usedConfigFile() is true then the last entry is the folder in which we found the config file.
+	 *
+	 * @return :queue< string, std::deque< string, std::allocator< string > > >
+	 **/
+	const std::vector<string>& getSeachDirectories() const;
 protected:
 	TESTABLE const boost::any& getValueByKey(const string& key) const;
 
 	//! Internal map holding the options.
 	boost::program_options::variables_map options;
+	
+	bool ConfigFileUsed;
+	std::vector<string> searchDirectories;
 };
 
 

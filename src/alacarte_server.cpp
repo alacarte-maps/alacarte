@@ -68,7 +68,8 @@ public:
 
 		cmd_desc.add_options()
 			(OPT(opt::help, "h"),																			"produce help message")
-			(OPT(opt::config, "c"),	value<string>()->default_value(DEFAULT_CONFIG_PATH)/*->value_name("path")*/,	"specifies a config file which will be loaded at program start")
+			(OPT(opt::config, "c"),	value<string>()->default_value(DEFAULT_CONFIG_NAME)/*->value_name("path")*/,
+				"Specifies a config file which will be loaded at program start. Absolute and relative paths are possible. Additionally we search in /etc/.")
 			;
 
 		// in cmd and config
@@ -102,19 +103,12 @@ protected:
 	virtual bool startupDiagnostic(const shared_ptr<Configuration>& config)
 	{
 		log4cpp::Category& log = log4cpp::Category::getInstance("StartupDiagnostic");
-		
-		if (config->has(opt::config)) {
-			boost::filesystem::path config_path = config->get<string>(opt::config);
-			if (!boost::filesystem::exists(config_path)) {
-				log.errorStream() << opt::config << " = \"" << config_path.string() << "\"  not found.";
-			}
-		}
-		
+
 		if (!diagnosticCheckFile(config, opt::server::path_to_geodata, log) ) 	return false;
 
 		int max_queue_size = config->get<int>(opt::server::max_queue_size);
 		if (max_queue_size < 1) {
-			log.errorStream() << ". It's not possible to use a max_queue_size(" << opt::server::max_queue_size << ") less than 1";
+			log.errorStream() << "It's not possible to use a max_queue_size(" << opt::server::max_queue_size << ") less than 1";
 			return false;
 		}
 

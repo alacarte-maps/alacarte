@@ -123,6 +123,20 @@ void Application::appRun(int argc, char** argv)
 
 	config->printConfigToLog();
 	
+	
+	log4cpp::Category& log = log4cpp::Category::getInstance("StartupDiagnostic");
+	
+	if (config->get<string>(opt::config) != DEFAULT_CONFIG_NAME && !config->usedConfigFile())
+	{
+		const std::vector<string> &dirs = config->getSeachDirectories();
+		log.errorStream() << "The given config file was not found. Searched for:";
+		std::for_each(begin(dirs), end(dirs), [&](const string &dir)
+		{
+			log.errorStream() << opt::config << " = \"" << dir << "/" << config->get<string>(opt::config) << "\"";
+		});
+		return;
+	}
+
 	if(!startupDiagnostic(config)) return;
 	// now do what you have to do!
 	onRun(config);
