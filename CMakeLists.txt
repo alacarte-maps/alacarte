@@ -114,10 +114,11 @@ configure_file("data/config/alacarte.conf.in" "${CMAKE_SOURCE_DIR}/data/config/a
 configure_file("tests/config.hpp.in" "${CMAKE_SOURCE_DIR}/tests/config.hpp")
 configure_file("include/config.hpp.in" "${CMAKE_SOURCE_DIR}/include/config.hpp")
 
-target_link_libraries(alacarte-server 		${Boost_LIBRARIES} ${Cairomm_LIBRARIES} ${LOG4CPP_LIBRARIES} ${SigC++_LIBRARIES} pthread)
 IF(MINGW)
+target_link_libraries(alacarte-server 		${Boost_LIBRARIES} ${Cairomm_LIBRARIES} ${LOG4CPP_LIBRARIES} ${SigC++_LIBRARIES} pthread ws2_32 wsock32)
 target_link_libraries(alacarte-importer 	${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} pthread ws2_32 wsock32)
 ELSE()
+target_link_libraries(alacarte-server 		${Boost_LIBRARIES} ${Cairomm_LIBRARIES} ${LOG4CPP_LIBRARIES} ${SigC++_LIBRARIES} pthread)
 target_link_libraries(alacarte-importer 	${Boost_LIBRARIES} ${LOG4CPP_LIBRARIES} pthread)
 ENDIF()
 target_link_libraries(unitTests_utils 		${Boost_LIBRARIES} ${Cairomm_LIBRARIES} ${LOG4CPP_LIBRARIES} pthread)

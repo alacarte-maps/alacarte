@@ -328,7 +328,7 @@ private:
 
 		parseProperties<Relation>(relation->first_node(), &tags, &nodeIds, &nodeRoles, &wayIds, &wayRoles);
 
-		if (nodeIds.size() == 0i && wayIds.size() == 0)
+		if (nodeIds.size() == 0 && wayIds.size() == 0)
 			return;
 
 		relations->push_back(Relation(nodeIds, nodeRoles, wayIds, wayRoles, tags));
