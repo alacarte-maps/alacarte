@@ -30,7 +30,6 @@
  */
 
 #include <cmath>
-#include "pi.hpp"
 
 #include "settings.hpp"
 

@@ -29,7 +29,6 @@
  * =====================================================================================
  */
 #include "config.hpp"
-
 #include <boost/unordered_map.hpp>
 #include <sigc++/bind.h>
 
@@ -56,8 +55,6 @@
 #include <time.h>
 
 #include "relation_renderer.hpp"
-
-#include "pi.hpp"
 
 boost::mutex Renderer::renderLock;
 
