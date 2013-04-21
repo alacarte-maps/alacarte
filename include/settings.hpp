@@ -57,6 +57,11 @@
 #include <log4cpp/Priority.hh>
 #include <log4cpp/Category.hh>
 
+// M_PI fix
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
+
 #ifdef ALACARTE_TEST
 	#define TESTABLE virtual
 #else

@@ -38,10 +38,6 @@
 #define RADIUS 6378137.0
 // 2 decimal places
 #define FACTOR 100.0
-// workaround for MinGW
-#ifndef M_PI
-#define M_PI           3.14159265358979323846
-#endif
 
 /**
  * @brief converts tile coordinates to north-west corner of the tile in the Mercator projection.
