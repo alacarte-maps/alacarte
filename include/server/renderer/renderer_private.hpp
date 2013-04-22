@@ -36,13 +36,23 @@
 
 class Style;
 
+// there's out-of-box hash for this in boost 1.52 (but not 1.48), so for compatibility
+// we use custom hashing function. Also a bit more effecient.
+class FontTypeHash {
+public:
+	size_t operator()(const std::tuple<string, Cairo::FontSlant, Cairo::FontWeight>& v) const {
+		return std::hash<string>()(std::get<0>(v)) ^ (int)std::get<1>(v) ^ ((int)std::get<2>(v) << 16);
+	}
+};
+
 // TODO make thread safe
 class AssetCache {
 private:
 	boost::unordered_map<string, Cairo::RefPtr<Cairo::ImageSurface> > images;
 	boost::unordered_map<
 				std::tuple<string, Cairo::FontSlant, Cairo::FontWeight>,
-				Cairo::RefPtr<Cairo::ToyFontFace>
+				Cairo::RefPtr<Cairo::ToyFontFace>,
+				FontTypeHash
 			> fonts;
 
 public:
