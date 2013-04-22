@@ -94,11 +94,6 @@ void Style::finish(GeoObject* associatedObject, shared_ptr<const Stylesheet> sty
 		if (!boost::filesystem::exists(this->icon_image.str())) {
 			// delete non existing icon paths so that every remaining icon path for the renderer is valid
 			this->icon_image = "";
-		}else{
-#ifdef WIN32
-			// HACK: It is not possible to use icons with cairo under windows
-			this->icon_image = "";
-#endif
 		}
 	}
 
@@ -108,11 +103,6 @@ void Style::finish(GeoObject* associatedObject, shared_ptr<const Stylesheet> sty
 		if (!boost::filesystem::exists(this->shield_image.str())) {
 			// delete non existing shield image paths so that every remaining path for the renderer is valid
 			this->shield_image = "";
-		}else{
-#ifdef WIN32
-			// HACK: It is not possible to use icons with cairo under windows
-			this->shield_image = "";
-#endif
 		}
 	}
 
@@ -122,11 +112,6 @@ void Style::finish(GeoObject* associatedObject, shared_ptr<const Stylesheet> sty
 		if (!boost::filesystem::exists(this->image.str())) {
 			// delete non existing image paths so that every remaining path for the renderer is valid
 			this->image = "";
-		}else{
-#ifdef WIN32
-			// HACK: It is not possible to use icons with cairo under windows
-			this->image = "";
-#endif
 		}
 	}
 
@@ -136,11 +121,6 @@ void Style::finish(GeoObject* associatedObject, shared_ptr<const Stylesheet> sty
 		if (!boost::filesystem::exists(this->fill_image.str())) {
 			// delete non existing fill image paths so that every remaining path for the renderer is valid
 			this->fill_image = "";
-		}else{
-#ifdef WIN32
-			// HACK: It is not possible to use icons with cairo under windows
-			this->fill_image = "";
-#endif
 		}
 	}
 
