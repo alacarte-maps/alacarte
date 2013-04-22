@@ -102,7 +102,7 @@ private:
 	shared_ptr<Configuration> config;
 	weak_ptr<RequestManager> manager;
 
-	boost::mutex parsedStylesheetsLock;
+	boost::shared_mutex stylesheetsLock;
 	boost::unordered_map<fs::path, shared_ptr<Stylesheet> > parsedStylesheets;
 
 	fs::path stylesheetFolder;

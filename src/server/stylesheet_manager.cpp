@@ -19,7 +19,6 @@
  */
 
 
-
 #include "server/stylesheet_manager.hpp"
 #include "server/tile_identifier.hpp"
 #include "server/meta_identifier.hpp"
@@ -35,6 +34,8 @@
 #include "server/job.hpp"
 #include <math.h>
 #include "server/parser/parser_logger.hpp"
+
+#define DEBUG(...) (log4cpp::Category::getInstance("StylesheetManager").info(__VA_ARGS__));
 
 StylesheetManager::StylesheetManager(const shared_ptr<Configuration>& config)
 	: config(config)
@@ -57,9 +58,9 @@ void StylesheetManager::startStylesheetObserving(const shared_ptr<RequestManager
 
 	fs::directory_iterator end_iter;
 
+	boost::unique_lock<boost::shared_mutex> writeLock(stylesheetsLock);
 	for( fs::directory_iterator dir_iter(stylesheetFolder) ; dir_iter != end_iter ; ++dir_iter) {
 		if (fs::is_regular_file(dir_iter->status()) && dir_iter->path().extension() == ".mapcss" ) {
-			//log.infoStream() << dir_iter->path().filename().string();
 			StylesheetManager::onNewStylesheet(dir_iter->path().stem());
 		}
 	}
@@ -79,27 +80,31 @@ void StylesheetManager::stopStylesheetObserving()
 
 bool StylesheetManager::hasStylesheet(const string& path)
 {
-	parsedStylesheetsLock.lock();
+	boost::shared_lock<boost::shared_mutex> readLock(stylesheetsLock);
+
 	auto entry = parsedStylesheets.find(path);
 	bool contained = (entry != parsedStylesheets.end());
-	parsedStylesheetsLock.unlock();
 
 	return contained;
 }
 
 shared_ptr<Stylesheet> StylesheetManager::getStylesheet(const string& path)
 {
-	parsedStylesheetsLock.lock();
+	boost::shared_lock<boost::shared_mutex> readLock(stylesheetsLock);
+
 	auto entry = parsedStylesheets.find(path);
+
 	shared_ptr<Stylesheet> result;
 	if (entry != parsedStylesheets.end()) {
 		result = entry->second;
+	} else {
+		result = parsedStylesheets[".fallback"];
 	}
-	parsedStylesheetsLock.unlock();
 
 	return result;
 }
 
+// calls must be locked by write-lock
 void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 {
 	// lock the weak_ptr to manager
@@ -143,14 +148,13 @@ void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 		return;
 	}
 
-	parsedStylesheetsLock.lock();
 	parsedStylesheets[stylesheet_path] = stylesheet;
-	parsedStylesheetsLock.unlock();
 
 	// prerenders the upmost tile as well as all higher zoomlevels that are specified in the configuration
 	manager->enqueue(boost::make_shared<MetaIdentifier>(TileIdentifier(0, 0, 0, stylesheet_path.string(), TileIdentifier::PNG)));
 }
 
+// calls must be locked by write-lock
 void StylesheetManager::onRemovedStylesheet(const fs::path& stylesheet_path)
 {
 	// lock the weak_ptr to manager
@@ -158,9 +162,7 @@ void StylesheetManager::onRemovedStylesheet(const fs::path& stylesheet_path)
 	assert(manager);
 
 	manager->getCache()->deleteTiles(stylesheet_path.string());
-	parsedStylesheetsLock.lock();
 	parsedStylesheets.erase(stylesheet_path);
-	parsedStylesheetsLock.unlock();
 	log.infoStream() << "Deleted Stylesheet[" << stylesheet_path << "] from Tile Cache and Stylesheet Cache.";
 }
 
@@ -185,6 +187,9 @@ void StylesheetManager::onFileSystemEvent(const boost::system::error_code &ec, c
 	// only act on .mapcss files that additionally aren't hidden files
 	if (path.extension() == ".mapcss" && path.stem().string().find(".") != 0) {
 		path = path.stem();
+
+		// lock is outside of functions calls so that remove + add (== changed) can be atomic
+		boost::unique_lock<boost::shared_mutex> writeLock(stylesheetsLock);
 		switch (ev.type)
 		{
 		case eventtype::added:
@@ -198,7 +203,6 @@ void StylesheetManager::onFileSystemEvent(const boost::system::error_code &ec, c
 				log.infoStream() << "Stylesheet[" << path << "] removed!";
 				onRemovedStylesheet(path);
 			}break;
-
 
 		case eventtype::modified:
 			{
