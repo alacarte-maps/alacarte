@@ -181,7 +181,7 @@ bool Application::diagnosticCheckFile(const shared_ptr<Configuration>& config, c
 		boost::filesystem::path file = config->get<string>(key);
 		bool exists =  boost::filesystem::exists(file);
 		if (!exists) {
-			log.errorStream() << key << " = \"" << file.string() << "\" does not exists.";
+			log.errorStream() << key << " = \"" << file.string() << "\" does not exist.";
 		}
 		return exists;
 	} else {
