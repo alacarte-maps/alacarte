@@ -113,11 +113,25 @@ void Style::finish(GeoObject* associatedObject, shared_ptr<const Stylesheet> sty
 		}
 	}
 
+	if (this->image.str().size()) {
+		// if the image is set, prepend the path to the stylesheet directory and check for existence
+		this->image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->image.str())).string();
+		if (!boost::filesystem::exists(this->image.str())) {
+			// delete non existing image paths so that every remaining path for the renderer is valid
+			this->image = "";
+		}else{
+#ifdef WIN32
+			// HACK: It is not possible to use icons with cairo under windows
+			this->image = "";
+#endif
+		}
+	}
+
 	if (this->fill_image.str().size()) {
 		// if the fill image is set, prepend the path to the stylesheet directory and check for existence
 		this->fill_image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->fill_image.str())).string();
 		if (!boost::filesystem::exists(this->fill_image.str())) {
-			// delete non existing fill image so that every remaining icon path for the renderer is valid
+			// delete non existing fill image paths so that every remaining path for the renderer is valid
 			this->fill_image = "";
 		}else{
 #ifdef WIN32
