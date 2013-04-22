@@ -155,7 +155,7 @@ WayRenderer::~WayRenderer()
 		delete path;
 }
 
-void WayRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache)
+void WayRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache)
 {
 	if (!way->isClosed())
 		return;
@@ -203,7 +203,7 @@ void WayRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 	cr->restore();
 }
 
-void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache)
+void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache)
 {
 	if (s->width <= 0.0)
 		return;
@@ -236,7 +236,7 @@ void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& ca
 }
 
 void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
-		std::list<shared_ptr<Label> >& labels)
+		std::list<shared_ptr<Label> >& labels, AssetCache& cache)
 {
 	if (s->text.str().size() == 0 || s->font_size <= 0.0)
 		return;
@@ -248,6 +248,12 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->save();
 
 	cr->set_font_size(s->font_size);
+
+	cr->set_font_face(cache.getFont(
+				s->font_family.str(),
+				s->font_style == Style::STYLE_ITALIC ? Cairo::FONT_SLANT_ITALIC : Cairo::FONT_SLANT_NORMAL,
+				s->font_weight == Style::WEIGHT_BOLD ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL
+			));
 
 	Cairo::TextExtents textSize;
 	cr->get_text_extents(s->text.str(), textSize);
@@ -270,6 +276,7 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 
 			cr->move_to(-textSize.width/2.0 - textSize.x_bearing,
 						-textSize.height/2.0 - textSize.y_bearing);
+
 			cr->text_path(s->text.str());
 
 			if (s->text_halo_radius > 0.0)
@@ -288,7 +295,8 @@ void WayRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 }
 
 void WayRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
-		std::list<shared_ptr<Shield> >& shields)
+		std::list<shared_ptr<Shield> >& shields,
+		AssetCache& cache)
 {
 	if (s->shield_text.str().size() == 0 || s->font_size <= 0.0)
 		return;
@@ -300,6 +308,12 @@ void WayRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 	cr->save();
 
 	cr->set_font_size(s->font_size);
+
+	cr->set_font_face(cache.getFont(
+				s->font_family.str(),
+				s->font_style == Style::STYLE_ITALIC ? Cairo::FONT_SLANT_ITALIC : Cairo::FONT_SLANT_NORMAL,
+				s->font_weight == Style::WEIGHT_BOLD ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL
+			));
 
 	Cairo::TextExtents textSize;
 	cr->get_text_extents(s->shield_text.str(), textSize);

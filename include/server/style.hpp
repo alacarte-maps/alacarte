@@ -54,6 +54,14 @@ public:
 		ROUNDED = 0,
 		RECTANGULAR
 	};
+	enum FontWeight {
+		WEIGHT_NORMAL = 0,
+		WEIGHT_BOLD
+	};
+	enum FontStyle {
+		STYLE_NORMAL = 0,
+		STYLE_ITALIC
+	};
 
 	/**
 	 * @brief Takes all non-"null" (meaning only properties that were explicitely set) properties from the given StyleTemplate
@@ -82,6 +90,9 @@ public:
 	Color text_color;
 	double text_offset;
 	double font_size;
+	MaybeCachedString font_family;
+	FontWeight font_weight;
+	FontStyle font_style;
 
 	// The colour (hex or CSS) of the 'halo' or 'pull-out' used to make the text stand out from features underneath it
 	Color text_halo_color;
@@ -173,6 +184,34 @@ Stream& operator >> (Stream& stream, Style::ShieldShape& shape)
 		shape = Style::ROUNDED;
 	else if(expr == "rectangular")
 		shape = Style::RECTANGULAR;
+
+	return stream;
+}
+
+template<typename Stream>
+Stream& operator >> (Stream& stream, Style::FontWeight& weight)
+{
+	string expr;
+	stream >> expr;
+
+	if(expr == "normal")
+		weight = Style::WEIGHT_NORMAL;
+	else if(expr == "bold")
+		weight = Style::WEIGHT_BOLD;
+
+	return stream;
+}
+
+template<typename Stream>
+Stream& operator >> (Stream& stream, Style::FontStyle& style)
+{
+	string expr;
+	stream >> expr;
+
+	if(expr == "normal")
+		style = Style::STYLE_NORMAL;
+	else if(expr == "italic")
+		style = Style::STYLE_ITALIC;
 
 	return stream;
 }

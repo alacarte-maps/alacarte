@@ -31,7 +31,7 @@
 class Node;
 class Geodata;
 class Style;
-class ImageCache;
+class AssetCache;
 class Label;
 
 class NodeRenderer : public ObjectRenderer {
@@ -48,10 +48,10 @@ public:
 	void casing(const Cairo::RefPtr<Cairo::Context>& cr);
 	void stroke(const Cairo::RefPtr<Cairo::Context>& cr);
 	void label(const Cairo::RefPtr<Cairo::Context>& cr,
-			std::list<shared_ptr<Label> >& labels);
+			std::list<shared_ptr<Label> >& labels, AssetCache& cache);
 	void shield(const Cairo::RefPtr<Cairo::Context>& cr,
-			std::list<shared_ptr<Shield> >& shields);
-	void icon(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache);
+			std::list<shared_ptr<Shield> >& shields, AssetCache& cache);
+	void icon(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache);
 };
 
 #endif

@@ -323,7 +323,8 @@ void Renderer::renderObjects(CairoLayer layers[],
 							 std::vector<WayId>& ways,
 							 std::vector<RelId>& relations,
 							 std::list<shared_ptr<Label>>& labels,
-							 std::list<shared_ptr<Shield>>& shields) const
+							 std::list<shared_ptr<Shield>>& shields,
+							 AssetCache& cache) const
 {
 	const boost::unordered_map<WayId, Style*> &wayStyles = map.getWayMap();
 	const boost::unordered_map<NodeId, Style*> &nodeStyles = map.getNodeMap();
@@ -345,7 +346,6 @@ void Renderer::renderObjects(CairoLayer layers[],
 		maxZ = std::max(maxZ, relationStyles.at(relations.back())->z_index);
 	}
 
-	ImageCache cache;
 	auto rid = relations.begin();
 	auto wid = ways.begin();
 	auto nid = nodes.begin();
@@ -385,8 +385,8 @@ void Renderer::renderObjects(CairoLayer layers[],
 			renderer.fill(layers[LAYER_FILL].cr, cache);
 			renderer.casing(layers[LAYER_CASING].cr);
 			renderer.stroke(layers[LAYER_STROKE].cr, cache);
-			renderer.label(layers[LAYER_LABELS].cr, labels);
-			renderer.shield(layers[LAYER_LABELS].cr, shields);
+			renderer.label(layers[LAYER_LABELS].cr, labels, cache);
+			renderer.shield(layers[LAYER_LABELS].cr, shields, cache);
 		}
 
 		for (; nid != nodes.end(); nid++)
@@ -400,8 +400,8 @@ void Renderer::renderObjects(CairoLayer layers[],
 
 			renderer.casing(layers[LAYER_CASING].cr);
 			renderer.stroke(layers[LAYER_STROKE].cr);
-			renderer.label(layers[LAYER_LABELS].cr, labels);
-			renderer.shield(layers[LAYER_LABELS].cr, shields);
+			renderer.label(layers[LAYER_LABELS].cr, labels, cache);
+			renderer.shield(layers[LAYER_LABELS].cr, shields, cache);
 			renderer.icon(layers[LAYER_ICONS].cr, cache);
 		}
 	}
@@ -460,7 +460,8 @@ void Renderer::renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
 
 template <typename LabelType>
 void Renderer::renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
-							std::vector<shared_ptr<LabelType> >& labels) const
+							std::vector<shared_ptr<LabelType> >& labels,
+							AssetCache& cache) const
 {
 	cr->save();
 
@@ -474,6 +475,13 @@ void Renderer::renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
 		cr->set_font_size(s->font_size);
 
 		cr->move_to(label->origin.x, label->origin.y);
+
+		cr->set_font_face(cache.getFont(
+					s->font_family.str(),
+					s->font_style == Style::STYLE_ITALIC ? Cairo::FONT_SLANT_ITALIC : Cairo::FONT_SLANT_NORMAL,
+					s->font_weight == Style::WEIGHT_BOLD ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL
+				));
+
 		cr->text_path(label->text.str());
 
 		if (s->text_halo_radius > 0.0)
@@ -617,7 +625,7 @@ void Renderer::paintBackground(const CairoLayer& layer, const Style* canvasStyle
 	layer.cr->paint();
 }
 
-void Renderer::setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& writer) const
+void Renderer::setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& writer, AssetCache& cache) const
 {
 	for (int i = 0; i < LAYER_NUM; i++) {
 		layers[i] = CairoLayer(writer);
@@ -629,8 +637,7 @@ void Renderer::setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& w
 	fontOpts.set_hint_style(Cairo::HINT_STYLE_NONE);
 	fontOpts.set_hint_metrics(Cairo::HINT_METRICS_OFF);
 	layers[LAYER_LABELS].cr->set_font_options(fontOpts);
-	Cairo::RefPtr<Cairo::ToyFontFace> font = Cairo::ToyFontFace::create(DEFAULT_FONT,
-						Cairo::FONT_SLANT_NORMAL, Cairo::FONT_WEIGHT_NORMAL);
+	Cairo::RefPtr<Cairo::ToyFontFace> font = cache.getFont(DEFAULT_FONT, Cairo::FONT_SLANT_NORMAL, Cairo::FONT_WEIGHT_NORMAL);
 	layers[LAYER_LABELS].cr->set_font_face(font);
 }
 
@@ -665,7 +672,8 @@ void Renderer::renderEmptyTile(RenderAttributes& map, const shared_ptr<Tile>& ti
 void Renderer::renderArea(const FixedRect& area,
 						  CairoLayer layers[],
 						  double width, double height,
-						  RenderAttributes& map)
+						  RenderAttributes& map,
+						  AssetCache& cache)
 {
 	// sort objects into acroding to z-index
 	std::vector<NodeId> nodes;
@@ -680,8 +688,9 @@ void Renderer::renderArea(const FixedRect& area,
 
 	std::list<shared_ptr<Label> > labels;
 	std::list<shared_ptr<Shield> > shields;
+
 	// render objects and collect label positions
-	renderObjects(layers, map, trans, nodes, ways, relations, labels, shields);
+	renderObjects(layers, map, trans, nodes, ways, relations, labels, shields, cache);
 
 	// sort, place and render shields
 	std::vector<shared_ptr<Shield> > placedShields;
@@ -689,14 +698,14 @@ void Renderer::renderArea(const FixedRect& area,
 	shields.sort(&CompareLabels<Shield>);
 	placeShields(shields, placedShields);
 	renderShields(layers[LAYER_LABELS].cr, placedShields);
-	renderLabels<Shield>(layers[LAYER_LABELS].cr, placedShields);
+	renderLabels<Shield>(layers[LAYER_LABELS].cr, placedShields, cache);
 
 	// sort, place and render labels
 	std::vector<shared_ptr<Label> > placedLabels;
 	placedLabels.reserve(labels.size());
 	labels.sort(&CompareLabels<Label>);
 	placeLabels(labels, placedLabels);
-	renderLabels<Label>(layers[LAYER_LABELS].cr, placedLabels);
+	renderLabels<Label>(layers[LAYER_LABELS].cr, placedLabels, cache);
 
 	compositeLayers(layers);
 }
@@ -752,12 +761,14 @@ void Renderer::renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>&
 	renderLock.lock();
 #endif
 
+	AssetCache cache;
+
 	CairoLayer layers[LAYER_NUM];
-	setupLayers(layers, writer);
+	setupLayers(layers, writer, cache);
 
 	paintBackground(layers[0], map.getCanvasStyle());
 
-	renderArea(area, layers, width, height, map);
+	renderArea(area, layers, width, height, map, cache);
 
 #if OLD_CAIRO
 	renderLock.unlock();

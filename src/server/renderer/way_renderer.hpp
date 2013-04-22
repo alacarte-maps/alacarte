@@ -41,7 +41,7 @@ class Node;
 class Way;
 class Style;
 class Label;
-class ImageCache;
+class AssetCache;
 
 class WayRenderer : public ObjectRenderer
 {
@@ -88,13 +88,14 @@ public:
 				const Cairo::Matrix& transform);
 	virtual ~WayRenderer();
 
-	void fill(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache);
+	void fill(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache);
 	void casing(const Cairo::RefPtr<Cairo::Context>& cr);
-	void stroke(const Cairo::RefPtr<Cairo::Context>& cr, ImageCache& cache);
+	void stroke(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache);
 	void label(const Cairo::RefPtr<Cairo::Context>& cr,
-			std::list<shared_ptr<Label> >& labels);
+			std::list<shared_ptr<Label> >& labels, AssetCache& cache);
 	void shield(const Cairo::RefPtr<Cairo::Context>& cr,
-			std::list<shared_ptr<Shield> >& shields);
+			std::list<shared_ptr<Shield> >& shields,
+			AssetCache& cache);
 };
 
 #endif

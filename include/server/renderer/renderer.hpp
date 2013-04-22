@@ -44,6 +44,7 @@ class Way;
 class Style;
 class Label;
 class Shield;
+class AssetCache;
 
 class Renderer
 {
@@ -98,22 +99,24 @@ private:
 	void sortObjects(RenderAttributes& map, std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations) const;
 	bool isCutOff(const FloatRect& box, const FloatRect& owner);
 	void compositeLayers(CairoLayer layers[]) const;
-	void setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& writer) const;
+	void setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& writer, AssetCache& cache) const;
 	void paintBackground(const CairoLayer& layer, const Style* canvasStyle) const;
 	void renderObjects(CairoLayer layers[], RenderAttributes& map,
 					   const Cairo::Matrix& transform,
 					   std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations,
 					   std::list<shared_ptr<Label>>& labels,
-					   std::list<shared_ptr<Shield>>& shields) const;
+					   std::list<shared_ptr<Shield>>& shields,
+					   AssetCache& cache) const;
 	template <typename LabelType>
 	void renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
-					  std::vector<shared_ptr<LabelType> >& labels) const;
+					  std::vector<shared_ptr<LabelType> >& labels, AssetCache& cache) const;
 	void renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
 					  std::vector<shared_ptr<Shield> >& shields) const;
 	void renderArea(const FixedRect& area,
 					CairoLayer layers[],
 					double width, double height,
-					RenderAttributes& map);
+					RenderAttributes& map,
+					AssetCache& cache);
 
 	//! lock calls to cairo for old versions that are not thread-safe.
 	static boost::mutex renderLock;
