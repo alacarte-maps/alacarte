@@ -194,10 +194,6 @@ void WayRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->set_dash(s->casing_dashes, 0.0);
 	cr->set_line_width(s->casing_width*2 + s->width);
 
-	// override cap (e.g. needed when for bridges on high osm layer)
-	if (way->getType() == Way::WayType::CONNECTED_BOTH)
-		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
-
 	cr->stroke();
 
 	cr->restore();
@@ -225,10 +221,6 @@ void WayRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& ca
 	if (s->dashes.size() > 0)
 		cr->set_dash(s->dashes, 0.0);
 	cr->set_line_width(s->width);
-
-	// override cap (e.g. needed when for bridges on higher osm layer)
-	if (way->getType() == Way::WayType::CONNECTED_BOTH)
-		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
 
 	cr->stroke();
 
