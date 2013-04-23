@@ -43,6 +43,7 @@
 #include <cstdint>
 #include <iostream>
 #include <stdexcept>
+#include <cmath>
 
 // boost includes
 #include <boost/shared_ptr.hpp>
