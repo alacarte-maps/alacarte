@@ -12,6 +12,19 @@ if (NOT Boost_FOUND)
 	message(FATAL_ERROR "Fatal error: Boost (version >= 1.47.0) required.\n")
 endif (NOT Boost_FOUND)
 
+# Check if boost compiles with libc.
+include(CheckCXXSourceCompiles)
+check_cxx_source_compiles("
+#include <boost/thread/xtime.hpp>
+int main(void)
+{
+	return 0;
+}
+" BOOST_XTIME)
+if (NOT BOOST_XTIME)
+	message (FATAL_ERROR "Fatal error: Boost xtime seems to be broken. Consider upgrading Boost to >= 1.50")
+endif()
+
 find_package(Log4Cpp REQUIRED)
 IF(NOT MINGW)
 	find_package(Inotify REQUIRED)
