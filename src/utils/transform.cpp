@@ -29,6 +29,7 @@
  * =====================================================================================
  */
 
+#include <boost/math/constants/constants.hpp>
 #include <cmath>
 
 #include "settings.hpp"
@@ -85,10 +86,10 @@ void mercatorToTile(coord_t x, coord_t y, int zoom, int& tx, int& ty)
  */
 void projectMercator(const FloatPoint& p, coord_t& x, coord_t& y)
 {
-	double lon = p.lon / 180.0 * M_PI;
-	double lat = p.lat / 180.0 * M_PI;
-	x = lon / M_PI * NORM;
-	y = log(tan(M_PI / 4.0 + lat / 2.0)) / M_PI * NORM;
+	double lon = p.lon / 180.0 * boost::math::constants::pi<double>();
+	double lat = p.lat / 180.0 * boost::math::constants::pi<double>();
+	x = lon / boost::math::constants::pi<double>() * NORM;
+	y = log(tan(boost::math::constants::pi<double>() / 4.0 + lat / 2.0)) / boost::math::constants::pi<double>() * NORM;
 }
 
 /**
@@ -101,6 +102,6 @@ void projectMercator(const FloatPoint& p, coord_t& x, coord_t& y)
 void inverseMercator(const FixedPoint& p, double& lat, double& lon)
 {
 	lon = p.x / NORM * 180.0;
-	lat = atan(sinh(p.y / NORM * M_PI)) / M_PI * 180.0;
+	lat = atan(sinh(p.y / NORM * boost::math::constants::pi<double>())) / boost::math::constants::pi<double>() * 180.0;
 }
 

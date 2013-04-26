@@ -30,6 +30,7 @@
  */
 #include "config.hpp"
 #include <boost/unordered_map.hpp>
+#include <boost/math/constants/constants.hpp>
 #include <sigc++/bind.h>
 
 #include "utils/transform.hpp"
@@ -431,9 +432,9 @@ void Renderer::renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
 		}
 		if (s->shield_shape == Style::ShieldShape::ROUNDED) {
 			cr->arc(x0 + height/2.0, y0 + height/2.0,
-					height/2.0, M_PI/2.0, 3.0*M_PI/2.0);
+					height/2.0, boost::math::constants::pi<double>()/2.0, 3.0*boost::math::constants::pi<double>()/2.0);
 			cr->arc(x0 + width - height/2.0, y0 + height/2.0,
-					height/2.0, 3.0*M_PI/2.0, M_PI/2.0);
+					height/2.0, 3.0*boost::math::constants::pi<double>()/2.0, boost::math::constants::pi<double>()/2.0);
 			cr->close_path();
 		} else
 			cr->rectangle(x0, y0, width, height);

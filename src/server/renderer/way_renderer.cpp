@@ -21,6 +21,7 @@
 
 
 #include <boost/unordered_map.hpp>
+#include <boost/math/constants/constants.hpp>
 
 #include "general/geodata.hpp"
 #include "general/way.hpp"
@@ -83,7 +84,7 @@ bool WayRenderer::getTextPosition(Cairo::Path* transformedPath, int width, Float
 					if (abs(dx) > 0)
 						angle = atan(dy/dx);
 					else
-						angle = -M_PI/2.0;
+						angle = -boost::math::constants::pi<double>()/2.0;
 					best.x = current.point.x - dx * 0.5;
 					best.y = current.point.y - dy * 0.5;
 					bestDiff = diff;

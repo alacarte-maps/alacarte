@@ -30,6 +30,7 @@
  */
 
 #include <boost/unordered_map.hpp>
+#include <boost/math/constants/constants.hpp>
 
 #include "general/geodata.hpp"
 #include "general/node.hpp"
@@ -62,7 +63,7 @@ void NodeRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	cr->save();
 
-	cr->arc(location.x, location.y, s->width/2.0 + s->casing_width, 0, 2*M_PI);
+	cr->arc(location.x, location.y, s->width/2.0 + s->casing_width, 0, 2*boost::math::constants::pi<double>());
 
 	cr->set_source_color(s->casing_color);
 
@@ -78,7 +79,7 @@ void NodeRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	cr->save();
 
-	cr->arc(location.x, location.y, s->width/2.0, 0, 2*M_PI);
+	cr->arc(location.x, location.y, s->width/2.0, 0, 2*boost::math::constants::pi<double>());
 
 	cr->set_source_color(s->color);
 
