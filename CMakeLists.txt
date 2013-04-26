@@ -6,10 +6,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 #
 # Depends
 #
-find_package(Boost 1.47.0 COMPONENTS system filesystem thread unit_test_framework program_options serialization regex REQUIRED)
+find_package(Boost 1.50.0 COMPONENTS system filesystem thread unit_test_framework program_options serialization regex REQUIRED)
 
 if (NOT Boost_FOUND)
-	message(FATAL_ERROR "Fatal error: Boost (version >= 1.47.0) required.\n")
+	message(FATAL_ERROR "Fatal error: Boost (version >= 1.50.0) required.\n")
 endif (NOT Boost_FOUND)
 
 # Check if boost compiles with libc.
