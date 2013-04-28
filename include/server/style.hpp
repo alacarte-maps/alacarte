@@ -81,22 +81,22 @@ public:
 	MaybeCachedString image;
 	MaybeCachedString fill_image;
 
-	double width;
-	double casing_width;
+	float width;
+	float casing_width;
 	Color casing_color;
 
 	MaybeCachedString text;
 	TextPosition text_position;
 	Color text_color;
-	double text_offset;
-	double font_size;
+	float text_offset;
+	float font_size;
 	MaybeCachedString font_family;
 	FontWeight font_weight;
 	FontStyle font_style;
 
 	// The colour (hex or CSS) of the 'halo' or 'pull-out' used to make the text stand out from features underneath it
 	Color text_halo_color;
-	double text_halo_radius;
+	float text_halo_radius;
 
 	LineCap linecap;
 	LineJoin linejoin;
@@ -104,19 +104,19 @@ public:
 	LineJoin casing_linejoin;
 
 	MaybeCachedString icon_image;
-	double icon_width;
-	double icon_height;
-	double icon_opacity;
+	float icon_width;
+	float icon_height;
+	float icon_opacity;
 
 
 	Color shield_color;
 	// How transparent the shield is, from 0 (transparent) to 1 (opaque)
-	double shield_opacity;
+	float shield_opacity;
 	Color shield_frame_color;
 	// Width of the frame. If 0, no frame is rendered
-	double shield_frame_width;
+	float shield_frame_width;
 	Color shield_casing_color;
-	double shield_casing_width;
+	float shield_casing_width;
 	MaybeCachedString shield_text;
 	MaybeCachedString shield_image;
 	ShieldShape shield_shape;

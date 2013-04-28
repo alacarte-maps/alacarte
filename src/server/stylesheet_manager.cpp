@@ -232,7 +232,7 @@ shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const shared_pt
 	highwayNodeRule->setFirstSelector(highwayNodeTagSelector);
 	shared_ptr<StyleTemplate> highwayNodeStyle = boost::make_shared<StyleTemplate>();
 	highwayNodeStyle->color = boost::make_shared<eval::Eval<Color>>(Color((uint8)0x00, (uint8)0x00, (uint8)0xFF));
-	highwayNodeStyle->width = boost::make_shared<eval::Eval<double>>(5.5);
+	highwayNodeStyle->width = boost::make_shared<eval::Eval<float>>(5.5);
 	highwayNodeRule->setStyleTemplate(highwayNodeStyle);
 	highwayNodeRule->setZoomBounds(16, 18);
 	highwayNodeRule->setAcceptableType(Rule::Accept_Way);
@@ -246,7 +246,7 @@ shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const shared_pt
 	highwayRule->setFirstSelector(highwayTagSelector);
 	shared_ptr<StyleTemplate> highwayStyle = boost::make_shared<StyleTemplate>();
 	highwayStyle->color = boost::make_shared<eval::Eval<Color>>(Color((uint8)0x55, (uint8)0x55, (uint8)0x55));
-	highwayStyle->width = boost::make_shared<eval::Eval<double>>(2.0);
+	highwayStyle->width = boost::make_shared<eval::Eval<float>>(2.0);
 	highwayRule->setStyleTemplate(highwayStyle);
 	highwayRule->setAcceptableType(Rule::Accept_Way);
 
@@ -258,7 +258,7 @@ shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const shared_pt
 	shared_ptr<Selector> highwayUpTagSelector = boost::make_shared<HasTagSelector>(highwayUpRule, highwayUpApplier, "highway");
 	highwayUpRule->setFirstSelector(highwayUpTagSelector);
 	shared_ptr<StyleTemplate> highwayUpStyle = boost::make_shared<StyleTemplate>();
-	highwayUpStyle->width = boost::make_shared<eval::Eval<double>>(1.0);
+	highwayUpStyle->width = boost::make_shared<eval::Eval<float>>(1.0);
 	highwayUpRule->setStyleTemplate(highwayUpStyle);
 	highwayUpRule->setZoomBounds(0,15);
 	highwayUpRule->setAcceptableType(Rule::Accept_Way);
@@ -284,7 +284,7 @@ shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const shared_pt
 	adminRule->setFirstSelector(adminTagSelector);
 	shared_ptr<StyleTemplate> adminStyle = boost::make_shared<StyleTemplate>();
 	highwayStyle->fill_color = boost::make_shared<eval::Eval<Color>>(Color((uint8)0xaa, (uint8)0x00, (uint8)0x00));
-	highwayUpStyle->width = boost::make_shared<eval::Eval<double>>(2.0);
+	highwayUpStyle->width = boost::make_shared<eval::Eval<float>>(2.0);
 	adminRule->setStyleTemplate(adminStyle);
 	adminRule->setAcceptableType(Rule::Accept_Relation);
 

@@ -226,11 +226,11 @@ Style::Style()
 
 
 	shield_color = Color(1.0f, 1.0f, 1.0f, 0.0f);
-	double shield_opacity = 0.0;
+	float shield_opacity = 0.0f;
 	Color shield_frame_color = Color(1.0f, 1.0f, 1.0f, 0.0f);
-	double shield_frame_width = 0.0;
+	float shield_frame_width = 0.0f;
 	Color shield_casing_color = Color(1.0f, 1.0f, 1.0f, 0.0f);
-	double shield_casing_width = 0.0;
+	float shield_casing_width = 0.0f;
 	ShieldShape shield_shape = Style::ShieldShape::ROUNDED;
 
 

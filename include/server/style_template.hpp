@@ -51,33 +51,33 @@ public:
 	shared_ptr< eval::Eval<MaybeCachedString> > image;
 	shared_ptr< eval::Eval<MaybeCachedString> > fill_image;
 
-	shared_ptr< eval::Eval<double> > width;
-	shared_ptr< eval::Eval<double> > casing_width;
+	shared_ptr< eval::Eval<float> > width;
+	shared_ptr< eval::Eval<float> > casing_width;
 	shared_ptr< eval::Eval<Color> > casing_color;
 
 	shared_ptr< eval::Eval<MaybeCachedString> > text;
 	shared_ptr< eval::Eval<Style::TextPosition> > text_position;
 	shared_ptr< eval::Eval<Color> > text_color;
-	shared_ptr< eval::Eval<double> > text_offset;
-	shared_ptr< eval::Eval<double> > font_size;
+	shared_ptr< eval::Eval<float> > text_offset;
+	shared_ptr< eval::Eval<float> > font_size;
 	shared_ptr< eval::Eval<MaybeCachedString> > font_family;
 	shared_ptr< eval::Eval<Style::FontWeight> > font_weight;
 	shared_ptr< eval::Eval<Style::FontStyle> > font_style;
 
 	shared_ptr< eval::Eval<Color> > text_halo_color;
-	shared_ptr< eval::Eval<double> > text_halo_radius;
+	shared_ptr< eval::Eval<float> > text_halo_radius;
 
 	shared_ptr< eval::Eval<MaybeCachedString> > icon_image;
-	shared_ptr< eval::Eval<double> > icon_width;
-	shared_ptr< eval::Eval<double> > icon_height;
-	shared_ptr< eval::Eval<double> > icon_opacity;
+	shared_ptr< eval::Eval<float> > icon_width;
+	shared_ptr< eval::Eval<float> > icon_height;
+	shared_ptr< eval::Eval<float> > icon_opacity;
 
 	shared_ptr< eval::Eval<Color> > shield_color;
-	shared_ptr< eval::Eval<double> > shield_opacity;
+	shared_ptr< eval::Eval<float> > shield_opacity;
 	shared_ptr< eval::Eval<Color> > shield_frame_color;
-	shared_ptr< eval::Eval<double> > shield_frame_width;
+	shared_ptr< eval::Eval<float> > shield_frame_width;
 	shared_ptr< eval::Eval<Color> > shield_casing_color;
-	shared_ptr< eval::Eval<double> > shield_casing_width;
+	shared_ptr< eval::Eval<float> > shield_casing_width;
 
 	shared_ptr< eval::Eval<MaybeCachedString> > shield_text;
 	shared_ptr< eval::Eval<MaybeCachedString> > shield_image;
