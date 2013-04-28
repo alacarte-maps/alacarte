@@ -12,24 +12,25 @@ if (NOT Boost_FOUND)
 	message(FATAL_ERROR "Fatal error: Boost (version >= 1.47.0) required.\n")
 endif (NOT Boost_FOUND)
 
-IF(NOT MINGW)
-	# Check if boost compiles with libc.
-	include(CheckCXXSourceCompiles)
-	check_cxx_source_compiles("
-	#include <boost/thread/xtime.hpp>
-	int main(void)
-	{
-		return 0;
-	}
-	" BOOST_XTIME)
-	if (NOT BOOST_XTIME)
-		message (FATAL_ERROR "Fatal error: Boost xtime seems to be broken. Consider upgrading Boost to >= 1.50")
-	endif()
+# Check if boost compiles with libc.
+set(CMAKE_REQUIRED_INCLUDES ${Boost_INCLUDE_DIRS})
+include(CheckCXXSourceCompiles)
+check_cxx_source_compiles("
+#include <boost/thread/xtime.hpp>
+int main(void)
+{
+	return 0;
+}
+" BOOST_XTIME)
+if (NOT BOOST_XTIME)
+	message (FATAL_ERROR "Fatal error: Boost xtime seems to be broken. Consider upgrading Boost to >= 1.50")
+endif()
 
+find_package(Log4Cpp REQUIRED)
+IF(NOT MINGW)
 	find_package(Inotify REQUIRED)
 ENDIF(NOT MINGW)
 
-find_package(Log4Cpp REQUIRED)
 find_package(PkgConfig)
 pkg_check_modules(Cairomm cairomm-1.0)
 pkg_check_modules(Cairo cairo)
