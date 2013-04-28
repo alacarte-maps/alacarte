@@ -13,6 +13,7 @@ if (NOT Boost_FOUND)
 endif (NOT Boost_FOUND)
 
 # Check if boost compiles with libc.
+set(CMAKE_REQUIRED_INCLUDES ${Boost_INCLUDE_DIRS})
 include(CheckCXXSourceCompiles)
 check_cxx_source_compiles("
 #include <boost/thread/xtime.hpp>
