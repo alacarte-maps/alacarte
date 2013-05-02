@@ -32,6 +32,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/serialization/base_object.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <limits>
 
@@ -44,12 +45,6 @@
 #include "utils/rect.hpp"
 #include "utils/archive.hpp"
 
-#define TMP_NODES      "/tmp/nodes.bin"
-#define TMP_WAYS       "/tmp/ways.bin"
-#define TMP_RELATIONS  "/tmp/relations.bin"
-
-using boost::filesystem::absolute;
-
 Geodata::Geodata()
 {
 }
@@ -58,18 +53,43 @@ Geodata::~Geodata()
 {
 }
 
+//! called when data is serialized to file
+void Geodata::buildTrees(const string& nodePath, const string& wayPath, const string& relationPath)
+{
+	if (nodes->size() > 0)
+	{
+		std::vector<FixedPoint> points;;
+		for (auto& n : *nodes)
+			points.push_back(n.getLocation());
+
+		nodesTree->build(points, nodePath);
+	}
+
+	if (ways->size() > 0)
+	{
+		std::vector<FixedRect> rects;
+		for (auto& w : *ways)
+			rects.push_back(calculateBoundingBox(w));
+
+		waysTree->build(rects, wayPath);
+	}
+
+	if (relations->size() > 0)
+	{
+		std::vector<FixedRect> rects;
+		for (auto& r : *relations)
+			rects.push_back(calculateBoundingBox(r));
+
+		relTree->build(rects, relationPath);
+	}
+}
+
 void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
 {
 	if (nodes->size() == 0)
 		return;
 
-	std::vector<FixedPoint> points;;
-	for (auto& n : *nodes)
-		points.push_back(n.getLocation());
-
-	this->nodesTree = boost::make_shared<RTree<NodeId, FixedPoint> >(TMP_NODES);
-	nodesTree->build(points);
-
+	this->nodesTree = boost::make_shared<RTree<NodeId, FixedPoint> >();
 	this->nodes = nodes;
 }
 
@@ -78,13 +98,7 @@ void Geodata::insertWays(const shared_ptr<std::vector<Way> >& ways)
 	if (ways->size() == 0)
 		return;
 
-	std::vector<FixedRect> rects;
-	for (auto& w : *ways)
-		rects.push_back(calculateBoundingBox(w));
-
-	this->waysTree = boost::make_shared<RTree<WayId, FixedRect> >(TMP_WAYS);
-	waysTree->build(rects);
-
+	this->waysTree = boost::make_shared<RTree<WayId, FixedRect> >();
 	this->ways = ways;
 }
 
@@ -93,13 +107,7 @@ void Geodata::insertRelations(const shared_ptr<std::vector<Relation> >& relation
 	if (relations->size() == 0)
 		return;
 
-	std::vector<FixedRect> rects;
-	for (auto& r : *relations)
-		rects.push_back(calculateBoundingBox(r));
-
-	this->relTree = boost::make_shared<RTree<RelId, FixedRect>>(TMP_RELATIONS);
-	relTree->build(rects);
-
+	this->relTree = boost::make_shared<RTree<RelId, FixedRect>>();
 	this->relations = relations;
 }
 
@@ -131,7 +139,6 @@ shared_ptr<std::vector<RelId> > Geodata::getRelationIDs(const FixedRect& rect) c
 		relTree->search(relationIDs, rect);
 	return relationIDs;
 }
-
 
 Node* Geodata::getNode(NodeId id) const
 {
@@ -182,33 +189,39 @@ void Geodata::serialize(const string& serPath) const
 	oa << *this;
 }
 
-void Geodata::save(const string& outPath) const
+void Geodata::save(const string& outPath)
 {
-	boost::filesystem::path out = absolute(path(outPath));
+	boost::filesystem::path out = boost::filesystem::absolute(boost::filesystem::path(outPath));
 	boost::filesystem::path base = out.parent_path();
-	boost::filesystem::path ser = base / "data.ser";
+	string serPath = (base / "data.ser").string();
+	string nodesPath = (base / "nodes.bin").string();
+	string waysPath = (base / "ways.bin").string();
+	string relationsPath = (base / "relations.bin").string();
 
-	serialize(ser.native());
+	buildTrees(nodesPath, waysPath, relationsPath);
+
+	serialize(serPath);
 
 	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
 	log.infoStream() << "Save geodata to \"" << outPath << "\"";
 	Archive a(outPath);
-	a.addFile(ser.native());
+	a.addFile(serPath);
 	if (nodesTree)
-		a.addFile(TMP_NODES);
+		a.addFile(nodesPath);
 	if (waysTree)
-		a.addFile(TMP_WAYS);
+		a.addFile(waysPath);
 	if (relTree)
-		a.addFile(TMP_RELATIONS);
+		a.addFile(relationsPath);
 	a.write();
 
-	remove(ser.native().c_str());
+	// remove temp files
+	remove(serPath.c_str());
 	if (nodesTree)
-		remove(TMP_NODES);
+		remove(nodesPath.c_str());
 	if (waysTree)
-		remove(TMP_WAYS);
+		remove(waysPath.c_str());
 	if (relTree)
-		remove(TMP_RELATIONS);
+		remove(relationsPath.c_str());
 }
 
 FixedRect Geodata::calculateBoundingBox(const Way& way) const

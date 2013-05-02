@@ -35,17 +35,13 @@
 
 #include "utils/transform.hpp"
 
-using boost::filesystem::path;
-
 #define NUM_CHILDREN 50
 #define LEAF_SIZE (16 * 1024)
 
 template <class id_t, class data_t>
 class RTree {
-public:
-	RTree (path leafPath) : leafPath(leafPath) { }
-private:
 
+private:
 	// explicit typing to use function overloading
 	template <class _id_t, class _data_t,
 		size_t leaf_elements = ((LEAF_SIZE - sizeof(uint16_t)) / (sizeof(uint32_t) + sizeof(data_t)))>
@@ -103,14 +99,16 @@ private:
 	};
 
 public:
-	void build(std::vector<data_t>& data);
-	bool search ( boost::shared_ptr<std::vector<id_t> >& result,  const FixedRect& rect, bool returnOnFirst = false );
+	RTree () {}
+	void build(std::vector<data_t>& data, const string& leafPath);
+	bool search ( boost::shared_ptr<std::vector<id_t> >& result,
+				  const FixedRect& rect, bool returnOnFirst = false );
 	bool contains(const FixedRect& rect)
 	{
 		shared_ptr<std::vector<id_t> > geoIDs = boost::make_shared< std::vector<id_t> >();
 		return search(geoIDs, rect, true);
 	};
-	// TODO add exception if something fails
+
 	//! is called after deserialisation to set offets in the archive
 	void setLeafFile(const string& path, uint64_t offset)
 	{
@@ -124,13 +122,9 @@ private:
 	std::vector<RNode> tree;
 	std::ifstream input;
 	uint64_t offset;
-	path leafPath;
 
-	bool validate ();
-	void printTree ( );
-	void printLeaves ( );
-	void buildLeaves (const std::vector<data_t>& rects);
-	void writeLeaves (const std::vector<id_t>& ids, const std::vector<data_t>& rects);
+	void buildLeaves (const std::vector<data_t>& rects, const string& leafPath);
+	void writeLeaves (const std::vector<id_t>& ids, const std::vector<data_t>& rects, const string& leafPath);
 	void buildLevels ();
 	bool readLeaf (uint32_t nodeIdx, uint32_t childIdx, RLeaf<id_t, data_t>* leaf);
 	void getSubTree ( uint32_t rootIdx, boost::shared_ptr<std::vector<id_t> >& ids );
@@ -149,7 +143,11 @@ private:
 					 const FixedRect& rect,
 					 bool returnOnFirst);
 
-	RTree () {}
+	/* debug functions */
+	bool validate ();
+	void printTree ( );
+	void printLeaves (const string& leafPath);
+
 	friend class boost::serialization::access;
 	template<typename Archive>
 	void load(Archive &ar, const unsigned int version){
@@ -165,13 +163,13 @@ private:
 
 //! starts to build the tree for the given data
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::build(std::vector<data_t>& data)
+void RTree<id_t, data_t>::build(std::vector<data_t>& data, const string& leafPath)
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	log.infoStream() << "Objects: " << data.size();
 
 	// create leaf file and first tree level
-	buildLeaves(data);
+	buildLeaves(data, leafPath);
 
 	// build inner tree nodes
 	log.infoStream() << " - build levels";
@@ -221,7 +219,7 @@ coord_t RTree<id_t, data_t>::getY (const FixedPoint& p)
 }
 
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::buildLeaves (const std::vector<data_t>& data)
+void RTree<id_t, data_t>::buildLeaves (const std::vector<data_t>& data, const string& leafPath)
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 
@@ -262,17 +260,19 @@ void RTree<id_t, data_t>::buildLeaves (const std::vector<data_t>& data)
 		);
 	}
 
-	writeLeaves(ids, data);
+	writeLeaves(ids, data, leafPath);
 }
 
 //! Fills first tree layer for leaf RNode objects an saves RLeaf objects to file
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::writeLeaves (const std::vector<id_t>& ids, const std::vector<data_t>& data)
+void RTree<id_t, data_t>::writeLeaves (const std::vector<id_t>& ids,
+									   const std::vector<data_t>& data,
+									   const string& leafPath)
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	log.infoStream() << " - writing leaves";
 
-	std::ofstream output(leafPath.string(), std::ios::out | std::ios::binary);
+	std::ofstream output(leafPath, std::ios::out | std::ios::binary);
 
 	// fill data in leaves and write to disk
 	RNode node;
@@ -566,9 +566,9 @@ FixedRect RTree<id_t, data_t>::getBoundingBox ( const FixedPoint keys[], size_t 
 
 //! For debugging
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::printLeaves ( )
+void RTree<id_t, data_t>::printLeaves (const string& leafPath)
 {
-	std::ofstream log(leafPath.string() + ".log", std::ios::out);
+	std::ofstream log(leafPath + ".log", std::ios::out);
 
 	for (int i = tree.size() - 1; i >= 0 && tree[i].isLeaf(); i--)
 	{
