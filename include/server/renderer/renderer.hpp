@@ -79,6 +79,7 @@ private:
 	//! Abstract base class for PNG and SVG writers
 	class ImageWriter {
 	public:
+		virtual ~ImageWriter() {};
 		virtual Cairo::RefPtr<Cairo::Surface> createSurface() = 0;
 		virtual Cairo::RefPtr<Cairo::Surface> createSurface(const Tile::ImageType& buffer) = 0;
 		virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface) = 0;

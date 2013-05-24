@@ -80,6 +80,10 @@ public:
 	{
 	}
 
+	virtual ~PNGWriter()
+	{
+	}
+
 	//! The last given buffer is assumed to be the write buffer
 	virtual Cairo::RefPtr<Cairo::Surface> createSurface(const Tile::ImageType& buffer)
 	{
@@ -123,6 +127,10 @@ public:
 	SVGWriter(int width, int height)
 		: width(width)
 		, height(height)
+	{
+	}
+
+	virtual ~SVGWriter()
 	{
 	}
 
