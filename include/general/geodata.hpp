@@ -35,7 +35,8 @@ class Node;
 class Way;
 class Relation;
 class NodeKdTree;
-template <class geoId> class RTree;
+template<class id_t, class data_t>
+class RTree;
 
 class Geodata
 {
@@ -58,17 +59,21 @@ public:
 	TESTABLE Relation* getRelation(RelId id) const;
 
 	TESTABLE void load(const string& path);
-	TESTABLE void save(const string& path) const;
+	TESTABLE void save(const string& path);
 
 protected:
 	shared_ptr<std::vector<Way> > ways;
 	shared_ptr<std::vector<Node> > nodes;
 	shared_ptr<std::vector<Relation> > relations;
-	shared_ptr<NodeKdTree> nodesTree;
-	shared_ptr<RTree<WayId>> waysTree;
-	shared_ptr<RTree<RelId>> relTree;
+
+	//! note the trees are initialized by buildTree on serialisation
+	shared_ptr<RTree<NodeId, FixedPoint>> nodesTree;
+	shared_ptr<RTree<WayId, FixedRect>> waysTree;
+	shared_ptr<RTree<RelId, FixedRect>> relTree;
 
 private:
+	void buildTrees(const string& nodePath, const string& wayPath, const string& relationPath);
+	void serialize(const string& serPath) const;
 	TESTABLE FixedRect calculateBoundingBox(const Way& way) const;
 	TESTABLE FixedRect calculateBoundingBox(const Relation& relation) const;
 	FixedRect calculateBoundingBox(const std::vector<NodeId>& nodeIDs) const;

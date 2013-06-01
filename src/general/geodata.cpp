@@ -31,17 +31,19 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/serialization/base_object.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+
+#include <limits>
 
 #include "general/geodata.hpp"
 
 #include "general/node.hpp"
 #include "general/way.hpp"
 #include "general/relation.hpp"
-#include "general/nodeKdTree.hpp"
-#include "general/RTree.hpp"
+#include "general/rtree.hpp"
 #include "utils/rect.hpp"
-#include <limits>
-
+#include "utils/archive.hpp"
 
 Geodata::Geodata()
 {
@@ -51,39 +53,61 @@ Geodata::~Geodata()
 {
 }
 
+//! called when data is serialized to file
+void Geodata::buildTrees(const string& nodePath, const string& wayPath, const string& relationPath)
+{
+	if (nodes->size() > 0)
+	{
+		std::vector<FixedPoint> points;;
+		for (auto& n : *nodes)
+			points.push_back(n.getLocation());
+
+		nodesTree->build(points, nodePath);
+	}
+
+	if (ways->size() > 0)
+	{
+		std::vector<FixedRect> rects;
+		for (auto& w : *ways)
+			rects.push_back(calculateBoundingBox(w));
+
+		waysTree->build(rects, wayPath);
+	}
+
+	if (relations->size() > 0)
+	{
+		std::vector<FixedRect> rects;
+		for (auto& r : *relations)
+			rects.push_back(calculateBoundingBox(r));
+
+		relTree->build(rects, relationPath);
+	}
+}
+
 void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
 {
-	shared_ptr<std::vector<FixedPoint>> points = boost::make_shared<std::vector<FixedPoint>>();
-	for (auto& n : *nodes)
-		points->push_back(n.getLocation());
+	if (nodes->size() == 0)
+		return;
 
-	this->nodesTree = boost::make_shared<NodeKdTree>(points);
-	nodesTree->buildTree();
-
+	this->nodesTree = boost::make_shared<RTree<NodeId, FixedPoint> >();
 	this->nodes = nodes;
 }
 
 void Geodata::insertWays(const shared_ptr<std::vector<Way> >& ways)
 {
-	shared_ptr<std::vector<FixedRect>> rects = boost::make_shared<std::vector<FixedRect>>();
-	for (auto& w : *ways)
-		rects->push_back(calculateBoundingBox(w));
+	if (ways->size() == 0)
+		return;
 
-	this->waysTree = boost::make_shared<RTree<WayId> >(rects);
-	waysTree->buildTree();
-
+	this->waysTree = boost::make_shared<RTree<WayId, FixedRect> >();
 	this->ways = ways;
 }
 
 void Geodata::insertRelations(const shared_ptr<std::vector<Relation> >& relations)
 {
-	shared_ptr<std::vector<FixedRect>> rects = boost::make_shared<std::vector<FixedRect>>();
-	for (auto& r : *relations)
-		rects->push_back(calculateBoundingBox(r));
+	if (relations->size() == 0)
+		return;
 
-	this->relTree = boost::make_shared<RTree<RelId>>(rects);
-	relTree->buildTree();
-
+	this->relTree = boost::make_shared<RTree<RelId, FixedRect>>();
 	this->relations = relations;
 }
 
@@ -95,24 +119,26 @@ bool Geodata::containsData(const FixedRect &rect) const
 shared_ptr<std::vector<NodeId> > Geodata::getNodeIDs(const FixedRect& rect) const
 {
 	shared_ptr<std::vector<NodeId> > nodeIDs = boost::make_shared< std::vector<NodeId> >();
-	nodesTree->search(nodeIDs, rect);
+	if (nodesTree)
+		nodesTree->search(nodeIDs, rect);
 	return nodeIDs;
 }
 
 shared_ptr<std::vector<WayId> > Geodata::getWayIDs(const FixedRect& rect) const
 {
 	shared_ptr<std::vector<WayId> > wayIDs = boost::make_shared< std::vector<WayId> >();
-	waysTree->search(wayIDs, rect);
+	if (waysTree)
+		waysTree->search(wayIDs, rect);
 	return wayIDs;
 }
 
 shared_ptr<std::vector<RelId> > Geodata::getRelationIDs(const FixedRect& rect) const
 {
 	shared_ptr<std::vector<RelId> > relationIDs = boost::make_shared< std::vector<RelId> >();
-	relTree->search(relationIDs, rect);
+	if (relTree)
+		relTree->search(relationIDs, rect);
 	return relationIDs;
 }
-
 
 Node* Geodata::getNode(NodeId id) const
 {
@@ -134,19 +160,74 @@ void Geodata::load(const string& path)
 	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
 	log.infoStream() << "Load geodata from \"" << path << "\"";
 
-	std::ifstream ifs(path, std::ios::binary | std::ios::in);
-	boost::archive::binary_iarchive ia(ifs);
+	Archive a(path);
+	std::vector<Archive::entry_t> entries;
+	a.getEntries(entries);
 
+	int i =  0;
+	std::ifstream ifs(path, std::ios::binary | std::ios::in);
+	ifs.seekg(entries[i++].offset);
+	boost::archive::binary_iarchive ia(ifs);
 	ia >> *this;
+
+	// set offsets of leaf inside archive file
+	if (nodesTree) {
+		nodesTree->setLeafFile(path, entries[i].offset, entries[i].length);
+		i++;
+	}
+	if (waysTree) {
+		waysTree->setLeafFile(path, entries[i].offset, entries[i].length);
+		i++;
+	}
+	if (relTree) {
+		relTree->setLeafFile(path, entries[i].offset, entries[i].length);
+		i++;
+	}
 }
 
-void Geodata::save(const string& path) const
+void Geodata::serialize(const string& serPath) const
 {
 	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
-	log.infoStream() << "Save geodata to \"" << path << "\"";
-	std::ofstream ofs(path, std::ios::binary | std::ios::out);
+	log.infoStream() << "Serialize to \"" << serPath << "\"";
+
+	std::ofstream ofs(serPath, std::ios::binary | std::ios::out);
 	boost::archive::binary_oarchive oa(ofs);
 	oa << *this;
+}
+
+void Geodata::save(const string& outPath)
+{
+	boost::filesystem::path out = boost::filesystem::absolute(boost::filesystem::path(outPath));
+	boost::filesystem::path base = out.parent_path();
+	string serPath = (base / "data.ser").string();
+	string nodesPath = (base / "nodes.bin").string();
+	string waysPath = (base / "ways.bin").string();
+	string relationsPath = (base / "relations.bin").string();
+
+	buildTrees(nodesPath, waysPath, relationsPath);
+
+	serialize(serPath);
+
+	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
+	log.infoStream() << "Save geodata to \"" << outPath << "\"";
+	Archive a(outPath);
+	a.addFile(serPath);
+	if (nodesTree)
+		a.addFile(nodesPath);
+	if (waysTree)
+		a.addFile(waysPath);
+	if (relTree)
+		a.addFile(relationsPath);
+	a.write();
+
+	// remove temp files
+	remove(serPath.c_str());
+	if (nodesTree)
+		remove(nodesPath.c_str());
+	if (waysTree)
+		remove(waysPath.c_str());
+	if (relTree)
+		remove(relationsPath.c_str());
 }
 
 FixedRect Geodata::calculateBoundingBox(const Way& way) const

@@ -19,20 +19,29 @@
  */
 
 #pragma once
-#ifndef TRANSFORM_HPP
-#define TRANSFORM_HPP
+#ifndef ARCHIVE_HPP
+#define ARCHIVE_HPP
 
 #include "settings.hpp"
 
-#include <utils/point.hpp>
+#define MAGIC "CARTE"
 
-void tileToMercator(int tx, int ty, int zoom, coord_t& x, coord_t& y);
-void mercatorToTile(coord_t x, coord_t y, int zoom, int& tx, int& ty);
+class Archive
+{
+	private:
+		std::vector<string> paths;
+		string archPath;
 
-void projectMercator(const FloatPoint& p, coord_t& x, coord_t& y);
-void inverseMercator(const FixedPoint& p, double& lat, double& lon);
+	public:
+		struct entry_t {
+			uint64_t offset;
+			uint64_t length;
+		};
 
-void rot(uint32_t n, FixedPoint& p, bool rx, bool ry);
-uint64_t xy2hilbert (FixedPoint p);
+		Archive(const string& path);
+		void addFile(const string& filePath);
+		void write();
+		void getEntries(std::vector<entry_t>& entries);
+};
 
 #endif

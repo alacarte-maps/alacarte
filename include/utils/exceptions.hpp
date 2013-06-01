@@ -71,6 +71,8 @@ namespace excp {
 	struct NotImplementedException : public ExceptionBase {};
 	//! Thrown if a file was not found
 	struct FileNotFoundException : public ExceptionBase {};
+	//! Thrown if a file was not writeable
+	struct FileNotWritable : public ExceptionBase {};
 	//! Thrown if input was not in the right format
 	struct InputFormatException : public ExceptionBase {};
 	//! Thrown if an osm id was not specified before resolving.
