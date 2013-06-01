@@ -28,6 +28,7 @@
 #include <boost/archive/basic_archive.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
 
 #include <fstream>
 #include <algorithm>
@@ -102,8 +103,8 @@ public:
 	RTree () {}
 	void build(std::vector<data_t>& data, const string& leafPath);
 	bool search ( boost::shared_ptr<std::vector<id_t> >& result,
-				  const FixedRect& rect, bool returnOnFirst = false );
-	bool contains(const FixedRect& rect)
+				  const FixedRect& rect, bool returnOnFirst = false ) const;
+	bool contains(const FixedRect& rect) const
 	{
 		shared_ptr<std::vector<id_t> > geoIDs = boost::make_shared< std::vector<id_t> >();
 		return search(geoIDs, rect, true);
@@ -112,7 +113,7 @@ public:
 	//! is called after deserialisation to set offets in the archive
 	void setLeafFile(const string& path, uint64_t offset, uint64_t length)
 	{
-		input.open(path, std::ios::in | std::ios::binary);
+		input.open(path, length, offset);
 		if (!input.is_open())
 			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(path));
 		this->offset = offset;
@@ -121,34 +122,34 @@ public:
 
 private:
 	std::vector<RNode> tree;
-	std::ifstream input;
+	boost::iostreams::mapped_file_source input;
 	uint64_t offset;
 	uint64_t length;
 
 	void buildLeaves (const std::vector<data_t>& rects, const string& leafPath);
 	void writeLeaves (const std::vector<id_t>& ids, const std::vector<data_t>& rects, const string& leafPath);
 	void buildLevels ();
-	bool readLeaf (uint32_t nodeIdx, uint32_t childIdx, RLeaf<id_t, data_t>* leaf);
-	void getSubTree ( uint32_t rootIdx, boost::shared_ptr<std::vector<id_t> >& ids );
+	RLeaf<id_t, data_t>* readLeaf (uint32_t nodeIdx, uint32_t childIdx) const;
+	void getSubTree ( uint32_t rootIdx, boost::shared_ptr<std::vector<id_t> >& ids ) const;
 	FixedRect getBoundingBox ( const FixedRect keys[], size_t size) const;
 	FixedRect getBoundingBox ( const FixedPoint keys[], size_t size) const;
 	coord_t getX (const FixedPoint& p);
 	coord_t getX (const FixedRect& r);
 	coord_t getY (const FixedPoint& p);
 	coord_t getY (const FixedRect& r);
-	bool searchLeaf (const RLeaf<id_t, FixedPoint>& leaf,
+	bool searchLeaf (const RLeaf<id_t, FixedPoint>* leaf,
 					 boost::shared_ptr<std::vector<id_t> >& result,
 					 const FixedRect& rect,
-					 bool returnOnFirst);
-	bool searchLeaf (const RLeaf<id_t, FixedRect>& leaf,
+					 bool returnOnFirst) const;
+	bool searchLeaf (const RLeaf<id_t, FixedRect>* leaf,
 					 boost::shared_ptr<std::vector<id_t> >& result,
 					 const FixedRect& rect,
-					 bool returnOnFirst);
+					 bool returnOnFirst) const;
 
 	/* debug functions */
-	bool validate ();
-	void printTree ( );
-	void printLeaves (const string& leafPath);
+	bool validate () const;
+	void printTree () const;
+	void printLeaves (const string& leafPath) const;
 
 	friend class boost::serialization::access;
 	template<typename Archive>
@@ -358,32 +359,29 @@ void RTree<id_t, data_t>::buildLevels ()
 
 //! reads a leaf from file
 template<class id_t, class data_t>
-bool RTree<id_t, data_t>::readLeaf (uint32_t nodeIdx,
-							uint32_t childIdx,
-							RLeaf<id_t, data_t>* leaf)
+RTree<id_t, data_t>::RLeaf<id_t, data_t>*
+RTree<id_t, data_t>::readLeaf (uint32_t nodeIdx, uint32_t childIdx) const
 {
 	// reverse index, so that it correspons with the id of the saved leaves
 	uint32_t leafID = (tree.size() - 1 - nodeIdx) * NUM_CHILDREN + childIdx;
-	uint64_t leafOff = offset + sizeof(*leaf) * leafID;
-	input.seekg(leafOff);
-	input.read((char*) leaf, sizeof(*leaf));
+	return (((RLeaf<id_t, data_t>*) input.data()) + leafID);
 }
 
 //! debugging function to check validity of bounding boxes
 template<class id_t, class data_t>
-bool RTree<id_t, data_t>::validate ()
+bool RTree<id_t, data_t>::validate () const
 {
 	for (int i = 0; i < tree.size(); i++)
 	{
-		RNode& node = tree[i];
+		const RNode& node = tree[i];
 
 		if (node.isLeaf())
 		{
-			RLeaf<id_t, data_t> leaf;
+			RLeaf<id_t, data_t>* leaf;
 			for (int c = 0; c < node.size; c++)
 			{
-				readLeaf(i, c, &leaf);
-				FixedRect bounds = getBoundingBox(leaf.data, leaf.size);
+				leaf = readLeaf(i, c);
+				FixedRect bounds = getBoundingBox(leaf->data, leaf->size);
 				if (bounds != node.bounds[c])
 					return false;
 			}
@@ -404,18 +402,18 @@ bool RTree<id_t, data_t>::validate ()
 
 //! Specialisation for bounding box based data
 template<class id_t, class data_t>
-bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedRect>& leaf,
+bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedRect>* leaf,
 									  boost::shared_ptr<std::vector<id_t> >& result,
 									  const FixedRect& rect,
-									  bool returnOnFirst)
+									  bool returnOnFirst) const
 {
-	for (int j = 0; j < leaf.size; j++)
+	for (int j = 0; j < leaf->size; j++)
 	{
-		if (rect.intersects(leaf.data[j]))
+		if (rect.intersects(leaf->data[j]))
 		{
 			if (returnOnFirst)
 				return true;
-			result->push_back(leaf.ids[j]);
+			result->push_back(leaf->ids[j]);
 		}
 	}
 
@@ -424,18 +422,18 @@ bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedRect>& leaf,
 
 //! Specialisation for point based data
 template<class id_t, class data_t>
-bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedPoint>& leaf,
+bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedPoint>* leaf,
 									  boost::shared_ptr<std::vector<id_t> >& result,
 									  const FixedRect& rect,
-									  bool returnOnFirst)
+									  bool returnOnFirst) const
 {
-	for (int j = 0; j < leaf.size; j++)
+	for (int j = 0; j < leaf->size; j++)
 	{
-		if (rect.contains(leaf.data[j]))
+		if (rect.contains(leaf->data[j]))
 		{
 			if (returnOnFirst)
 				return true;
-			result->push_back(leaf.ids[j]);
+			result->push_back(leaf->ids[j]);
 		}
 	}
 
@@ -446,7 +444,7 @@ bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedPoint>& leaf,
 template<class id_t, class data_t>
 bool RTree<id_t, data_t>::search (boost::shared_ptr<std::vector<id_t> >& result,
 								  const FixedRect& rect,
-								  bool returnOnFirst)
+								  bool returnOnFirst) const
 {
 	if (tree.size() == 0)
 		return false;
@@ -455,6 +453,7 @@ bool RTree<id_t, data_t>::search (boost::shared_ptr<std::vector<id_t> >& result,
 	std::stack<uint32_t> stack;
 	stack.push(0);
 
+	RLeaf<id_t, data_t>* leaf;
 	do {
 		uint32_t idx = stack.top();
 		const RNode& node = tree[idx];
@@ -472,15 +471,13 @@ bool RTree<id_t, data_t>::search (boost::shared_ptr<std::vector<id_t> >& result,
 					if (returnOnFirst)
 						return true;
 
-					RLeaf<id_t, data_t> leaf;
-					readLeaf(idx, i, &leaf);
-					result->insert(result->end(), &leaf.ids[0], &leaf.ids[leaf.size]);
+					leaf = readLeaf(idx, i);
+					result->insert(result->end(), &leaf->ids[0], &leaf->ids[leaf->size]);
 				}
 				// if bound intersects search in leaf
 				else if (rect.intersects(node.bounds[i]))
 				{
-					RLeaf<id_t, data_t> leaf;
-					readLeaf(idx, i, &leaf);
+					leaf = readLeaf(idx, i);
 					bool containedData = searchLeaf(leaf, result, rect, returnOnFirst);
 
 					if (returnOnFirst && containedData)
@@ -515,11 +512,12 @@ bool RTree<id_t, data_t>::search (boost::shared_ptr<std::vector<id_t> >& result,
 
 //! used when a sub-tree is fully contained in the search rectangle
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::getSubTree ( uint32_t rootIdx, boost::shared_ptr<std::vector<id_t> >& ids )
+void RTree<id_t, data_t>::getSubTree ( uint32_t rootIdx, boost::shared_ptr<std::vector<id_t> >& ids ) const
 {
 	std::stack<uint32_t> subTreeStack;
 	subTreeStack.push(rootIdx);
 
+	RLeaf<id_t, data_t>* leaf;
 	do {
 		uint32_t idx = subTreeStack.top();
 		const RNode& node = tree[idx];
@@ -527,11 +525,10 @@ void RTree<id_t, data_t>::getSubTree ( uint32_t rootIdx, boost::shared_ptr<std::
 
 		if ( node.isLeaf() )
 		{
-			RLeaf<id_t, data_t> leaf;
 			for (int i = 0; i < node.size; i++)
 			{
-				readLeaf(idx, i, &leaf);
-				ids->insert(ids->end(), &leaf.ids[0], &leaf.ids[leaf.size]);
+				leaf = readLeaf(idx, i);
+				ids->insert(ids->end(), &leaf->ids[0], &leaf->ids[leaf->size]);
 			}
 		}
 		else
@@ -568,7 +565,7 @@ FixedRect RTree<id_t, data_t>::getBoundingBox ( const FixedPoint keys[], size_t 
 
 //! For debugging
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::printLeaves (const string& leafPath)
+void RTree<id_t, data_t>::printLeaves (const string& leafPath) const
 {
 	std::ofstream log(leafPath + ".log", std::ios::out);
 
@@ -586,7 +583,7 @@ void RTree<id_t, data_t>::printLeaves (const string& leafPath)
 
 //! For debugging
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::printTree ( )
+void RTree<id_t, data_t>::printTree ( ) const
 {
 	size_t start = 0;
 	// walk levels
@@ -599,16 +596,6 @@ void RTree<id_t, data_t>::printTree ( )
 			{
 				uint32_t leafID = (tree.size() - 1 - start) * NUM_CHILDREN + c;
 				printf(" %i", leafID);
-				FixedRect& r = tree[start].bounds[c];
-				/* Output leaf content
-				readLeaf(start, c, &leaf);
-				printf("Leaf %i: (", leafID);
-				for (int j = 0; j < leaf.size; j++)
-				{
-					printf("%04x ", leaf.ids[j]);
-				}
-				printf(")\n");
-				*/
 			}
 			printf(" ) ");
 			start++;
