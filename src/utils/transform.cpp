@@ -105,3 +105,56 @@ void inverseMercator(const FixedPoint& p, double& lat, double& lon)
 	lat = atan(sinh(p.y / NORM * boost::math::constants::pi<double>())) / boost::math::constants::pi<double>() * 180.0;
 }
 
+uint64_t spreadBits32(uint32_t y)
+{
+	uint64_t B[] = {
+		0x5555555555555555,
+		0x3333333333333333,
+		0x0f0f0f0f0f0f0f0f,
+		0x00ff00ff00ff00ff,
+		0x0000ffff0000ffff,
+		0x00000000ffffffff
+	};
+
+	int S[] = { 1, 2, 4, 8, 16, 32 };
+
+	uint64_t x = y;
+	x = (x | (x << S[5])) & B[5];
+	x = (x | (x << S[4])) & B[4];
+	x = (x | (x << S[3])) & B[3];
+	x = (x | (x << S[2])) & B[2];
+	x = (x | (x << S[1])) & B[1];
+	x = (x | (x << S[0])) & B[0];
+
+	return x;
+}
+
+uint64_t interleave64(uint32_t x, uint32_t y)
+{
+	return spreadBits32(x) | (spreadBits32(y) << 1);
+}
+
+uint64_t xy2hilbert(FixedPoint p)
+{
+	// convert signed to unsigned with offset
+	uint32_t x = p.x - std::numeric_limits<coord_t>::min();
+	uint32_t y = p.y - std::numeric_limits<coord_t>::min();
+
+	int r = 32;
+	uint64_t mask = (1 << r) - 1;
+	uint32_t hodd = 0;
+	uint32_t heven = x ^ y;
+	uint64_t notx = ~x & mask;
+	uint64_t noty = ~y & mask;
+	uint64_t temp = notx ^ y;
+
+	uint64_t v0 = 0, v1 = 0;
+	for (int k = 1; k < r; k++) {
+		v1 = ((v1 & heven) | ((v0 ^ noty) & temp)) >> 1;
+		v0 = ((v0 & (v1 ^ notx)) | (~v0 & (v1 ^ noty))) >> 1;
+	}
+	hodd = (~v0 & (v1 ^ x)) | (v0 & (v1 ^ noty));
+
+	return interleave64(heven, hodd);
+}
+

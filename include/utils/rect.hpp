@@ -101,6 +101,14 @@ public:
 		maxY = std::max(maxY, other.maxY);
 	}
 
+	inline void enclose(const basic_vector2<T>& other)
+	{
+		minX = std::min(minX, other.x);
+		maxX = std::max(maxX, other.x);
+		minY = std::min(minY, other.y);
+		maxY = std::max(maxY, other.y);
+	}
+
 	inline T getArea() const {
 		return (maxY - minY) * (maxX - minX);
 	}
@@ -161,5 +169,17 @@ private:
 
 typedef basic_rect<double> FloatRect;
 typedef basic_rect<coord_t> FixedRect;
+
+template<class T>
+bool operator==(const basic_rect<T>& a, const basic_rect<T>& b)
+{
+	return (a.minX == b.minX && a.minY == b.minY && a.maxX == b.maxX && a.maxY == b.maxY);
+}
+
+template<class T>
+bool operator!=(const basic_rect<T>& a, const basic_rect<T>& b)
+{
+	return (a.minX != b.minX || a.minY != b.minY || a.maxX != b.maxX || a.maxY != b.maxY);
+}
 
 #endif

@@ -34,6 +34,40 @@ struct tile_test {
 		geo_t = boost::make_shared<GeodataMock>(*geo_r);
 	}
 
+	template<class id_t>
+	void compare(const shared_ptr<std::vector<id_t>>& mock, const shared_ptr<std::vector<id_t>>& imp)
+	{
+		std::sort(mock->begin(), mock->end(), CompareObjects<id_t>());
+		std::sort(imp->begin(), imp->end(), CompareObjects<id_t>());
+
+		std::vector<id_t> notInImp;
+		std::vector<id_t> notInMock;
+		for (auto id : *mock)
+		{
+			if (!std::binary_search(imp->begin(), imp->end(), id))
+				notInImp.push_back(id);
+		}
+		for (auto id : *imp)
+		{
+			if (!std::binary_search(mock->begin(), mock->end(), id))
+				notInMock.push_back(id);
+		}
+
+		std::stringstream ss;
+		ss << "Not in implementation: ";
+		for (auto id : notInImp)
+			ss << " " << id.getRaw() << " ";
+		ss << "\n";
+		ss << "Not in mock: ";
+		for (auto id : notInMock)
+			ss << " " << id.getRaw() << " ";
+		ss << "\n";
+
+		BOOST_TEST_MESSAGE(ss.str());
+
+		BOOST_CHECK(notInImp.size() == 0 && notInMock.size() == 0 && imp->size() == mock->size());
+	}
+
 	void search(int zoom, int x, int y)
 	{
 		bool nodes_same = true;
@@ -44,74 +78,33 @@ struct tile_test {
 		tileToMercator(x,   y,   zoom, x0, y0);
 		tileToMercator(x+1, y+1, zoom, x1, y1);
 		r =FixedRect(FixedPoint(x0, y0), FixedPoint(x1, y1));
-		
-		
+
 		/*Nodes*/
 		shared_ptr<std::vector<NodeId> > result_t = boost::make_shared< std::vector<NodeId> >();
 		shared_ptr<std::vector<NodeId> > result_r = boost::make_shared< std::vector<NodeId> >();
 		result_t = geo_t->getNodeIDs(r);
-		result_r = geo_r->getNodeIDs(r);
 		BOOST_TEST_MESSAGE("Returned nodes-mock: " << result_t->size());
+		result_r = geo_r->getNodeIDs(r);
 		BOOST_TEST_MESSAGE("Returned nodes: " << result_r->size());
-		BOOST_CHECK(result_r->size() > 0);
-		BOOST_CHECK_EQUAL(result_t->size(), result_r->size());
-		
-		std::sort(result_r->begin(), result_r->end(), CompareObjects<NodeId>());
-		std::sort(result_t->begin(), result_t->end(), CompareObjects<NodeId>());
-		
-		for (int j = 0; j < result_r->size(); j++) {
-			if(result_r->at(j) != result_t->at(j)) {
-				nodes_same =false;
-				break;
-			}
-		}
-		
-		BOOST_CHECK(nodes_same);
-		
+		compare<NodeId>(result_t, result_r);
+
 		/*Ways*/
 		shared_ptr<std::vector<WayId> > way_t = boost::make_shared< std::vector<WayId> >();
 		shared_ptr<std::vector<WayId> > way_r = boost::make_shared< std::vector<WayId> >();
 		way_t = geo_t->getWayIDs(r);
-		way_r = geo_r->getWayIDs(r);
 		BOOST_TEST_MESSAGE("Returned ways-mock: " << way_t->size());
+		way_r = geo_r->getWayIDs(r);
 		BOOST_TEST_MESSAGE("Returned ways: " << way_r->size());
-		BOOST_CHECK(way_r->size() > 0);
-		BOOST_CHECK_EQUAL(way_t->size(), way_r->size());
-		
-		std::sort(way_r->begin(), way_r->end(), CompareObjects<WayId>());
-		std::sort(way_t->begin(), way_t->end(), CompareObjects<WayId>());
-		
-		for (int j = 0; j < way_r->size(); j++) {
-			if(way_r->at(j) != way_t->at(j)) {
-				ways_same =false;
-				break;
-			}
-		}
-		
-		BOOST_CHECK(ways_same);
+		compare<WayId>(way_t, way_r);
 
 		/*Relation*/
 		shared_ptr<std::vector<RelId> > rel_t = boost::make_shared< std::vector<RelId> >();
 		shared_ptr<std::vector<RelId> > rel_r = boost::make_shared< std::vector<RelId> >();
 		rel_t = geo_t->getRelationIDs(r);
-		rel_r = geo_r->getRelationIDs(r);
 		BOOST_TEST_MESSAGE("Returned relations-mock: " << rel_t->size());
+		rel_r = geo_r->getRelationIDs(r);
 		BOOST_TEST_MESSAGE("Returned relations: " << rel_r->size());
-		BOOST_CHECK(rel_r->size() > 0);
-		BOOST_CHECK_EQUAL(rel_t->size(), rel_r->size());
-		
-		std::sort(rel_r->begin(), rel_r->end(), CompareObjects<RelId>());
-		std::sort(rel_t->begin(), rel_t->end(), CompareObjects<RelId>());
-		
-		
-		for (int j = 0; j < rel_r->size(); j++) {
-			if(rel_r->at(j) != rel_t->at(j)) {
-				rels_same =false;
-				break;		
-			}
-		}
-		
-		BOOST_CHECK(rels_same);
+		compare<RelId>(rel_t, rel_r);
 	}
 };
 
