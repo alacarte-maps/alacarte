@@ -24,6 +24,9 @@
 
 #include "utils/archive.hpp"
 
+#define ROUND_PAGE(_X) (((_X) % PAGE_SIZE == 0) ? (_X) : (((_X) / PAGE_SIZE + 1) * PAGE_SIZE))
+#define PAGE_SIZE (4 * 1024)
+
 Archive::Archive(const string& archPath)
 	: archPath(archPath)
 {
@@ -43,34 +46,51 @@ void Archive::write()
 	// magic number
 	out.write(MAGIC, sizeof(MAGIC));
 
+	// number of files
 	uint32_t num = paths.size();
 	out.write((char*) &num, sizeof(num));
 
+	uint64_t header_size = (uint64_t) out.tellp();
+	// length of offsets
+	header_size += paths.size() * sizeof(entry_t);
+
 	// write file offsets
-	uint64_t* offsets = new uint64_t[paths.size()];
-	offsets[0] = (uint64_t) out.tellp() + paths.size() * sizeof(uint64_t);
-	for (int i = 0; i < (paths.size() - 1); i++)
+	entry_t* entries = new entry_t[paths.size()];
+	entries[0].offset = ROUND_PAGE(header_size);
+	for (int i = 0; i < paths.size(); i++)
 	{
 		std::ifstream input(paths[i]);
 		if (!input.is_open())
 			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(paths[i]));
 		input.seekg(0, input.end);
-		offsets[i+1] = offsets[i] + input.tellg();
+		uint64_t length = input.tellg();
+		entries[i].length = length;
+
+		if (i < paths.size() - 1)
+			entries[i+1].offset = ROUND_PAGE(entries[i].offset + length);
 	}
-	out.write((char*) offsets, paths.size() * sizeof(uint64_t));
-	delete[] offsets;
+	out.write((char*) entries, paths.size() * sizeof(entry_t));
+	delete[] entries;
+
+	// padding
+	while (out.tellp() % PAGE_SIZE != 0)
+		out.write("\0", 1);
 
 	// write files
-	for (auto& path : paths)
+	for (int i = 0; i < paths.size(); i++)
 	{
-		std::ifstream input(path, std::ifstream::binary);
+		std::ifstream input(paths[i], std::ifstream::binary);
 		if (!input.is_open())
-			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(path));
+			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(paths[i]));
 		out << input.rdbuf();
+
+		// padding
+		while (out.tellp() % PAGE_SIZE != 0)
+			out.write("\0", 1);
 	}
 }
 
-void Archive::getOffsets(std::vector<uint64_t>& offsets)
+void Archive::getEntries(std::vector<Archive::entry_t>& entries)
 {
 	std::ifstream in(archPath, std::ifstream::binary);
 	if (!in.is_open())
@@ -87,8 +107,8 @@ void Archive::getOffsets(std::vector<uint64_t>& offsets)
 
 	for (int i = 0; i < num; i++)
 	{
-		uint64_t off;
-		in.read((char*) &off, sizeof(off));
-		offsets.push_back(off);
+		entry_t e;
+		in.read((char*) &e, sizeof(e));
+		entries.push_back(e);
 	}
 }

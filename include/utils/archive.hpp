@@ -33,10 +33,15 @@ class Archive
 		string archPath;
 
 	public:
+		struct entry_t {
+			uint64_t offset;
+			uint64_t length;
+		};
+
 		Archive(const string& path);
 		void addFile(const string& filePath);
 		void write();
-		void getOffsets(std::vector<uint64_t>& offsets);
+		void getEntries(std::vector<entry_t>& entries);
 };
 
 #endif

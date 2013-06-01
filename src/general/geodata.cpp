@@ -161,22 +161,28 @@ void Geodata::load(const string& path)
 	log.infoStream() << "Load geodata from \"" << path << "\"";
 
 	Archive a(path);
-	std::vector<uint64_t> offsets;
-	a.getOffsets(offsets);
+	std::vector<Archive::entry_t> entries;
+	a.getEntries(entries);
 
+	int i =  0;
 	std::ifstream ifs(path, std::ios::binary | std::ios::in);
-	ifs.seekg(offsets[0]);
+	ifs.seekg(entries[i++].offset);
 	boost::archive::binary_iarchive ia(ifs);
 	ia >> *this;
 
 	// set offsets of leaf inside archive file
-	int i =  1;
-	if (nodesTree)
-		nodesTree->setLeafFile(path, offsets[i++]);
-	if (waysTree)
-		waysTree->setLeafFile(path, offsets[i++]);
-	if (relTree)
-		relTree->setLeafFile(path, offsets[i++]);
+	if (nodesTree) {
+		nodesTree->setLeafFile(path, entries[i].offset, entries[i].length);
+		i++;
+	}
+	if (waysTree) {
+		waysTree->setLeafFile(path, entries[i].offset, entries[i].length);
+		i++;
+	}
+	if (relTree) {
+		relTree->setLeafFile(path, entries[i].offset, entries[i].length);
+		i++;
+	}
 }
 
 void Geodata::serialize(const string& serPath) const

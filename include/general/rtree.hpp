@@ -110,18 +110,20 @@ public:
 	};
 
 	//! is called after deserialisation to set offets in the archive
-	void setLeafFile(const string& path, uint64_t offset)
+	void setLeafFile(const string& path, uint64_t offset, uint64_t length)
 	{
 		input.open(path, std::ios::in | std::ios::binary);
 		if (!input.is_open())
 			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(path));
 		this->offset = offset;
+		this->length = length;
 	}
 
 private:
 	std::vector<RNode> tree;
 	std::ifstream input;
 	uint64_t offset;
+	uint64_t length;
 
 	void buildLeaves (const std::vector<data_t>& rects, const string& leafPath);
 	void writeLeaves (const std::vector<id_t>& ids, const std::vector<data_t>& rects, const string& leafPath);
