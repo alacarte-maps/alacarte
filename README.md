@@ -68,9 +68,7 @@ and logging.
 * Real database backend
 * Better font rendering (Pango?)
 * Unicode support
-* Better label placement (e.g. above icons)
 * Implement MapCSS-include
 * Better caching of fonts and icons
 * Option to "tune" imported data for specific stylesheets
-* Speed up tree generation
 
