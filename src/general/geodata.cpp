@@ -86,29 +86,23 @@ void Geodata::buildTrees(const string& nodePath, const string& wayPath, const st
 
 void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
 {
-	if (nodes->size() == 0)
-		return;
-
-	this->nodesTree = boost::make_shared<RTree<NodeId, FixedPoint> >();
 	this->nodes = nodes;
+	if (nodes->size() > 0)
+		this->nodesTree = boost::make_shared<RTree<NodeId, FixedPoint> >();
 }
 
 void Geodata::insertWays(const shared_ptr<std::vector<Way> >& ways)
 {
-	if (ways->size() == 0)
-		return;
-
-	this->waysTree = boost::make_shared<RTree<WayId, FixedRect> >();
 	this->ways = ways;
+	if (ways->size() > 0)
+		this->waysTree = boost::make_shared<RTree<WayId, FixedRect> >();
 }
 
 void Geodata::insertRelations(const shared_ptr<std::vector<Relation> >& relations)
 {
-	if (relations->size() == 0)
-		return;
-
-	this->relTree = boost::make_shared<RTree<RelId, FixedRect>>();
 	this->relations = relations;
+	if (relations->size() > 0)
+		this->relTree = boost::make_shared<RTree<RelId, FixedRect>>();
 }
 
 bool Geodata::containsData(const FixedRect &rect) const

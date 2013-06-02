@@ -571,9 +571,6 @@ shared_ptr<Geodata> Importer::importXML()
 	log.infoStream() << "Start parsing...";
 	parser.parse(xml_file);
 
-	//TODO validate and remap object ids
-
-
 	log.infoStream() << "Insert into geodata...";
 	geodata->insertNodes(parser.getParsedNodes());
 	geodata->insertWays(parser.getParsedWays());
