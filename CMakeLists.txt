@@ -28,6 +28,13 @@ if (NOT BOOST_XTIME)
 endif()
 
 find_package(Log4Cpp REQUIRED)
+# FIXME hack for backward compability
+if (NOT Log4Cpp_LIBRARIES)
+	set (Log4Cpp_LIBRARIES "${LOG4CPP_LIBRARIES}")
+	set (Log4Cpp_DEFINITIONS "${LOG4CPP_DEFINITIONS}")
+	set (Log4Cpp_INCLUDE_DIRS "${LOG4CPP_INCLUDE_DIRS}")
+endif()
+
 IF(NOT MINGW)
 	find_package(Inotify REQUIRED)
 ENDIF(NOT MINGW)
