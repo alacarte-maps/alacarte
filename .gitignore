@@ -29,6 +29,9 @@ cscope.*
 
 # vim session
 *.vim
+.ycm_extra_conf.*
+compile_commands.json
+.gitbuild
 
 # Implementation
 build/
