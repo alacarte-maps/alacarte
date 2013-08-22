@@ -138,6 +138,18 @@ void AppendVector(std::vector<T>& target, const std::vector<T>& append)
 }
 
 /**
+ *	Appends a value to a vector and casts types
+ *
+ *	\param target where attr should be inserted
+ *	\param toAppend The vector which should be appended to the target
+ */
+template<typename T, typename S>
+void AppendTo(std::vector<S>& target, S& toAppend)
+{
+	target.push_back(boost::static_pointer_cast<S>(toAppend));
+}
+
+/**
  *	Creates all rules for the mapcss grammar
  *
  *	\param The parser using this grammar
@@ -211,14 +223,33 @@ MapCSSGrammar::MapCSSGrammar(MapCssParser& parser)
 						> rule_styleset[phx::bind(&MapCssParser::applyStyleToRules, &parser, _val, _1)]
 						> '}';
 
+	rule_import = qi::lit("@import")
+					> qi::lexeme[
+						qi::lit("url(\"") >> (+~qi::char_("\"")) >> '"'
+						];
+
+
 	rule_stylesheet =	(
 							*(
 								rule_cssrule
 									[
 										phx::bind(&AppendVector<RulePtr>, _a, _1)
 									]
+								|
+								rule_import
+									[
+										phx::push_back(_a,
+											phx::construct<StylesheetRefPtr>(
+												phx::new_<StylesheetRef>(
+													_1,
+													phx::ref(parser.manager),
+													phx::ref(parser.geodata)
+												)
+											)
+										)
+									]
 								| (
-										qi::lit("canvas") 
+										qi::lit("canvas")
 										> '{'
 										> -rule_styleset
 											[

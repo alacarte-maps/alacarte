@@ -124,12 +124,16 @@ class Rule;
 class Selector;
 class ApplySelector;
 class Style;
+class StylesheetRef;
 
 //! Shortcut for a shared pointer to stylesheet
 typedef shared_ptr<Stylesheet> StylesheetPtr;
 
 //! Shortcut for a shared pointer to rule
 typedef shared_ptr<Rule> RulePtr;
+
+//! Shortcut for a shared pointer to rule
+typedef shared_ptr<StylesheetRef> StylesheetRefPtr;
 
 //! Shortcut for a shared pointer to the base of all selectors
 typedef shared_ptr<Selector> SelectorPtr;

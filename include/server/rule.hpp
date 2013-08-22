@@ -30,6 +30,7 @@ class RenderAttributes;
 class TileIdentifier;
 class ApplySelector;
 class StyleTemplate;
+class StylesheetManager;
 
 class Rule {
 	friend struct MapCssParser;
@@ -56,7 +57,7 @@ public:
 	/**
 	 * @brief
 	 */
-	TESTABLE void match(const shared_ptr<std::vector<NodeId> >& nodeIDs,
+	virtual void match(const shared_ptr<std::vector<NodeId> >& nodeIDs,
 						const shared_ptr<std::vector<WayId> >& wayIDs,
 						const shared_ptr<std::vector<RelId> >& relIDs,
 						const shared_ptr<TileIdentifier>& ti,
@@ -88,6 +89,28 @@ public:
 	 * @brief what types of GeoObjects does this rule accept in the first selector?
 	 */
 	TESTABLE void setAcceptableType(AcceptableTypes type);
+};
+
+class StylesheetRef : public Rule
+{
+public:
+	StylesheetRef(const string& path,
+		const shared_ptr<StylesheetManager>& manager,
+		const shared_ptr<Geodata>& geodata)
+	: Rule(geodata)
+	, path(path)
+	, manager(manager)
+	{}
+
+	virtual void match(const shared_ptr<std::vector<NodeId> >& nodeIDs,
+						const shared_ptr<std::vector<WayId> >& wayIDs,
+						const shared_ptr<std::vector<RelId> >& relIDs,
+						const shared_ptr<TileIdentifier>& ti,
+						RenderAttributes* renderAttributes) const;
+
+private:
+	string path;
+	shared_ptr<StylesheetManager> manager;
 };
 
 #endif

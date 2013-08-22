@@ -29,6 +29,7 @@
 
 #include "server/style.hpp"
 #include "server/stylesheet.hpp"
+#include "server/stylesheet_manager.hpp"
 
 #include "server/parser/comment_skipper.hpp"
 #include "server/parser/mapcss_parser.hpp"
@@ -335,9 +336,10 @@ void MapCssParser::warnUnsupportedAttribute(const string& attribute) const {
  *
  *	\param geodata used in created rules
  */
-MapCssParser::MapCssParser(const shared_ptr<Geodata>& geodata)
+MapCssParser::MapCssParser(const shared_ptr<Geodata>& geodata, const shared_ptr<StylesheetManager>& manager)
 	: log(log4cpp::Category::getInstance("mapcss-parser"))
 	, geodata(geodata)
+	, manager(manager)
 {
 }
 
@@ -413,10 +415,13 @@ void MapCssParser::load(const string& path)
  *	\param geodata used by in this stylesheet
  *	\return The created stylesheet
  */
-shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path, const shared_ptr<Geodata>& geodata, int timeout)
+shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path,
+	const shared_ptr<Geodata>& geodata,
+	const shared_ptr<StylesheetManager>& manager,
+	int timeout)
 {
 
-	shared_ptr<MapCssParser> parser = boost::make_shared<MapCssParser>(geodata);
+	shared_ptr<MapCssParser> parser = boost::make_shared<MapCssParser>(geodata, manager);
 
 	boost::thread timeoutThread(boost::bind(&MapCssParser::load, parser, path.string()));
 

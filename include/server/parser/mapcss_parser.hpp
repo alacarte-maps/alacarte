@@ -33,8 +33,7 @@
 
 class Geodata;
 class Stylesheet;
-
-
+class StylesheetManager;
 
 struct MapCssParser
 {
@@ -48,13 +47,15 @@ struct MapCssParser
 	RulePtr createSelectorChain(const std::vector<SelectorItem>& items);
 	void warnUnsupportedAttribute(const string& attribute) const;
 
-	MapCssParser(const shared_ptr<Geodata>& geodata);
+	MapCssParser(const shared_ptr<Geodata>& geodata, const shared_ptr<StylesheetManager>& manager);
 	void load(const string& path);
 
 	//! The log used by the parser
 	log4cpp::Category& log;
 	//! The geodata used to inject them in the rules
 	shared_ptr<Geodata> geodata;
+	//! The stylesheet manager needed for stylesheet references (import rules)
+	shared_ptr<StylesheetManager> manager;
 	//! The parsed stylesheet
 	shared_ptr<Stylesheet> parsedStylesheet;
 	//! The exception that may be catched

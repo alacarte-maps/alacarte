@@ -30,6 +30,7 @@ class RenderAttributes;
 class TileIdentifier;
 class Rule;
 class StyleTemplate;
+class StylesheetManager;
 
 /**
  * A Stylesheet parses a given MapCSS Stylesheet file and stores the defined rules.
@@ -49,7 +50,7 @@ public:
 	 * @param path the absolute or relative path to the stylesheet
 	 * @param data a reference to the geodata object to use to resolve GeoObject IDs to the actual Geoobject
 	 */
-	static shared_ptr<Stylesheet> Load(const boost::filesystem::path& path, const shared_ptr<Geodata>& geodata, int timeout);
+	static shared_ptr<Stylesheet> Load(const boost::filesystem::path& path, const shared_ptr<Geodata>& geodata, const shared_ptr<StylesheetManager>& manager, int timeout);
 
 	/**
 	 * @brief Returns a new RenderAttributes with a Style object for each given Node and Way.

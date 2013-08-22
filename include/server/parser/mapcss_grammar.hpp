@@ -258,6 +258,8 @@ struct MapCSSGrammar : public qi::grammar<GrammarIterator, StylesheetPtr(), qi::
 	//! Rule to parse a selector
 	qi::rule<ItType, RulePtr(), qi::locals<std::vector<SelectorItem> >, Skipper> rule_selector;
 
+	//! Rule to parse an import
+	qi::rule<ItType, string()> rule_import;
 	//! Rule to parse one rule. Returns a list of rules, because selectors can be splited
 	qi::rule<ItType, std::vector<RulePtr>(), Skipper> rule_cssrule;
 	//! Main rule returning a stylesheet

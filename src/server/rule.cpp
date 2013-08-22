@@ -28,6 +28,9 @@
 #include "server/tile_identifier.hpp"
 #include "server/style_template.hpp"
 
+#include "server/stylesheet_manager.hpp"
+#include "server/stylesheet.hpp"
+
 #include "config.hpp"
 
 Rule::Rule(const shared_ptr<Geodata>& geodata)
@@ -89,4 +92,14 @@ void Rule::setZoomBounds(int bottom, int top) {
 
 void Rule::setAcceptableType(AcceptableTypes type) {
 	accepableType = type;
+}
+
+void StylesheetRef::match(const shared_ptr<std::vector<NodeId> >& nodeIDs,
+		const shared_ptr<std::vector<WayId> >& wayIDs,
+		const shared_ptr<std::vector<RelId> >& relIDs,
+		const shared_ptr<TileIdentifier>& ti,
+		RenderAttributes* renderAttributes) const
+{
+	shared_ptr<Stylesheet> stylesheet = manager->getStylesheet(path);
+	stylesheet->match(nodeIDs, wayIDs, relIDs, ti, renderAttributes);
 }
