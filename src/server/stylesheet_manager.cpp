@@ -117,7 +117,7 @@ void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 	try {
 		std::string new_filename = stylesheet_path.filename().string() + ".mapcss";
 		fs::path filename(new_filename);
-		stylesheet = Stylesheet::Load(stylesheetFolder / filename, manager->getGeodata(), make_shared_from_this(), timeout);
+		stylesheet = Stylesheet::Load(stylesheetFolder / filename, manager->getGeodata(), shared_from_this(), timeout);
 
 	} catch(excp::ParseException& e)
 	{

@@ -223,7 +223,7 @@ MapCSSGrammar::MapCSSGrammar(MapCssParser& parser)
 						> rule_styleset[phx::bind(&MapCssParser::applyStyleToRules, &parser, _val, _1)]
 						> '}';
 
-	rule_import = qi::lit("@import")
+	rule_import %= qi::lit("@import")
 					> qi::lexeme[
 						qi::lit("url(\"") >> (+~qi::char_("\"")) >> '"'
 						];
