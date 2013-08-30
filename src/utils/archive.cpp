@@ -25,7 +25,7 @@
 #include "utils/archive.hpp"
 
 #define ROUND_PAGE(_X) (((_X) % PAGE_SIZE == 0) ? (_X) : (((_X) / PAGE_SIZE + 1) * PAGE_SIZE))
-#define PAGE_SIZE (4 * 1024)
+#define PAGE_SIZE (64 * 1024)
 
 Archive::Archive(const string& archPath)
 	: archPath(archPath)
