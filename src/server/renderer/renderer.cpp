@@ -659,7 +659,7 @@ void Renderer::renderEmptyTile(RenderAttributes& map, const shared_ptr<Tile>& ti
 	// optimized for png images in the default stylesheet
 	buffer->reserve(10*1024);
 
-#if OLD_CAIRO
+#if RENDER_LOCK
 	renderLock.lock();
 #endif
 
@@ -670,7 +670,7 @@ void Renderer::renderEmptyTile(RenderAttributes& map, const shared_ptr<Tile>& ti
 	printTileId(layer.cr, tile->getIdentifier());
 #endif
 
-#if OLD_CAIRO
+#if RENDER_LOCK
 	renderLock.unlock();
 #endif
 
@@ -766,7 +766,7 @@ void Renderer::renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>&
 				   id->getY() + id->getHeight(),
 				   zoom, area.maxX, area.maxY);
 
-#if OLD_CAIRO
+#if RENDER_LOCK
 	renderLock.lock();
 #endif
 
@@ -779,7 +779,7 @@ void Renderer::renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>&
 
 	renderArea(area, layers, width, height, map, cache);
 
-#if OLD_CAIRO
+#if RENDER_LOCK
 	renderLock.unlock();
 #endif
 
