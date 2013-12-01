@@ -23,11 +23,9 @@ else (LOG4CPP_LIBRARIES AND LOG4CPP_INCLUDE_DIRS)
   find_path(LOG4CPP_INCLUDE_DIR NAMES log4cpp/Appender.hh
   )
 
-  find_library(LOG4CPP_LIBRARY NAMES log4cpp PATHS "${BASE_DIR_LIB}"
-     NO_DEFAULT_PATH
-  )
-  find_library(LOG4CPP_LIBRARY NAMES log4cpp 
-  )
+  find_library(LOG4CPP_LIBRARY NAMES log4cpp PATHS "${BASE_DIR_LIB}" NO_DEFAULT_PATH )
+  find_library(LOG4CPP_LIBRARY NAMES log4cpp PATHS "${BASE_DIR}/lib" NO_DEFAULT_PATH )
+  find_library(LOG4CPP_LIBRARY NAMES log4cpp )
   set(LOG4CPP_INCLUDE_DIRS
     ${LOG4CPP_INCLUDE_DIR} CACHE PATH "Path to log4cpp headers"
   )
