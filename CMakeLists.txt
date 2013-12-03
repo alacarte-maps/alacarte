@@ -28,9 +28,11 @@ if (NOT BOOST_XTIME)
 endif()
 
 #find other packages
-IF(NOT WIN32)
+IF(WIN32)
+	SET(ENV{FREETYPE_DIR} ${CMAKE_FIND_ROOT_PATH})
+ELSE(WIN32)
     find_package(Inotify REQUIRED)
-ENDIF(NOT WIN32)
+ENDIF(WIN32)
 
 find_package(Cairo REQUIRED)
 find_package(Cairomm REQUIRED)
