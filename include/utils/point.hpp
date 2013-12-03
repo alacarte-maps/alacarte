@@ -123,7 +123,7 @@ inline std::basic_istream<C>& operator >> (std::basic_istream<C>& is, basic_vect
 	is >> op;
 	is >> v.y;
 
-	if(op !=  C(',') && op != C('x') && op != C('|') || is.bad())
+	if((op != C(',') && op != C('x') && op != C('|')) || is.bad())
 	{
 		throw std::runtime_error("Not able to convert from stream to vector!");
 	}
