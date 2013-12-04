@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/alacarte-maps/alacarte.png?branch=master)](https://travis-ci.org/alacarte-maps/alacarte)
+
 # What is alaCarte? #
 
 ![screenshot of Karlsruhe](http://github.com/alacarte-maps/alacarte/raw/master/screenshot.png "Karlsruhe")
