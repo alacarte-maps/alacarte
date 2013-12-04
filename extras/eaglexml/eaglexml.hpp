@@ -1607,7 +1607,7 @@ namespace eaglexml {
 			// continue to parse, until we get a valid node or reach the end-tag or the end of the file
 			do {
 
-				if (m_topnode == parent && m_nextstatus == next_parse_endtag || m_nextstatus == next_eof)
+				if ((m_topnode == parent && m_nextstatus == next_parse_endtag) || m_nextstatus == next_eof)
 					return 0;
 
 				node = parse_according_to_status<parser_flags>();
@@ -2664,7 +2664,7 @@ namespace eaglexml {
 				// End of data - error
 			case char_type('\0'):
 				assert(m_topnode);
-				if(data && m_topnode->parent() != m_bottomnode || !data && m_topnode != m_bottomnode)
+				if ((data && m_topnode->parent() != m_bottomnode) || (!data && m_topnode != m_bottomnode))
 					EAGLEXML_PARSE_ERROR("unexpected end of data");
 				m_nextstatus = data? next_close_data_node : next_eof;
 				break;
