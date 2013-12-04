@@ -439,8 +439,8 @@ void MaybeCachedString::assign( const string& str )
 void MaybeCachedString::assign( const MaybeCachedString& other )
 {
 	reset();
-	if(cached = other.cached)
-	{
+	cached = other.cached;
+	if (cached) {
 		internalString = other.internalString;
 	} else {
 		internalString = new StringStorageElement(*other.internalString);
