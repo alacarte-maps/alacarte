@@ -16,7 +16,7 @@
 if (NOT WIN32)
     find_package(PkgConfig)
     if (PKG_CONFIG_FOUND)
-        pkg_check_modules(Cairomm cairomm-1.0)
+        pkg_check_modules(_CAIROMM cairomm-1.0)
     endif (PKG_CONFIG_FOUND)
 endif (NOT WIN32)
 
