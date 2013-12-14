@@ -173,5 +173,7 @@ string Statistic::componentToName(Component component) const
 		case Renderer: 			return "Renderer";
 		case GeoContainsData: 	return "GeoContainsData";
 		case Slicing: 			return "Slicing";
+		default:
+			assert(false);
 	}
 }
