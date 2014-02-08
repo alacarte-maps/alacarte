@@ -43,15 +43,15 @@ const shared_ptr<MetaIdentifier>& MetaTile::getIdentifier() const
 /**
  * @return surface that contains rendered tiles
  */
-const Cairo::RefPtr<Cairo::Surface>& MetaTile::getData() const
+const shared_ptr<CairoLayer>& MetaTile::getData() const
 {
-	return surface;
+	return layer;
 }
 
 /**
  * @brief set cairo surface that contains the rendered tiles
  */
-void MetaTile::setData(const Cairo::RefPtr<Cairo::Surface>& data)
+void MetaTile::setData(const shared_ptr<CairoLayer>& layer)
 {
-	this->surface = data;
+	this->layer = layer;
 }

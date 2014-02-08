@@ -25,8 +25,7 @@
 
 #include <boost/thread/mutex.hpp>
 
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include <cairo.h>
 
 #include "server/tile_identifier.hpp"
 #include "server/tile.hpp"
@@ -46,6 +45,20 @@ class Label;
 class Shield;
 class AssetCache;
 
+//! Stores cairo data for each painting layer of a tile (fill, casing, stroke, ..)
+struct CairoLayer;
+class PNGWriter;
+class ImageWriter;
+class SVGWriter;
+//! Abstract base class for PNG and SVG writers
+class ImageWriter {
+public:
+	virtual ~ImageWriter() {};
+	virtual cairo_surface_t* createSurface() = 0;
+	virtual cairo_surface_t* createSurface(const Tile::ImageType& buffer) = 0;
+	virtual void write(cairo_surface_t* surface) = 0;
+};
+
 class Renderer
 {
 public:
@@ -63,9 +76,6 @@ protected:
 					 std::vector<shared_ptr<Shield> >& placed);
 
 private:
-	class PNGWriter;
-	class ImageWriter;
-	class SVGWriter;
 
 	//! stores the actual data
 	const shared_ptr<Geodata> data;
@@ -73,17 +83,7 @@ private:
 	FloatRect neighbours[8];
 	FloatRect neighbourRequests[8];
 
-	//! Stores cairo data for each painting layer of a tile (fill, casing, stroke, ..)
-	class CairoLayer;
 
-	//! Abstract base class for PNG and SVG writers
-	class ImageWriter {
-	public:
-		virtual ~ImageWriter() {};
-		virtual Cairo::RefPtr<Cairo::Surface> createSurface() = 0;
-		virtual Cairo::RefPtr<Cairo::Surface> createSurface(const Tile::ImageType& buffer) = 0;
-		virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface) = 0;
-	};
 
 	//! Layers to paint onto
 	enum {
@@ -96,25 +96,23 @@ private:
 	};
 
 	shared_ptr<ImageWriter> getWriter(TileIdentifier::Format format, int width, int height) const;
-	void printTileId(const Cairo::RefPtr<Cairo::Context>& cr, const shared_ptr<TileIdentifier>& id) const;
+	void printTileId(cairo_t* cr, const shared_ptr<TileIdentifier>& id) const;
 	void sortObjects(RenderAttributes& map, std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations) const;
 	bool isCutOff(const FloatRect& box, const FloatRect& owner);
-	void compositeLayers(CairoLayer layers[]) const;
-	void setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& writer, AssetCache& cache) const;
-	void paintBackground(const CairoLayer& layer, const Style* canvasStyle) const;
-	void renderObjects(CairoLayer layers[], RenderAttributes& map,
-					   const Cairo::Matrix& transform,
+	void compositeLayers(shared_ptr<CairoLayer> layers[]) const;
+	void setupLayers(shared_ptr<CairoLayer> layers[], const shared_ptr<ImageWriter>& writer, AssetCache& cache) const;
+	void paintBackground(const shared_ptr<CairoLayer>& layer, const Style* canvasStyle) const;
+	void renderObjects(shared_ptr<CairoLayer> layers[], RenderAttributes& map,
+					   const cairo_matrix_t* transform,
 					   std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations,
 					   std::list<shared_ptr<Label>>& labels,
 					   std::list<shared_ptr<Shield>>& shields,
 					   AssetCache& cache) const;
 	template <typename LabelType>
-	void renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
-					  std::vector<shared_ptr<LabelType> >& labels, AssetCache& cache) const;
-	void renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
-					  std::vector<shared_ptr<Shield> >& shields) const;
+	void renderLabels(cairo_t* cr, std::vector<shared_ptr<LabelType> >& labels, AssetCache& cache) const;
+	void renderShields(cairo_t* cr, std::vector<shared_ptr<Shield> >& shields) const;
 	void renderArea(const FixedRect& area,
-					CairoLayer layers[],
+					shared_ptr<CairoLayer> layers[],
 					double width, double height,
 					RenderAttributes& map,
 					AssetCache& cache);

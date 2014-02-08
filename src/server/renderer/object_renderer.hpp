@@ -31,8 +31,7 @@
  */
 #include "settings.hpp"
 
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include <cairo.h>
 
 class Geodata;
 class Label;
@@ -42,23 +41,23 @@ class ObjectRenderer
 {
 protected:
 	const shared_ptr<Geodata>& data;
-	const Cairo::Matrix& transform;
+	const cairo_matrix_t* transform;
 	const Style* s;
 	//! is set by addWayPath for ways or in transformLocation for nodes
 	FloatRect bounds;
 
-	void paintLine(const Cairo::RefPtr<Cairo::Context>& cr,  const std::vector<NodeId>& nodeIDs, bool reverse=false, bool connect=false) const;
+	void paintLine(cairo_t* cr,  const std::vector<NodeId>& nodeIDs, bool reverse=false, bool connect=false) const;
 	void addShield(std::list<shared_ptr<Shield> >& shields,
 				   const FloatPoint& p,
-				   const Cairo::TextExtents& textSize) const;
+				   const cairo_text_extents_t* textSize) const;
 	void addLabel(std::list<shared_ptr<Label> >& labels,
 				   const FloatPoint& p,
-				   const Cairo::TextExtents& textSize) const;
+				   const cairo_text_extents_t* textSize) const;
 
 public:
 	ObjectRenderer(const shared_ptr<Geodata>& data,
 				   const Style* s,
-				   const Cairo::Matrix& transform);
+				   const cairo_matrix_t* transform);
 
 };
 

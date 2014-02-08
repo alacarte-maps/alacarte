@@ -23,8 +23,7 @@
 
 #include <boost/unordered_map.hpp>
 
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include <cairo.h>
 
 #define DEBUG(...) (log4cpp::Category::getInstance("Renderer").info(__VA_ARGS__));
 
@@ -32,52 +31,31 @@
 #define RENDERER_SHIELD_OVERLAP 0.1
 #define RENDERER_LABEL_OVERLAP 0.1
 
-#define set_source_color(_X) set_source_rgba(_X.r, _X.g, _X.b, _X.a)
+#define COLOR2RGBA(_X) _X.r, _X.g, _X.b, _X.a
 
 class Style;
-
-// there's out-of-box hash for this in boost 1.52 (but not 1.48), so for compatibility
-// we use custom hashing function. Also a bit more effecient.
-class FontTypeHash {
-public:
-	size_t operator()(const std::tuple<string, Cairo::FontSlant, Cairo::FontWeight>& v) const {
-		return std::hash<string>()(std::get<0>(v)) ^ (int)std::get<1>(v) ^ ((int)std::get<2>(v) << 16);
-	}
-};
 
 // TODO make thread safe
 class AssetCache {
 private:
-	boost::unordered_map<string, Cairo::RefPtr<Cairo::ImageSurface> > images;
-	boost::unordered_map<
-				std::tuple<string, Cairo::FontSlant, Cairo::FontWeight>,
-				Cairo::RefPtr<Cairo::ToyFontFace>,
-				FontTypeHash
-			> fonts;
+	boost::unordered_map<string, cairo_surface_t*> images;
 
 public:
-	Cairo::RefPtr<Cairo::ImageSurface> getImage(string path)
+	~AssetCache()
+	{
+		for (auto& pair : images)
+			cairo_surface_destroy(pair.second);
+	}
+
+	cairo_surface_t* getImage(string path)
 	{
 		auto it = images.find(path);
 		if (it != images.end())
 			return (*it).second;
 
-		Cairo::RefPtr<Cairo::ImageSurface> image = Cairo::ImageSurface::create_from_png(path);
+		cairo_surface_t* image = cairo_image_surface_create_from_png(path.c_str());
 		images.insert(std::make_pair(path, image));
 		return image;
-	}
-
-	Cairo::RefPtr<Cairo::ToyFontFace> getFont(string family = DEFAULT_FONT,
-			Cairo::FontSlant slant = Cairo::FONT_SLANT_NORMAL,
-			Cairo::FontWeight weight = Cairo::FONT_WEIGHT_NORMAL)
-	{
-		auto it = fonts.find(std::make_tuple(family, slant, weight));
-		if (it != fonts.end())
-			return (*it).second;
-
-		Cairo::RefPtr<Cairo::ToyFontFace> font = Cairo::ToyFontFace::create(family, slant, weight);
-		fonts.insert(std::make_pair(std::make_tuple(family, slant, weight), font));
-		return font;
 	}
 };
 

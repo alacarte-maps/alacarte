@@ -37,12 +37,12 @@
  * @param reverse paint the path in reverse order (used by relations)
  * @param connect to the last current point on the context (set by relations)
   */
-void ObjectRenderer::paintLine(const Cairo::RefPtr<Cairo::Context>& cr,
+void ObjectRenderer::paintLine(cairo_t* cr,
 							   const std::vector<NodeId>& nodeIDs,
 							   bool reverse, bool connect) const
 {
-	cr->save();
-	cr->set_matrix(transform);
+	cairo_save(cr);
+	cairo_set_matrix(cr, transform);
 
 	Node* n;
 	bool first = true;
@@ -58,14 +58,14 @@ void ObjectRenderer::paintLine(const Cairo::RefPtr<Cairo::Context>& cr,
 		const FixedPoint& p = n->getLocation();
 
 		if (first && !connect)
-			cr->move_to(p.x, p.y);
+			cairo_move_to(cr, p.x, p.y);
 		else
-			cr->line_to(p.x, p.y);
+			cairo_line_to(cr, p.x, p.y);
 
 		first = false;
 	}
 
-	cr->restore();
+	cairo_restore(cr);
 }
 
 /**
@@ -74,15 +74,15 @@ void ObjectRenderer::paintLine(const Cairo::RefPtr<Cairo::Context>& cr,
  */
 void ObjectRenderer::addShield(std::list<shared_ptr<Shield> >& shields,
 							   const FloatPoint& p,
-							   const Cairo::TextExtents& textSize) const
+							   const cairo_text_extents_t* textSize) const
 {
 	double border = ceil(s->shield_frame_width + s->shield_casing_width + 3.0);
-	double x = floor(p.x - textSize.width / 2.0);
-	double y = floor(p.y - textSize.height / 2.0);
-	FloatPoint origin  = FloatPoint(x - textSize.x_bearing, y - textSize.y_bearing);
+	double x = floor(p.x - textSize->width / 2.0);
+	double y = floor(p.y - textSize->height / 2.0);
+	FloatPoint origin  = FloatPoint(x - textSize->x_bearing, y - textSize->y_bearing);
 	FloatRect shield   = FloatRect(FloatPoint(x - border, y - border),
-								   ceil(textSize.width + 2*border),
-								   ceil(textSize.height + 2*border));
+								   ceil(textSize->width + 2*border),
+								   ceil(textSize->height + 2*border));
 	FloatRect box = FloatRect(FloatPoint(p.x - RENDERER_SHIELD_DISTANCE / 2.0,
 										 p.y - RENDERER_SHIELD_DISTANCE / 2.0),
 							  RENDERER_SHIELD_DISTANCE, RENDERER_SHIELD_DISTANCE);
@@ -96,17 +96,17 @@ void ObjectRenderer::addShield(std::list<shared_ptr<Shield> >& shields,
  */
 void ObjectRenderer::addLabel(std::list<shared_ptr<Label> >& labels,
 							   const FloatPoint& p,
-							   const Cairo::TextExtents& textSize) const
+							   const cairo_text_extents_t* textSize) const
 {
-	double x = p.x - textSize.width/2.0;
-	double y = p.y - textSize.height/2.0;
+	double x = p.x - textSize->width/2.0;
+	double y = p.y - textSize->height/2.0;
 	double border = s->text_halo_radius;
-	FloatPoint origin = FloatPoint(x - textSize.x_bearing, y - textSize.y_bearing);
-	FloatRect box     = FloatRect(FloatPoint(x, y), textSize.width, textSize.height).grow(border, border);
+	FloatPoint origin = FloatPoint(x - textSize->x_bearing, y - textSize->y_bearing);
+	FloatRect box     = FloatRect(FloatPoint(x, y), textSize->width, textSize->height).grow(border, border);
 	labels.push_back(boost::make_shared<Label>(box, bounds, s->text, s, origin));
 }
 
-ObjectRenderer::ObjectRenderer(const shared_ptr<Geodata>& data, const Style* s, const Cairo::Matrix& transform)
+ObjectRenderer::ObjectRenderer(const shared_ptr<Geodata>& data, const Style* s, const cairo_matrix_t* transform)
 	: data(data)
 	, s(s)
 	, transform(transform)

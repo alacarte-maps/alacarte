@@ -24,8 +24,8 @@
 
 #include "settings.hpp"
 
-#include <cairomm/surface.h>
 
+class CairoLayer;
 class MetaIdentifier;
 
 class MetaTile
@@ -34,12 +34,12 @@ public:
 	MetaTile(const shared_ptr<MetaIdentifier>& mid);
 
 	TESTABLE const shared_ptr<MetaIdentifier>& getIdentifier() const;
-	TESTABLE const Cairo::RefPtr<Cairo::Surface>& getData() const;
-	TESTABLE void setData(const Cairo::RefPtr<Cairo::Surface>& surface);
+	TESTABLE const shared_ptr<CairoLayer>& getData() const;
+	TESTABLE void setData(const shared_ptr<CairoLayer>& layer);
 
 private:
 	shared_ptr<MetaIdentifier> mid;
-	Cairo::RefPtr<Cairo::Surface> surface;
+	shared_ptr<CairoLayer> layer;
 };
 
 #endif

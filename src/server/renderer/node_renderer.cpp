@@ -44,50 +44,50 @@
 NodeRenderer::NodeRenderer(const shared_ptr<Geodata>& data,
 						  NodeId nid,
 						  const Style* s,
-						  const Cairo::Matrix& transform)
+						  const cairo_matrix_t* transform)
 	: ObjectRenderer(data, s, transform)
 	, node(data->getNode(nid))
 {
 	const FixedPoint& coord = node->getLocation();
 	location.x = coord.x;
 	location.y = coord.y;
-	transform.transform_point(location.x, location.y);
+	cairo_matrix_transform_point(transform, &location.x, &location.y);
 	bounds = FloatRect(location.x, location.y, location.x, location.y);
 }
 
-void NodeRenderer::casing(const Cairo::RefPtr<Cairo::Context>& cr)
+void NodeRenderer::casing(cairo_t* cr)
 {
 	// nothing to render
 	if (s->casing_width <= 0.0)
 		return;
 
-	cr->save();
+	cairo_save(cr);
 
-	cr->arc(location.x, location.y, s->width/2.0 + s->casing_width, 0, 2*boost::math::constants::pi<double>());
+	cairo_arc(cr, location.x, location.y, s->width/2.0 + s->casing_width, 0, 2*boost::math::constants::pi<double>());
 
-	cr->set_source_color(s->casing_color);
+	cairo_set_source_rgba(cr, COLOR2RGBA(s->casing_color));
 
-	cr->fill();
-	cr->restore();
+	cairo_fill(cr);
+	cairo_restore(cr);
 }
 
-void NodeRenderer::stroke(const Cairo::RefPtr<Cairo::Context>& cr)
+void NodeRenderer::stroke(cairo_t* cr)
 {
 	// nothing to stroke
 	if (s->width <= 0.0)
 		return;
 
-	cr->save();
+	cairo_save(cr);
 
-	cr->arc(location.x, location.y, s->width/2.0, 0, 2*boost::math::constants::pi<double>());
+	cairo_arc(cr, location.x, location.y, s->width/2.0, 0, 2*boost::math::constants::pi<double>());
 
-	cr->set_source_color(s->color);
+	cairo_set_source_rgba(cr, COLOR2RGBA(s->color));
 
-	cr->fill();
-	cr->restore();
+	cairo_fill(cr);
+	cairo_restore(cr);
 }
 
-void NodeRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
+void NodeRenderer::label(cairo_t* cr,
 		std::list<shared_ptr<Label> >& labels,
 		AssetCache& cache)
 {
@@ -95,25 +95,25 @@ void NodeRenderer::label(const Cairo::RefPtr<Cairo::Context>& cr,
 	if (s->text.str().size() == 0 || s->font_size <= 0)
 		return;
 
-	cr->save();
+	cairo_save(cr);
 
-	cr->set_font_size(s->font_size);
+	cairo_set_font_size(cr, s->font_size);
 
-	cr->set_font_face(cache.getFont(
-			s->font_family.str(),
-			s->font_style == Style::STYLE_ITALIC ? Cairo::FONT_SLANT_ITALIC : Cairo::FONT_SLANT_NORMAL,
-			s->font_weight == Style::WEIGHT_BOLD ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL
-		));
+	cairo_select_font_face(cr,
+			s->font_family.c_str(),
+			s->font_style == Style::STYLE_ITALIC ? CAIRO_FONT_SLANT_ITALIC : CAIRO_FONT_SLANT_NORMAL,
+			s->font_weight == Style::WEIGHT_BOLD ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL
+		);
 
-	Cairo::TextExtents textSize;
-	cr->get_text_extents(s->text.str(), textSize);
+	cairo_text_extents_t textSize;
+	cairo_text_extents(cr, s->text.c_str(), &textSize);
 
-	addLabel(labels, location + FloatPoint(0.0, s->text_offset), textSize);
+	addLabel(labels, location + FloatPoint(0.0, s->text_offset), &textSize);
 
-	cr->restore();
+	cairo_restore(cr);
 }
 
-void NodeRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
+void NodeRenderer::shield(cairo_t* cr,
 		std::list<shared_ptr<Shield> >& shields,
 		AssetCache& cache)
 {
@@ -121,47 +121,49 @@ void NodeRenderer::shield(const Cairo::RefPtr<Cairo::Context>& cr,
 	if (s->shield_text.str().size() == 0 || s->font_size <= 0)
 		return;
 
-	cr->save();
+	cairo_save(cr);
 
-	cr->set_font_size(s->font_size);
+	cairo_set_font_size(cr, s->font_size);
 
-	cr->set_font_face(cache.getFont(
-			s->font_family.str(),
-			s->font_style == Style::STYLE_ITALIC ? Cairo::FONT_SLANT_ITALIC : Cairo::FONT_SLANT_NORMAL,
-			s->font_weight == Style::WEIGHT_BOLD ? Cairo::FONT_WEIGHT_BOLD : Cairo::FONT_WEIGHT_NORMAL
-		));
+	cairo_select_font_face(cr,
+			s->font_family.c_str(),
+			s->font_style == Style::STYLE_ITALIC ? CAIRO_FONT_SLANT_ITALIC : CAIRO_FONT_SLANT_NORMAL,
+			s->font_weight == Style::WEIGHT_BOLD ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL
+		);
 
-	Cairo::TextExtents textSize;
-	cr->get_text_extents(s->shield_text.str(), textSize);
+	cairo_text_extents_t textSize;
+	cairo_text_extents(cr, s->shield_text.c_str(), &textSize);
 
-	addShield(shields, location, textSize);
+	addShield(shields, location, &textSize);
 
-	cr->restore();
+	cairo_restore(cr);
 }
 
-void NodeRenderer::icon(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache)
+void NodeRenderer::icon(cairo_t* cr, AssetCache& cache)
 {
 	// path to icon not set
 	if (s->icon_image.str().size() == 0 || s->icon_width == 0.0 || s->icon_height == 0.0)
 		return;
 
-	cr->save();
+	cairo_save(cr);
 
-	Cairo::RefPtr<Cairo::ImageSurface> image = cache.getImage(s->icon_image.str());
-	double width = s->icon_width < 0 ? image->get_width() : s->icon_width;
-	double height = s->icon_height < 0 ? image->get_height() : s->icon_height;
+	cairo_surface_t* image = cache.getImage(s->icon_image.str());
+	double surface_width = cairo_image_surface_get_width(image);
+	double surface_height = cairo_image_surface_get_height(image);
+	double width = s->icon_width < 0 ?  surface_width : s->icon_width;
+	double height = s->icon_height < 0 ? surface_height : s->icon_height;
 	double x0 = floor(location.x - width/2.0);
 	double y0 = floor(location.y - height/2.0);
-	cr->translate(x0, y0);
-	cr->scale(width / image->get_width(),
-			  height / image->get_height());
-	cr->set_source(image, 0, 0);
+	cairo_translate(cr, x0, y0);
+	cairo_scale(cr, width / surface_width,
+			  height / surface_height);
+	cairo_set_source_surface(cr, image, 0, 0);
 
 	if (s->icon_opacity < 1.0)
-		cr->paint_with_alpha(s->icon_opacity);
+		cairo_paint_with_alpha(cr, s->icon_opacity);
 	else
-		cr->paint();
+		cairo_paint(cr);
 
-	cr->restore();
+	cairo_restore(cr);
 }
 

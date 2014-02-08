@@ -31,8 +31,7 @@
  */
 #include "settings.hpp"
 
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include <cairo.h>
 
 #include "object_renderer.hpp"
 
@@ -46,54 +45,54 @@ class AssetCache;
 class WayRenderer : public ObjectRenderer
 {
 private:
-	Cairo::Path* path;
+	cairo_path_t* path;
 	Way* way;
 
-	void addWayPath(const Cairo::RefPtr<Cairo::Context>& cr);
-	inline void setLineCap(const Cairo::RefPtr<Cairo::Context>& cr, Style::LineCap cap)
+	void addWayPath(cairo_t* cr);
+	inline void setLineCap(cairo_t* cr, Style::LineCap cap)
 	{
 		switch(cap) {
 			case Style::CAP_NONE:
-				cr->set_line_cap(Cairo::LINE_CAP_BUTT);
+				cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT);
 				break;
 			case Style::CAP_ROUND:
-				cr->set_line_cap(Cairo::LINE_CAP_ROUND);
+				cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
 				break;
 			case Style::CAP_SQUARE:
-				cr->set_line_cap(Cairo::LINE_CAP_SQUARE);
+				cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
 				break;
 		}
 	}
-	inline void setLineJoin(const Cairo::RefPtr<Cairo::Context>& cr, Style::LineJoin join)
+	inline void setLineJoin(cairo_t* cr, Style::LineJoin join)
 	{
 		switch(join) {
 			case Style::JOIN_MITER:
-				cr->set_line_join(Cairo::LINE_JOIN_MITER);
+				cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
 				break;
 			case Style::JOIN_BEVEL:
-				cr->set_line_join(Cairo::LINE_JOIN_BEVEL);
+				cairo_set_line_join(cr, CAIRO_LINE_JOIN_BEVEL);
 				break;
 			case Style::JOIN_ROUND:
-				cr->set_line_join(Cairo::LINE_JOIN_ROUND);
+				cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND);
 				break;
 		}
 	}
-	bool getTextPosition(Cairo::Path* transformedPath, int width, FloatPoint& best, double& angle);
-	void getShieldPosition(Cairo::Path* transformedPath, std::list<FloatPoint>& positions);
+	bool getTextPosition(cairo_path_t* transformedPath, int width, FloatPoint& best, double& angle);
+	void getShieldPosition(cairo_path_t* transformedPath, std::list<FloatPoint>& positions);
 
 public:
 	WayRenderer(const shared_ptr<Geodata>& data,
 				WayId wid,
 				const Style* s,
-				const Cairo::Matrix& transform);
+				const cairo_matrix_t* transform);
 	virtual ~WayRenderer();
 
-	void fill(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache);
-	void casing(const Cairo::RefPtr<Cairo::Context>& cr);
-	void stroke(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache);
-	void label(const Cairo::RefPtr<Cairo::Context>& cr,
+	void fill(cairo_t* cr, AssetCache& cache);
+	void casing(cairo_t* cr);
+	void stroke(cairo_t* cr, AssetCache& cache);
+	void label(cairo_t* cr,
 			std::list<shared_ptr<Label> >& labels, AssetCache& cache);
-	void shield(const Cairo::RefPtr<Cairo::Context>& cr,
+	void shield(cairo_t* cr,
 			std::list<shared_ptr<Shield> >& shields,
 			AssetCache& cache);
 };

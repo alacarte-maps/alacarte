@@ -31,8 +31,7 @@
  */
 #include "settings.hpp"
 
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include <cairo.h>
 
 #include "object_renderer.hpp"
 
@@ -47,15 +46,15 @@ class RelationRenderer : public ObjectRenderer
 {
 private:
 	Relation* relation;
-	void addRingPath(const Cairo::RefPtr<Cairo::Context>& cr, const std::vector<WayId>& ids, int& idx, bool* used);
+	void addRingPath(cairo_t* cr, const std::vector<WayId>& ids, int& idx, bool* used);
 
 public:
 	RelationRenderer(const shared_ptr<Geodata>& data,
 					 RelId rid,
 					 const Style* s,
-					 const Cairo::Matrix& transform);
+					 const cairo_matrix_t* transform);
 
-	void fill(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache);
+	void fill(cairo_t* cr, AssetCache& cache);
 };
 
 #endif
