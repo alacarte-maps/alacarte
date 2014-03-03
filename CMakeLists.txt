@@ -195,6 +195,11 @@ add_custom_target(tests
     DEPENDS alacarte-importer unitTests_server unitTests_importer unitTests_general unitTests_parser unitTests_utils ${test_files}
 )
 
+add_custom_target(lint
+	COMMAND cpplint --filter=-whitespace --extensions=c,h,cpp,hpp ${server_sources} ${importer_source} ${alacarte_sources}
+	COMMENT "Check if there are style violations" VERBATIM
+)
+
 # add a target to generate API documentation with Doxygen
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc.doxy ${CMAKE_CURRENT_BINARY_DIR}/doc.doxy @ONLY)
