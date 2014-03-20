@@ -235,7 +235,7 @@ void RTree<id_t, data_t>::buildLeaves (const std::vector<data_t>& data, const st
 	std::sort(ids.begin(), ids.end(),
 		[&](id_t a, id_t b)
 		{
-			return (getX(data[a.getRaw()]) < getX(data[b.getRaw()]));
+			return (this->getX(data[a.getRaw()]) < this->getX(data[b.getRaw()]));
 		}
 	);
 
@@ -258,7 +258,7 @@ void RTree<id_t, data_t>::buildLeaves (const std::vector<data_t>& data, const st
 		std::sort(ids.begin()+start, ids.begin()+end,
 			[&](id_t a, id_t b)
 			{
-				return (getY(data[a.getRaw()]) < getY(data[b.getRaw()]));
+				return (this->getY(data[a.getRaw()]) < this->getY(data[b.getRaw()]));
 			}
 		);
 	}
