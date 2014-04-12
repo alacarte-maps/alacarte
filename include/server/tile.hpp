@@ -30,7 +30,7 @@ class Cache;
 class Tile
 {
 public:
-	typedef shared_ptr< std::vector<uint8> > ImageType;
+	typedef shared_ptr< std::vector<uint8_t> > ImageType;
 
 	Tile(const shared_ptr<TileIdentifier>& id);
 	~Tile();

@@ -41,8 +41,10 @@
 void WayRenderer::addWayPath(cairo_t* cr)
 {
 	cairo_new_path(cr);
-	if (path != NULL)
+	if (path != NULL) {
 		cairo_append_path(cr, path);
+		return;
+	}
 
 	const std::vector<NodeId>& children = way->getNodeIDs();
 	paintLine(cr, children);

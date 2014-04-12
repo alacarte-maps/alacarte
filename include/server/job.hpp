@@ -28,12 +28,12 @@
 #include "utils/statistic.hpp"
 
 class MetaIdentifier;
-class MetaTile;
 class Tile;
 class RequestManager;
 class Configuration;
 class Stylesheet;
 class HttpRequest;
+class RenderCanvas;
 
 /**
  * @brief Abstract Class which computes Tiles by a given TileIdentifier.
@@ -43,7 +43,8 @@ class Job
 public:
 	Job(const shared_ptr<MetaIdentifier>& mid,
 		const shared_ptr<Configuration>& config,
-		const shared_ptr<RequestManager>& manager);
+		const shared_ptr<RequestManager>& manager,
+		const shared_ptr<RenderCanvas>& canvas);
 	virtual ~Job();
 
 	void process();
@@ -64,13 +65,14 @@ private:
 private:
 	//! RequestManager which holds all important components.
 	shared_ptr<RequestManager> manager;
+	//! supplied by worker thread
+	shared_ptr<RenderCanvas> canvas;
 	shared_ptr<Configuration> config;
 	shared_ptr<MetaIdentifier> mid;
 	bool empty;
 	bool cached;
 	//! initialized by initTiles
 	std::vector<shared_ptr<Tile>> tiles;
-	shared_ptr<MetaTile> meta;
 	boost::unordered_map<TileIdentifier, std::list<shared_ptr<HttpRequest>>> requests;
 
 	//! used to generate statistics
