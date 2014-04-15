@@ -10,7 +10,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:ricotz/testing
 
   - sudo apt-get update -qq
-  - sudo apt-get install -qq cmake g++-4.8 libboost1.54-all-dev libcairo2-dev libcairomm-1.0-dev liblog4cpp5-dev libpng12-dev libsigc++-2.0-dev
+  - sudo apt-get install -qq cmake g++-4.8 libboost1.54-all-dev libcairo2-dev liblog4cpp5-dev libpng12-dev
 
   #if GCC
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
