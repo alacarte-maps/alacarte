@@ -16,11 +16,8 @@
 #include "server/style.hpp"
 #include "server/tile_identifier.hpp"
 #include "server/meta_identifier.hpp"
-#include "server/meta_tile.hpp"
 #include "server/render_attributes.hpp"
-
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include "server/renderer/render_canvas.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -126,8 +123,8 @@ struct feature_test
 	{
 		BOOST_TEST_MESSAGE("Render: " << tilePath);
 		RenderAttributes attr;
-		Style* canvas = attr.getCanvasStyle();
-		canvas->fill_color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+		Style* canvasStyle = attr.getCanvasStyle();
+		canvasStyle->fill_color = Color(1.0f, 1.0f, 1.0f, 1.0f);
 
 		coord_t x0, x1, y0, y1;
 		tileToMercator(id->getX(),     id->getY(),     id->getZoom(), x0, y0);
@@ -150,10 +147,11 @@ struct feature_test
 		styleRelations(relations, attr);
 
 		shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(id);
-		shared_ptr<MetaTile> meta = boost::make_shared<MetaTile>(mid);
-		renderer->renderMetaTile(attr, meta);
+		RenderCanvasFactory factory;
+		shared_ptr<RenderCanvas> canvas = factory.getCanvas(id->getImageFormat());
+		renderer->renderMetaTile(attr, canvas, mid);
 		shared_ptr<Tile> tile = boost::make_shared<Tile>(id);
-		renderer->sliceTile(meta, tile);
+		renderer->sliceTile(canvas, mid, tile);
 
 		BOOST_TEST_MESSAGE("Writing the tile:");
 		std::ofstream out;

@@ -9,10 +9,8 @@
 #include "server/renderer/renderer.hpp"
 #include "server/renderer/renderer_private.hpp"
 #include "server/style.hpp"
-#include "server/meta_tile.hpp"
 
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include <cairo.h>
 
 #include <iostream>
 #include <fstream>
@@ -25,22 +23,22 @@ public:
 	LabelRenderer() : Renderer(boost::make_shared<Geodata>())
 	{
 	}
-	void renderLabels(Cairo::RefPtr<Cairo::Context> cr, std::vector<std::pair<string, FloatPoint> >& toPlace) {
-		cr->save();
-		cr->set_source_rgba(0.0, 0.0, 0.0, 0.5);
-		Cairo::RefPtr<Cairo::ToyFontFace> font = Cairo::ToyFontFace::create(DEFAULT_FONT, Cairo::FONT_SLANT_NORMAL, Cairo::FONT_WEIGHT_NORMAL);
-		cr->set_font_face(font);
-		cr->set_font_size(120.0);
-		cr->set_line_width(2.0);
+	void renderLabels(cairo_t* cr, std::vector<std::pair<string, FloatPoint> >& toPlace) {
+		cairo_save(cr);
+		cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.5);
+		cairo_font_face_t* font = cairo_toy_font_face_create(DEFAULT_FONT, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+		cairo_set_font_face(cr, font);
+		cairo_set_font_size(cr, 120.0);
+		cairo_set_line_width(cr, 2.0);
 
-		Cairo::TextExtents textSize;
+		cairo_text_extents_t textSize;
 		std::list<shared_ptr<Label> > labels;
 		int i = 0;
 		std::vector<shared_ptr<Style>> styles;
 		for (auto& pair : toPlace)
 		{
 			string& text = pair.first;
-			cr->get_text_extents(text, textSize);
+			cairo_text_extents(cr, text.c_str(), &textSize);
 			shared_ptr<Style> s = boost::make_shared<Style>();
 			s->text = text;
 			styles.push_back(s);
@@ -49,8 +47,8 @@ public:
 			FloatPoint origin = pair.second - FloatPoint(textSize.x_bearing, textSize.y_bearing);
 			shared_ptr<Label> l = boost::make_shared<Label>(FloatRect(pair.second, textSize.width, textSize.height), owner, s->text, s.get(), origin);
 
-			cr->rectangle(l->box.minX, l->box.minY, l->box.getWidth(), l->box.getHeight());
-			cr->stroke();
+			cairo_rectangle(cr, l->box.minX, l->box.minY, l->box.getWidth(), l->box.getHeight());
+			cairo_stroke(cr);
 
 			labels.push_back(l);
 		}
@@ -60,17 +58,17 @@ public:
 
 		for (auto& l: placed)
 		{
-			cr->set_source_rgba(0.0, 0.0, 0.0, 1.0);
-			cr->move_to(l->box.minX, l->box.maxY);
-			cr->show_text(l->style->text.str());
-			cr->fill();
+			cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+			cairo_move_to(cr, l->box.minX, l->box.maxY);
+			cairo_show_text(cr, l->style->text.str().c_str());
+			cairo_fill(cr);
 
-			cr->set_source_rgba(1.0, 0.0, 0.0, 0.5);
-			cr->rectangle(l->box.minX, l->box.minY, l->box.getWidth(), l->box.getHeight());
-			cr->fill();
+			cairo_set_source_rgba(cr, 1.0, 0.0, 0.0, 0.5);
+			cairo_rectangle(cr, l->box.minX, l->box.minY, l->box.getWidth(), l->box.getHeight());
+			cairo_fill(cr);
 		}
 
-		cr->restore();
+		cairo_restore(cr);
 	}
 };
 
@@ -88,15 +86,15 @@ struct placement_test
 	{
 		BOOST_TEST_MESSAGE("Render: " << path);
 
-		Cairo::RefPtr<Cairo::Surface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32,
+		cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
 			META_TILE_SIZE * TILE_SIZE, META_TILE_SIZE * TILE_SIZE);
-		Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(surface);
-		cr->set_source_rgba(0.0, 0.0, 0.0, 1.0);
+		cairo_t* cr = cairo_create(surface);
+		cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
 
-		cr->save();
-		cr->set_source_rgba(1.0, 1.0, 1.0, 1.0);
-		cr->paint();
-		cr->restore();
+		cairo_save(cr);
+		cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
+		cairo_paint(cr);
+		cairo_restore(cr);
 
 		std::vector<std::pair<string, FloatPoint>> toPlace;
 		toPlace.push_back(std::pair<string, FloatPoint>("Karlsruhe", FloatPoint(40, 200)));
@@ -114,8 +112,8 @@ struct placement_test
 		renderer->renderLabels(cr, toPlace);
 
 		BOOST_TEST_MESSAGE("Writing.");
-		surface->flush();
-		surface->write_to_png(path);
+		cairo_surface_flush(surface);
+		cairo_surface_write_to_png(surface, path);
 	}
 
 	void checkTile(const char* name)
