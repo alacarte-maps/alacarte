@@ -100,9 +100,10 @@ ENDIF(EXISTS "${PROJECT_SOURCE_DIR}/gmock" AND IS_DIRECTORY "${PROJECT_SOURCE_DI
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 SET(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ftest-coverage -fprofile-arcs -fprofile-values -fvpt -pg")
+SET(CMAKE_CXX_FLAGS_SANITIZE "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=thread -fno-omit-frame-pointer")
 MARK_AS_ADVANCED(CMAKE_CXX_FLAGS_PROFILE)
 SET( CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING
-    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel Profile."
+    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel Profile Sanitize."
     FORCE )
 
 set(DEBUG_BUILD 0)
@@ -112,12 +113,16 @@ endif ()
 if (CMAKE_BUILD_TYPE STREQUAL "Profile")
     set(DEBUG_BUILD 1)
 endif ()
+if (CMAKE_BUILD_TYPE STREQUAL "Sanitize")
+    set(DEBUG_BUILD 1)
+endif ()
 message (STATUS "Enabling debug code: ${DEBUG_BUILD}")
 
 message(STATUS "Default: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Debug: ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "Profile: ${CMAKE_CXX_FLAGS_PROFILE}")
 message(STATUS "Release: ${CMAKE_CXX_FLAGS_RELEASE}")
+message(STATUS "Sanitize: ${CMAKE_CXX_FLAGS_SANITIZE}")
 
 #
 # Sources
