@@ -62,11 +62,8 @@ std::vector<IdType> RandomIdVector(int numIds)
 
 	std::random_shuffle(list.begin(), list.end());
 
-	if(numIds)
-	{
-		int size = rand() % numIds;
-		list.resize(size);
-	}
+	int size = rand() % numIds + 1;
+	list.resize(size);
 
 	return list;
 }
@@ -119,7 +116,7 @@ struct ValidatingFixture
 		std::vector<RelId> relationIds;
 
 
-		int nodeNum = rand() % 20;
+		int nodeNum = rand() % 20 + 1;
 		for(int i = 0; i < nodeNum; ++i)
 		{
 			nodes->push_back(RandomNode());
@@ -127,7 +124,7 @@ struct ValidatingFixture
 		}
 
 
-		int wayNum = rand() % 15;
+		int wayNum = rand() % 15 + 1;
 		for(int i = 0; i < wayNum; ++i)
 		{
 			ways->push_back(RandomWay(nodeNum));
@@ -135,7 +132,7 @@ struct ValidatingFixture
 		}
 
 
-		int relNum = rand() % 10;
+		int relNum = rand() % 10 + 1;
 		for(int i = 0; i < relNum; ++i)
 		{
 			relations->push_back(RandomRelation(nodeNum, wayNum));
