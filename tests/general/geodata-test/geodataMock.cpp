@@ -46,7 +46,7 @@ void GeodataMock::insertRelations(const std::shared_ptr<std::vector<Relation> >&
 
 
 
-shared_ptr<std::vector<NodeId> > GeodataMock::getNodeIDs(const FixedRect& rect) const
+std::shared_ptr<std::vector<NodeId> > GeodataMock::getNodeIDs(const FixedRect& rect) const
 {
 	std::shared_ptr<std::vector<NodeId> > nodeIDs = std::make_shared< std::vector<NodeId> >();
  	for(int i = 0; i < nodes->size(); i++) {

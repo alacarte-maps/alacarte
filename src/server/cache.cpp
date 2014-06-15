@@ -100,7 +100,7 @@ const boost::filesystem::path Cache::getTilePath(const std::shared_ptr<TileIdent
  * 
  * @param ti A shared pointer to the TileIdentifier of the Tile.
  **/
-shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
+std::shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 {
 	// TODO: Finer Synchronization
 	GlobalCacheLock.lock();
@@ -185,7 +185,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
  * 
  * @return std::shared_ptr to the default Tile with loaded png (image can be null if file not found).
  **/
-shared_ptr<Tile> Cache::getDefaultTile() {
+std::shared_ptr<Tile> Cache::getDefaultTile() {
 	if (!DefaultTile) {
 		std::string path = Config->get<std::string>(opt::server::path_to_default_tile);
 		std::shared_ptr<TileIdentifier> ti = std::make_shared<TileIdentifier>(-1, -1, -1, "/", TileIdentifier::Format::PNG);

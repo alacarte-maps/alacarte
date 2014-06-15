@@ -115,7 +115,7 @@ FixedRect Job::computeRect(const std::shared_ptr<MetaIdentifier>& ti)
  * @brief Computes an empty Tile.
  *
  **/
-shared_ptr<Tile> Job::computeEmpty()
+std::shared_ptr<Tile> Job::computeEmpty()
 {
 	const std::string& path = mid->getStylesheetPath();
 	const TileIdentifier::Format format = mid->getImageFormat();

@@ -523,7 +523,7 @@ Importer::Importer(const std::shared_ptr<Configuration>& config)
  *
  * @return created data containing the osm data
  **/
-shared_ptr<Geodata> Importer::importXML()
+std::shared_ptr<Geodata> Importer::importXML()
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	OsmXmlParser parser(!config->get<bool>(opt::importer::check_xml_entities));

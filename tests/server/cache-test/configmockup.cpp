@@ -5,7 +5,7 @@
 
 using boost::program_options::options_description;
 
-shared_ptr<Configuration> ConfigMockup::Config(char* argv[], int argc)
+std::shared_ptr<Configuration> ConfigMockup::Config(char* argv[], int argc)
 {
 	
 	#define OPT(_name, _shortcut)	(std::string(_name).append(",").append(_shortcut)).c_str()

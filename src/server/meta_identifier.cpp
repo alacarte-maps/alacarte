@@ -30,7 +30,7 @@
  *
  * @param topLeft corner of the meta-tile
  **/
-shared_ptr<MetaIdentifier> MetaIdentifier::Create(const std::shared_ptr<TileIdentifier>& origin)
+std::shared_ptr<MetaIdentifier> MetaIdentifier::Create(const std::shared_ptr<TileIdentifier>& origin)
 {
 	return std::make_shared<MetaIdentifier>(*origin);
 }

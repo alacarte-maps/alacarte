@@ -190,7 +190,7 @@ void Eval::overwrite(GeoObject* obj, std::string* sv) const
  *
  * \return the root node for the expression or null, if something failed.
  **/
-shared_ptr<STNode> parseEval(std::string::const_iterator begin, std::string::const_iterator end, const std::shared_ptr<ParserLogger>& logger)
+std::shared_ptr<STNode> parseEval(std::string::const_iterator begin, std::string::const_iterator end, const std::shared_ptr<ParserLogger>& logger)
 {
 	EvalGrammer eval_;
 	std::shared_ptr<STNode> root;

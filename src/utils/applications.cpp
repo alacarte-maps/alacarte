@@ -101,7 +101,7 @@ void Application::appRun(int argc, char** argv)
 
 	// create and parse config
 	try{
-		config = make_shared<Configuration>(cmd_desc, config_desc, pos_desc, argc, argv);
+		config = std::make_shared<Configuration>(cmd_desc, config_desc, pos_desc, argc, argv);
 	} catch(boost::program_options::error& e)
 	{
 		std::cout << "Error: " << e.what() << std::endl;

@@ -88,7 +88,7 @@ bool StylesheetManager::hasStylesheet(const std::string& path)
 	return contained;
 }
 
-shared_ptr<Stylesheet> StylesheetManager::getStylesheet(const std::string& path)
+std::shared_ptr<Stylesheet> StylesheetManager::getStylesheet(const std::string& path)
 {
 	boost::shared_lock<boost::shared_mutex> readLock(stylesheetsLock);
 
@@ -220,7 +220,7 @@ void StylesheetManager::onFileSystemEvent(const boost::system::error_code &ec, c
 }
 
 // hard coded fallback stylesheet, used in case the default stylesheet file doesn't exist
-shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const std::shared_ptr<Geodata>& geodata) {
+std::shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const std::shared_ptr<Geodata>& geodata) {
 	std::shared_ptr<StyleTemplate> canvasStyle = std::make_shared<StyleTemplate>();
 	canvasStyle->fill_color = std::make_shared<eval::Eval<Color>>(Color((uint8_t)0xEF, (uint8_t)0xEF, (uint8_t)0xD0));
 

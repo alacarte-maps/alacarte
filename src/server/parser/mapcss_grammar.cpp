@@ -65,7 +65,7 @@ private:
 };
 
 template<typename Type>
-shared_ptr< SpecificAttributeCreator<Type> > CreateAttribute(std::shared_ptr<eval::Eval<Type> > StyleTemplate::*attr)
+std::shared_ptr< SpecificAttributeCreator<Type> > CreateAttribute(std::shared_ptr<eval::Eval<Type> > StyleTemplate::*attr)
 {
 	return std::make_shared< SpecificAttributeCreator<Type> >(attr);
 }

@@ -41,7 +41,7 @@ class RenderCanvasFactory;
 class RequestManager : public std::enable_shared_from_this<RequestManager>
 {
 public:
-	RequestManager( const std::shared_ptr<Configuration>& config, const std::shared_ptr<Geodata>& data, const std::shared_ptr<Renderer>& renderer, const shared_ptr<Cache>& cache, const shared_ptr<StylesheetManager>& ssm);
+	RequestManager( const std::shared_ptr<Configuration>& config, const std::shared_ptr<Geodata>& data, const std::shared_ptr<Renderer>& renderer, const std::shared_ptr<Cache>& cache, const shared_ptr<StylesheetManager>& ssm);
 	~RequestManager();
 
 	void stop();

@@ -112,7 +112,7 @@ bool Geodata::containsData(const FixedRect &rect) const
 		|| (relTree && relTree->contains(rect));
 }
 
-shared_ptr<std::vector<NodeId> > Geodata::getNodeIDs(const FixedRect& rect) const
+std::shared_ptr<std::vector<NodeId> > Geodata::getNodeIDs(const FixedRect& rect) const
 {
 	std::shared_ptr<std::vector<NodeId> > nodeIDs = std::make_shared< std::vector<NodeId> >();
 	if (nodesTree)
@@ -120,7 +120,7 @@ shared_ptr<std::vector<NodeId> > Geodata::getNodeIDs(const FixedRect& rect) cons
 	return nodeIDs;
 }
 
-shared_ptr<std::vector<WayId> > Geodata::getWayIDs(const FixedRect& rect) const
+std::shared_ptr<std::vector<WayId> > Geodata::getWayIDs(const FixedRect& rect) const
 {
 	std::shared_ptr<std::vector<WayId> > wayIDs = std::make_shared< std::vector<WayId> >();
 	if (waysTree)
@@ -128,7 +128,7 @@ shared_ptr<std::vector<WayId> > Geodata::getWayIDs(const FixedRect& rect) const
 	return wayIDs;
 }
 
-shared_ptr<std::vector<RelId> > Geodata::getRelationIDs(const FixedRect& rect) const
+std::shared_ptr<std::vector<RelId> > Geodata::getRelationIDs(const FixedRect& rect) const
 {
 	std::shared_ptr<std::vector<RelId> > relationIDs = std::make_shared< std::vector<RelId> >();
 	if (relTree)

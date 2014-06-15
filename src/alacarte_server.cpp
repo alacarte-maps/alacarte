@@ -201,7 +201,7 @@ protected:
 	{
 		Statistic::Init(config);
 
-		std::shared_ptr<Geodata> geodata = make_shared<Geodata>();
+		std::shared_ptr<Geodata> geodata = std::make_shared<Geodata>();
 		try {
 			geodata->load(config->get<std::string>(opt::server::path_to_geodata));
 		} catch(...)
@@ -211,15 +211,15 @@ protected:
 			log.errorStream() << "Try to import your osm data again!";
 			return;
 		}
-		std::shared_ptr<Cache> cache = make_shared<Cache>(config);
+		std::shared_ptr<Cache> cache = std::make_shared<Cache>(config);
 
-		std::shared_ptr<StylesheetManager> ssm = make_shared<StylesheetManager>(config);
+		std::shared_ptr<StylesheetManager> ssm = std::make_shared<StylesheetManager>(config);
 
-		std::shared_ptr<Renderer> renderer = make_shared<Renderer>(geodata);
+		std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(geodata);
 
-		std::shared_ptr<RequestManager> req_manager = make_shared<RequestManager>(config, geodata, renderer, cache, ssm);
+		std::shared_ptr<RequestManager> req_manager = std::make_shared<RequestManager>(config, geodata, renderer, cache, ssm);
 
-		std::shared_ptr<HttpServer> server = make_shared<HttpServer>(config, req_manager);
+		std::shared_ptr<HttpServer> server = std::make_shared<HttpServer>(config, req_manager);
 
 		ssm->startStylesheetObserving(req_manager);
 

@@ -413,7 +413,7 @@ void MapCssParser::load(const std::string& path)
  *	\param geodata used by in this stylesheet
  *	\return The created stylesheet
  */
-shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path, const std::shared_ptr<Geodata>& geodata, int timeout)
+std::shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path, const std::shared_ptr<Geodata>& geodata, int timeout)
 {
 
 	std::shared_ptr<MapCssParser> parser = std::make_shared<MapCssParser>(geodata);

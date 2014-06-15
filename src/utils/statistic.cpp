@@ -26,7 +26,7 @@
 
 #define DEBUG(...) (log4cpp::Category::getInstance("Statistic").info(__VA_ARGS__));
 
-shared_ptr<Statistic> Statistic::instance;
+std::shared_ptr<Statistic> Statistic::instance;
 
 Statistic::duration Statistic::JobMeasurement::getDuration(int i)
 {
@@ -50,7 +50,7 @@ Statistic::~Statistic()
 		writeToFile(config->get<std::string>(opt::server::performance_log).c_str());
 }
 
-shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const std::string& stylesheet, int zoom)
+std::shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const std::string& stylesheet, int zoom)
 {
 #ifdef Statistic_Activated
 	std::shared_ptr<Statistic::JobMeasurement> jm = std::make_shared<JobMeasurement>(stylesheet, zoom);

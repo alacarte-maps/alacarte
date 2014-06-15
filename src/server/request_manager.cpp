@@ -299,7 +299,7 @@ bool RequestManager::nextPreRenderRequest()
  *
  * @return The Geodata
  **/
-shared_ptr<Geodata> RequestManager::getGeodata() const
+std::shared_ptr<Geodata> RequestManager::getGeodata() const
 {
 	return data;
 }
@@ -310,7 +310,7 @@ shared_ptr<Geodata> RequestManager::getGeodata() const
  *
  * @return The StylesheetManager
  **/
-shared_ptr<StylesheetManager> RequestManager::getStylesheetManager() const
+std::shared_ptr<StylesheetManager> RequestManager::getStylesheetManager() const
 {
 	return ssm;
 }
@@ -321,7 +321,7 @@ shared_ptr<StylesheetManager> RequestManager::getStylesheetManager() const
  *
  * @return The Cache
  **/
-shared_ptr<Cache> RequestManager::getCache() const
+std::shared_ptr<Cache> RequestManager::getCache() const
 {
 	return cache;
 }
@@ -332,7 +332,7 @@ shared_ptr<Cache> RequestManager::getCache() const
  *
  * @return The Renderer
  **/
-shared_ptr<Renderer> RequestManager::getRenderer() const
+std::shared_ptr<Renderer> RequestManager::getRenderer() const
 {
 	return renderer;
 }

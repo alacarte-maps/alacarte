@@ -10,7 +10,7 @@ TestConfig::TestConfig()
 }
 
 
-shared_ptr<TestConfig> TestConfig::clone() const
+std::shared_ptr<TestConfig> TestConfig::clone() const
 {
 	std::shared_ptr<TestConfig> config = std::make_shared<TestConfig>();
 
@@ -19,7 +19,7 @@ shared_ptr<TestConfig> TestConfig::clone() const
 	return config;
 }
 
-shared_ptr<TestConfig> TestConfig::Create()
+std::shared_ptr<TestConfig> TestConfig::Create()
 {
 	//Initialize which some default values
 	return std::make_shared<TestConfig>()
