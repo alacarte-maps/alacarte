@@ -40,13 +40,6 @@ find_package(Log4Cpp REQUIRED)
 
 find_package(Doxygen)
 
-# FIXME hack for log4cpp backward compability
-if (NOT Log4Cpp_LIBRARIES)
-    set (Log4Cpp_LIBRARIES "${LOG4CPP_LIBRARIES}")
-    set (Log4Cpp_DEFINITIONS "${LOG4CPP_DEFINITIONS}")
-    set (Log4Cpp_INCLUDE_DIRS "${LOG4CPP_INCLUDE_DIRS}")
-endif()
-
 #
 # Build options
 #
@@ -81,12 +74,12 @@ ENDIF(MINGW)
 set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
 
 link_directories(${Boost_LIBRARY_DIRS})
-include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Log4Cpp_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${LOG4CPP_INCLUDE_DIR})
 
 ADD_DEFINITIONS("-std=c++0x")
 #ADD_DEFINITIONS("-fdiagnostics-color=auto")
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
-ADD_DEFINITIONS(${Log4Cpp_DEFINITIONS})
+ADD_DEFINITIONS(${LOG4CPP_DEFINITIONS})
 ADD_DEFINITIONS(-DStatistic_Activated)
 
 # check for local static build gmock directory
@@ -168,17 +161,17 @@ IF(GMOCK_FOUND)
     set_target_properties(unitTests_mapcss PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
 ENDIF(GMOCK_FOUND)
 
-target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${Log4Cpp_LIBRARIES} pthread ${SYSTEM_LIBRARIES})
-target_link_libraries(alacarte-importer     ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} pthread ${SYSTEM_LIBRARIES})
-target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${Log4Cpp_LIBRARIES} pthread)
-target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${Log4Cpp_LIBRARIES} pthread)
-target_link_libraries(unitTests_importer    ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
-target_link_libraries(unitTests_server      ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
-target_link_libraries(unitTests_parser      ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
+target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${LOG4CPP_LIBRARY} pthread ${SYSTEM_LIBRARIES})
+target_link_libraries(alacarte-importer     ${Boost_LIBRARIES} ${LOG4CPP_LIBRARY} pthread ${SYSTEM_LIBRARIES})
+target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${LOG4CPP_LIBRARY} pthread)
+target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${LOG4CPP_LIBRARY} pthread)
+target_link_libraries(unitTests_importer    ${Boost_LIBRARIES} ${LOG4CPP_LIBRARY} ${CAIRO_LIBRARIES} pthread)
+target_link_libraries(unitTests_server      ${Boost_LIBRARIES} ${LOG4CPP_LIBRARY} ${CAIRO_LIBRARIES} pthread)
+target_link_libraries(unitTests_parser      ${Boost_LIBRARIES} ${LOG4CPP_LIBRARY} ${CAIRO_LIBRARIES} pthread)
 IF(GMOCK_FOUND)
-    target_link_libraries(unitTests_mapcss  ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread gmock gtest)
+    target_link_libraries(unitTests_mapcss  ${Boost_LIBRARIES} ${LOG4CPP_LIBRARY} ${CAIRO_LIBRARIES} pthread gmock gtest)
 ENDIF(GMOCK_FOUND)
-target_link_libraries(unitTests_eval        ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
+target_link_libraries(unitTests_eval        ${Boost_LIBRARIES} ${LOG4CPP_LIBRARY} ${CAIRO_LIBRARIES} pthread)
 
 set(test_files "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte")
 
