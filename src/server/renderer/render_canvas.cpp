@@ -166,7 +166,7 @@ SVGRenderCanvas::SVGRenderCanvas(unsigned int layerWidth,
 {
 	for (int i = 0; i < LAYER_NUM; i++)
 	{
-		layers[i].surface = cairo_svg_surface_create_for_stream(NULL, NULL, layerWidth, layerHeight);
+		layers[i].surface = cairo_svg_surface_create_for_stream(nullptr, NULL, layerWidth, layerHeight);
 		layers[i].cr = cairo_create(layers[i].surface);
 	}
 

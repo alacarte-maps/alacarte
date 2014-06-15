@@ -34,8 +34,8 @@ struct CairoLayer
 	cairo_surface_t* surface;
 
 	CairoLayer()
-	: cr(NULL)
-	, surface(NULL)
+	: cr(nullptr)
+	, surface(nullptr)
 	{
 	}
 

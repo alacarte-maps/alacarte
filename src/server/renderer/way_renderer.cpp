@@ -41,7 +41,7 @@
 void WayRenderer::addWayPath(cairo_t* cr)
 {
 	cairo_new_path(cr);
-	if (path != NULL) {
+	if (path != nullptr) {
 		cairo_append_path(cr, path);
 		return;
 	}
@@ -146,14 +146,14 @@ WayRenderer::WayRenderer(const std::shared_ptr<Geodata>& data,
 						 const Style* s,
 						 const cairo_matrix_t* transform)
 	: ObjectRenderer(data, s, transform)
-	, path(NULL)
+	, path(nullptr)
 	, way(data->getWay(wid))
 {
 }
 
 WayRenderer::~WayRenderer()
 {
-	if (path != NULL)
+	if (path != nullptr)
 		cairo_path_destroy(path);
 }
 
@@ -216,7 +216,7 @@ void WayRenderer::stroke(cairo_t* cr, AssetCache& cache)
 	setLineJoin(cr, s->linejoin);
 	cairo_set_source_rgba(cr, COLOR2RGBA(s->color));
 	const string& image = s->image.str();
-	cairo_pattern_t* pattern = NULL;
+	cairo_pattern_t* pattern = nullptr;
 	if (!image.empty()) {
 		pattern = cairo_pattern_create_for_surface(cache.getImage(image));
 		cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);
@@ -229,7 +229,7 @@ void WayRenderer::stroke(cairo_t* cr, AssetCache& cache)
 
 	cairo_stroke(cr);
 
-	if (pattern != NULL)
+	if (pattern != nullptr)
 		cairo_pattern_destroy(pattern);
 
 	cairo_restore(cr);

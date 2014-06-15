@@ -106,7 +106,7 @@ RequestManager::RequestManager( const std::shared_ptr<Configuration>& config,
 	}
 
 	// start prerender timing
-	gettimeofday(&prerender_start, NULL);
+	gettimeofday(&prerender_start, nullptr);
 }
 
 /**
