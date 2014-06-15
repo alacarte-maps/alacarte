@@ -76,10 +76,10 @@ typedef std::int32_t coord_t;
 #include "utils/typedId.hpp"
 #include "utils/cached_string.hpp"
 
-constexpr std::string DEFAULT_CONFIG_NAME = "alacarte.conf";
+constexpr char* DEFAULT_CONFIG_NAME = "alacarte.conf";
 
 constexpr unsigned META_TILE_SIZE = 4;
-constexpr std::string DEFAULT_FONT = "DejaVu Sans";
+constexpr char* DEFAULT_FONT = "DejaVu Sans";
 constexpr double TILE_OVERLAP = (1.0/META_TILE_SIZE * 0.25);
 constexpr unsigned ALAC_ZOOM_BOTTOM = 0;
 constexpr unsigned ALAC_ZOOM_TOP = 18;
