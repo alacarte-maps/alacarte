@@ -7,8 +7,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include <cairo.h>
 
 #include <fstream>
 #include <iostream>
@@ -81,22 +80,22 @@ void compareTile(const char* name)
 
 	BOOST_TEST_MESSAGE("Loading images:");
 	BOOST_TEST_MESSAGE(" - valid: " << valid);
-	Cairo::RefPtr<Cairo::ImageSurface> valid_surface    = Cairo::ImageSurface::create_from_png(valid.string());
+	cairo_surface_t* valid_surface = cairo_image_surface_create_from_png(valid.string().c_str());
 	BOOST_TEST_MESSAGE(" - rendered: " << rendered);
-	Cairo::RefPtr<Cairo::ImageSurface> rendered_surface = Cairo::ImageSurface::create_from_png(rendered.string());
-	Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(valid_surface);
+	cairo_surface_t* rendered_surface = cairo_image_surface_create_from_png(rendered.string().c_str());
+	cairo_t* cr = cairo_create(valid_surface);
 
-	int v_h = valid_surface->get_height();
-	int v_w = valid_surface->get_width();
-	int r_h = rendered_surface->get_height();
-	int r_w = rendered_surface->get_width();
+	int v_h = cairo_image_surface_get_height(valid_surface);
+	int v_w = cairo_image_surface_get_width(valid_surface);
+	int r_h = cairo_image_surface_get_height(rendered_surface);
+	int r_w = cairo_image_surface_get_width(rendered_surface);
 	BOOST_CHECK(v_h == r_h && v_w == r_w);
 
 	BOOST_TEST_MESSAGE("Compute:");
 	BOOST_TEST_MESSAGE(" - difference: " << diff);
 	// compute inverse difference between images
-	unsigned char* valid_data = valid_surface->get_data();
-	unsigned char* rendered_data = rendered_surface->get_data();
+	unsigned char* valid_data    = cairo_image_surface_get_data(valid_surface);
+	unsigned char* rendered_data = cairo_image_surface_get_data(rendered_surface);
 	bool changed = false;
 	for (int i = 0; i < v_h * v_w; i++) {
 		if (!changed)
@@ -108,8 +107,9 @@ void compareTile(const char* name)
 		valid_data += 4;
 		rendered_data += 4;
 	}
-	valid_surface->flush();
-	valid_surface->write_to_png(diff.string());
+
+	cairo_surface_flush(valid_surface);
+	cairo_surface_write_to_png(valid_surface, diff.string().c_str());
 
 	BOOST_CHECK(!changed);
 }
@@ -150,9 +150,9 @@ void compareFile(const char* name)
 	rendered_file.close();
 
 	bool changed = false;
-	for (unsigned i = 0; i < valid_size/4; i++)
+	for (unsigned i = 0; i < valid_size; i++)
 		if (!changed)
-			changed = ((uint32_t*) valid_data)[i] != ((uint32_t*) rendered_data)[i];
+			changed = (valid_data[i] != rendered_data[i]);
 
 	BOOST_CHECK(!changed);
 }

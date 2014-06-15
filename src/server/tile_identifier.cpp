@@ -27,7 +27,13 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
-const string TileIdentifier::FormatString[TileIdentifier::enumSize] = {"png", "jpg", "gif", "svg", "svgz"};
+const string TileIdentifier::FormatString[TileIdentifier::enumSize] = {
+	"png",
+//	"jpg",
+//	"gif",
+	"svg",
+//	"svgz"
+};
 /**
  * @brief Converts the given char* to integer
  * 
@@ -90,17 +96,17 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, shared_ptr<
 	std::transform(format.begin(), format.end(), format.begin(), ::tolower);
 	if (format == "png") {
 		imageFormat = PNG;
-	} else if (format == "jpg" | format == "jpeg") {
-		imageFormat = JPEG;
-		BOOST_THROW_EXCEPTION(excp::UnknownImageFormatException() << excp::InfoWhat("jpeg/jpg is not supported"));
-	} else if (format == "gif") {
-		imageFormat = GIF;
-		BOOST_THROW_EXCEPTION(excp::UnknownImageFormatException() << excp::InfoWhat("gif is not supported"));
+//	} else if (format == "jpg" | format == "jpeg") {
+//		imageFormat = JPEG;
+//		BOOST_THROW_EXCEPTION(excp::UnknownImageFormatException() << excp::InfoWhat("jpeg/jpg is not supported"));
+//	} else if (format == "gif") {
+//		imageFormat = GIF;
+//		BOOST_THROW_EXCEPTION(excp::UnknownImageFormatException() << excp::InfoWhat("gif is not supported"));
 	} else if (format == "svg") {
 		imageFormat = SVG;
-	} else if (format == "svgz") {
-		imageFormat = SVGZ;
-		BOOST_THROW_EXCEPTION(excp::UnknownImageFormatException() << excp::InfoWhat("svgz is not supported"));
+//	} else if (format == "svgz") {
+//		imageFormat = SVGZ;
+//		BOOST_THROW_EXCEPTION(excp::UnknownImageFormatException() << excp::InfoWhat("svgz is not supported"));
 	} else {
 		BOOST_THROW_EXCEPTION(excp::UnknownImageFormatException() << excp::InfoWhat("Unknown image format."));
 	}

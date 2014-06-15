@@ -35,10 +35,8 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 find_package(Cairo REQUIRED)
-find_package(Cairomm REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(Log4Cpp REQUIRED)
-find_package(SigC++ REQUIRED)
 
 find_package(Doxygen)
 
@@ -83,9 +81,10 @@ ENDIF(MINGW)
 set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
 
 link_directories(${Boost_LIBRARY_DIRS})
-include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${CAIROMM_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Log4Cpp_INCLUDE_DIRS} ${SIGC++_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Log4Cpp_INCLUDE_DIRS})
 
 ADD_DEFINITIONS("-std=c++0x")
+#ADD_DEFINITIONS("-fdiagnostics-color=auto")
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 ADD_DEFINITIONS(${Log4Cpp_DEFINITIONS})
 ADD_DEFINITIONS(-DStatistic_Activated)
@@ -93,7 +92,7 @@ ADD_DEFINITIONS(-DStatistic_Activated)
 # check for local static build gmock directory
 SET(GMOCK_FOUND 0)
 IF(EXISTS "${PROJECT_SOURCE_DIR}/gmock" AND IS_DIRECTORY "${PROJECT_SOURCE_DIR}/gmock")
-    link_directories(${Boost_LIBRARY_DIRS} ${Cairomm_LIBRARY_DIRS} "${PROJECT_SOURCE_DIR}/gmock")
+    link_directories(${Boost_LIBRARY_DIRS} ${Cairo_LIBRARY_DIRS} "${PROJECT_SOURCE_DIR}/gmock")
     message("gmock dir found\n")
     SET(GMOCK_FOUND 1)
 ENDIF(EXISTS "${PROJECT_SOURCE_DIR}/gmock" AND IS_DIRECTORY "${PROJECT_SOURCE_DIR}/gmock")
@@ -101,9 +100,10 @@ ENDIF(EXISTS "${PROJECT_SOURCE_DIR}/gmock" AND IS_DIRECTORY "${PROJECT_SOURCE_DI
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 SET(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ftest-coverage -fprofile-arcs -fprofile-values -fvpt -pg")
+SET(CMAKE_CXX_FLAGS_SANITIZE "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=thread -fno-omit-frame-pointer")
 MARK_AS_ADVANCED(CMAKE_CXX_FLAGS_PROFILE)
 SET( CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING
-    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel Profile."
+    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel Profile Sanitize."
     FORCE )
 
 set(DEBUG_BUILD 0)
@@ -113,12 +113,16 @@ endif ()
 if (CMAKE_BUILD_TYPE STREQUAL "Profile")
     set(DEBUG_BUILD 1)
 endif ()
+if (CMAKE_BUILD_TYPE STREQUAL "Sanitize")
+    set(DEBUG_BUILD 1)
+endif ()
 message (STATUS "Enabling debug code: ${DEBUG_BUILD}")
 
 message(STATUS "Default: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Debug: ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "Profile: ${CMAKE_CXX_FLAGS_PROFILE}")
 message(STATUS "Release: ${CMAKE_CXX_FLAGS_RELEASE}")
+message(STATUS "Sanitize: ${CMAKE_CXX_FLAGS_SANITIZE}")
 
 #
 # Sources
@@ -164,17 +168,17 @@ IF(GMOCK_FOUND)
     set_target_properties(unitTests_mapcss PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
 ENDIF(GMOCK_FOUND)
 
-target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CAIROMM_LIBRARIES} ${Log4Cpp_LIBRARIES} ${SIGC++_LIBRARIES} pthread ${SYSTEM_LIBRARIES})
+target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${Log4Cpp_LIBRARIES} pthread ${SYSTEM_LIBRARIES})
 target_link_libraries(alacarte-importer     ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} pthread ${SYSTEM_LIBRARIES})
-target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIROMM_LIBRARIES} ${Log4Cpp_LIBRARIES} pthread)
-target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIROMM_LIBRARIES} ${Log4Cpp_LIBRARIES} ${SIGC++_LIBRARIES} pthread)
-target_link_libraries(unitTests_importer    ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIROMM_LIBRARIES} ${SIGC++_LIBRARIES} pthread)
-target_link_libraries(unitTests_server      ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIROMM_LIBRARIES} ${SIGC++_LIBRARIES} pthread)
-target_link_libraries(unitTests_parser      ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIROMM_LIBRARIES} ${SIGC++_LIBRARIES} pthread)
+target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${Log4Cpp_LIBRARIES} pthread)
+target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${Log4Cpp_LIBRARIES} pthread)
+target_link_libraries(unitTests_importer    ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
+target_link_libraries(unitTests_server      ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
+target_link_libraries(unitTests_parser      ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
 IF(GMOCK_FOUND)
-    target_link_libraries(unitTests_mapcss  ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIROMM_LIBRARIES} ${SIGC++_LIBRARIES} pthread gmock gtest)
+    target_link_libraries(unitTests_mapcss  ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread gmock gtest)
 ENDIF(GMOCK_FOUND)
-target_link_libraries(unitTests_eval        ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIROMM_LIBRARIES} ${SIGC++_LIBRARIES} pthread)
+target_link_libraries(unitTests_eval        ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
 
 set(test_files "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte")
 

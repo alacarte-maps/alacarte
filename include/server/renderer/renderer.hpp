@@ -25,15 +25,13 @@
 
 #include <boost/thread/mutex.hpp>
 
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include <cairo.h>
 
 #include "server/tile_identifier.hpp"
 #include "server/tile.hpp"
 
 #define TILE_SIZE 256
 
-class MetaTile;
 class MetaIdentifier;
 class RenderAttributes;
 class Geodata;
@@ -45,6 +43,8 @@ class Style;
 class Label;
 class Shield;
 class AssetCache;
+class RenderCanvas;
+struct CairoLayer;
 
 class Renderer
 {
@@ -52,9 +52,9 @@ public:
 	Renderer(const shared_ptr<Geodata>& data);
 	~Renderer();
 
-	TESTABLE void renderEmptyTile(RenderAttributes& map, const shared_ptr<Tile>& tile);
-	TESTABLE void renderMetaTile(RenderAttributes& map, const shared_ptr<MetaTile>& tile);
-	TESTABLE void sliceTile(const shared_ptr<MetaTile>& meta, const shared_ptr<Tile>& tile) const;
+	TESTABLE void renderEmptyTile(RenderAttributes& map, const shared_ptr<RenderCanvas>& canvas, const shared_ptr<Tile>& tile);
+	TESTABLE void renderMetaTile(RenderAttributes& map,  const shared_ptr<RenderCanvas>& canvas, const shared_ptr<MetaIdentifier>& id);
+	TESTABLE void sliceTile(const shared_ptr<RenderCanvas>& canvas, const shared_ptr<MetaIdentifier>& id, const shared_ptr<Tile>& tile) const;
 
 protected:
 	void placeLabels(const std::list<shared_ptr<Label> >& labels,
@@ -63,9 +63,6 @@ protected:
 					 std::vector<shared_ptr<Shield> >& placed);
 
 private:
-	class PNGWriter;
-	class ImageWriter;
-	class SVGWriter;
 
 	//! stores the actual data
 	const shared_ptr<Geodata> data;
@@ -73,48 +70,20 @@ private:
 	FloatRect neighbours[8];
 	FloatRect neighbourRequests[8];
 
-	//! Stores cairo data for each painting layer of a tile (fill, casing, stroke, ..)
-	class CairoLayer;
-
-	//! Abstract base class for PNG and SVG writers
-	class ImageWriter {
-	public:
-		virtual ~ImageWriter() {};
-		virtual Cairo::RefPtr<Cairo::Surface> createSurface() = 0;
-		virtual Cairo::RefPtr<Cairo::Surface> createSurface(const Tile::ImageType& buffer) = 0;
-		virtual void write(const Cairo::RefPtr<Cairo::Surface>& surface) = 0;
-	};
-
-	//! Layers to paint onto
-	enum {
-		LAYER_FILL = 0,
-		LAYER_CASING,
-		LAYER_STROKE,
-		LAYER_ICONS,
-		LAYER_LABELS,
-		LAYER_NUM
-	};
-
-	shared_ptr<ImageWriter> getWriter(TileIdentifier::Format format, int width, int height) const;
-	void printTileId(const Cairo::RefPtr<Cairo::Context>& cr, const shared_ptr<TileIdentifier>& id) const;
+	void printTileId(cairo_t* cr, const shared_ptr<TileIdentifier>& id) const;
 	void sortObjects(RenderAttributes& map, std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations) const;
 	bool isCutOff(const FloatRect& box, const FloatRect& owner);
-	void compositeLayers(CairoLayer layers[]) const;
-	void setupLayers(CairoLayer layers[], const shared_ptr<ImageWriter>& writer, AssetCache& cache) const;
-	void paintBackground(const CairoLayer& layer, const Style* canvasStyle) const;
-	void renderObjects(CairoLayer layers[], RenderAttributes& map,
-					   const Cairo::Matrix& transform,
+	void compositeLayers(CairoLayer* layers) const;
+	void paintBackground(CairoLayer& layer, const Style* canvasStyle) const;
+	void renderObjects(CairoLayer* layers, RenderAttributes& map, const cairo_matrix_t* transform,
 					   std::vector<NodeId>& nodes, std::vector<WayId>& ways, std::vector<RelId>& relations,
-					   std::list<shared_ptr<Label>>& labels,
-					   std::list<shared_ptr<Shield>>& shields,
+					   std::list<shared_ptr<Label>>& labels, std::list<shared_ptr<Shield>>& shields,
 					   AssetCache& cache) const;
 	template <typename LabelType>
-	void renderLabels(const Cairo::RefPtr<Cairo::Context>& cr,
-					  std::vector<shared_ptr<LabelType> >& labels, AssetCache& cache) const;
-	void renderShields(const Cairo::RefPtr<Cairo::Context>& cr,
-					  std::vector<shared_ptr<Shield> >& shields) const;
+	void renderLabels(cairo_t* cr, std::vector<shared_ptr<LabelType> >& labels, AssetCache& cache) const;
+	void renderShields(cairo_t* cr, std::vector<shared_ptr<Shield> >& shields) const;
 	void renderArea(const FixedRect& area,
-					CairoLayer layers[],
+					const shared_ptr<RenderCanvas>& canvas,
 					double width, double height,
 					RenderAttributes& map,
 					AssetCache& cache);

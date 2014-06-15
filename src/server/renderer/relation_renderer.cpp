@@ -37,7 +37,7 @@
 RelationRenderer::RelationRenderer(const shared_ptr<Geodata>& data,
 								   RelId rid,
 								   const Style* s,
-								   const Cairo::Matrix& transform)
+								   const cairo_matrix_t* transform)
 	: ObjectRenderer(data, s, transform)
 	, relation(data->getRelation(rid))
 {
@@ -50,7 +50,7 @@ RelationRenderer::RelationRenderer(const shared_ptr<Geodata>& data,
  * @param idx the start index in the way array, is increaed to last unused way
  * @param used array of bools to indicate which way is already used
  */
-void RelationRenderer::addRingPath(const Cairo::RefPtr<Cairo::Context>& cr, const std::vector<WayId>& ids, int& idx, bool* used)
+void RelationRenderer::addRingPath(cairo_t* cr, const std::vector<WayId>& ids, int& idx, bool* used)
 {
 	NodeId startNode;
 	NodeId lastNode;
@@ -88,12 +88,12 @@ void RelationRenderer::addRingPath(const Cairo::RefPtr<Cairo::Context>& cr, cons
 		i = idx;
 	} while (++i < ids.size() && !closed);
 
-	cr->close_path();
+	cairo_close_path(cr);
 }
 
-void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache)
+void RelationRenderer::fill(cairo_t* cr, AssetCache& cache)
 {
-	cr->begin_new_path();
+	cairo_new_path(cr);
 
 	const std::vector<WayId>& ids = relation->getWayIDs();
 	int n = ids.size();
@@ -106,25 +106,27 @@ void RelationRenderer::fill(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache&
 	for (int i = 0; i < n; i++)
 		if (!used[i]) {
 			addRingPath(cr, ids, i, used);
-			cr->begin_new_sub_path();
+			cairo_new_sub_path(cr);
 		}
 
 	delete[] used;
 
-	cr->push_group();
+	cairo_push_group(cr);
 
-	cr->set_fill_rule(Cairo::FILL_RULE_EVEN_ODD);
-	cr->set_source_color(s->fill_color);
+	cairo_set_fill_rule(cr, CAIRO_FILL_RULE_EVEN_ODD);
 	const string& bg = s->fill_image.str();
 	if (!bg.empty()) {
-		Cairo::RefPtr<Cairo::SurfacePattern> pattern = Cairo::SurfacePattern::create(cache.getImage(bg));
-		pattern->set_extend(Cairo::Extend::EXTEND_REPEAT);
-		cr->set_source(pattern);
+		cairo_pattern_t* pattern = cairo_pattern_create_for_surface(cache.getImage(bg));
+		cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);
+		cairo_set_source(cr, pattern);
+		cairo_fill(cr);
+		cairo_pattern_destroy(pattern);
+	} else {
+		cairo_set_source_rgba(cr, COLOR2RGBA(s->fill_color));
+		cairo_fill(cr);
 	}
 
-	cr->fill();
-
-	cr->pop_group_to_source();
-	cr->paint();
+	cairo_pop_group_to_source(cr);
+	cairo_paint(cr);
 }
 

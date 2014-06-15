@@ -24,6 +24,7 @@
 #include "server/http_request.hpp"
 #include "server/meta_identifier.hpp"
 #include "server/tile_identifier.hpp"
+#include "server/renderer/render_canvas.hpp"
 #include "server/job.hpp"
 #include "general/configuration.hpp"
 
@@ -97,11 +98,11 @@ RequestManager::RequestManager( const shared_ptr<Configuration>& config,
 	int threads = config->get<int>(opt::server::num_threads);
 	currentPrerenderingThreads = 0;
 	for (int i = 0; i < threads; ++i) {
-		workers.push_back(
-			boost::make_shared<boost::thread>(
-				boost::bind(&boost::asio::io_service::run, &jobPool)
-			)
+		auto worker = boost::make_shared<boost::thread>(
+			boost::bind(&boost::asio::io_service::run, &jobPool)
 		);
+		workers.push_back(worker);
+		factories.push(boost::make_shared<RenderCanvasFactory>());
 	}
 
 	// start prerender timing
@@ -213,7 +214,15 @@ bool RequestManager::nextUserRequest()
 		return true;
 
 	shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(ti);
-	Job job(mid, config, shared_from_this());
+
+	factoriesMutex.lock();
+	shared_ptr<RenderCanvasFactory> factory = factories.front();
+	factories.pop();
+	factoriesMutex.unlock();
+
+	shared_ptr<RenderCanvas> canvas = factory->getCanvas(ti->getImageFormat());
+
+	Job job(mid, config, shared_from_this(), canvas);
 
 	// check if tiles are already in progress
 	if (running->start(&job, ti, req))
@@ -224,6 +233,10 @@ bool RequestManager::nextUserRequest()
 
 		job.deliver();
 	}
+
+	factoriesMutex.lock();
+	factories.push(factory);
+	factoriesMutex.unlock();
 
 	return true;
 }
@@ -239,7 +252,14 @@ bool RequestManager::nextPreRenderRequest()
 	currentPrerenderingThreads++;
 	preLock.unlock();
 
-	Job job(mid, config, shared_from_this());
+	factoriesMutex.lock();
+	shared_ptr<RenderCanvasFactory> factory = factories.front();
+	factories.pop();
+	factoriesMutex.unlock();
+
+	shared_ptr<RenderCanvas> canvas = factory->getCanvas(mid->getImageFormat());
+
+	Job job(mid, config, shared_from_this(), canvas);
 
 	// check if tiles are already in progress
 	if (running->start(&job, mid))
@@ -250,6 +270,10 @@ bool RequestManager::nextPreRenderRequest()
 
 		job.deliver();
 	}
+
+	factoriesMutex.lock();
+	factories.push(factory);
+	factoriesMutex.unlock();
 
 	if (!job.isEmpty() && mid->getZoom() < config->get<int>(opt::server::prerender_level)) {
 		std::vector<shared_ptr<MetaIdentifier>> children;

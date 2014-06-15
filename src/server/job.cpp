@@ -29,7 +29,6 @@
 #include "server/stylesheet.hpp"
 #include "server/renderer/renderer.hpp"
 #include "server/meta_identifier.hpp"
-#include "server/meta_tile.hpp"
 #include "server/http_request.hpp"
 #include "general/geodata.hpp"
 #include "general/configuration.hpp"
@@ -52,11 +51,12 @@
  **/
 Job::Job(const shared_ptr<MetaIdentifier>& mid,
 		 const shared_ptr<Configuration>& config,
-		 const shared_ptr<RequestManager>& manager)
+		 const shared_ptr<RequestManager>& manager,
+		 const shared_ptr<RenderCanvas>& canvas)
 	: manager(manager)
 	, config(config)
 	, mid(mid)
-	, meta(boost::make_shared<MetaTile>(mid))
+	, canvas(canvas)
 	, measurement(Statistic::Get()->startNewMeasurement(mid->getStylesheetPath(), mid->getZoom()))
 {
 }
@@ -131,7 +131,7 @@ shared_ptr<Tile> Job::computeEmpty()
 		RenderAttributes renderAttributes;
 
 		stylesheet->match(nodeIDs, wayIDs, relationIDs, mid, &renderAttributes);
-		manager->getRenderer()->renderEmptyTile(renderAttributes, tile);
+		manager->getRenderer()->renderEmptyTile(renderAttributes, canvas, tile);
 	}
 
 	return tile;
@@ -200,7 +200,7 @@ void Job::process()
 
 	const shared_ptr<Renderer>& renderer = manager->getRenderer();
 	STAT_START(Statistic::Renderer);
-		renderer->renderMetaTile(renderAttributes, meta);
+		renderer->renderMetaTile(renderAttributes, canvas, mid);
 	STAT_STOP(Statistic::Renderer);
 }
 
@@ -222,7 +222,7 @@ void Job::deliver()
 		STAT_START(Statistic::Slicing);
 		for (auto& tile : tiles) {
 			if (!tile->isRendered())
-				renderer->sliceTile(meta, tile);
+				renderer->sliceTile(canvas, mid, tile);
 
 			for (auto& req : requests[*tile->getIdentifier()])
 				req->answer(tile);

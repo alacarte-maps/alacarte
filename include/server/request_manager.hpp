@@ -36,6 +36,7 @@ class Geodata;
 class StylesheetManager;
 class HttpRequest;
 class TileIdentifier;
+class RenderCanvasFactory;
 
 class RequestManager : public boost::enable_shared_from_this<RequestManager>
 {
@@ -56,7 +57,7 @@ private:
 	void processNextRequest();
 	bool nextUserRequest();
 	bool nextPreRenderRequest();
-	
+
 private:
 	shared_ptr<Geodata> data;
 	shared_ptr<Renderer> renderer;
@@ -67,6 +68,9 @@ private:
 	boost::asio::io_service jobPool;
 	boost::asio::io_service::work preventStop;
 	std::vector< shared_ptr<boost::thread> > workers;
+
+	std::queue<shared_ptr<RenderCanvasFactory>> factories;
+	boost::mutex factoriesMutex;
 
 	boost::mutex userRJMutex;
 	boost::mutex preRJMutex;

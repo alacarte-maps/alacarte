@@ -39,10 +39,10 @@ public:
 	enum Format
 	{
 		PNG,
-		JPEG,
-		GIF,
+//		JPEG,
+//		GIF,
 		SVG,
-		SVGZ,
+//		SVGZ,
 		enumSize
 	};
 private:

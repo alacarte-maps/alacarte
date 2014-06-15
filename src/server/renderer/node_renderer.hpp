@@ -23,8 +23,7 @@
 
 #include "settings.hpp"
 
-#include <cairomm/surface.h>
-#include <cairomm/context.h>
+#include <cairo.h>
 
 #include "object_renderer.hpp"
 
@@ -43,15 +42,15 @@ public:
 	NodeRenderer(const shared_ptr<Geodata>& data,
 				 NodeId nid,
 				 const Style* s,
-				 const Cairo::Matrix& transform);
+				 const cairo_matrix_t* transform);
 
-	void casing(const Cairo::RefPtr<Cairo::Context>& cr);
-	void stroke(const Cairo::RefPtr<Cairo::Context>& cr);
-	void label(const Cairo::RefPtr<Cairo::Context>& cr,
+	void casing(cairo_t* cr);
+	void stroke(cairo_t* cr);
+	void label(cairo_t* cr,
 			std::list<shared_ptr<Label> >& labels, AssetCache& cache);
-	void shield(const Cairo::RefPtr<Cairo::Context>& cr,
+	void shield(cairo_t* cr,
 			std::list<shared_ptr<Shield> >& shields, AssetCache& cache);
-	void icon(const Cairo::RefPtr<Cairo::Context>& cr, AssetCache& cache);
+	void icon(cairo_t* cr, AssetCache& cache);
 };
 
 #endif
