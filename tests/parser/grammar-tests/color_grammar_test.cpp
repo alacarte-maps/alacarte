@@ -10,7 +10,7 @@
 #include "server/parser/color_grammar.hpp"
 
 
-Color makeColorFromUints(uint8 r, uint8 g, uint8 b, uint8 a = 255)
+Color makeColorFromUints(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
 {
 	return Color(r,g,b,a);
 }

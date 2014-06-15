@@ -45,25 +45,25 @@ public:
 	Color(const float _f) : r(_f), g(_f), b(_f), a(1.0f)																																							{}
 	explicit Color(const float _r, const float _g, const float _b) : r(_r), g(_g), b(_b), a(1.0f)																													{}
 	explicit Color(const float _r, const float _g, const float _b, const float _a) : r(_r), g(_g), b(_b), a(_a)																										{}
-	explicit Color(uint8 _r, uint8 _g, uint8 _b) : r((float)(_r) * cxCOLOR_CONV), g((float)(_g) * cxCOLOR_CONV), b((float)(_b) * cxCOLOR_CONV), a(1.0f)																{}
-	explicit Color(uint8 _r, uint8 _g, uint8 _b, uint8 _a) : r((float)(_r) * cxCOLOR_CONV), g((float)(_g) * cxCOLOR_CONV), b((float)(_b) * cxCOLOR_CONV), a((float)(_a) * cxCOLOR_CONV)								{}
+	explicit Color(uint8_t _r, uint8_t _g, uint8_t _b) : r((float)(_r) * cxCOLOR_CONV), g((float)(_g) * cxCOLOR_CONV), b((float)(_b) * cxCOLOR_CONV), a(1.0f)																{}
+	explicit Color(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a) : r((float)(_r) * cxCOLOR_CONV), g((float)(_g) * cxCOLOR_CONV), b((float)(_b) * cxCOLOR_CONV), a((float)(_a) * cxCOLOR_CONV)								{}
 	Color(const float* _c) : r(_c[0]), g(_c[1]), b(_c[2]), a(_c[3])																																					{}
-	Color(const uint8* pComponent) : r((float)(pComponent[0]) * cxCOLOR_CONV), g((float)(pComponent[1]) * cxCOLOR_CONV), b((float)(pComponent[2]) * cxCOLOR_CONV), a((float)(pComponent[3]) * cxCOLOR_CONV)			{}
+	Color(const uint8_t* pComponent) : r((float)(pComponent[0]) * cxCOLOR_CONV), g((float)(pComponent[1]) * cxCOLOR_CONV), b((float)(pComponent[2]) * cxCOLOR_CONV), a((float)(pComponent[3]) * cxCOLOR_CONV)			{}
 
-	Color(uint32 _c)
-		: r(cxCOLOR_CONV * (float)(uint8)(_c >> 16))
-		, g(cxCOLOR_CONV * (float)(uint8)(_c >> 8))
-		, b(cxCOLOR_CONV * (float)(uint8)(_c))
-		, a(cxCOLOR_CONV * (float)(uint8)(_c >> 24))
+	Color(uint32_t _c)
+		: r(cxCOLOR_CONV * (float)(uint8_t)(_c >> 16))
+		, g(cxCOLOR_CONV * (float)(uint8_t)(_c >> 8))
+		, b(cxCOLOR_CONV * (float)(uint8_t)(_c))
+		, a(cxCOLOR_CONV * (float)(uint8_t)(_c >> 24))
 	{}
 
 
-	operator uint32 () const
+	operator uint32_t () const
 	{
-		return ((a >= 1.0f ? 255 : a <= 0.0f ? 0 : (uint32)(a * 255.0f)) << 24) |
-			((r >= 1.0f ? 255 : r <= 0.0f ? 0 : (uint32)(r * 255.0f)) << 16) |
-			((g >= 1.0f ? 255 : g <= 0.0f ? 0 : (uint32)(g * 255.0f)) << 8)  |
-			(b >= 1.0f ? 255 : b <= 0.0f ? 0 : (uint32)(b * 255.0f));
+		return ((a >= 1.0f ? 255 : a <= 0.0f ? 0 : (uint32_t)(a * 255.0f)) << 24) |
+			((r >= 1.0f ? 255 : r <= 0.0f ? 0 : (uint32_t)(r * 255.0f)) << 16) |
+			((g >= 1.0f ? 255 : g <= 0.0f ? 0 : (uint32_t)(g * 255.0f)) << 8)  |
+			(b >= 1.0f ? 255 : b <= 0.0f ? 0 : (uint32_t)(b * 255.0f));
 	}
 
 	operator float* ()			{return (float*)(c);}
@@ -83,8 +83,8 @@ public:
 	inline Color operator / (const Color& _c)	{return Color(r / _c.r, g / _c.g, b / _c.b, a / _c.a);}
 	inline Color operator / (const float f)		{return Color(r / f, g / f, b / f, a / f);}
 
-	inline bool operator == (const Color& _c) {return (uint32)*this == (uint32)_c;}
-	inline bool operator != (const Color& _c) {return (uint32)*this != (uint32)_c;}
+	inline bool operator == (const Color& _c) {return (uint32_t)*this == (uint32_t)_c;}
+	inline bool operator != (const Color& _c) {return (uint32_t)*this != (uint32_t)_c;}
 
 
 	inline Color	negate()		{ return Color(1.0f - r, 1.0f - g, 1.0f - b, a); }

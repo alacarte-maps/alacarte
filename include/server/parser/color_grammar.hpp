@@ -63,18 +63,18 @@ struct ColorGrammar : public qi::grammar<StringIterator, Color(), chs::space_typ
 
 
 	//! Rule to parse a number with up to 3 digits
-	qi::uint_parser<uint8, 10, 1, 3> number;
+	qi::uint_parser<uint8_t, 10, 1, 3> number;
 	//! Rule to parse a hex digit
-	qi::uint_parser<uint8, 16, 1, 1> hexdigit;
+	qi::uint_parser<uint8_t, 16, 1, 1> hexdigit;
 	//! Symbol parser for colors.
 	ColorSymbols colorSymbol_;
 
 	ColorGrammar();
 
 	//! Rule to parse the hex color code
-	qi::rule<ItType, uint8(), qi::locals<uint8, uint8> > rule_hexvalue;
+	qi::rule<ItType, uint8_t(), qi::locals<uint8_t, uint8_t> > rule_hexvalue;
 	//! Rule for #COLORCODE
-	qi::rule<ItType, Color(), qi::locals<uint8, uint8, uint8, uint8> > rule_hexcolor;
+	qi::rule<ItType, Color(), qi::locals<uint8_t, uint8_t, uint8_t, uint8_t> > rule_hexcolor;
 	//! Rule for rgb(...)
 	qi::rule<ItType, Color(), qi::locals<float, float>, Skipper> rule_rgb;
 	//! Rule for rgba(...)

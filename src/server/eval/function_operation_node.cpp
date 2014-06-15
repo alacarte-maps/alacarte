@@ -174,7 +174,7 @@ string FunctionOperationNode::eval(GeoObject* obj) const
 			Color result;
 			Random rand(boost::hash_value(first));
 
-			Color randColor((uint8)rand.rand(255), (uint8)rand.rand(255), (uint8)rand.rand(255), (uint8)rand.rand(255));
+			Color randColor((uint8_t)rand.rand(255), (uint8_t)rand.rand(255), (uint8_t)rand.rand(255), (uint8_t)rand.rand(255));
 
 
 
@@ -189,14 +189,14 @@ string FunctionOperationNode::eval(GeoObject* obj) const
 				result.a = base.a;
 				break;
 			case 2:
-				result = base + randColor * (top - base).max(Color(uint32(0x00000000)));
+				result = base + randColor * (top - base).max(Color(uint32_t(0x00000000)));
 				break;
 			default:
 				return "";
 			}
 
 			std::ostringstream os;
-			uint32 col = result;
+			uint32_t col = result;
 			os << '#' << std::hex << std::setw(6) << std::setfill('0') << (col & 0xFFFFFF);
 			os << std::hex << std::setw(2) << std::setfill('0') << (col >> 24);
 
