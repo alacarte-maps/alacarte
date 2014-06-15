@@ -46,8 +46,8 @@ struct EvalGrammer : public qi::grammar<GrammarIterator,  STNode::node_ptr(),  c
 	EvalGrammer();
 
 
-	//! rule for a simple string
-	qi::rule<ItType, string()> rule_string;
+	//! rule for a simple std::string
+	qi::rule<ItType, std::string()> rule_string;
 
 	//! rule for function expressions
 	qi::rule<ItType, STNode::node_ptr(), Skipper> rule_func_expr;

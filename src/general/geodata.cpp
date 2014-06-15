@@ -54,7 +54,7 @@ Geodata::~Geodata()
 }
 
 //! called when data is serialized to file
-void Geodata::buildTrees(const string& nodePath, const string& wayPath, const string& relationPath)
+void Geodata::buildTrees(const std::string& nodePath, const string& wayPath, const string& relationPath)
 {
 	if (nodes->size() > 0)
 	{
@@ -151,7 +151,7 @@ Relation* Geodata::getRelation(RelId id) const
 	return &relations->at(id.getRaw());
 }
 
-void Geodata::load(const string& path)
+void Geodata::load(const std::string& path)
 {
 	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
 	log.infoStream() << "Load geodata from \"" << path << "\"";
@@ -181,7 +181,7 @@ void Geodata::load(const string& path)
 	}
 }
 
-void Geodata::serialize(const string& serPath) const
+void Geodata::serialize(const std::string& serPath) const
 {
 	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
 	log.infoStream() << "Serialize to \"" << serPath << "\"";
@@ -191,14 +191,14 @@ void Geodata::serialize(const string& serPath) const
 	oa << *this;
 }
 
-void Geodata::save(const string& outPath)
+void Geodata::save(const std::string& outPath)
 {
 	boost::filesystem::path out = boost::filesystem::absolute(boost::filesystem::path(outPath));
 	boost::filesystem::path base = out.parent_path();
-	string serPath = (base / "data.ser").string();
-	string nodesPath = (base / "nodes.bin").string();
-	string waysPath = (base / "ways.bin").string();
-	string relationsPath = (base / "relations.bin").string();
+	std::string serPath = (base / "data.ser").string();
+	std::string nodesPath = (base / "nodes.bin").string();
+	std::string waysPath = (base / "ways.bin").string();
+	std::string relationsPath = (base / "relations.bin").string();
 
 	buildTrees(nodesPath, waysPath, relationsPath);
 

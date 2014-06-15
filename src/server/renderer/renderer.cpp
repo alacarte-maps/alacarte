@@ -470,7 +470,7 @@ void Renderer::compositeLayers(CairoLayer* layers) const
 
 void Renderer::paintBackground(CairoLayer& layer, const Style* canvasStyle) const
 {
-	const string& bg = canvasStyle->fill_image.str();
+	const std::string& bg = canvasStyle->fill_image.str();
 	if (bg.size() > 0)
 	{
 		cairo_surface_t* image = cairo_image_surface_create_from_png(bg.c_str());

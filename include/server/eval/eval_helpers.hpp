@@ -30,14 +30,14 @@
 namespace eval {
 
 /**
- * @brief Converts a string into another type
+ * @brief Converts a std::string into another type
  *
- * \param str string to be converted
+ * \param str std::string to be converted
  * \param out Target for the conversion
  * \return if the conversion was successful
  **/
 template<typename T>
-bool Conv(const string& str, T* out, bool tryToCache = false)
+bool Conv(const std::string& str, T* out, bool tryToCache = false)
 {
 	assert(out);
 	std::istringstream is(str);
@@ -48,26 +48,26 @@ bool Conv(const string& str, T* out, bool tryToCache = false)
 
 //! Use some extra function for bool conversion
 template<>
-bool Conv(const string& str, bool* out, bool tryToCache);
+bool Conv(const std::string& str, bool* out, bool tryToCache);
 
 //! Use some extra function for color conversion
 template<>
-bool Conv(const string& str, Color* out, bool tryToCache);
+bool Conv(const std::string& str, Color* out, bool tryToCache);
 
-//! Use some extra function for string conversion
+//! Use some extra function for std::string conversion
 template<>
-bool Conv(const string& str, string* out, bool tryToCache );
+bool Conv(const std::string& str, string* out, bool tryToCache );
 
 //! Use some extra function for MaybeCachedString conversion
 template<>
-bool Conv(const string& str, MaybeCachedString* out, bool tryToCache);
+bool Conv(const std::string& str, MaybeCachedString* out, bool tryToCache);
 
 
 /**
- * @brief Converts a value into a string
+ * @brief Converts a value into a std::string
  *
  * \param v The value
- * \return The converted string
+ * \return The converted std::string
  **/
 template<typename T>
 string ToString(const T& v)
@@ -83,15 +83,15 @@ template<>
 string ToString(const bool& v);
 
 /**
- * @brief Converts a value list into a string
+ * @brief Converts a value list into a std::string
  *
  * \param v The values
- * \return The converted string
+ * \return The converted std::string
  **/
 template<typename Iter1, typename Iter2>
 string ToString(Iter1 begin, Iter2 end)
 {
-	string result;
+	std::string result;
 
 	while(begin != end)
 	{

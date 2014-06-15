@@ -25,7 +25,7 @@ struct ColorGrammarTest
 
 
 
-	void testString(const string& expr, const Color& expected)
+	void testString(const std::string& expr, const Color& expected)
 	{
 		Color result;
 		ColorGrammar grammar;

@@ -34,7 +34,7 @@ class ColorTable
 public:
 	ColorTable();
 
-	void resolve(const string& name, Color* target) const;
+	void resolve(const std::string& name, Color* target) const;
 
 	const boost::unordered_map<string, Color>& getTable() const;
 

@@ -56,7 +56,7 @@ public:
 
 	UnaryOperationNode(op::UnaryOperationEnum operation, const node_ptr& enclosed);
 	
-	virtual string eval(GeoObject* obj) const;
+	virtual std::string eval(GeoObject* obj) const;
 private:
 	op::UnaryOperationEnum operation;
 	node_ptr enclosed;

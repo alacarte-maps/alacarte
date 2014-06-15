@@ -27,7 +27,7 @@ namespace eval {
 
 
 template<typename FloatOperator, typename IntOperation>
-string calculation(const string& left, const string& right, FloatOperator fop, IntOperation iop)
+string calculation(const std::string& left, const string& right, FloatOperator fop, IntOperation iop)
 {
 	float f1, f2;
 	int i1, i2;
@@ -64,8 +64,8 @@ BinaryOperationNode::BinaryOperationNode(const node_ptr& left, op::BinaryOperati
 
 string BinaryOperationNode::eval(GeoObject* obj) const
 {
-	string first = left->eval(obj);
-	string second = right->eval(obj);
+	std::string first = left->eval(obj);
+	std::string second = right->eval(obj);
 
 	switch(operation)
 	{
@@ -170,7 +170,7 @@ string BinaryOperationNode::eval(GeoObject* obj) const
 			return "false";
 		}
 
-		/****************** Checks if both strings are equal ******************/
+		/****************** Checks if both std::strings are equal ******************/
 	case op::StringEqual:
 		{
 			if(first == second)
@@ -178,7 +178,7 @@ string BinaryOperationNode::eval(GeoObject* obj) const
 			return "false";
 		}break;
 
-		/****************** Checks if both strings are unequal ******************/
+		/****************** Checks if both std::strings are unequal ******************/
 	case op::StringUnequal:
 		{
 			if(first != second)
@@ -250,7 +250,7 @@ string BinaryOperationNode::eval(GeoObject* obj) const
 		}
 								
 
-		/****************** Concatinates both strings ******************/
+		/****************** Concatinates both std::strings ******************/
 	case op::Concatination:
 		{
 			return first + second;

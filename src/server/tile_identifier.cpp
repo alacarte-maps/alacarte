@@ -27,7 +27,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
-const string TileIdentifier::FormatString[TileIdentifier::enumSize] = {
+const std::string TileIdentifier::FormatString[TileIdentifier::enumSize] = {
 	"png",
 //	"jpg",
 //	"gif",
@@ -39,7 +39,7 @@ const string TileIdentifier::FormatString[TileIdentifier::enumSize] = {
  * 
  * @param p Char pointer
  * @return Int read from the char pointer
- * @throws MalformedURLException if no convertable string given.
+ * @throws MalformedURLException if no convertable std::string given.
  **/
 int TileIdentifier::stringToInt(const char *p) {
     int x = 0;
@@ -69,10 +69,10 @@ int TileIdentifier::stringToInt(const char *p) {
  * @return A new TileIdentifier
  * @throws MalformedURLException if some part of the url isn't parseable.
  **/
-shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, std::shared_ptr<StylesheetManager> stylesheetManager, const shared_ptr<Configuration>& config)
+shared_ptr<TileIdentifier> TileIdentifier::Create(const std::string& url, std::shared_ptr<StylesheetManager> stylesheetManager, const shared_ptr<Configuration>& config)
 {
 	int x, y, zoom;
-	string styleSheetpath;
+	std::string styleSheetpath;
 	Format imageFormat;
 	// Boundaries for each Zoomlevel
 	static int boundaries[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144};
@@ -92,7 +92,7 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, std::shared
 		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Not enough arguments (No y.format)."));
 	}
 	// Convert format to enum
-	string& format = subparts.at(1);
+	std::string& format = subparts.at(1);
 	std::transform(format.begin(), format.end(), format.begin(), ::tolower);
 	if (format == "png") {
 		imageFormat = PNG;
@@ -111,17 +111,17 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, std::shared
 		BOOST_THROW_EXCEPTION(excp::UnknownImageFormatException() << excp::InfoWhat("Unknown image format."));
 	}
 	// Parse zoom
-	zoom = stringToInt(parts[length-3].c_str());
+	zoom = std::stringToInt(parts[length-3].c_str());
 	if (zoom < 0 || zoom > 18) {
 		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Incorrect zoom argument (Out of range 0 - 18)."));
 	}
 	// Parse y coordinate
-	y = stringToInt(subparts[0].c_str());
+	y = std::stringToInt(subparts[0].c_str());
 	if (y < 0 || y >= boundaries[zoom]) {
 		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Incorrect y argument (Out of range 0 - 2^zoom)."));
 	}
 	// Parse x coordinate
-	x = stringToInt(parts[length-2].c_str());
+	x = std::stringToInt(parts[length-2].c_str());
 	if (x < 0 || x >= boundaries[zoom]) {
 		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Incorrect x argument (Out of range 0 - 2^zoom)."));
 	}
@@ -149,7 +149,7 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, std::shared
  * 
  * @return std::shared_ptr to TileIdentifier
  **/
-shared_ptr<TileIdentifier> TileIdentifier::CreateEmptyTID(const string& stylesheetPath, TileIdentifier::Format format)
+shared_ptr<TileIdentifier> TileIdentifier::CreateEmptyTID(const std::string& stylesheetPath, TileIdentifier::Format format)
 {
 	return std::make_shared<TileIdentifier>(-2, -2, -2, stylesheetPath, format);
 }
@@ -163,7 +163,7 @@ shared_ptr<TileIdentifier> TileIdentifier::CreateEmptyTID(const string& styleshe
  * @param styleSheetpath The path to the Stylesheet, which should be used for rendering this Tile. (With preceeding slash).
  * @param imageFormat The image Format of the rendered Tile.
  **/
-TileIdentifier::TileIdentifier(int x, int y, int zoom, string styleSheetpath, Format imageFormat) :
+TileIdentifier::TileIdentifier(int x, int y, int zoom, std::string styleSheetpath, Format imageFormat) :
 	x(x),
 	y(y),
 	zoom(zoom),
@@ -218,7 +218,7 @@ TileIdentifier::Format TileIdentifier::getImageFormat() const
  *
  * @return The image Format of the Tile.
  **/
-const string& TileIdentifier::getImageFormatString() const
+const std::string& TileIdentifier::getImageFormatString() const
 {
 	assert(getImageFormat() != enumSize);
 	return FormatString[getImageFormat()];
@@ -229,7 +229,7 @@ const string& TileIdentifier::getImageFormatString() const
  *
  * @return The path to the Stylesheet.
  **/
-const string& TileIdentifier::getStylesheetPath() const
+const std::string& TileIdentifier::getStylesheetPath() const
 {
 	return styleSheetpath;
 }

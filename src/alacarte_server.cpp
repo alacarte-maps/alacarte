@@ -61,7 +61,7 @@ public:
 	 **/
 	AlacarteServerApp()
 	{
-#define OPT(_name, _shortcut)	(string(_name).append(",").append(_shortcut)).c_str()
+#define OPT(_name, _shortcut)	(std::string(_name).append(",").append(_shortcut)).c_str()
 		using namespace boost::program_options;
 
 
@@ -145,7 +145,7 @@ protected:
 		if (config->has(opt::server::style_source)) {
 			boost::filesystem::path folder = config->get<string>(opt::server::style_source);
 			if (!boost::filesystem::is_directory(folder)) {
-				log.errorStream() << opt::server::style_source << " = \"" << folder.string() << "\" is not a directory.";
+				log.errorStream() << opt::server::style_source << " = \"" << folder.std::string() << "\" is not a directory.";
 				return false;
 			}
 			
@@ -160,7 +160,7 @@ protected:
 				try {
 					boost::filesystem::create_directory(folder);
 				} catch (boost::filesystem::filesystem_error) {
-					log.errorStream() << opt::server::cache_path << " = \"" << folder.string() << "\" could not be created.";
+					log.errorStream() << opt::server::cache_path << " = \"" << folder.std::string() << "\" could not be created.";
 					return false;
 				}
 			}
@@ -183,7 +183,7 @@ protected:
 		log4cpp::Category::getInstance("AccessLog").setAdditivity(false);
 		if( config->has(opt::server::log_mute_component) ) {
 			std::vector<string> list = config->get<std::vector<string>>(opt::server::log_mute_component);
-			for(string component : list) {
+			for(std::string component : list) {
 				log4cpp::Category::getInstance(component).addAppender(logFile);
 				log4cpp::Category::getInstance(component).setAdditivity(false);
 			}

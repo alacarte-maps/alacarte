@@ -14,7 +14,7 @@
 
 CachedString RandomString()
 {
-	string str;
+	std::string str;
 
 	int size = rand() % 15 + 1;
 
@@ -102,7 +102,7 @@ void PrintTags(std::ofstream& xml, const DataMap<CachedString, CachedString>& ma
 
 struct ValidatingFixture
 {
-	ValidatingFixture(int seed, const string& tempFile)
+	ValidatingFixture(int seed, const std::string& tempFile)
 		: path(getOutputDirectory() / "importer" / tempFile)
 	{
 		srand(seed);
@@ -139,7 +139,7 @@ struct ValidatingFixture
 			relationIds.push_back(RelId(rand()));
 		}
 
-		std::ofstream xml(path.string(), std::ios::out);
+		std::ofstream xml(path.std::string(), std::ios::out);
 
 		BOOST_REQUIRE(xml.is_open());
 

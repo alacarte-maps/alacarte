@@ -47,7 +47,7 @@ public:
 			cairo_surface_destroy(pair.second);
 	}
 
-	cairo_surface_t* getImage(string path)
+	cairo_surface_t* getImage(std::string path)
 	{
 		auto it = images.find(path);
 		if (it != images.end())

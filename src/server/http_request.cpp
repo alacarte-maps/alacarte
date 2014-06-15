@@ -96,7 +96,7 @@ void HttpRequest::handleWrite ( const boost::system::error_code &e )
 	}
 }
 
-const string &HttpRequest::getURL() const
+const std::string &HttpRequest::getURL() const
 {
 	return data.uri;
 }

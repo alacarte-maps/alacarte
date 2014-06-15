@@ -82,13 +82,13 @@ struct Zoom
 
 //! Stores informations about an unary condition
 typedef fsio::vector<	op::UnaryTypesEnum,		/* operator */
-						string					/* tag */
+						std::string					/* tag */
 					> UnaryCondition;
 
 //! Stores informations about an binary condition
-typedef fsio::vector<	string,				/* tag */
+typedef fsio::vector<	std::string,				/* tag */
 						op::BinaryTypesEnum,	/* operator */
-						string				/* tag */
+						std::string				/* tag */
 					> BinaryCondition;
 
 //! Possible Conditions
@@ -200,7 +200,7 @@ struct UnaryTypes : qi::symbols<char, op::UnaryTypesEnum>
 
 struct AttributeCreator
 {
-	virtual void addAttribute(const std::shared_ptr<StyleTemplate>& styleTemplate, const string& specifier, const shared_ptr<ParserLogger>& logger, const ParseInfo& info) = 0;
+	virtual void addAttribute(const std::shared_ptr<StyleTemplate>& styleTemplate, const std::string& specifier, const shared_ptr<ParserLogger>& logger, const ParseInfo& info) = 0;
 };
 
 //! symbols for the attributes
@@ -238,13 +238,13 @@ struct MapCSSGrammar : public qi::grammar<GrammarIterator, StylesheetPtr(), qi::
 	//! Rule to parse a styleset of a rule
 	qi::rule<ItType, StylePtr(), qi::locals<std::shared_ptr<AttributeCreator>, ParseInfo>, Skipper> rule_styleset;
 	//! Rule to parse generic (unknown) attribute name
-	qi::rule<ItType, string(), Skipper> attribute_name;
+	qi::rule<ItType, std::string(), Skipper> attribute_name;
 	//! Rule to parse the specifier
-	qi::rule<ItType, string(), Skipper> rule_specifier;
+	qi::rule<ItType, std::string(), Skipper> rule_specifier;
 	//! Rule to parse a value
-	qi::rule<ItType, string()> rule_value;
+	qi::rule<ItType, std::string()> rule_value;
 	//! Rule to parse a tag
-	qi::rule<ItType, string()> rule_tag;
+	qi::rule<ItType, std::string()> rule_tag;
 	//! Rule to parse a zoom range
 	qi::rule<ItType, Zoom(), qi::locals<int, int>, Skipper> rule_zoom;
 	//! Rule to parse a binary condition

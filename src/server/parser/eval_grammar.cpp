@@ -181,7 +181,7 @@ EvalGrammer::EvalGrammer()
 	rule_lvl3_expr.name("lvl 3");
 	rule_lvl2_expr.name("lvl 2");
 	rule_lvl1_expr.name("lvl 1");
-	rule_string.name("string");
+	rule_string.name("std::string");
 
 	/*debug(rule_lvl3_expr);
 	debug(rule_lvl2_expr);

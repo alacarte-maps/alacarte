@@ -35,10 +35,10 @@ namespace pip {
 
 
 BOOST_FUSION_ADAPT_STRUCT(ParseInfo,
-						  (string, sourceline)
+						  (std::string, sourceline)
 						  (unsigned int, column)
 						  (unsigned int, line)
-						  (string, linecontent)
+						  (std::string, linecontent)
 						  );
 
 namespace boost { namespace spirit
@@ -78,7 +78,7 @@ namespace pip {
 		}
 
 		// This function is called during error handling to create
-		// a human readable string for the error context.
+		// a human readable std::string for the error context.
 		template <typename Context>
 		boost::spirit::info what(Context&) const
 		{

@@ -79,13 +79,13 @@ Configuration::Configuration(	boost::program_options::options_description& cmd_d
 
 	while(directories.size())
 	{
-		searchDirectories.push_back(directories.front().string());
+		searchDirectories.push_back(directories.front().std::string());
 		path configPath = directories.front() / configFile;
 
 		if(is_regular_file(configPath))
 		{
 			ConfigFileUsed = true;
-			store(parse_config_file<char>(configPath.string().c_str(), config_desc, true), options);
+			store(parse_config_file<char>(configPath.std::string().c_str(), config_desc, true), options);
 			break;
 		}
 
@@ -101,7 +101,7 @@ Configuration::Configuration(	boost::program_options::options_description& cmd_d
  * @param key the key to test
  * @return weather the key was present or not
  **/
-bool Configuration::has(const string& key)
+bool Configuration::has(const std::string& key)
 {
 	return options.count(key) != 0;
 }
@@ -143,12 +143,12 @@ void Configuration::printConfigToLog()
 		}else if (v.type() == typeid(std::vector<string>))
 		{
 			std::stringstream ss;
-			for(string name : it->second.as<std::vector<string>>()) {
+			for(std::string name : it->second.as<std::vector<string>>()) {
 				ss << name << ", ";
 			}
 			log.infoStream() << it->first << ": " << ss.str();
 		}else{
-			// We only take care of int and string, so if this message is printed on the log
+			// We only take care of int and std::string, so if this message is printed on the log
 			// feel free to add other types.
 			// boost::any does not support implicit casting!!!
 			log.infoStream() << "Unknown type[" << v.type().name() << "]";
@@ -158,7 +158,7 @@ void Configuration::printConfigToLog()
 
 
 
-const boost::any& Configuration::getValueByKey(const string& key) const
+const boost::any& Configuration::getValueByKey(const std::string& key) const
 {
 	return options.at(key).value();
 }

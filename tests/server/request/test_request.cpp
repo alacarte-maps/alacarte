@@ -26,7 +26,7 @@ struct test_request
     test_request()
 	{
 		DefaultConfig = TestConfig::Create()
-		->add<string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").string());
+		->add<string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").std::string());
 		
 		Statistic::Init(DefaultConfig);
 

@@ -166,7 +166,7 @@ void WayRenderer::fill(cairo_t* cr, AssetCache& cache)
 
 	cairo_save(cr);
 
-	const string& bg = s->fill_image.str();
+	const std::string& bg = s->fill_image.str();
 	if (!bg.empty()) {
 		cairo_pattern_t* pattern = cairo_pattern_create_for_surface(cache.getImage(bg));
 		cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);
@@ -215,7 +215,7 @@ void WayRenderer::stroke(cairo_t* cr, AssetCache& cache)
 	setLineCap(cr,  s->linecap);
 	setLineJoin(cr, s->linejoin);
 	cairo_set_source_rgba(cr, COLOR2RGBA(s->color));
-	const string& image = s->image.str();
+	const std::string& image = s->image.str();
 	cairo_pattern_t* pattern = nullptr;
 	if (!image.empty()) {
 		pattern = cairo_pattern_create_for_surface(cache.getImage(image));

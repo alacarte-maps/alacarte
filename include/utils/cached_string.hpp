@@ -32,7 +32,7 @@
 class MaybeCachedString;
 
 /**
- * @brief Represents a string which is cached into an internal cache
+ * @brief Represents a std::string which is cached into an internal cache
  *
  * \Note It is not safe to use an instance of this class in more than one thread!!! 
  *
@@ -44,10 +44,10 @@ class CachedString
 private:
 	struct StringStorageElement
 	{
-		StringStorageElement(const string& str);
+		StringStorageElement(const std::string& str);
 		StringStorageElement(const StringStorageElement& other);
 
-		const string value;
+		const std::string value;
 		const std::size_t hash;
 
 		bool operator == (const StringStorageElement& other) const;
@@ -59,25 +59,25 @@ private:
 public:
 	CachedString();
 	explicit CachedString(const char* str);
-	explicit CachedString(const string& str);
+	explicit CachedString(const std::string& str);
 	CachedString(const CachedString& other);
 	~CachedString();
 
 
-	CachedString& operator =(const string& str);
+	CachedString& operator =(const std::string& str);
 	CachedString& operator =(const CachedString& other);
 
-	bool equals(const string& other) const;
+	bool equals(const std::string& other) const;
 	bool equals(const CachedString& other) const;
 
 
-	void assign(const string& str);
+	void assign(const std::string& str);
 	void assign(const CachedString& other);
 
 	void clear();
 
 	const char* c_str() const;
-	const string& str() const;
+	const std::string& str() const;
 
 	std::size_t hash() const;
 
@@ -92,13 +92,13 @@ private:
 	template<typename Archive>
 	void save(Archive & ar, const unsigned int version) const
 	{
-		// Save the the hole string, sorry
+		// Save the the hole std::string, sorry
 		ar << str();
 	}
 	template<class Archive>
 	void load(Archive & ar, const unsigned int version)
 	{
-		string str;
+		std::string str;
 		ar >> str;
 		*this = CachedString(str);
 	}
@@ -118,7 +118,7 @@ private:
 
 
 /**
- * @brief Represents a string which could be cached into an internal cache
+ * @brief Represents a std::string which could be cached into an internal cache
  *
  * \Note It is not safe to use an instance of this class in more than one thread!!! 
  *
@@ -131,26 +131,26 @@ private:
 	typedef CachedString::StringStorage			StringStorage;
 public:
 	MaybeCachedString();
-	explicit MaybeCachedString(const string& str);
+	explicit MaybeCachedString(const std::string& str);
 	MaybeCachedString(const CachedString& other);
 	MaybeCachedString(const MaybeCachedString& other);
 	~MaybeCachedString();
 
 
-	MaybeCachedString& operator =(const string& str);
+	MaybeCachedString& operator =(const std::string& str);
 	MaybeCachedString& operator =(const CachedString& other);
 	MaybeCachedString& operator =(const MaybeCachedString& other);
 
-	bool equals(const string& other) const;
+	bool equals(const std::string& other) const;
 	bool equals(const CachedString& other) const;
 	bool equals(const MaybeCachedString& other) const;
 
-	void assign(const string& str);
+	void assign(const std::string& str);
 	void assign(const MaybeCachedString& other);
 	void assign(const CachedString& other);
 
 	const char* c_str() const;
-	const string& str() const;
+	const std::string& str() const;
 
 	void clear();
 	std::size_t hash() const;
@@ -178,13 +178,13 @@ private:
 // ############################# equal operators #################################
 
 inline bool operator ==(const CachedString& first, const CachedString& second)				{ return second.equals(first); }
-inline bool operator ==(const CachedString& first, const string& second)					{ return first.equals(second); }
+inline bool operator ==(const CachedString& first, const std::string& second)					{ return first.equals(second); }
 inline bool operator ==(const CachedString& first, const MaybeCachedString& second)			{ return second.equals(first); }
 
-inline bool operator ==(const string& first, const CachedString& second)					{ return second.equals(first); }
-inline bool operator ==(const string& first, const MaybeCachedString& second)				{ return second.equals(first); }
+inline bool operator ==(const std::string& first, const CachedString& second)					{ return second.equals(first); }
+inline bool operator ==(const std::string& first, const MaybeCachedString& second)				{ return second.equals(first); }
 
-inline bool operator ==(const MaybeCachedString& first, const string& second)				{ return first.equals(second); }
+inline bool operator ==(const MaybeCachedString& first, const std::string& second)				{ return first.equals(second); }
 inline bool operator ==(const MaybeCachedString& first, const CachedString& second)			{ return first.equals(second); }
 inline bool operator ==(const MaybeCachedString& first, const MaybeCachedString& second)	{ return first.equals(second); }
 
@@ -193,13 +193,13 @@ inline bool operator ==(const MaybeCachedString& first, const MaybeCachedString&
 // ############################# unequal operators #################################
 
 inline bool operator !=(const CachedString& first, const CachedString& second)				{ return !second.equals(first); }
-inline bool operator !=(const CachedString& first, const string& second)					{ return !first.equals(second); }
+inline bool operator !=(const CachedString& first, const std::string& second)					{ return !first.equals(second); }
 inline bool operator !=(const CachedString& first, const MaybeCachedString& second)			{ return !second.equals(first); }
 
-inline bool operator !=(const string& first, const CachedString& second)					{ return !second.equals(first); }
-inline bool operator !=(const string& first, const MaybeCachedString& second)				{ return !second.equals(first); }
+inline bool operator !=(const std::string& first, const CachedString& second)					{ return !second.equals(first); }
+inline bool operator !=(const std::string& first, const MaybeCachedString& second)				{ return !second.equals(first); }
 
-inline bool operator !=(const MaybeCachedString& first, const string& second)				{ return !first.equals(second); }
+inline bool operator !=(const MaybeCachedString& first, const std::string& second)				{ return !first.equals(second); }
 inline bool operator !=(const MaybeCachedString& first, const CachedString& second)			{ return !first.equals(second); }
 inline bool operator !=(const MaybeCachedString& first, const MaybeCachedString& second)	{ return !first.equals(second); }
 

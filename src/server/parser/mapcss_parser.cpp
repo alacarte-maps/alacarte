@@ -37,14 +37,14 @@
 
 
 /**
- * Replaces all tabs with spaces in a given string
+ * Replaces all tabs with spaces in a given std::string
  *
  * \param str String where tabs should be replaced by spaces
  * \return New String with spaces instead of tabs
  */
-string TabToSpace(const string& str)
+string TabToSpace(const std::string& str)
 {
-	string ret = str;
+	std::string ret = str;
 
 	for(char& c : ret)
 	{
@@ -62,7 +62,7 @@ string TabToSpace(const string& str)
 	int operator()(int i) const { return i; }
 	int operator()(const Color& color) const { BOOST_THROW_EXCEPTION(excp::ParseException() << excp::InfoWhat("Expected an integer!")); }
 	int operator()(double d) const { return static_cast<int>(d); }
-	int operator()(const string& s) const { return boost::lexical_cast<int>(s); }
+	int operator()(const std::string& s) const { return boost::lexical_cast<int>(s); }
 };
 
 struct DoubleVisitor : boost::static_visitor<double>
@@ -70,7 +70,7 @@ struct DoubleVisitor : boost::static_visitor<double>
 	double operator()(int i) const { return static_cast<double>(i); }
 	double operator()(const Color& color) const { BOOST_THROW_EXCEPTION(excp::ParseException() << excp::InfoWhat("Expected an integer!")); }
 	double operator()(double d) const { return d; }
-	double operator()(const string& s) const { return boost::lexical_cast<double>(s); }
+	double operator()(const std::string& s) const { return boost::lexical_cast<double>(s); }
 };
 
 struct ColorVisitor : boost::static_visitor<Color>
@@ -78,26 +78,26 @@ struct ColorVisitor : boost::static_visitor<Color>
 	Color operator()(int i) const { BOOST_THROW_EXCEPTION(excp::ParseException() << excp::InfoWhat("Expected a color!")); }
 	Color operator()(const Color& color) const { return color; }
 	Color operator()(double d) const { BOOST_THROW_EXCEPTION(excp::ParseException() << excp::InfoWhat("Expected a color!")); }
-	Color operator()(const string& s) const { return ResolveColorName(s); }
+	Color operator()(const std::string& s) const { return ResolveColorName(s); }
 };
 
 struct StringVisitor : boost::static_visitor<string>
 {
-	string operator()(int i) const { return boost::lexical_cast<string>(i); }
-	string operator()(const Color& color) const { return boost::lexical_cast<string>(color); }
-	string operator()(double d) const { return boost::lexical_cast<string>(d); }
-	string operator()(const string& s) const { return s; }
+	std::string operator()(int i) const { return boost::lexical_cast<string>(i); }
+	std::string operator()(const Color& color) const { return boost::lexical_cast<string>(color); }
+	std::string operator()(double d) const { return boost::lexical_cast<string>(d); }
+	std::string operator()(const string& s) const { return s; }
 };*/
 //! \endcond
 
 /**
- *	Converts a given string into a text position
+ *	Converts a given std::string into a text position
  *	\param specifier selecting text position (values are "line" and "center")
  *	\return The specified text position
  */
 /*Style::TextPosition SelectTextPosition(const SpecifierType& specifier)
 {
-	string spec = boost::apply_visitor(StringVisitor(), specifier);
+	std::string spec = boost::apply_visitor(StringVisitor(), specifier);
 	if(spec == "line")
 	{
 		return Style::POSITION_LINE;
@@ -115,7 +115,7 @@ struct StringVisitor : boost::static_visitor<string>
  * \param attrType type of the attribute
  * \param specifier for the attribute
  */
-void MapCssParser::addAttributeToTemplate(StylePtr& style, const std::shared_ptr<AttributeCreator>& attrType, const string& specifier, const ParseInfo& info)
+void MapCssParser::addAttributeToTemplate(StylePtr& style, const std::shared_ptr<AttributeCreator>& attrType, const std::string& specifier, const ParseInfo& info)
 {
 	assert(style);
 	assert(attrType);
@@ -130,7 +130,7 @@ void MapCssParser::addAttributeToTemplate(StylePtr& style, const std::shared_ptr
 		logger->warnStream() << "In line " << info.getLine() << " column " << info.getColumn() << ":";
 
 		logger->warnStream() << "'" << TabToSpace(info.getLineContent()) << "'";
-		logger->warnStream() << string(info.getColumn(), ' ') << "^-here";
+		logger->warnStream() << std::string(info.getColumn(), ' ') << "^-here";
 		logger->warnStream() << "Attribute will be ignored!";
 	}
 }
@@ -206,7 +206,7 @@ SelectorPtr MapCssParser::createChildSelectorFromObjectType(const SelectorPtr& n
  */
 SelectorPtr MapCssParser::createSelectorFromUnaryCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const UnaryCondition& condition)
 {
-	const string& tag = fsio::at_c<1>(condition);
+	const std::string& tag = fsio::at_c<1>(condition);
 
 	switch(fsio::at_c<0>(condition))
 	{
@@ -229,8 +229,8 @@ SelectorPtr MapCssParser::createSelectorFromUnaryCondition(const SelectorPtr& ne
  */
 SelectorPtr MapCssParser::createSelectorFromBinaryCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const BinaryCondition& condition)
 {
-	const string& tag = fsio::at_c<0>(condition);
-	const string& value = fsio::at_c<2>(condition);
+	const std::string& tag = fsio::at_c<0>(condition);
+	const std::string& value = fsio::at_c<2>(condition);
 
 	try {
 		switch(fsio::at_c<1>(condition))
@@ -326,7 +326,7 @@ RulePtr MapCssParser::createSelectorChain(const std::vector<SelectorItem>& items
  *
  * \param attribute name
  */
-void MapCssParser::warnUnsupportedAttribute(const string& attribute) const {
+void MapCssParser::warnUnsupportedAttribute(const std::string& attribute) const {
 	log.warnStream() << "Unsupported attribute '" << attribute << "' was ignored!";
 }
 
@@ -348,7 +348,7 @@ MapCssParser::MapCssParser(const std::shared_ptr<Geodata>& geodata)
  *	\param path to a file containing a stylesheet in mapcss form
  *	\return The created stylesheet
  */
-void MapCssParser::load(const string& path)
+void MapCssParser::load(const std::string& path)
 {
 	logger = std::make_shared<ParserLogger>(path);
 	log.infoStream() << "Load stylesheet[" << path << "]";
@@ -418,7 +418,7 @@ shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path, con
 
 	std::shared_ptr<MapCssParser> parser = std::make_shared<MapCssParser>(geodata);
 
-	boost::thread timeoutThread(boost::bind(&MapCssParser::load, parser, path.string()));
+	boost::thread timeoutThread(boost::bind(&MapCssParser::load, parser, path.std::string()));
 
 	if(!timeoutThread.timed_join(boost::posix_time::millisec(timeout)))
 	{

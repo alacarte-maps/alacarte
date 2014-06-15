@@ -30,7 +30,7 @@ class Archive
 {
 	private:
 		std::vector<string> paths;
-		string archPath;
+		std::string archPath;
 
 	public:
 		struct entry_t {
@@ -38,8 +38,8 @@ class Archive
 			uint64_t length;
 		};
 
-		Archive(const string& path);
-		void addFile(const string& filePath);
+		Archive(const std::string& path);
+		void addFile(const std::string& filePath);
 		void write();
 		void getEntries(std::vector<entry_t>& entries);
 };

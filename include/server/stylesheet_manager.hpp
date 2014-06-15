@@ -78,8 +78,8 @@ public:
 	 * @param path path of the stylesheet
 	 * @return the Stylesheet specified or the default Stylesheet
 	 */
-	TESTABLE std::shared_ptr<Stylesheet> getStylesheet(const string& path);
-	TESTABLE bool hasStylesheet(const string& path);
+	TESTABLE std::shared_ptr<Stylesheet> getStylesheet(const std::string& path);
+	TESTABLE bool hasStylesheet(const std::string& path);
 
 private:
 	/**

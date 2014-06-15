@@ -50,7 +50,7 @@ Statistic::~Statistic()
 		writeToFile(config->get<string>(opt::server::performance_log).c_str());
 }
 
-shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const string& stylesheet, int zoom)
+shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const std::string& stylesheet, int zoom)
 {
 #ifdef Statistic_Activated
 	std::shared_ptr<Statistic::JobMeasurement> jm = std::make_shared<JobMeasurement>(stylesheet, zoom);

@@ -77,7 +77,7 @@ public:
 
 	BinaryOperationNode(const node_ptr& left, op::BinaryOperationEnum operation, const node_ptr& right);
 
-	virtual string eval(GeoObject* obj) const;
+	virtual std::string eval(GeoObject* obj) const;
 private:
 	//! The left expression of the operator
 	node_ptr left;

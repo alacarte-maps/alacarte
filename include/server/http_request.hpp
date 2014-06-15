@@ -86,7 +86,7 @@ public:
 public:
 	explicit HttpRequest ( boost::asio::io_service &ioService, const std::shared_ptr<HttpServer>& server, const shared_ptr<RequestManager> &manager );
 
-	TESTABLE const string& getURL() const;
+	TESTABLE const std::string& getURL() const;
 
 	TESTABLE void answer ( const  std::shared_ptr<Tile>& tile, Reply::StatusType status = Reply::ok );
 	TESTABLE void answer ( Reply::StatusType status );

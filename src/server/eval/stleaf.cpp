@@ -27,11 +27,11 @@ namespace eval {
 
 
 /**
- * @brief Creates a leaf with a given string value
+ * @brief Creates a leaf with a given std::string value
  *
  *	\param value The value given back by eval
  **/
-STLeaf::STLeaf(const string& value)
+STLeaf::STLeaf(const std::string& value)
 	: value(value)
 {
 

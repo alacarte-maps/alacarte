@@ -133,7 +133,7 @@ public:
 template<typename Stream>
 Stream& operator >> (Stream& stream, Style::TextPosition& position)
 {
-	string expr;
+	std::string expr;
 	stream >> expr;
 
 	if(expr == "line")
@@ -147,7 +147,7 @@ Stream& operator >> (Stream& stream, Style::TextPosition& position)
 template<typename Stream>
 Stream& operator >> (Stream& stream, Style::LineCap& cap)
 {
-	string expr;
+	std::string expr;
 	stream >> expr;
 
 	if(expr == "round")
@@ -161,7 +161,7 @@ Stream& operator >> (Stream& stream, Style::LineCap& cap)
 template<typename Stream>
 Stream& operator >> (Stream& stream, Style::LineJoin& join)
 {
-	string expr;
+	std::string expr;
 	stream >> expr;
 
 	if(expr == "bevel")
@@ -177,7 +177,7 @@ Stream& operator >> (Stream& stream, Style::LineJoin& join)
 template<typename Stream>
 Stream& operator >> (Stream& stream, Style::ShieldShape& shape)
 {
-	string expr;
+	std::string expr;
 	stream >> expr;
 
 	if(expr == "rounded")
@@ -191,7 +191,7 @@ Stream& operator >> (Stream& stream, Style::ShieldShape& shape)
 template<typename Stream>
 Stream& operator >> (Stream& stream, Style::FontWeight& weight)
 {
-	string expr;
+	std::string expr;
 	stream >> expr;
 
 	if(expr == "normal")
@@ -205,7 +205,7 @@ Stream& operator >> (Stream& stream, Style::FontWeight& weight)
 template<typename Stream>
 Stream& operator >> (Stream& stream, Style::FontStyle& style)
 {
-	string expr;
+	std::string expr;
 	stream >> expr;
 
 	if(expr == "normal")

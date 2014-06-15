@@ -46,7 +46,7 @@ public:
 	 **/
 	AlacarteImporterApp()
 	{
-#define OPT(_name, _shortcut)	(string(_name).append(",").append(_shortcut)).c_str()
+#define OPT(_name, _shortcut)	(std::string(_name).append(",").append(_shortcut)).c_str()
 		using namespace boost::program_options;
 
 

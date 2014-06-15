@@ -58,8 +58,8 @@ public:
 	TESTABLE Way* getWay(WayId id) const ;
 	TESTABLE Relation* getRelation(RelId id) const;
 
-	TESTABLE void load(const string& path);
-	TESTABLE void save(const string& path);
+	TESTABLE void load(const std::string& path);
+	TESTABLE void save(const std::string& path);
 
 protected:
 	std::shared_ptr<std::vector<Way> > ways;
@@ -72,8 +72,8 @@ protected:
 	std::shared_ptr<RTree<RelId, FixedRect>> relTree;
 
 private:
-	void buildTrees(const string& nodePath, const string& wayPath, const string& relationPath);
-	void serialize(const string& serPath) const;
+	void buildTrees(const std::string& nodePath, const string& wayPath, const string& relationPath);
+	void serialize(const std::string& serPath) const;
 	TESTABLE FixedRect calculateBoundingBox(const Way& way) const;
 	TESTABLE FixedRect calculateBoundingBox(const Relation& relation) const;
 	FixedRect calculateBoundingBox(const std::vector<NodeId>& nodeIDs) const;

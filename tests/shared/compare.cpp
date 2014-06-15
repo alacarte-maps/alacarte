@@ -16,7 +16,7 @@ path getTestDirectory()
 {
 	path dir = path(TEST_DIRECTORY);
 	if(!boost::filesystem::exists(dir))
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.std::string()));
 	return dir;
 }
 
@@ -24,7 +24,7 @@ path getDataDirectory()
 {
 	path dir = getTestDirectory() / "data";
 	if(!boost::filesystem::exists(dir))
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.std::string()));
 	return dir;
 }
 
@@ -32,7 +32,7 @@ path getOutputDirectory()
 {
 	path dir = getDataDirectory() / "output";
 	if(!boost::filesystem::exists(dir))
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.std::string()));
 	return dir;
 }
 
@@ -40,7 +40,7 @@ path getInputDirectory()
 {
 	path dir = getDataDirectory() / "input";
 	if(!boost::filesystem::exists(dir))
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.std::string()));
 	return dir;
 }
 
@@ -73,16 +73,16 @@ path getValidDirectory()
  */
 void compareTile(const char* name)
 {
-	string file = string(name) + ".png";
+	std::string file = string(name) + ".png";
 	path rendered = getRenderedDirectory() / file;
 	path valid = getValidDirectory() / file;
 	path diff = getDiffDirectory() / file;
 
 	BOOST_TEST_MESSAGE("Loading images:");
 	BOOST_TEST_MESSAGE(" - valid: " << valid);
-	cairo_surface_t* valid_surface = cairo_image_surface_create_from_png(valid.string().c_str());
+	cairo_surface_t* valid_surface = cairo_image_surface_create_from_png(valid.std::string().c_str());
 	BOOST_TEST_MESSAGE(" - rendered: " << rendered);
-	cairo_surface_t* rendered_surface = cairo_image_surface_create_from_png(rendered.string().c_str());
+	cairo_surface_t* rendered_surface = cairo_image_surface_create_from_png(rendered.std::string().c_str());
 	cairo_t* cr = cairo_create(valid_surface);
 
 	int v_h = cairo_image_surface_get_height(valid_surface);
@@ -109,7 +109,7 @@ void compareTile(const char* name)
 	}
 
 	cairo_surface_flush(valid_surface);
-	cairo_surface_write_to_png(valid_surface, diff.string().c_str());
+	cairo_surface_write_to_png(valid_surface, diff.std::string().c_str());
 
 	BOOST_CHECK(!changed);
 }
@@ -120,7 +120,7 @@ void compareTile(const char* name)
  */
 void compareFile(const char* name)
 {
-	string file = string(name);
+	std::string file = string(name);
 	path rendered = getRenderedDirectory() / file;
 	path valid = getValidDirectory() / file;
 	using namespace std;

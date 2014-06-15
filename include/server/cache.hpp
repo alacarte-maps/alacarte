@@ -65,7 +65,7 @@ public:
 	
 	TESTABLE std::shared_ptr<Tile> getTile(const shared_ptr<TileIdentifier>& tl);
 	TESTABLE std::shared_ptr<Tile> getDefaultTile();
-	TESTABLE void deleteTiles(const string path);
+	TESTABLE void deleteTiles(const std::string path);
 
 private:
 	std::shared_ptr<Configuration> Config;

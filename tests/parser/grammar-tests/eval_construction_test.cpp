@@ -24,7 +24,7 @@ struct EvalConstructionTest
 	{
 	}
 
-	void testString(const string& expr, ResultType res)
+	void testString(const std::string& expr, ResultType res)
 	{
 		try {
 			eval::Eval<EvalType> eval(expr, std::make_shared<ParserLogger>(""), ParseInfo());
@@ -81,7 +81,7 @@ struct EvalListConstructionTest
 	{
 	}
 
-	void testString(const string& expr, const std::vector<ResultType>& resList)
+	void testString(const std::string& expr, const std::vector<ResultType>& resList)
 	{
 		try {
 			eval::Eval<std::vector<EvalType>> eval(expr, std::make_shared<ParserLogger>(""), ParseInfo());
@@ -101,7 +101,7 @@ struct EvalListConstructionTest
 		}
 	}
 
-	void testString(const string& expr)
+	void testString(const std::string& expr)
 	{
 		try {
 			eval::Eval<std::vector<EvalType>> eval(expr, std::make_shared<ParserLogger>(""), ParseInfo());

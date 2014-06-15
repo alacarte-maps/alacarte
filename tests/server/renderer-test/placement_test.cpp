@@ -37,7 +37,7 @@ public:
 		std::vector<std::shared_ptr<Style>> styles;
 		for (auto& pair : toPlace)
 		{
-			string& text = pair.first;
+			std::string& text = pair.first;
 			cairo_text_extents(cr, text.c_str(), &textSize);
 			std::shared_ptr<Style> s = std::make_shared<Style>();
 			s->text = text;
@@ -118,7 +118,7 @@ struct placement_test
 
 	void checkTile(const char* name)
 	{
-		string p = (getRenderedDirectory() / string(name)).native() + string(".png");
+		std::string p = (getRenderedDirectory() / string(name)).native() + string(".png");
 		renderLabels(p.c_str());
 
 		compareTile(name);

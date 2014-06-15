@@ -76,7 +76,7 @@ public:
 	FunctionOperationNode(const node_ptr& enclosed);
 	FunctionOperationNode(op::FunctionEnum operation, const std::vector<node_ptr>& enclosed);
 	
-	virtual string eval(GeoObject* obj) const;
+	virtual std::string eval(GeoObject* obj) const;
 private:
 	//! The operation type
 	op::FunctionEnum operation;

@@ -29,7 +29,7 @@
 #include "server/tile_identifier.hpp"
 
 
-TagSmallerSelector::TagSmallerSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const int& value)
+TagSmallerSelector::TagSmallerSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const std::string& tag, const int& value)
 	: Selector(rule, next)
 	, tag(tag)
 	, value(value)
@@ -45,7 +45,7 @@ void TagSmallerSelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIden
 		int tagvalue;
 		strstream >> tagvalue;
 
-		// !strstream is true if the string value could be converted to int
+		// !strstream is true if the std::string value could be converted to int
 		if (!strstream.bad() && tagvalue < value) {
 			next->matchNode(nodeID, ti, attributes);
 		}

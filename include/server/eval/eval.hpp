@@ -41,7 +41,7 @@ class GeoObject;
 namespace eval {
 
 
-shared_ptr<STNode> parseEval(string::const_iterator begin, string::const_iterator end, const std::shared_ptr<ParserLogger>& logger);
+shared_ptr<STNode> parseEval(std::string::const_iterator begin, string::const_iterator end, const std::shared_ptr<ParserLogger>& logger);
 
 /**
  * @brief Represents a value in a style template
@@ -72,17 +72,17 @@ public:
 	}
 
 	/**
-	 * @brief Creates an eval from a string
+	 * @brief Creates an eval from a std::string
 	 *
-	 * First the constructor will try to parse the string ad an eval.
-	 * If that does not work, the constructor will try to convert the string
+	 * First the constructor will try to parse the std::string ad an eval.
+	 * If that does not work, the constructor will try to convert the std::string
 	 * into the target type. If that does not work either, a ParseException is thrown.
 	 *
 	 * \param expr which should be parsed
 	 * \param logger which should be used by this eval
 	 * \param info about the eval
 	 **/
-	Eval(const string& expr, const std::shared_ptr<ParserLogger>& logger, const ParseInfo& info)
+	Eval(const std::string& expr, const std::shared_ptr<ParserLogger>& logger, const ParseInfo& info)
 		: value(TargetType())
 		, logger(logger)
 		, failed(false)
@@ -96,18 +96,18 @@ public:
 			value = result;
 		} else {
 
-			// If we extract a string here than cache it
+			// If we extract a std::string here than cache it
 			if(!Conv(expr, &boost::get<TargetType>(value), true))
 			{
 				BOOST_THROW_EXCEPTION(excp::ParseException()
 										<< excp::InfoFailureLineContent(expr)
 										<< excp::InfoFailureLine(info.getLine())
-										<< excp::InfoWhat("Failed to parse the expression into an eval or a '" + string(typeid(TargetType).name()) + "'"));
+										<< excp::InfoWhat("Failed to parse the expression into an eval or a '" + std::string(typeid(TargetType).name()) + "'"));
 			}else{
 				if(expr.find("eval") == 0)
 				{
 					logger->warnStream() << "In line " << info.getLine() << " could be an eval but failed to parse so.";
-					logger->warnStream() << "Expression is used as " << string(typeid(TargetType).name()) << "!";
+					logger->warnStream() << "Expression is used as " << std::string(typeid(TargetType).name()) << "!";
 					logger->warnStream() << "'" << info.getLineContent() << "'";
 				}
 			}
@@ -130,7 +130,7 @@ public:
 		}else{
 			assert(value.which() == 1);
 
-			string result = boost::get<node_ptr>(value)->eval(obj);
+			std::string result = boost::get<node_ptr>(value)->eval(obj);
 			if(!Conv(result, v) && !failed && logger)
 			{
 				failed = true;
@@ -182,7 +182,7 @@ public:
 
 	}
 
-	Eval(const string& expr, const std::shared_ptr<ParserLogger>& logger, const ParseInfo& info)
+	Eval(const std::string& expr, const std::shared_ptr<ParserLogger>& logger, const ParseInfo& info)
 		: logger(logger)
 		, failed(false)
 		, info(info)
@@ -192,8 +192,8 @@ public:
 		bool dquote = false;
 		int parentheses = 0;
 
-		string::const_iterator begin = expr.cbegin();
-		string::const_iterator end = begin;
+		std::string::const_iterator begin = expr.cbegin();
+		std::string::const_iterator end = begin;
 
 		while(end != expr.end())
 		{
@@ -203,7 +203,7 @@ public:
 				// Handle ,
 				if(parentheses == 0 && !dquote && !quote)
 				{
-					addValue(string(begin, end));
+					addValue(std::string(begin, end));
 					begin = ++end;
 					continue;
 				}
@@ -248,7 +248,7 @@ public:
 			++end;
 		}
 
-		addValue(string(begin, end));
+		addValue(std::string(begin, end));
 
 		
 	}
@@ -264,7 +264,7 @@ public:
 			{
 				v->push_back(boost::get<TargetType>(e));
 			}else{
-				string result = boost::get<node_ptr>(e)->eval(obj);
+				std::string result = boost::get<node_ptr>(e)->eval(obj);
 				TargetType target;
 				if(!Conv(result, &target) && !failed && logger)
 				{
@@ -290,7 +290,7 @@ public:
 		return valuelist[i].which() == 1;
 	}
 private:
-	void addValue(const string& part)
+	void addValue(const std::string& part)
 	{
 		valuelist.push_back(TargetType());
 		if(!Conv(part, &boost::get<TargetType>(valuelist.back()), true))
@@ -301,7 +301,7 @@ private:
 				BOOST_THROW_EXCEPTION(excp::ParseException()
 										<< excp::InfoFailureLineContent(part)
 										<< excp::InfoFailureLine(info.getLine())
-										<< excp::InfoWhat("Failed to parse the expression into an list of eval's or a " + string(typeid(TargetType).name()) + "'s"));
+										<< excp::InfoWhat("Failed to parse the expression into an list of eval's or a " + std::string(typeid(TargetType).name()) + "'s"));
 
 			valuelist.back() = result;
 		}

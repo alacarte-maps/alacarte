@@ -94,12 +94,12 @@ public:
 		assert(!ways);
 		assert(!relations);
 
-		std::ifstream xml_stream(xml_file.string());
+		std::ifstream xml_stream(xml_file.std::string());
 
 		if(!xml_stream)
-			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(xml_file.string()));
+			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(xml_file.std::string()));
 
-		log.infoStream() << "Load xml-file \"" << xml_file.string() << "\"";
+		log.infoStream() << "Load xml-file \"" << xml_file.std::string() << "\"";
 		
 		fileSize = boost::filesystem::file_size(xml_file);
 
@@ -130,11 +130,11 @@ public:
 			parseEntities(osm);
 
 		}catch(excp::InputFormatException& e) {
-			e << excp::InfoFileName(xml_file.string());
+			e << excp::InfoFileName(xml_file.std::string());
 			throw;
 		}catch(eaglexml::parse_error& e)
 		{
-			BOOST_THROW_EXCEPTION(excp::InputFormatException() << excp::InfoFileName(xml_file.string()) << excp::InfoWhat(e.what()));
+			BOOST_THROW_EXCEPTION(excp::InputFormatException() << excp::InfoFileName(xml_file.std::string()) << excp::InfoWhat(e.what()));
 		}
 	}
 
@@ -405,7 +405,7 @@ private:
 	 * @param dest destination to copy the extracted value
 	 **/
 	template<typename T>
-	void extractAttributeFromNode(const string& attrname, eaglexml::xml_node<>* node, T* dest)
+	void extractAttributeFromNode(const std::string& attrname, eaglexml::xml_node<>* node, T* dest)
 	{
 		assert(node);
 		assert(dest);

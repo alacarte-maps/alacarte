@@ -27,12 +27,12 @@
 #define ROUND_PAGE(_X) (((_X) % PAGE_SIZE == 0) ? (_X) : (((_X) / PAGE_SIZE + 1) * PAGE_SIZE))
 #define PAGE_SIZE (64 * 1024)
 
-Archive::Archive(const string& archPath)
+Archive::Archive(const std::string& archPath)
 	: archPath(archPath)
 {
 }
 
-void Archive::addFile(const string& filePath)
+void Archive::addFile(const std::string& filePath)
 {
 	paths.push_back(filePath);
 }

@@ -53,7 +53,7 @@ public:
 		friend class Statistic;
 	public:
 		JobMeasurement(){};
-		JobMeasurement(const string& stylesheet, int zoom)
+		JobMeasurement(const std::string& stylesheet, int zoom)
 			: stylesheet(stylesheet), zoom(zoom), nodes(0), ways(0), relations(0)
 		{
 			for(int i = 0; i < Component::Size; i++) {
@@ -66,14 +66,14 @@ public:
 		uint32_t nodes;
 		uint32_t ways;
 		uint32_t relations;
-		string stylesheet;
+		std::string stylesheet;
 		bool stopped[Component::Size];
 		ptime jobStartTime;
 		ptime startTime[Component::Size];
 		ptime stopTime[Component::Size];
 	};
 
-	std::shared_ptr<JobMeasurement> startNewMeasurement(const string& stylesheet, int zoom);
+	std::shared_ptr<JobMeasurement> startNewMeasurement(const std::string& stylesheet, int zoom);
 	void start(std::shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
 	void stop(std::shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
 	void finished(std::shared_ptr<Statistic::JobMeasurement>& job);
@@ -95,7 +95,7 @@ public:
 	~Statistic();
 private:
 	void writeToFile(const char* filename);
-	string componentToName(Component component) const;
+	std::string componentToName(Component component) const;
 
 	Statistic(const std::shared_ptr<Configuration>& config);
 	Statistic(const Statistic&){};

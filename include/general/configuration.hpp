@@ -35,18 +35,18 @@ namespace opt {
 	//! Use Configuration::has to check weather the user wanted help
 	static const char* help						= "help";
 
-	//! Option to get the configuration filename (type: string)
+	//! Option to get the configuration filename (type: std::string)
 	static const char* config					= "config";
 
-	//! Option to get the filename of the log (type: string)
+	//! Option to get the filename of the log (type: std::string)
 	static const char* logfile					= "logfile";
 
 	// importer
 	namespace importer {
-		//! Option to get the path to osm xml file (type: string)
+		//! Option to get the path to osm xml file (type: std::string)
 		static const char* path_to_osmdata			= "importer.osm-data";
 
-		//! Option to get the filename to save geodata (type: string)
+		//! Option to get the filename to save geodata (type: std::string)
 		static const char* path_to_geodata			= "importer.geo-data";
 
 		//! Check all xml entities
@@ -55,19 +55,19 @@ namespace opt {
 
 	namespace server {
 		// server
-		//! Filepath where the geodata is located (type: string)
+		//! Filepath where the geodata is located (type: std::string)
 		static const char* path_to_geodata			= "server.geo-data";
 
-		//! Filepath to the access log (type: string)
+		//! Filepath to the access log (type: std::string)
 		static const char* access_log				= "server.access-log";
 
 		//! Option to get number of worker threads (type: int)
 		static const char* num_threads				= "server.num-threads";
 
-		//! Path to be observed for stylesheets (type: string)
+		//! Path to be observed for stylesheets (type: std::string)
 		static const char* style_source				= "server.style-src";
 
-		//! Address of the server (type: string)
+		//! Address of the server (type: std::string)
 		static const char* server_address			= "server.address";
 
 		//! Port the server should listen at (type: int)
@@ -76,10 +76,10 @@ namespace opt {
 		//! Maximum size for the queue (type: int)
 		static const char* max_queue_size			= "server.max-queue";
 
-		//! Path to the default stylesheet (type: string)
+		//! Path to the default stylesheet (type: std::string)
 		static const char* path_to_default_style	= "server.default-style";
 
-		//! Path to the default tile (type: string)
+		//! Path to the default tile (type: std::string)
 		static const char* path_to_default_tile		= "server.default-tile";
 
 		//! Option to get the cache size (type: int)
@@ -88,7 +88,7 @@ namespace opt {
 		//! Option to get the zoomlevel until tiles are kept on harddrive (type: int)
 		static const char* cache_keep_tile			= "server.cache-keep-tile";
 
-		//! Option to get the cache path (type: string)
+		//! Option to get the cache path (type: std::string)
 		static const char* cache_path				= "server.cache-path";
 
 		//! Option to get the timeout for stylesheet-parsing (type: int)
@@ -103,13 +103,13 @@ namespace opt {
 		//! Option to get the muted Components
 		static const char* log_mute_component		= "server.log-mute-component";
 
-		//! Filepath to the performance log (type: string)
+		//! Filepath to the performance log (type: std::string)
 		static const char* performance_log				= "server.performance-log";
 	}
 }
 
 /**
- * @brief Represents a set of options accessible via strings.
+ * @brief Represents a set of options accessible via std::strings.
  *
  **/
 class Configuration : public boost::enable_shared_from_this<Configuration>
@@ -122,7 +122,7 @@ public:
 					boost::program_options::positional_options_description& pos_desc,
 					int argc, char** argv);
 
-	bool has(const string& key);
+	bool has(const std::string& key);
 
 	/**
 	 * @brief Returns a value identified by a key.
@@ -131,7 +131,7 @@ public:
 	 * @return the value in the identified by the key casted to the wanted type
 	 **/
 	template<typename T>
-	T get(const string& key)
+	T get(const std::string& key)
 	{
 		return boost::any_cast<const T&>(getValueByKey(key));
 	}
@@ -145,14 +145,14 @@ public:
 	 **/
 	bool usedConfigFile() const;
 	/**
-	 * @brief Returns a queue of strings. Each string is a folder in which we searched for a config file.
+	 * @brief Returns a queue of std::strings. Each string is a folder in which we searched for a config file.
 	 * If usedConfigFile() is true then the last entry is the folder in which we found the config file.
 	 *
-	 * @return :queue< string, std::deque< string, std::allocator< string > > >
+	 * @return :queue< std::string, std::deque< string, std::allocator< string > > >
 	 **/
 	const std::vector<string>& getSeachDirectories() const;
 protected:
-	TESTABLE const boost::any& getValueByKey(const string& key) const;
+	TESTABLE const boost::any& getValueByKey(const std::string& key) const;
 
 	//! Internal map holding the options.
 	boost::program_options::variables_map options;

@@ -37,7 +37,7 @@ namespace eval {
 
 /*
 template<typename T>
-static T EasyStringConv(const string& str, T* value)
+static T EasyStringConv(const std::string& str, T* value)
 {
 	T extract;
 	if(Conv(str, &extract))
@@ -60,7 +60,7 @@ struct IntVisitor : public boost::static_visitor<int>
 	int operator()(int i) const { return *target = i; }
 	int operator()(const Color& color) const { / * Do nothing! * / return 0;  }
 	int operator()(double d) const { return *target = static_cast<int>(d); }
-	int operator()(const string& s) const { return EasyStringConv(s, target); }
+	int operator()(const std::string& s) const { return EasyStringConv(s, target); }
 	int operator()(const eval::Eval::node_ptr& node) const { return EasyStringConv(node->eval(obj), target); }
 };
 
@@ -76,7 +76,7 @@ struct DoubleVisitor : public boost::static_visitor<double>
 	double operator()(int i) const { return *target = static_cast<double>(i); }
 	double operator()(const Color& color) const { / * Do nothing! * / return 0;  }
 	double operator()(double d) const { return *target = d; }
-	double operator()(const string& s) const { return EasyStringConv(s, target); }
+	double operator()(const std::string& s) const { return EasyStringConv(s, target); }
 	double operator()(const eval::Eval::node_ptr& node) const { return EasyStringConv(node->eval(obj), target); }
 };
 
@@ -92,24 +92,24 @@ struct ColorVisitor : public boost::static_visitor<Color>
 	Color operator()(int i) const { / * Do nothing! * / return Color(); }
 	Color operator()(const Color& color) const { return *target = color;  }
 	Color operator()(double d) const { / * Do nothing! * / return Color(); }
-	Color operator()(const string& s) const { ColorTable::Inst().resolve(s, target); return Color(); }
+	Color operator()(const std::string& s) const { ColorTable::Inst().resolve(s, target); return Color(); }
 	Color operator()(const eval::Eval::node_ptr& node) const { ColorTable::Inst().resolve(node->eval(obj), target); return Color(); }
 };
 
 struct StringVisitor : public boost::static_visitor<string>
 {
 	GeoObject* obj;
-	string* target;
-	StringVisitor(GeoObject* obj, string* target)
+	std::string* target;
+	StringVisitor(GeoObject* obj, std::string* target)
 		: obj(obj)
 		, target(target)
 	{}
 
-	string operator()(int i) const { return (*target = ToString(i)); }
-	string operator()(const Color& color) const {return (*target = ToString(color));  }
-	string operator()(double d) const { return (*target = ToString(d)); }
-	string operator()(const string& s) const { return *target = s; }
-	string operator()(const eval::Eval::node_ptr& node) const { return *target = node->eval(obj); }
+	std::string operator()(int i) const { return (*target = ToString(i)); }
+	std::string operator()(const Color& color) const {return (*target = ToString(color));  }
+	std::string operator()(double d) const { return (*target = ToString(d)); }
+	std::string operator()(const string& s) const { return *target = s; }
+	std::string operator()(const eval::Eval::node_ptr& node) const { return *target = node->eval(obj); }
 };*/
 
 
@@ -166,13 +166,13 @@ void Eval::overwrite(GeoObject* obj, Color* cv) const
 */
 
 /**
- * @brief Overwrites the string if the internal value can be resolved into a string
+ * @brief Overwrites the std::string if the internal value can be resolved into a string
  *
  * \param obj which will be used to execute an eval expression
  * \param sv The value to overwrite
  **/
 /*
-void Eval::overwrite(GeoObject* obj, string* sv) const
+void Eval::overwrite(GeoObject* obj, std::string* sv) const
 {
 	assert(sv);
 	boost::apply_visitor(StringVisitor(obj, sv), value);
@@ -184,13 +184,13 @@ void Eval::overwrite(GeoObject* obj, string* sv) const
 /**
  * @brief parses an eval 
  *
- * \param begin of the parseable string
- * \param end of the parseable string
+ * \param begin of the parseable std::string
+ * \param end of the parseable std::string
  * \param logger used for output 
  *
  * \return the root node for the expression or null, if something failed.
  **/
-shared_ptr<STNode> parseEval(string::const_iterator begin, string::const_iterator end, const std::shared_ptr<ParserLogger>& logger)
+shared_ptr<STNode> parseEval(std::string::const_iterator begin, string::const_iterator end, const std::shared_ptr<ParserLogger>& logger)
 {
 	EvalGrammer eval_;
 	std::shared_ptr<STNode> root;

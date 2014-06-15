@@ -90,7 +90,7 @@ void Style::finish(GeoObject* associatedObject, std::shared_ptr<const Stylesheet
 
 	if (this->icon_image.str().size()) {
 		// if the icon path is set, prepend the path to the stylesheet directory and check for existence
-		this->icon_image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->icon_image.str())).string();
+		this->icon_image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->icon_image.str())).std::string();
 		if (!boost::filesystem::exists(this->icon_image.str())) {
 			// delete non existing icon paths so that every remaining icon path for the renderer is valid
 			this->icon_image = "";
@@ -99,7 +99,7 @@ void Style::finish(GeoObject* associatedObject, std::shared_ptr<const Stylesheet
 
 	if (this->shield_image.str().size()) {
 		// if the shield image path is set, prepend the path to the stylesheet directory and check for existence
-		this->shield_image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->shield_image.str())).string();
+		this->shield_image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->shield_image.str())).std::string();
 		if (!boost::filesystem::exists(this->shield_image.str())) {
 			// delete non existing shield image paths so that every remaining path for the renderer is valid
 			this->shield_image = "";
@@ -108,7 +108,7 @@ void Style::finish(GeoObject* associatedObject, std::shared_ptr<const Stylesheet
 
 	if (this->image.str().size()) {
 		// if the image is set, prepend the path to the stylesheet directory and check for existence
-		this->image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->image.str())).string();
+		this->image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->image.str())).std::string();
 		if (!boost::filesystem::exists(this->image.str())) {
 			// delete non existing image paths so that every remaining path for the renderer is valid
 			this->image = "";
@@ -117,7 +117,7 @@ void Style::finish(GeoObject* associatedObject, std::shared_ptr<const Stylesheet
 
 	if (this->fill_image.str().size()) {
 		// if the fill image is set, prepend the path to the stylesheet directory and check for existence
-		this->fill_image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->fill_image.str())).string();
+		this->fill_image = (stylesheet->getPath().parent_path() / boost::filesystem::path(this->fill_image.str())).std::string();
 		if (!boost::filesystem::exists(this->fill_image.str())) {
 			// delete non existing fill image paths so that every remaining path for the renderer is valid
 			this->fill_image = "";

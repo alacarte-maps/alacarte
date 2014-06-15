@@ -38,7 +38,7 @@ class Stylesheet;
 
 struct MapCssParser
 {
-	void addAttributeToTemplate(StylePtr& style, const std::shared_ptr<AttributeCreator>& attrType, const string& specifier, const ParseInfo& info);
+	void addAttributeToTemplate(StylePtr& style, const std::shared_ptr<AttributeCreator>& attrType, const std::string& specifier, const ParseInfo& info);
 	void applyStyleToRules(std::vector<RulePtr>& rules, const StylePtr& style);
 	SelectorPtr createSelectorFromObjectType(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType, Rule::AcceptableTypes& type);
 	SelectorPtr createChildSelectorFromObjectType(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType);
@@ -46,10 +46,10 @@ struct MapCssParser
 	SelectorPtr createSelectorFromBinaryCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const BinaryCondition& condition);
 	SelectorPtr createSelectorFromCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const ConditionType& condition);
 	RulePtr createSelectorChain(const std::vector<SelectorItem>& items);
-	void warnUnsupportedAttribute(const string& attribute) const;
+	void warnUnsupportedAttribute(const std::string& attribute) const;
 
 	MapCssParser(const std::shared_ptr<Geodata>& geodata);
-	void load(const string& path);
+	void load(const std::string& path);
 
 	//! The log used by the parser
 	log4cpp::Category& log;

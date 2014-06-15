@@ -114,7 +114,7 @@ void RelationRenderer::fill(cairo_t* cr, AssetCache& cache)
 	cairo_push_group(cr);
 
 	cairo_set_fill_rule(cr, CAIRO_FILL_RULE_EVEN_ODD);
-	const string& bg = s->fill_image.str();
+	const std::string& bg = s->fill_image.str();
 	if (!bg.empty()) {
 		cairo_pattern_t* pattern = cairo_pattern_create_for_surface(cache.getImage(bg));
 		cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);

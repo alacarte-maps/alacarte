@@ -52,26 +52,26 @@ public:
 			return *this;
 		}
 
-		string logvalue() const;
+		std::string logvalue() const;
 	private:
 		std::ostringstream		value;
 		std::shared_ptr<ParserLogger> logger;
 		Category				category;
 	};
 
-	ParserLogger(const string& parsedFile);
+	ParserLogger(const std::string& parsedFile);
 	~ParserLogger();
 
 	LogStream warnStream();
 	LogStream errorStream();
 
-	void warn(const string& str);
-	void error(const string& str);
+	void warn(const std::string& str);
+	void error(const std::string& str);
 private:
-	void logToStream(Category cat, const string& str);
+	void logToStream(Category cat, const std::string& str);
 
 	std::ofstream		outputStream;
-	string				filename;
+	std::string				filename;
 	log4cpp::Category&	log;
 };
 

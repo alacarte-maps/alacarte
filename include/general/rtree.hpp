@@ -101,7 +101,7 @@ private:
 
 public:
 	RTree () {}
-	void build(std::vector<data_t>& data, const string& leafPath);
+	void build(std::vector<data_t>& data, const std::string& leafPath);
 	bool search ( std::shared_ptr<std::vector<id_t> >& result,
 				  const FixedRect& rect, bool returnOnFirst = false ) const;
 	bool contains(const FixedRect& rect) const
@@ -111,7 +111,7 @@ public:
 	};
 
 	//! is called after deserialisation to set offets in the archive
-	void setLeafFile(const string& path, uint64_t offset, uint64_t length)
+	void setLeafFile(const std::string& path, uint64_t offset, uint64_t length)
 	{
 		input.open(path, length, offset);
 		if (!input.is_open())
@@ -126,8 +126,8 @@ private:
 	uint64_t offset;
 	uint64_t length;
 
-	void buildLeaves (const std::vector<data_t>& rects, const string& leafPath);
-	void writeLeaves (const std::vector<id_t>& ids, const std::vector<data_t>& rects, const string& leafPath);
+	void buildLeaves (const std::vector<data_t>& rects, const std::string& leafPath);
+	void writeLeaves (const std::vector<id_t>& ids, const std::vector<data_t>& rects, const std::string& leafPath);
 	void buildLevels ();
 	RLeaf<id_t, data_t>* readLeaf (uint32_t nodeIdx, uint32_t childIdx) const;
 	void getSubTree ( uint32_t rootIdx, std::shared_ptr<std::vector<id_t> >& ids ) const;
@@ -149,7 +149,7 @@ private:
 	/* debug functions */
 	bool validate () const;
 	void printTree () const;
-	void printLeaves (const string& leafPath) const;
+	void printLeaves (const std::string& leafPath) const;
 
 	friend class boost::serialization::access;
 	template<typename Archive>
@@ -166,7 +166,7 @@ private:
 
 //! starts to build the tree for the given data
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::build(std::vector<data_t>& data, const string& leafPath)
+void RTree<id_t, data_t>::build(std::vector<data_t>& data, const std::string& leafPath)
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	log.infoStream() << "Objects: " << data.size();
@@ -222,7 +222,7 @@ coord_t RTree<id_t, data_t>::getY (const FixedPoint& p)
 }
 
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::buildLeaves (const std::vector<data_t>& data, const string& leafPath)
+void RTree<id_t, data_t>::buildLeaves (const std::vector<data_t>& data, const std::string& leafPath)
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 
@@ -270,7 +270,7 @@ void RTree<id_t, data_t>::buildLeaves (const std::vector<data_t>& data, const st
 template<class id_t, class data_t>
 void RTree<id_t, data_t>::writeLeaves (const std::vector<id_t>& ids,
 									   const std::vector<data_t>& data,
-									   const string& leafPath)
+									   const std::string& leafPath)
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	log.infoStream() << " - writing leaves";
@@ -565,7 +565,7 @@ FixedRect RTree<id_t, data_t>::getBoundingBox ( const FixedPoint keys[], size_t 
 
 //! For debugging
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::printLeaves (const string& leafPath) const
+void RTree<id_t, data_t>::printLeaves (const std::string& leafPath) const
 {
 	std::ofstream log(leafPath + ".log", std::ios::out);
 

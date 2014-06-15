@@ -52,13 +52,13 @@ struct CachedString::StringStorageElement::Hasher
 };
 
 /**
- * @brief Comparator for comparing STringStorageELements with strings
+ * @brief Comparator for comparing STringStorageELements with std::strings
  *
  **/
 struct CachedString::StringStorageElement::StringComparator
 	: public std::binary_function<string, StringStorageElement, bool>
 {
-	bool operator()(const string& str, const StringStorageElement& sse) const
+	bool operator()(const std::string& str, const StringStorageElement& sse) const
 	{
 		return sse.value == str;
 	}
@@ -67,10 +67,10 @@ struct CachedString::StringStorageElement::StringComparator
 /**
  * @brief Creates a new StringStorageELement
  *
- * \param str string for this element
+ * \param str std::string for this element
  *
  **/
-CachedString::StringStorageElement::StringStorageElement( const string& str )
+CachedString::StringStorageElement::StringStorageElement( const std::string& str )
 	: value(str)
 	, hash(boost::hash<string>()(str))
 {
@@ -89,7 +89,7 @@ CachedString::StringStorageElement::StringStorageElement(const StringStorageElem
 }
 
 /**
- * @brief Storage class for cached strings
+ * @brief Storage class for cached std::strings
  *
  * This is an singleton
  **/
@@ -120,7 +120,7 @@ public:
 	}
 
 	/**
-	 * @brief Returns the storage element for an empty string
+	 * @brief Returns the storage element for an empty std::string
 	 *
 	 **/
 	const StringStorageElement* getEmptyString() const
@@ -129,18 +129,18 @@ public:
 	}
 	
 	/**
-	 * @brief Returns the storage element for a given string
+	 * @brief Returns the storage element for a given std::string
 	 *
-	 * If no element exists for the string a new element is created.
+	 * If no element exists for the std::string a new element is created.
 	 *
 	 **/
-	const StringStorageElement* resolveString(const string& str)
+	const StringStorageElement* resolveString(const std::string& str)
 	{
 		boost::upgrade_lock<boost::shared_mutex> guard(accessMutex);
-		// Search for the string using a direct string search
-		auto it = storage.find(str, stringStorageElementHasher, stringComperator);
+		// Search for the std::string using a direct string search
+		auto it = storage.find(str, std::stringStorageElementHasher, stringComperator);
 
-		// check if string was already in storage
+		// check if std::string was already in storage
 		if(it == storage.end())
 		{
 			boost::upgrade_to_unique_lock<boost::shared_mutex> unique(guard);
@@ -161,11 +161,11 @@ private:
 
 private:
 	//! The hasher used for StringStorageELements
-	StringStorageElement::Hasher stringStorageElementHasher;
-	//! The comparator for strings and storage elements
-	StringStorageElement::StringComparator stringComperator;
+	StringStorageElement::Hasher std::stringStorageElementHasher;
+	//! The comparator for std::strings and storage elements
+	StringStorageElement::StringComparator std::stringComperator;
 
-	//! Pointer to the storage element holding the empty string.
+	//! Pointer to the storage element holding the empty std::string.
 	const StringStorageElement* emptyString;
 	//! internal storage as an hash map
 	boost::unordered_set<StringStorageElement, StringStorageElement::Hasher> storage;
@@ -176,7 +176,7 @@ private:
 
 
 /**
- * @brief Cretaes a new Cached string
+ * @brief Cretaes a new Cached std::string
  *
  **/
 CachedString::CachedString()
@@ -185,7 +185,7 @@ CachedString::CachedString()
 }
 
 /**
- * @brief Creates a new cached string from a char ptr
+ * @brief Creates a new cached std::string from a char ptr
  *
  **/
 CachedString::CachedString(const char* str)
@@ -194,16 +194,16 @@ CachedString::CachedString(const char* str)
 }
 
 /**
- * @brief Creates a new cached string from a std string
+ * @brief Creates a new cached std::string from a std string
  *
  **/
-CachedString::CachedString( const string& str )
+CachedString::CachedString( const std::string& str )
 {
 	assign(str);
 }
 
 /**
- * @brief Creates a new cached string from another cached string
+ * @brief Creates a new cached std::string from another cached string
  *
  **/
 CachedString::CachedString( const CachedString& other )
@@ -213,7 +213,7 @@ CachedString::CachedString( const CachedString& other )
 
 
 /**
- * @brief Tidies up the cached string
+ * @brief Tidies up the cached std::string
  *
  **/
 CachedString::~CachedString()
@@ -221,16 +221,16 @@ CachedString::~CachedString()
 }
 
 /**
- * @brief Compares this cached string with an non cached string
+ * @brief Compares this cached std::string with an non cached string
  *
  **/
-bool CachedString::equals( const string& other ) const
+bool CachedString::equals( const std::string& other ) const
 {
 	return str() == other;
 }
 
 /**
- * @brief Creates a new cached string from another cached string
+ * @brief Creates a new cached std::string from another cached string
  *
  **/
 bool CachedString::equals( const CachedString& other ) const
@@ -245,17 +245,17 @@ CachedString& CachedString::operator =(const char* str)
 }*/
 
 /**
- * @brief Assigns a std string
+ * @brief Assigns a std std::string
  *
  **/
-CachedString& CachedString::operator =(const string& str)
+CachedString& CachedString::operator =(const std::string& str)
 {
 	assign(str);
 	return *this;
 }
 
 /**
- * @brief Assigns a cached string
+ * @brief Assigns a cached std::string
  *
  **/
 CachedString& CachedString::operator=( const CachedString& other )
@@ -266,16 +266,16 @@ CachedString& CachedString::operator=( const CachedString& other )
 
 
 /**
- * @brief Assigns a std string
+ * @brief Assigns a std std::string
  *
  **/
-void CachedString::assign( const string& str )
+void CachedString::assign( const std::string& str )
 {
 	internalString = StringStorage::Inst().resolveString(str);
 }
 
 /**
- * @brief Assigns a cached string
+ * @brief Assigns a cached std::string
  *
  **/
 void CachedString::assign( const CachedString& other )
@@ -285,7 +285,7 @@ void CachedString::assign( const CachedString& other )
 
 
 /**
- * @brief Sets this string to the empty string
+ * @brief Sets this std::string to the empty string
  *
  **/
 void CachedString::clear()
@@ -295,7 +295,7 @@ void CachedString::clear()
 
 
 /**
- * @brief Returns the internal c string
+ * @brief Returns the internal c std::string
  *
  **/
 const char* CachedString::c_str() const
@@ -305,10 +305,10 @@ const char* CachedString::c_str() const
 }
 
 /**
- * @brief Returns the internal string
+ * @brief Returns the internal std::string
  *
  **/
-const string& CachedString::str() const
+const std::string& CachedString::str() const
 {
 	assert(internalString);
 	return internalString->value;
@@ -331,7 +331,7 @@ void CachedString::Shutdown()
 
 
 /**
- * @brief Returns the internal c string
+ * @brief Returns the internal c std::string
  *
  **/
 MaybeCachedString::MaybeCachedString()
@@ -347,17 +347,17 @@ MaybeCachedString::MaybeCachedString( const char* str )
 }*/
 
 /**
- * @brief Creates a non cached string from a string
+ * @brief Creates a non cached std::string from a string
  *
  **/
-MaybeCachedString::MaybeCachedString( const string& str )
+MaybeCachedString::MaybeCachedString( const std::string& str )
 	: cached(true)
 {
 	assign(str);
 }
 
 /**
- * @brief Creates a cached string from a cached string
+ * @brief Creates a cached std::string from a cached string
  *
  **/
 MaybeCachedString::MaybeCachedString( const CachedString& other )
@@ -367,7 +367,7 @@ MaybeCachedString::MaybeCachedString( const CachedString& other )
 }
 
 /**
- * @brief Creates a maybe cached string from another maybe cached string
+ * @brief Creates a maybe cached std::string from another maybe cached string
  **/
 MaybeCachedString::MaybeCachedString( const MaybeCachedString& other )
 	: cached(true)
@@ -391,17 +391,17 @@ MaybeCachedString& MaybeCachedString::operator=( const char* str )
 }*/
 
 /**
- * @brief Assigns a non cached std string
+ * @brief Assigns a non cached std std::string
  *
  **/
-MaybeCachedString& MaybeCachedString::operator=( const string& str )
+MaybeCachedString& MaybeCachedString::operator=( const std::string& str )
 {
 	assign(str);
 	return *this;
 }
 
 /**
- * @brief Assigns a cached string
+ * @brief Assigns a cached std::string
  *
  **/
 MaybeCachedString& MaybeCachedString::operator =(const CachedString& other)
@@ -411,7 +411,7 @@ MaybeCachedString& MaybeCachedString::operator =(const CachedString& other)
 }
 
 /**
- * @brief Assigns a maybe cached string
+ * @brief Assigns a maybe cached std::string
  *
  **/
 MaybeCachedString& MaybeCachedString::operator=( const MaybeCachedString& other )
@@ -422,10 +422,10 @@ MaybeCachedString& MaybeCachedString::operator=( const MaybeCachedString& other 
 
 
 /**
- * @brief Assigns a non cached std string
+ * @brief Assigns a non cached std std::string
  *
  **/
-void MaybeCachedString::assign( const string& str )
+void MaybeCachedString::assign( const std::string& str )
 {
 	reset();
 	cached = false;
@@ -433,7 +433,7 @@ void MaybeCachedString::assign( const string& str )
 }
 
 /**
- * @brief Assigns a maybe cached string
+ * @brief Assigns a maybe cached std::string
  *
  **/
 void MaybeCachedString::assign( const MaybeCachedString& other )
@@ -448,7 +448,7 @@ void MaybeCachedString::assign( const MaybeCachedString& other )
 }
 
 /**
- * @brief Assigns a cached string
+ * @brief Assigns a cached std::string
  *
  **/
 void MaybeCachedString::assign( const CachedString& other )
@@ -458,16 +458,16 @@ void MaybeCachedString::assign( const CachedString& other )
 }
 
 /**
- * @brief Compares this string with a given std string
+ * @brief Compares this std::string with a given std string
  *
  **/
-bool MaybeCachedString::equals( const string& other ) const
+bool MaybeCachedString::equals( const std::string& other ) const
 {
 	return str() == other;
 }
 
 /**
- * @brief Compares this string with a cached string
+ * @brief Compares this std::string with a cached string
  *
  **/
 bool MaybeCachedString::equals( const CachedString& other ) const
@@ -481,7 +481,7 @@ bool MaybeCachedString::equals( const CachedString& other ) const
 }
 
 /**
- * @brief Compares this string with another maybe cached string
+ * @brief Compares this std::string with another maybe cached string
  *
  **/
 bool MaybeCachedString::equals( const MaybeCachedString& other ) const
@@ -495,7 +495,7 @@ bool MaybeCachedString::equals( const MaybeCachedString& other ) const
 }
 
 /**
- * @brief Returns the internal c string
+ * @brief Returns the internal c std::string
  *
  **/
 const char* MaybeCachedString::c_str() const
@@ -505,10 +505,10 @@ const char* MaybeCachedString::c_str() const
 }
 
 /**
- * @brief Returns the internal string
+ * @brief Returns the internal std::string
  *
  **/
-const string& MaybeCachedString::str() const
+const std::string& MaybeCachedString::str() const
 {
 	assert(internalString);
 	return internalString->value;
@@ -525,7 +525,7 @@ std::size_t MaybeCachedString::hash() const
 }
 
 /**
- * @brief Sets this string to be the empty string
+ * @brief Sets this std::string to be the empty string
  *
  **/
 void MaybeCachedString::clear()
@@ -536,7 +536,7 @@ void MaybeCachedString::clear()
 }
 
 /**
- * @brief deletes rge internal string if it is not cached
+ * @brief deletes rge internal std::string if it is not cached
  *
  **/
 void MaybeCachedString::reset()
@@ -546,7 +546,7 @@ void MaybeCachedString::reset()
 }
 
 /**
- * @brief Returns weather this string is cached.
+ * @brief Returns weather this std::string is cached.
  *
  **/
 bool MaybeCachedString::isCached() const

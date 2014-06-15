@@ -18,7 +18,7 @@ public:
 	TestConfig();
 
 	template<typename T>
-	Ptr add(const string& key, const T& value)
+	Ptr add(const std::string& key, const T& value)
 	{
 		testOptions[key] = value;
 
@@ -30,7 +30,7 @@ public:
 	std::shared_ptr<TestConfig> clone() const;
 
 protected:
-	const boost::any& getValueByKey(const string& key) const;
+	const boost::any& getValueByKey(const std::string& key) const;
 
 private:
 	std::map<string, boost::any> testOptions;

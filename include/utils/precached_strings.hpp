@@ -28,7 +28,7 @@
 
 
 
-// List with precached strings
+// List with precached std::strings
 
 extern CachedString precached_no;
 extern CachedString precached_yes;

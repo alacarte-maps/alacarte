@@ -9,7 +9,7 @@ public:
 	std::shared_ptr<Configuration> Config(char* argv[], int argc);
 	
 	template<typename T>
-	T get(const string& key)
+	T get(const std::string& key)
 	{
 		return CacheSize;
 	}

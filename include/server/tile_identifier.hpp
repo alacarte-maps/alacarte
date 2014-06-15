@@ -46,22 +46,22 @@ public:
 		enumSize
 	};
 private:
-	static const string FormatString[enumSize];
+	static const std::string FormatString[enumSize];
 public:
-	static std::shared_ptr<TileIdentifier> Create(const string& url, shared_ptr<StylesheetManager> StylesheetManager, const shared_ptr<Configuration>& config);
-	static std::shared_ptr<TileIdentifier> CreateEmptyTID(const string& stylesheetPath,
+	static std::shared_ptr<TileIdentifier> Create(const std::string& url, shared_ptr<StylesheetManager> StylesheetManager, const shared_ptr<Configuration>& config);
+	static std::shared_ptr<TileIdentifier> CreateEmptyTID(const std::string& stylesheetPath,
 												 	 TileIdentifier::Format format);
-	static int stringToInt(const char* c);
+	static int std::stringToInt(const char* c);
 
-	TileIdentifier(int x, int y, int zoom, string styleSheetpath, Format imageFormat);
+	TileIdentifier(int x, int y, int zoom, std::string styleSheetpath, Format imageFormat);
 
 
 	TESTABLE int getX() const;
 	TESTABLE int getY() const;
 	TESTABLE int getZoom() const;
 	TESTABLE Format getImageFormat() const;
-	TESTABLE const string& getImageFormatString() const;
-	TESTABLE const string& getStylesheetPath() const;
+	TESTABLE const std::string& getImageFormatString() const;
+	TESTABLE const std::string& getStylesheetPath() const;
 	TESTABLE bool isDefaultIdentifier() const;
 	TESTABLE bool isNoneDataIdentifier() const;
 
@@ -73,7 +73,7 @@ protected:
 	//! zoom level of the Tile.
 	int zoom;
 	//! path to the Stylesheet which should be used for rendering.
-	string styleSheetpath;
+	std::string styleSheetpath;
 	//! Format of the image.
 	Format imageFormat;
 };

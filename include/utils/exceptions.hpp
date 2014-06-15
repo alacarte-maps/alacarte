@@ -38,13 +38,13 @@ class ParserLogger;
 namespace excp {
 
 	//! Use this info to give an what msg to the exception
-	typedef boost::error_info<struct TagWhatInfo, string> InfoWhat;
+	typedef boost::error_info<struct TagWhatInfo, std::string> InfoWhat;
 	//! Use this to inform about a file name
-	typedef boost::error_info<struct TagFileName, string> InfoFileName;
+	typedef boost::error_info<struct TagFileName, std::string> InfoFileName;
 	//! Use this this to specify the exception related xml entity
-	typedef boost::error_info<struct TagXmlEntityName, string> InfoXmlEntityName;
+	typedef boost::error_info<struct TagXmlEntityName, std::string> InfoXmlEntityName;
 	//! String representation of a bad source value
-	typedef boost::error_info<struct TagBadSourceValue, string> InfoBadSourceValue;
+	typedef boost::error_info<struct TagBadSourceValue, std::string> InfoBadSourceValue;
 	//! Specifies the id, which was not resolvable
 	typedef boost::error_info<struct TagUnresolvableId, long> InfoUnresolvableId;
 	//! Specifies the Line in the file where the failure appeared
@@ -52,7 +52,7 @@ namespace excp {
 	//! Specifies the Column in the Line in the file where the failure appeared
 	typedef boost::error_info<struct TagFailureColumn, int> InfoFailureColumn;
 	//! Contains the content of the line where a failure appeared
-	typedef boost::error_info<struct TagFailureLineContent, string> InfoFailureLineContent;
+	typedef boost::error_info<struct TagFailureLineContent, std::string> InfoFailureLineContent;
 	//! Contains the logger used while parsing
 	typedef boost::error_info<struct TagParserLogger, std::shared_ptr<ParserLogger> > InfoParserLogger;
 
@@ -61,7 +61,7 @@ namespace excp {
 	{
 		virtual const char* what() const throw()
 		{
-			if(string const* info = boost::get_error_info<InfoWhat>(*this))
+			if(std::string const* info = boost::get_error_info<InfoWhat>(*this))
 				return info->c_str();
 			return std::exception::what();
 		}
@@ -94,13 +94,13 @@ namespace excp {
 		typedef typename boost::exception_detail::get_error_info_return_type<boost::exception,typename Info::value_type>::type value_type;
 
 
-		ErrorOut(boost::exception& e, const string& fallbackInfo = "'unknown'")
+		ErrorOut(boost::exception& e, const std::string& fallbackInfo = "'unknown'")
 			: fallbackInfo(fallbackInfo)
 			, value(boost::get_error_info<Info>(e))
 		{
 		}
 
-		string fallbackInfo;
+		std::string fallbackInfo;
 		value_type value;
 	};
 

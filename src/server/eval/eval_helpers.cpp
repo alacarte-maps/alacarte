@@ -34,7 +34,7 @@ namespace eval {
 
 
 template<>
-bool Conv(const string& str, bool* out, bool tryToCache )
+bool Conv(const std::string& str, bool* out, bool tryToCache )
 {
 	assert(out);
 	*out = true;
@@ -59,7 +59,7 @@ bool Conv(const string& str, bool* out, bool tryToCache )
 ColorGrammar color_;
 
 template<>
-bool Conv(const string& str, Color* out, bool tryToCache )
+bool Conv(const std::string& str, Color* out, bool tryToCache )
 {
 	assert(out);
 	StringIterator begin = str.cbegin();
@@ -72,7 +72,7 @@ bool Conv(const string& str, Color* out, bool tryToCache )
 
 
 template<>
-bool Conv(const string& str, string* out, bool tryToCache )
+bool Conv(const std::string& str, string* out, bool tryToCache )
 {
 	assert(out);
 	out->clear();
@@ -93,9 +93,9 @@ bool Conv(const string& str, string* out, bool tryToCache )
 
 
 template<>
-bool Conv(const string& str, MaybeCachedString* out, bool tryToCache )
+bool Conv(const std::string& str, MaybeCachedString* out, bool tryToCache )
 {
-	string extr;
+	std::string extr;
 
 	bool result = Conv<string>(str, &extr);
 

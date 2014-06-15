@@ -218,7 +218,7 @@ const ColorTable& ColorTable::Inst()
  * \param name of the color which should be resolved.
  * \param 
  */
-void ColorTable::resolve(const string& name, Color* target) const
+void ColorTable::resolve(const std::string& name, Color* target) const
 {
 	assert(target);
 	auto it = table.find(name);

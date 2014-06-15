@@ -29,7 +29,7 @@
 #include "server/tile_identifier.hpp"
 
 
-TagLargerSelector::TagLargerSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const int& value)
+TagLargerSelector::TagLargerSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const std::string& tag, const int& value)
 	: Selector(rule, next)
 	, tag(tag)
 	, value(value)
@@ -45,7 +45,7 @@ void TagLargerSelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIdent
 		int tagvalue;
 		strstream >> tagvalue;
 
-		// !strstream is true if the string value could be converted to int
+		// !strstream is true if the std::string value could be converted to int
 		if (!strstream.bad() && tagvalue > value) {
 			next->matchNode(nodeID, ti, attributes);
 		}

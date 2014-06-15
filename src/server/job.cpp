@@ -117,7 +117,7 @@ FixedRect Job::computeRect(const std::shared_ptr<MetaIdentifier>& ti)
  **/
 shared_ptr<Tile> Job::computeEmpty()
 {
-	const string& path = mid->getStylesheetPath();
+	const std::string& path = mid->getStylesheetPath();
 	const TileIdentifier::Format format = mid->getImageFormat();
 	std::shared_ptr<Stylesheet> stylesheet = manager->getStylesheetManager()->getStylesheet(mid->getStylesheetPath());
 	std::shared_ptr<TileIdentifier> emptyID = TileIdentifier::CreateEmptyTID(path, format);

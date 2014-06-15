@@ -37,16 +37,16 @@ struct MapCSSTest
 	}
 
 	void testLoadStylesheet() {
-		std::shared_ptr<Stylesheet> stylesheet = Stylesheet::Load(string("test/stylesheet.mapcss"), data, 1000);
+		std::shared_ptr<Stylesheet> stylesheet = Stylesheet::Load(std::string("test/stylesheet.mapcss"), data, 1000);
 	}
 
 	void testMatch() {
-		std::shared_ptr<Stylesheet> stylesheet = Stylesheet::Load(string("test/stylesheet.mapcss"), data, 1000);
+		std::shared_ptr<Stylesheet> stylesheet = Stylesheet::Load(std::string("test/stylesheet.mapcss"), data, 1000);
 
 		std::shared_ptr<std::vector<NodeId> > nodeIDs(new std::vector<NodeId>());
 		std::shared_ptr<std::vector<WayId> > wayIDs(new std::vector<WayId>());
 		std::shared_ptr<std::vector<RelId> > relIDs(new std::vector<RelId>());
-		std::shared_ptr<TileIdentifier> tileId(new TileIdentifier(0, 0, 2, string("path"), TileIdentifier::Format::PNG));
+		std::shared_ptr<TileIdentifier> tileId(new TileIdentifier(0, 0, 2, std::string("path"), TileIdentifier::Format::PNG));
 		RenderAttributes* attributes;
 
 		stylesheet->match(nodeIDs, wayIDs, relIDs, tileId, attributes);
@@ -67,7 +67,7 @@ struct MapCSSTest
 		std::shared_ptr<RequestManager> requestManager;
 		StylesheetManager stylesheetManager(config);
 		stylesheetManager.startStylesheetObserving(requestManager);
-		std::shared_ptr<TileIdentifier> tileId(new TileIdentifier(0, 0, 2, string("path"), TileIdentifier::Format::PNG));
+		std::shared_ptr<TileIdentifier> tileId(new TileIdentifier(0, 0, 2, std::string("path"), TileIdentifier::Format::PNG));
 		std::shared_ptr<Stylesheet> stylesheet = stylesheetManager.getStylesheet(tileId);
 	}
 

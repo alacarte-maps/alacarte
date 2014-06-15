@@ -34,19 +34,19 @@ namespace eval {
 /**
  * @brief Represents a leaf in the eval syntax tree
  *
- *	Every leaf contains a simple string, which will be used in other nodes.
+ *	Every leaf contains a simple std::string, which will be used in other nodes.
  **/
 class STLeaf
 	: public STNode
 {
 public:
-	STLeaf(const string& value);
+	STLeaf(const std::string& value);
 
-	virtual string eval(GeoObject* obj) const;
+	virtual std::string eval(GeoObject* obj) const;
 
 private:
 	//! The value given back
-	const string value;
+	const std::string value;
 };
 
 

@@ -9,7 +9,7 @@
 #define TEMP_FILE "eval-test.tmp"
 
 template<typename Grammar, typename Result, typename Skipper>
-void testGrammar(Grammar& grammar, Result& result, const string& expr, const Skipper& skipper)
+void testGrammar(Grammar& grammar, Result& result, const std::string& expr, const Skipper& skipper)
 {
 	GrammarIterator position_begin(expr.begin(), expr.end(), "line:" + expr);
 	GrammarIterator position_end;
@@ -50,13 +50,13 @@ void testGrammar(Grammar& grammar, Result& result, const string& expr, const Ski
 			<< "In line " << excp::ErrorOut<excp::InfoFailureLine>(e)
 			<< " column " << excp::ErrorOut<excp::InfoFailureColumn>(e) << ":\n";
 
-		const string* errLine = boost::get_error_info<excp::InfoFailureLineContent>(e);
+		const std::string* errLine = boost::get_error_info<excp::InfoFailureLineContent>(e);
 		const int* errColumn = boost::get_error_info<excp::InfoFailureColumn>(e);
 
 		if(errLine && errColumn)
 		{
 			std::cout	<< "'" << *errLine << "'" << std::endl
-				<< string(*errColumn, ' ') << "^-here\n\n";
+				<< std::string(*errColumn, ' ') << "^-here\n\n";
 		}
 		throw e << excp::InfoFileName(TEMP_FILE);
 	}
@@ -64,7 +64,7 @@ void testGrammar(Grammar& grammar, Result& result, const string& expr, const Ski
 
 
 template<typename Grammar, typename Result, typename Skipper>
-void testGrammar(Grammar& grammar, Result& result, string::const_iterator begin, string::const_iterator end, const Skipper& skipper)
+void testGrammar(Grammar& grammar, Result& result, std::string::const_iterator begin, string::const_iterator end, const Skipper& skipper)
 {
 	try
 	{
@@ -81,8 +81,8 @@ void testGrammar(Grammar& grammar, Result& result, string::const_iterator begin,
 		{
 
 			BOOST_THROW_EXCEPTION(excp::ParseException() 
-				<< excp::InfoFailureLineContent(string(begin, end))
-				<< excp::InfoWhat(string("Illegal syntax! Expected valid ") + boost::lexical_cast<string>(e.what_) + "!"));
+				<< excp::InfoFailureLineContent(std::string(begin, end))
+				<< excp::InfoWhat(std::string("Illegal syntax! Expected valid ") + boost::lexical_cast<string>(e.what_) + "!"));
 
 		} 
 	} catch(excp::ParseException& e) 

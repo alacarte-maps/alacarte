@@ -36,7 +36,7 @@ struct ParseInfo
 
 	}
 
-	inline ParseInfo(const string& sourcefile, unsigned int column, unsigned int line, const string& linecontent)
+	inline ParseInfo(const std::string& sourcefile, unsigned int column, unsigned int line, const string& linecontent)
 		: sourcefile(sourcefile)
 		, column(column)
 		, line(line)
@@ -45,17 +45,17 @@ struct ParseInfo
 
 	}
 
-	inline const string& getSourceFile() const { return sourcefile; }
+	inline const std::string& getSourceFile() const { return sourcefile; }
 	inline const unsigned int& getColumn() const { return column; }
 	inline const unsigned int& getLine() const { return line; }
-	inline const string& getLineContent() const { return linecontent; }
+	inline const std::string& getLineContent() const { return linecontent; }
 
 
 private:
-	string			sourcefile;
+	std::string			sourcefile;
 	unsigned int	column;
 	unsigned int	line;
-	string			linecontent;
+	std::string			linecontent;
 };
 
 

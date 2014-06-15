@@ -130,7 +130,7 @@ void Application::appRun(int argc, char** argv)
 	{
 		const std::vector<string> &dirs = config->getSeachDirectories();
 		log.errorStream() << "The given config file was not found. Searched for:";
-		std::for_each(begin(dirs), end(dirs), [&](const string &dir)
+		std::for_each(begin(dirs), end(dirs), [&](const std::string &dir)
 		{
 			log.errorStream() << opt::config << " = \"" << dir << "/" << config->get<string>(opt::config) << "\"";
 		});
@@ -175,13 +175,13 @@ void Application::initLog(const std::shared_ptr<Configuration>& config)
 	root.info("Logfile opened...");
 }
 
-bool Application::diagnosticCheckFile(const std::shared_ptr<Configuration>& config, const string& key, log4cpp::Category& log) 
+bool Application::diagnosticCheckFile(const std::shared_ptr<Configuration>& config, const std::string& key, log4cpp::Category& log) 
 {
 	if (config->has(key)) {
 		boost::filesystem::path file = config->get<string>(key);
 		bool exists =  boost::filesystem::exists(file);
 		if (!exists) {
-			log.errorStream() << key << " = \"" << file.string() << "\" does not exist.";
+			log.errorStream() << key << " = \"" << file.std::string() << "\" does not exist.";
 		}
 		return exists;
 	} else {

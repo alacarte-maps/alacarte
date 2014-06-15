@@ -63,7 +63,7 @@ FunctionOperationNode::FunctionOperationNode(op::FunctionEnum operation, const s
 
 string FunctionOperationNode::eval(GeoObject* obj) const
 {
-	string first = enclosed.front()->eval(obj);
+	std::string first = enclosed.front()->eval(obj);
 
 	switch(operation)
 	{

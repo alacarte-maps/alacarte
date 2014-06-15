@@ -26,14 +26,14 @@ struct EvalGrammarTest
 
 	
 
-	void testString(const string& expr, const string& expected)
+	void testString(const std::string& expr, const string& expected)
 	{
 		eval::Eval<string>::node_ptr result;
 		eval::EvalGrammer grammar;
 
 		testGrammar(grammar, result, expr, chs::space);
 
-		string evaluated = result->eval(object.get());
+		std::string evaluated = result->eval(object.get());
 		BOOST_CHECK_EQUAL(expected, evaluated);
 	}
 

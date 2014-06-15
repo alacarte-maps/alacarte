@@ -49,11 +49,11 @@ Cache::~Cache()
 
 void Cache::readFile(const Tile::ImageType& image, const boost::filesystem::path& filename) {
 	std::ifstream file;
-	file.open(filename.string(), std::ios::in | std::ios::binary);
+	file.open(filename.std::string(), std::ios::in | std::ios::binary);
 	file.seekg(0, std::ios::end);
 	std::streampos length(file.tellg());
 	if (length == std::streampos(-1) || !file.is_open()) {
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.string()));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.std::string()));
 	} else if (length) {
 		file.seekg(0, std::ios::beg);
 
@@ -65,7 +65,7 @@ void Cache::readFile(const Tile::ImageType& image, const boost::filesystem::path
 
 void Cache::writeFile(std::shared_ptr<Tile> tile, const boost::filesystem::path& filename) {
 	boost::filesystem::create_directories(filename.parent_path());
-	std::ofstream out(filename.string(), std::ios::out | std::ios::binary);
+	std::ofstream out(filename.std::string(), std::ios::out | std::ios::binary);
 	if(out.is_open())
 	{
 		Tile::ImageType png = tile->getImage();
@@ -79,7 +79,7 @@ void Cache::writeFile(std::shared_ptr<Tile> tile, const boost::filesystem::path&
 		}
 	} else {
 		// e.g. Disk full
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.string()));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.std::string()));
 	}
 }
 
@@ -105,7 +105,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 	// TODO: Finer Synchronization
 	GlobalCacheLock.lock();
 	std::shared_ptr<CacheOfOneStylesheet> cache;
-	const string& stylesheet = ti->getStylesheetPath();
+	const std::string& stylesheet = ti->getStylesheetPath();
 	auto cacheIt = AllCaches.find(stylesheet);
 	if (cacheIt != AllCaches.end()) {
 		// Found cache for Stylesheet.
@@ -138,7 +138,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 				readFile(image, path);
 				tile->setImage(image);
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.string();
+				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.std::string();
 			}
 		}
 		RecentlyUsedList.push_front(tile);
@@ -154,7 +154,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 			try {
 				writeFile(tileToDelete, path);
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path.string();
+				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path.std::string();
 				// Disk is full
 			} catch (excp::InputFormatException) {
 				log << log4cpp::Priority::DEBUG << "WriteFile: Image not yet rendered " << *tile->getIdentifier();
@@ -187,7 +187,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
  **/
 shared_ptr<Tile> Cache::getDefaultTile() {
 	if (!DefaultTile) {
-		string path = Config->get<string>(opt::server::path_to_default_tile);
+		std::string path = Config->get<string>(opt::server::path_to_default_tile);
 		std::shared_ptr<TileIdentifier> ti = std::make_shared<TileIdentifier>(-1, -1, -1, "/", TileIdentifier::Format::PNG);
 		DefaultTile = std::make_shared<Tile>(ti);
 		// Load default tile
@@ -207,7 +207,7 @@ shared_ptr<Tile> Cache::getDefaultTile() {
  * 
  * @param path The path to the stylesheet.
  **/
-void Cache::deleteTiles(const string path)
+void Cache::deleteTiles(const std::string path)
 {
 	try {
 		boost::filesystem::path dir(Config->get<string>(opt::server::cache_path) + path);

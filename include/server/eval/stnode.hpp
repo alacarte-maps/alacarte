@@ -45,7 +45,7 @@ public:
 	 *
 	 *	\param obj which is used to execute the eval tree
 	 **/
-	inline virtual string eval(GeoObject* obj) const
+	inline virtual std::string eval(GeoObject* obj) const
 	{
 		return "";
 	}

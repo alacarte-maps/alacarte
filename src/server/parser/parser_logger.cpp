@@ -77,7 +77,7 @@ string ParserLogger::LogStream::logvalue() const
  * \param parsed File the name of the filename associated with this stream
  *
  **/
-ParserLogger::ParserLogger(const string& parsedFile)
+ParserLogger::ParserLogger(const std::string& parsedFile)
 	: filename(parsedFile + ".error")
 	, log(log4cpp::Category::getInstance("parser"))
 {
@@ -118,7 +118,7 @@ ParserLogger::LogStream ParserLogger::errorStream()
  * @brief outputs an error message
  *
  **/
-void ParserLogger::error(const string& str)
+void ParserLogger::error(const std::string& str)
 {
 	logToStream(Error, str);
 }
@@ -127,7 +127,7 @@ void ParserLogger::error(const string& str)
  * @brief outputs an warn message
  *
  **/
-void ParserLogger::warn(const string& str)
+void ParserLogger::warn(const std::string& str)
 {
 	logToStream(Warning, str);
 }
@@ -136,10 +136,10 @@ void ParserLogger::warn(const string& str)
  * @brief prints a message to the log
  *
  * \param cat type of the message
- * \param str string to be outputed
+ * \param str std::string to be outputed
  *
  **/
-void ParserLogger::logToStream(Category cat, const string& str )
+void ParserLogger::logToStream(Category cat, const std::string& str )
 {
 	if(str.empty())
 		return;
