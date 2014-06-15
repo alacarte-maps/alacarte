@@ -59,32 +59,14 @@
 	#define TESTABLE
 #endif
 
-// Dont ask! this is c++ makro-blabla
-//! Use ALAC_JOIN to join two identifiers in definitions
-#define ALAC_JOIN(_a, _b)		ALAC_DO_JOIN1(_a, _b)	
-#define ALAC_DO_JOIN1(_a, _b)	ALAC_DO_JOIN2(_a, _b)
-#define ALAC_DO_JOIN2(_a, _b)	_a##_b
+#include <chrono>
+#define TIMER_START(_X) auto _X##_start = std::chrono::steady_clock::now(), _X##_stop = _X##_start
+#define TIMER_STOP(_X) _X##_stop = std::chrono::steady_clock::now()
+#define TIMER_MSEC(_X) std::chrono::duration_cast<std::chrono::milliseconds>(_X##_stop - _X##_start).count()
+#define TIMER_SEC(_X) (0.001*std::chrono::duration_cast<std::chrono::milliseconds>(_X##_stop - _X##_start).count())
+#define TIMER_MIN(_X) std::chrono::duration_cast<std::chrono::minutes>(_X##_stop - _X##_start).count()
 
-
-#define NOT_IMPLEMENTED() {BOOST_THROW_EXCEPTION(excp::NotImplementedException() << excp::InfoFileName(__FILE__));}
-#define IMPLEMENTATION_TODO(_text)	{																\
-										static bool ALAC_JOIN(_found_, __LINE__) = false;			\
-										if(! ALAC_JOIN(_found_, __LINE__))							\
-										{															\
-											std::clog << "Not Implemented: "<< _text << std::endl;	\
-											ALAC_JOIN(_found_, __LINE__) = true;					\
-										}															\
-									}
-
-#define TIMER_START(_X) timeval _X##_start, _X##_stop; gettimeofday(&_X##_start, NULL)
-#define TIMER_STOP(_X) gettimeofday(&_X##_stop, NULL);
-#define TIMER_MSEC(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) * 1000.0 + (_X##_stop.tv_usec - _X##_start.tv_usec) / 1000.0)
-#define TIMER_SEC(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) + (_X##_stop.tv_usec - _X##_start.tv_usec) / 1000.0 / 1000.0)
-#define TIMER_MIN(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) / 60.0)
-
-// we want to use the std::string as stringtype
-typedef std::string		string;
-typedef std::int32_t	coord_t;
+typedef std::int32_t coord_t;
 
 // include utils
 #include "utils/point.hpp"
@@ -94,17 +76,17 @@ typedef std::int32_t	coord_t;
 #include "utils/typedId.hpp"
 #include "utils/cached_string.hpp"
 
-#define DEFAULT_CONFIG_NAME "alacarte.conf"
+constexpr std::string DEFAULT_CONFIG_NAME = "alacarte.conf";
 
-#define DEFAULT_FONT "DejaVu Sans"
-#define TILE_OVERLAP (1.0/META_TILE_SIZE * 0.25)
-#define META_TILE_SIZE 4
-#define ALAC_ZOOM_BOTTOM 0
-#define ALAC_ZOOM_TOP 18
+constexpr unsigned META_TILE_SIZE = 4;
+constexpr std::string DEFAULT_FONT = "DejaVu Sans";
+constexpr double TILE_OVERLAP = (1.0/META_TILE_SIZE * 0.25);
+constexpr unsigned ALAC_ZOOM_BOTTOM = 0;
+constexpr unsigned ALAC_ZOOM_TOP = 18;
 
-typedef TypedId<0>	NodeId;
-typedef TypedId<1>	WayId;
-typedef TypedId<2>	RelId;
+typedef TypedId<0> NodeId;
+typedef TypedId<1> WayId;
+typedef TypedId<2> RelId;
 
 #include <boost/unordered_map.hpp>
 template<typename Key, typename Value>
