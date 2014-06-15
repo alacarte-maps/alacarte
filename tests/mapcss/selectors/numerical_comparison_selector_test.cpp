@@ -44,20 +44,20 @@ public:
 		, wayId0(0)
 		, relId0(0)
 		{
-		geodata = boost::make_shared<MockGeodata>();
-		rule = boost::make_shared<MockRule> (geodata);
-		tileId = boost::make_shared<TileIdentifier> (0, 0, 0, "default", TileIdentifier::PNG);
+		geodata = std::make_shared<MockGeodata>();
+		rule = std::make_shared<MockRule> (geodata);
+		tileId = std::make_shared<TileIdentifier> (0, 0, 0, "default", TileIdentifier::PNG);
 
-		next = boost::make_shared<MockSelector>(rule);
+		next = std::make_shared<MockSelector>(rule);
 
 		CachedString valueTag("valuetag");
 		CachedString value("42");
 		CachedString unsetTag("unsettag");
 		tags[valueTag] = value;
 
-		node = boost::make_shared<Node>(location, tags);
-		way = boost::make_shared<Way>(nodes, tags);
-		relation = boost::make_shared<Relation>(nodes, nodeRoles, ways, wayRoles, tags);
+		node = std::make_shared<Node>(location, tags);
+		way = std::make_shared<Way>(nodes, tags);
+		relation = std::make_shared<Relation>(nodes, nodeRoles, ways, wayRoles, tags);
 
 		EXPECT_CALL(*geodata, getNode(nodeId0))
 		.Times(AnyNumber())

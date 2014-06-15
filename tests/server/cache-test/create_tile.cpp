@@ -29,7 +29,7 @@ struct tile_identifier_test
 		ConfigMockup* mock = new ConfigMockup();
 		const char* argv[] = {"alacarte-server", "-g", "ala.carte"};
 		config = mock->Config((char**) argv, 3);
-		ssm = boost::dynamic_pointer_cast<StylesheetManager>(boost::make_shared<MockStylesheetManager>(config));
+		ssm = boost::dynamic_pointer_cast<StylesheetManager>(std::make_shared<MockStylesheetManager>(config));
 
 	}
 	

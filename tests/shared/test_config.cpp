@@ -12,7 +12,7 @@ TestConfig::TestConfig()
 
 shared_ptr<TestConfig> TestConfig::clone() const
 {
-	std::shared_ptr<TestConfig> config = boost::make_shared<TestConfig>();
+	std::shared_ptr<TestConfig> config = std::make_shared<TestConfig>();
 
 	config->options = options;
 
@@ -22,7 +22,7 @@ shared_ptr<TestConfig> TestConfig::clone() const
 shared_ptr<TestConfig> TestConfig::Create()
 {
 	//Initialize which some default values
-	return boost::make_shared<TestConfig>()
+	return std::make_shared<TestConfig>()
 	->add<string>(opt::server::access_log, 			"unitTest_access_log.log")
 	->add<string>(opt::server::cache_path, 			"cache")
 	->add<int>(opt::server::cache_size, 			1024)

@@ -32,7 +32,7 @@
  **/
 shared_ptr<MetaIdentifier> MetaIdentifier::Create(const std::shared_ptr<TileIdentifier>& origin)
 {
-	return boost::make_shared<MetaIdentifier>(*origin);
+	return std::make_shared<MetaIdentifier>(*origin);
 }
 
 MetaIdentifier::MetaIdentifier(const TileIdentifier& origin)
@@ -54,7 +54,7 @@ MetaIdentifier::MetaIdentifier(const TileIdentifier& origin)
 		for (int ty = y; ty < y1; ty++)
 		{
 			tids.push_back(
-				boost::make_shared<TileIdentifier>(tx, ty, origin.getZoom(),
+				std::make_shared<TileIdentifier>(tx, ty, origin.getZoom(),
 												   origin.getStylesheetPath(),
 												   origin.getImageFormat())
 			);
@@ -97,11 +97,11 @@ void MetaIdentifier::getSubIdentifiers(std::vector<std::shared_ptr<MetaIdentifie
 	int y = this->y*2;
 	int n = META_TILE_SIZE;
 
-	tiles.push_back(boost::make_shared<MetaIdentifier>(TileIdentifier(x,   y,   z, styleSheetpath, imageFormat)));
+	tiles.push_back(std::make_shared<MetaIdentifier>(TileIdentifier(x,   y,   z, styleSheetpath, imageFormat)));
 	if (x+n < (1 << z))
-		tiles.push_back(boost::make_shared<MetaIdentifier>(TileIdentifier(x+n, y,   z, styleSheetpath, imageFormat)));
+		tiles.push_back(std::make_shared<MetaIdentifier>(TileIdentifier(x+n, y,   z, styleSheetpath, imageFormat)));
 	if (y+n < (1 << z))
-		tiles.push_back(boost::make_shared<MetaIdentifier>(TileIdentifier(x,   y+n, z, styleSheetpath, imageFormat)));
+		tiles.push_back(std::make_shared<MetaIdentifier>(TileIdentifier(x,   y+n, z, styleSheetpath, imageFormat)));
 	if (x+n < (1 << z) && y+n < (1 << z))
-		tiles.push_back(boost::make_shared<MetaIdentifier>(TileIdentifier(x+n, y+n, z, styleSheetpath, imageFormat)));
+		tiles.push_back(std::make_shared<MetaIdentifier>(TileIdentifier(x+n, y+n, z, styleSheetpath, imageFormat)));
 }

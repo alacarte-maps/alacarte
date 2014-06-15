@@ -30,17 +30,17 @@ struct test_request
 		
 		Statistic::Init(DefaultConfig);
 
-		std::shared_ptr<Geodata> geodata = boost::make_shared<Geodata>();
+		std::shared_ptr<Geodata> geodata = std::make_shared<Geodata>();
 		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<string>(opt::server::path_to_geodata)));
 		geodata->load(DefaultConfig->get<string>(opt::server::path_to_geodata));
-		std::shared_ptr<Cache> cache = boost::make_shared<Cache>(DefaultConfig);
-		ssm = boost::make_shared<StylesheetManager>(DefaultConfig);
-		std::shared_ptr<Renderer> renderer = boost::make_shared<Renderer>(geodata);
-		req_manager = boost::make_shared<NonPrerenderingRequestManager>(DefaultConfig, geodata, renderer, cache, ssm);
-        server = boost::make_shared<HttpServer>(DefaultConfig, req_manager);
+		std::shared_ptr<Cache> cache = std::make_shared<Cache>(DefaultConfig);
+		ssm = std::make_shared<StylesheetManager>(DefaultConfig);
+		std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(geodata);
+		req_manager = std::make_shared<NonPrerenderingRequestManager>(DefaultConfig, geodata, renderer, cache, ssm);
+        server = std::make_shared<HttpServer>(DefaultConfig, req_manager);
 		ssm->startStylesheetObserving(req_manager);
 
-		thread = boost::make_shared<boost::thread>(boost::bind(&HttpServer::listen, server));
+		thread = std::make_shared<boost::thread>(boost::bind(&HttpServer::listen, server));
 		
 		//wait for listen to listen
 		boost::this_thread::sleep(boost::posix_time::milliseconds(100));

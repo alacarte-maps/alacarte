@@ -20,7 +20,7 @@ struct EvalGrammarTest
 		tags[CachedString("population")] = CachedString("5000");
 		tags[CachedString("value")] = CachedString("123456");
 
-		object = boost::make_shared<GeoObject>(tags);
+		object = std::make_shared<GeoObject>(tags);
 	}
 
 

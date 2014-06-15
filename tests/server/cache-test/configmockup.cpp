@@ -40,7 +40,7 @@ shared_ptr<Configuration> ConfigMockup::Config(char* argv[], int argc)
 		pos_desc.add(opt::server::path_to_geodata, 1).add(opt::server::style_source, 1);
 		
 		
-	auto ptr =  boost::make_shared<Configuration>(cmd_desc, config_desc, pos_desc, argc, argv);
+	auto ptr =  std::make_shared<Configuration>(cmd_desc, config_desc, pos_desc, argc, argv);
 	return ptr;
 }
 

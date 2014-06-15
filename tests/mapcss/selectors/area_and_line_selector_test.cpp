@@ -37,13 +37,13 @@ public:
 	RelId relId0;
 
 	AreaAndLineSelectorTest() : nodeId0(0), wayId0(0), relId0(0) {
-		geodata = boost::make_shared<MockGeodata>();
-		rule = boost::make_shared<MockRule> (geodata);
-		tileId = boost::make_shared<TileIdentifier> (0, 0, 0, "default", TileIdentifier::PNG);
-		next = boost::make_shared<MockSelector>(rule);
+		geodata = std::make_shared<MockGeodata>();
+		rule = std::make_shared<MockRule> (geodata);
+		tileId = std::make_shared<TileIdentifier> (0, 0, 0, "default", TileIdentifier::PNG);
+		next = std::make_shared<MockSelector>(rule);
 
-		areaSelector = boost::make_shared<AreaSelector> (rule, next);
-		lineSelector = boost::make_shared<LineSelector> (rule, next);
+		areaSelector = std::make_shared<AreaSelector> (rule, next);
+		lineSelector = std::make_shared<LineSelector> (rule, next);
 
 		openWayNodes.push_back(nodeId0);
 		openWayNodes.push_back(NodeId(1));

@@ -140,7 +140,7 @@ void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 		return;
 	} catch(excp::TimeoutException&)
 	{
-		std::shared_ptr<ParserLogger> logger = boost::make_shared<ParserLogger>(stylesheet_path.string());
+		std::shared_ptr<ParserLogger> logger = std::make_shared<ParserLogger>(stylesheet_path.string());
 
 		logger->errorStream() << "Parsing of stylesheet " << stylesheet_path << " took more then " << timeout << " ms!";
 		logger->errorStream() << "Parsing canceled!";
@@ -151,7 +151,7 @@ void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 	parsedStylesheets[stylesheet_path] = stylesheet;
 
 	// prerenders the upmost tile as well as all higher zoomlevels that are specified in the configuration
-	manager->enqueue(boost::make_shared<MetaIdentifier>(TileIdentifier(0, 0, 0, stylesheet_path.string(), TileIdentifier::PNG)));
+	manager->enqueue(std::make_shared<MetaIdentifier>(TileIdentifier(0, 0, 0, stylesheet_path.string(), TileIdentifier::PNG)));
 }
 
 // calls must be locked by write-lock
@@ -221,18 +221,18 @@ void StylesheetManager::onFileSystemEvent(const boost::system::error_code &ec, c
 
 // hard coded fallback stylesheet, used in case the default stylesheet file doesn't exist
 shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const std::shared_ptr<Geodata>& geodata) {
-	std::shared_ptr<StyleTemplate> canvasStyle = boost::make_shared<StyleTemplate>();
-	canvasStyle->fill_color = boost::make_shared<eval::Eval<Color>>(Color((uint8)0xEF, (uint8)0xEF, (uint8)0xD0));
+	std::shared_ptr<StyleTemplate> canvasStyle = std::make_shared<StyleTemplate>();
+	canvasStyle->fill_color = std::make_shared<eval::Eval<Color>>(Color((uint8)0xEF, (uint8)0xEF, (uint8)0xD0));
 
 	std::vector<std::shared_ptr<Rule> > rules;
 
-	std::shared_ptr<Rule> highwayNodeRule = boost::make_shared<Rule>(geodata);
-	std::shared_ptr<ApplySelector> highwayNodeApplier = boost::make_shared<ApplySelector>(highwayNodeRule);
-	std::shared_ptr<Selector> highwayNodeTagSelector = boost::make_shared<HasTagSelector>(highwayNodeRule, highwayNodeApplier, "highway");
+	std::shared_ptr<Rule> highwayNodeRule = std::make_shared<Rule>(geodata);
+	std::shared_ptr<ApplySelector> highwayNodeApplier = std::make_shared<ApplySelector>(highwayNodeRule);
+	std::shared_ptr<Selector> highwayNodeTagSelector = std::make_shared<HasTagSelector>(highwayNodeRule, highwayNodeApplier, "highway");
 	highwayNodeRule->setFirstSelector(highwayNodeTagSelector);
-	std::shared_ptr<StyleTemplate> highwayNodeStyle = boost::make_shared<StyleTemplate>();
-	highwayNodeStyle->color = boost::make_shared<eval::Eval<Color>>(Color((uint8)0x00, (uint8)0x00, (uint8)0xFF));
-	highwayNodeStyle->width = boost::make_shared<eval::Eval<float>>(5.5);
+	std::shared_ptr<StyleTemplate> highwayNodeStyle = std::make_shared<StyleTemplate>();
+	highwayNodeStyle->color = std::make_shared<eval::Eval<Color>>(Color((uint8)0x00, (uint8)0x00, (uint8)0xFF));
+	highwayNodeStyle->width = std::make_shared<eval::Eval<float>>(5.5);
 	highwayNodeRule->setStyleTemplate(highwayNodeStyle);
 	highwayNodeRule->setZoomBounds(16, 18);
 	highwayNodeRule->setAcceptableType(Rule::Accept_Way);
@@ -240,25 +240,25 @@ shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const std::shar
 	rules.push_back(highwayNodeRule);
 
 
-	std::shared_ptr<Rule> highwayRule = boost::make_shared<Rule>(geodata);
-	std::shared_ptr<ApplySelector> highwayApplier = boost::make_shared<ApplySelector>(highwayRule);
-	std::shared_ptr<Selector> highwayTagSelector = boost::make_shared<HasTagSelector>(highwayRule, highwayApplier, "highway");
+	std::shared_ptr<Rule> highwayRule = std::make_shared<Rule>(geodata);
+	std::shared_ptr<ApplySelector> highwayApplier = std::make_shared<ApplySelector>(highwayRule);
+	std::shared_ptr<Selector> highwayTagSelector = std::make_shared<HasTagSelector>(highwayRule, highwayApplier, "highway");
 	highwayRule->setFirstSelector(highwayTagSelector);
-	std::shared_ptr<StyleTemplate> highwayStyle = boost::make_shared<StyleTemplate>();
-	highwayStyle->color = boost::make_shared<eval::Eval<Color>>(Color((uint8)0x55, (uint8)0x55, (uint8)0x55));
-	highwayStyle->width = boost::make_shared<eval::Eval<float>>(2.0);
+	std::shared_ptr<StyleTemplate> highwayStyle = std::make_shared<StyleTemplate>();
+	highwayStyle->color = std::make_shared<eval::Eval<Color>>(Color((uint8)0x55, (uint8)0x55, (uint8)0x55));
+	highwayStyle->width = std::make_shared<eval::Eval<float>>(2.0);
 	highwayRule->setStyleTemplate(highwayStyle);
 	highwayRule->setAcceptableType(Rule::Accept_Way);
 
 	rules.push_back(highwayRule);
 
 
-	std::shared_ptr<Rule> highwayUpRule = boost::make_shared<Rule>(geodata);
-	std::shared_ptr<ApplySelector> highwayUpApplier = boost::make_shared<ApplySelector>(highwayUpRule);
-	std::shared_ptr<Selector> highwayUpTagSelector = boost::make_shared<HasTagSelector>(highwayUpRule, highwayUpApplier, "highway");
+	std::shared_ptr<Rule> highwayUpRule = std::make_shared<Rule>(geodata);
+	std::shared_ptr<ApplySelector> highwayUpApplier = std::make_shared<ApplySelector>(highwayUpRule);
+	std::shared_ptr<Selector> highwayUpTagSelector = std::make_shared<HasTagSelector>(highwayUpRule, highwayUpApplier, "highway");
 	highwayUpRule->setFirstSelector(highwayUpTagSelector);
-	std::shared_ptr<StyleTemplate> highwayUpStyle = boost::make_shared<StyleTemplate>();
-	highwayUpStyle->width = boost::make_shared<eval::Eval<float>>(1.0);
+	std::shared_ptr<StyleTemplate> highwayUpStyle = std::make_shared<StyleTemplate>();
+	highwayUpStyle->width = std::make_shared<eval::Eval<float>>(1.0);
 	highwayUpRule->setStyleTemplate(highwayUpStyle);
 	highwayUpRule->setZoomBounds(0,15);
 	highwayUpRule->setAcceptableType(Rule::Accept_Way);
@@ -266,31 +266,31 @@ shared_ptr<Stylesheet> StylesheetManager::makeFallbackStylesheet(const std::shar
 	rules.push_back(highwayUpRule);
 
 
-	std::shared_ptr<Rule> forestRule = boost::make_shared<Rule>(geodata);
-	std::shared_ptr<ApplySelector> forestApplier = boost::make_shared<ApplySelector>(forestRule);
-	std::shared_ptr<Selector> forestTagSelector = boost::make_shared<TagEqualsSelector>(forestRule, forestApplier, "landuse", "forest");
+	std::shared_ptr<Rule> forestRule = std::make_shared<Rule>(geodata);
+	std::shared_ptr<ApplySelector> forestApplier = std::make_shared<ApplySelector>(forestRule);
+	std::shared_ptr<Selector> forestTagSelector = std::make_shared<TagEqualsSelector>(forestRule, forestApplier, "landuse", "forest");
 	forestRule->setFirstSelector(forestTagSelector);
-	std::shared_ptr<StyleTemplate> forestStyle = boost::make_shared<StyleTemplate>();
-	highwayStyle->fill_color = boost::make_shared<eval::Eval<Color>>(Color((uint8)0x00, (uint8)0xaa, (uint8)0x00));
+	std::shared_ptr<StyleTemplate> forestStyle = std::make_shared<StyleTemplate>();
+	highwayStyle->fill_color = std::make_shared<eval::Eval<Color>>(Color((uint8)0x00, (uint8)0xaa, (uint8)0x00));
 	forestRule->setStyleTemplate(forestStyle);
 	forestRule->setAcceptableType(Rule::Accept_Way);
 
 	rules.push_back(forestRule);
 
-	std::shared_ptr<Rule> adminRule = boost::make_shared<Rule>(geodata);
-	std::shared_ptr<ApplySelector> adminApplier = boost::make_shared<ApplySelector>(adminRule);
-	std::shared_ptr<Selector> adminWaySelector = boost::make_shared<ChildWaysSelector>(adminRule, adminApplier);
-	std::shared_ptr<Selector> adminTagSelector = boost::make_shared<TagEqualsSelector>(adminRule, adminWaySelector, "boundary", "administrative");
+	std::shared_ptr<Rule> adminRule = std::make_shared<Rule>(geodata);
+	std::shared_ptr<ApplySelector> adminApplier = std::make_shared<ApplySelector>(adminRule);
+	std::shared_ptr<Selector> adminWaySelector = std::make_shared<ChildWaysSelector>(adminRule, adminApplier);
+	std::shared_ptr<Selector> adminTagSelector = std::make_shared<TagEqualsSelector>(adminRule, adminWaySelector, "boundary", "administrative");
 	adminRule->setFirstSelector(adminTagSelector);
-	std::shared_ptr<StyleTemplate> adminStyle = boost::make_shared<StyleTemplate>();
-	highwayStyle->fill_color = boost::make_shared<eval::Eval<Color>>(Color((uint8)0xaa, (uint8)0x00, (uint8)0x00));
-	highwayUpStyle->width = boost::make_shared<eval::Eval<float>>(2.0);
+	std::shared_ptr<StyleTemplate> adminStyle = std::make_shared<StyleTemplate>();
+	highwayStyle->fill_color = std::make_shared<eval::Eval<Color>>(Color((uint8)0xaa, (uint8)0x00, (uint8)0x00));
+	highwayUpStyle->width = std::make_shared<eval::Eval<float>>(2.0);
 	adminRule->setStyleTemplate(adminStyle);
 	adminRule->setAcceptableType(Rule::Accept_Relation);
 
 	rules.push_back(adminRule);
 
 
-	return boost::make_shared<Stylesheet>(geodata, rules, canvasStyle);
+	return std::make_shared<Stylesheet>(geodata, rules, canvasStyle);
 }
 

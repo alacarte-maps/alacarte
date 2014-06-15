@@ -165,8 +165,8 @@ SelectorPtr MapCssParser::createSelectorFromObjectType(const SelectorPtr& next, 
 	case obj::Node:		type = Rule::Accept_Node;	return next;
 	case obj::Way:		type = Rule::Accept_Way;	return next;
 	case obj::Relation:	type = Rule::Accept_Relation; return next;
-	case obj::Line:		type = Rule::Accept_Way;	return boost::make_shared<LineSelector>(rule, next);
-	case obj::Area:		type = Rule::Accept_Way;	return boost::make_shared<AreaSelector>(rule, next);
+	case obj::Line:		type = Rule::Accept_Way;	return std::make_shared<LineSelector>(rule, next);
+	case obj::Area:		type = Rule::Accept_Way;	return std::make_shared<AreaSelector>(rule, next);
 	default:
 		assert(false);
 		return next;
@@ -186,10 +186,10 @@ SelectorPtr MapCssParser::createChildSelectorFromObjectType(const SelectorPtr& n
 	switch(objType)
 	{
 	case obj::Any:		return next;
-	case obj::Node:		return boost::make_shared<ChildNodesSelector>(rule, next);
-	case obj::Way:		return boost::make_shared<ChildWaysSelector>(rule, next);
-	case obj::Line:		return boost::make_shared<ChildWaysSelector>(rule, boost::make_shared<LineSelector>(rule, next));
-	case obj::Area:		return boost::make_shared<ChildWaysSelector>(rule, boost::make_shared<AreaSelector>(rule, next));
+	case obj::Node:		return std::make_shared<ChildNodesSelector>(rule, next);
+	case obj::Way:		return std::make_shared<ChildWaysSelector>(rule, next);
+	case obj::Line:		return std::make_shared<ChildWaysSelector>(rule, boost::make_shared<LineSelector>(rule, next));
+	case obj::Area:		return std::make_shared<ChildWaysSelector>(rule, boost::make_shared<AreaSelector>(rule, next));
 	default:
 		assert(false);
 		return next;
@@ -210,8 +210,8 @@ SelectorPtr MapCssParser::createSelectorFromUnaryCondition(const SelectorPtr& ne
 
 	switch(fsio::at_c<0>(condition))
 	{
-	case op::HasTag:	return boost::make_shared<HasTagSelector>(rule, next, tag);
-	case op::Not:		return boost::make_shared<HasNotTagSelector>(rule, next, tag);
+	case op::HasTag:	return std::make_shared<HasTagSelector>(rule, next, tag);
+	case op::Not:		return std::make_shared<HasNotTagSelector>(rule, next, tag);
 	case op::Minus:
 	default:
 		assert(!"This unary condition is not implemented!");
@@ -235,13 +235,13 @@ SelectorPtr MapCssParser::createSelectorFromBinaryCondition(const SelectorPtr& n
 	try {
 		switch(fsio::at_c<1>(condition))
 		{
-		case op::Equal:			return boost::make_shared<TagEqualsSelector>(rule, next, tag, value);
-		case op::Unequal:		return boost::make_shared<TagUnequalsSelector>(rule, next, tag, value);
-		case op::SameAs:		return boost::make_shared<TagMatchesSelector>(rule, next, tag, value);
-		case op::LessThen:		return boost::make_shared<TagSmallerSelector>(rule, next, tag, boost::lexical_cast<int>(value));
-		case op::GreaterThen:	return boost::make_shared<TagLargerSelector>(rule, next, tag, boost::lexical_cast<int>(value));
-		case op::LessEqual:		return boost::make_shared<TagSmallerEqualsSelector>(rule, next, tag, boost::lexical_cast<int>(value));
-		case op::GreaterEqual:	return boost::make_shared<TagLargerEqualsSelector>(rule, next, tag, boost::lexical_cast<int>(value));
+		case op::Equal:			return std::make_shared<TagEqualsSelector>(rule, next, tag, value);
+		case op::Unequal:		return std::make_shared<TagUnequalsSelector>(rule, next, tag, value);
+		case op::SameAs:		return std::make_shared<TagMatchesSelector>(rule, next, tag, value);
+		case op::LessThen:		return std::make_shared<TagSmallerSelector>(rule, next, tag, boost::lexical_cast<int>(value));
+		case op::GreaterThen:	return std::make_shared<TagLargerSelector>(rule, next, tag, boost::lexical_cast<int>(value));
+		case op::LessEqual:		return std::make_shared<TagSmallerEqualsSelector>(rule, next, tag, boost::lexical_cast<int>(value));
+		case op::GreaterEqual:	return std::make_shared<TagLargerEqualsSelector>(rule, next, tag, boost::lexical_cast<int>(value));
 		default:
 			assert(!"This binary condition is not implemented!");
 			return next;
@@ -285,8 +285,8 @@ SelectorPtr MapCssParser::createSelectorFromCondition(const SelectorPtr& next, c
  */
 RulePtr MapCssParser::createSelectorChain(const std::vector<SelectorItem>& items)
 {
-	RulePtr rule = boost::make_shared<Rule>(geodata);
-	ApplySelectorPtr applier = boost::make_shared<ApplySelector>(rule);
+	RulePtr rule = std::make_shared<Rule>(geodata);
+	ApplySelectorPtr applier = std::make_shared<ApplySelector>(rule);
 	SelectorPtr topmost = boost::static_pointer_cast<Selector>(applier);
 
 	Zoom zoom;
@@ -350,7 +350,7 @@ MapCssParser::MapCssParser(const std::shared_ptr<Geodata>& geodata)
  */
 void MapCssParser::load(const string& path)
 {
-	logger = boost::make_shared<ParserLogger>(path);
+	logger = std::make_shared<ParserLogger>(path);
 	log.infoStream() << "Load stylesheet[" << path << "]";
 	MapCSSGrammar mapscc_grammar(*this);
 
@@ -416,7 +416,7 @@ void MapCssParser::load(const string& path)
 shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path, const std::shared_ptr<Geodata>& geodata, int timeout)
 {
 
-	std::shared_ptr<MapCssParser> parser = boost::make_shared<MapCssParser>(geodata);
+	std::shared_ptr<MapCssParser> parser = std::make_shared<MapCssParser>(geodata);
 
 	boost::thread timeoutThread(boost::bind(&MapCssParser::load, parser, path.string()));
 

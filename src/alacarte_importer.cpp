@@ -89,7 +89,7 @@ protected:
 	{
 		log4cpp::Category& log = log4cpp::Category::getInstance("Importer");
 
-		std::shared_ptr<Importer> importer = boost::make_shared<Importer>(config);
+		std::shared_ptr<Importer> importer = std::make_shared<Importer>(config);
 
 		std::shared_ptr<Geodata> geodata;
 

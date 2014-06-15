@@ -27,7 +27,7 @@ struct EvalConstructionTest
 	void testString(const string& expr, ResultType res)
 	{
 		try {
-			eval::Eval<EvalType> eval(expr, boost::make_shared<ParserLogger>(""), ParseInfo());
+			eval::Eval<EvalType> eval(expr, std::make_shared<ParserLogger>(""), ParseInfo());
 
 			if(eval.isEval())
 				BOOST_CHECK_EQUAL(res, IsEval);
@@ -84,7 +84,7 @@ struct EvalListConstructionTest
 	void testString(const string& expr, const std::vector<ResultType>& resList)
 	{
 		try {
-			eval::Eval<std::vector<EvalType>> eval(expr, boost::make_shared<ParserLogger>(""), ParseInfo());
+			eval::Eval<std::vector<EvalType>> eval(expr, std::make_shared<ParserLogger>(""), ParseInfo());
 
 			BOOST_REQUIRE_EQUAL(resList.size(), eval.size());
 
@@ -104,7 +104,7 @@ struct EvalListConstructionTest
 	void testString(const string& expr)
 	{
 		try {
-			eval::Eval<std::vector<EvalType>> eval(expr, boost::make_shared<ParserLogger>(""), ParseInfo());
+			eval::Eval<std::vector<EvalType>> eval(expr, std::make_shared<ParserLogger>(""), ParseInfo());
 
 			BOOST_REQUIRE(false && "Parsing should fail!");
 		} catch(excp::ParseException&)

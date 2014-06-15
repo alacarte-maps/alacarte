@@ -141,7 +141,7 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, std::shared
 			styleSheetpath = ".fallback";
 	}
 
-	return boost::make_shared<TileIdentifier>(x, y, zoom, styleSheetpath, imageFormat);
+	return std::make_shared<TileIdentifier>(x, y, zoom, styleSheetpath, imageFormat);
 }
 
 /**
@@ -151,7 +151,7 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, std::shared
  **/
 shared_ptr<TileIdentifier> TileIdentifier::CreateEmptyTID(const string& stylesheetPath, TileIdentifier::Format format)
 {
-	return boost::make_shared<TileIdentifier>(-2, -2, -2, stylesheetPath, format);
+	return std::make_shared<TileIdentifier>(-2, -2, -2, stylesheetPath, format);
 }
 
 /**

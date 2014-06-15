@@ -96,8 +96,8 @@ public:
  * \param numCavas Number of canvas objects to allocate per type.
  */
 RenderCanvasFactory::RenderCanvasFactory()
-: svgCanvas(boost::dynamic_pointer_cast<RenderCanvas>(boost::make_shared<SVGRenderCanvas>()))
-, pngCanvas(boost::dynamic_pointer_cast<RenderCanvas>(boost::make_shared<PNGRenderCanvas>()))
+: svgCanvas(boost::dynamic_pointer_cast<RenderCanvas>(std::make_shared<SVGRenderCanvas>()))
+, pngCanvas(boost::dynamic_pointer_cast<RenderCanvas>(std::make_shared<PNGRenderCanvas>()))
 {
 }
 
@@ -148,7 +148,7 @@ void PNGRenderCanvas::clear()
 Tile::ImageType PNGRenderCanvas::copySliceImage()
 {
 	cairo_surface_flush(slice.surface);
-	Tile::ImageType buffer = boost::make_shared<Tile::ImageType::element_type>();
+	Tile::ImageType buffer = std::make_shared<Tile::ImageType::element_type>();
 	buffer->reserve(10*1024);
 	cairo_surface_write_to_png_stream(slice.surface, cairoWriter, (void*) buffer.get());
 	return buffer;
@@ -162,7 +162,7 @@ SVGRenderCanvas::SVGRenderCanvas(unsigned int layerWidth,
 								 unsigned int layerHeight,
 								 unsigned int sliceWidth,
 								 unsigned int sliceHeight)
-	: buffer(boost::make_shared<Tile::ImageType::element_type>())
+	: buffer(std::make_shared<Tile::ImageType::element_type>())
 {
 	for (int i = 0; i < LAYER_NUM; i++)
 	{
@@ -194,6 +194,6 @@ Tile::ImageType SVGRenderCanvas::copySliceImage()
 	/* do nothing because cairo_surface_flush(surface) will call cairoWriter */
 
 	/* we need to make a copy since the buffer is owned by the canvas and will be cleared */
-	Tile::ImageType copiedBuffer = boost::make_shared<Tile::ImageType::element_type>(*buffer);
+	Tile::ImageType copiedBuffer = std::make_shared<Tile::ImageType::element_type>(*buffer);
 	return copiedBuffer;
 }

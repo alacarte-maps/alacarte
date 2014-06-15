@@ -39,10 +39,10 @@ public:
 
 	// setup
 	ChildNodesAndChildWaysSelectorTest() : nodeId0(0), wayId0(0), relId0(0) {
-		geodata = boost::make_shared<MockGeodata>();
-		rule = boost::make_shared<MockRule> (geodata);
-		tileId = boost::make_shared<TileIdentifier> (0, 0, 0, "default", TileIdentifier::PNG);
-		next = boost::make_shared<MockSelector>(rule);
+		geodata = std::make_shared<MockGeodata>();
+		rule = std::make_shared<MockRule> (geodata);
+		tileId = std::make_shared<TileIdentifier> (0, 0, 0, "default", TileIdentifier::PNG);
+		next = std::make_shared<MockSelector>(rule);
 
 		nodes.push_back(nodeId0);
 		nodes.push_back(NodeId(1));
@@ -50,11 +50,11 @@ public:
 
 		ways.push_back(wayId0);
 
-		way = boost::make_shared<Way>(nodes, tags);
-		relation = boost::make_shared<Relation>(nodes, nodeRoles, ways, wayRoles, tags);
+		way = std::make_shared<Way>(nodes, tags);
+		relation = std::make_shared<Relation>(nodes, nodeRoles, ways, wayRoles, tags);
 
-		childNodesSelector = boost::make_shared<ChildNodesSelector> (rule, next);
-		childWaysSelector = boost::make_shared<ChildWaysSelector> (rule, next);
+		childNodesSelector = std::make_shared<ChildNodesSelector> (rule, next);
+		childWaysSelector = std::make_shared<ChildWaysSelector> (rule, next);
 
 		EXPECT_CALL(*geodata, getWay(wayId0))
 		.Times(AnyNumber())

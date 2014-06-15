@@ -48,7 +48,7 @@ void GeodataMock::insertRelations(const std::shared_ptr<std::vector<Relation> >&
 
 shared_ptr<std::vector<NodeId> > GeodataMock::getNodeIDs(const FixedRect& rect) const
 {
-	std::shared_ptr<std::vector<NodeId> > nodeIDs = boost::make_shared< std::vector<NodeId> >();
+	std::shared_ptr<std::vector<NodeId> > nodeIDs = std::make_shared< std::vector<NodeId> >();
  	for(int i = 0; i < nodes->size(); i++) {
  		if(rect.contains(nodes->at(i).getLocation())) {
  			nodeIDs->push_back(NodeId(i));
@@ -59,7 +59,7 @@ shared_ptr<std::vector<NodeId> > GeodataMock::getNodeIDs(const FixedRect& rect) 
 
  std::shared_ptr<std::vector<WayId> > GeodataMock::getWayIDs(const FixedRect& rect) const
  {
- 	std::shared_ptr<std::vector<WayId> > wayIDs = boost::make_shared< std::vector<WayId> >();
+ 	std::shared_ptr<std::vector<WayId> > wayIDs = std::make_shared< std::vector<WayId> >();
  	for(int i = 0; i < ways->size(); i++) {
  		if(rect.intersects(calculateBoundingBox(&ways->at(i)))) {
  				wayIDs->push_back(WayId(i));
@@ -71,7 +71,7 @@ shared_ptr<std::vector<NodeId> > GeodataMock::getNodeIDs(const FixedRect& rect) 
 
  std::shared_ptr<std::vector<RelId> > GeodataMock::getRelationIDs(const FixedRect& rect) const
  {
-	std::shared_ptr<std::vector<RelId> > relationIDs = boost::make_shared< std::vector<RelId> >();
+	std::shared_ptr<std::vector<RelId> > relationIDs = std::make_shared< std::vector<RelId> >();
 
  	for(int i = 0; i < relations->size(); i++) {
  		if ( rect.intersects ( calculateBoundingBox(&relations->at(i)))) {

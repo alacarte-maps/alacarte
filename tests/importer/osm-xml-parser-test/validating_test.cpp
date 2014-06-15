@@ -107,9 +107,9 @@ struct ValidatingFixture
 	{
 		srand(seed);
 
-		nodes = boost::make_shared<std::vector<Node> >();
-		ways = boost::make_shared<std::vector<Way> >();
-		relations = boost::make_shared<std::vector<Relation> >();
+		nodes = std::make_shared<std::vector<Node> >();
+		ways = std::make_shared<std::vector<Way> >();
+		relations = std::make_shared<std::vector<Relation> >();
 
 		std::vector<NodeId> nodeIds;
 		std::vector<WayId> wayIds;

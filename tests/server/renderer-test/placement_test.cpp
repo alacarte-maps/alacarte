@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_SUITE(test_tiles)
 
 class LabelRenderer : public Renderer {
 public:
-	LabelRenderer() : Renderer(boost::make_shared<Geodata>())
+	LabelRenderer() : Renderer(std::make_shared<Geodata>())
 	{
 	}
 	void renderLabels(cairo_t* cr, std::vector<std::pair<string, FloatPoint> >& toPlace) {
@@ -39,13 +39,13 @@ public:
 		{
 			string& text = pair.first;
 			cairo_text_extents(cr, text.c_str(), &textSize);
-			std::shared_ptr<Style> s = boost::make_shared<Style>();
+			std::shared_ptr<Style> s = std::make_shared<Style>();
 			s->text = text;
 			styles.push_back(s);
 			FloatPoint center = pair.second + FloatPoint(textSize.width/2.0, textSize.height/2.0);
 			FloatRect owner = FloatRect(center.x, center.y, center.x, center.y);
 			FloatPoint origin = pair.second - FloatPoint(textSize.x_bearing, textSize.y_bearing);
-			std::shared_ptr<Label> l = boost::make_shared<Label>(FloatRect(pair.second, textSize.width, textSize.height), owner, s->text, s.get(), origin);
+			std::shared_ptr<Label> l = std::make_shared<Label>(FloatRect(pair.second, textSize.width, textSize.height), owner, s->text, s.get(), origin);
 
 			cairo_rectangle(cr, l->box.minX, l->box.minY, l->box.getWidth(), l->box.getHeight());
 			cairo_stroke(cr);

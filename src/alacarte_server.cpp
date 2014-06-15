@@ -45,7 +45,6 @@
 
 
 using boost::program_options::options_description;
-using boost::make_shared;
 
 
 /**

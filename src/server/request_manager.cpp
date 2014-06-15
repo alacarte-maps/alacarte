@@ -98,11 +98,11 @@ RequestManager::RequestManager( const std::shared_ptr<Configuration>& config,
 	int threads = config->get<int>(opt::server::num_threads);
 	currentPrerenderingThreads = 0;
 	for (int i = 0; i < threads; ++i) {
-		auto worker = boost::make_shared<boost::thread>(
+		auto worker = std::make_shared<boost::thread>(
 			boost::bind(&boost::asio::io_service::run, &jobPool)
 		);
 		workers.push_back(worker);
-		factories.push(boost::make_shared<RenderCanvasFactory>());
+		factories.push(std::make_shared<RenderCanvasFactory>());
 	}
 
 	// start prerender timing

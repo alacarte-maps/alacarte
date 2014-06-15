@@ -86,7 +86,7 @@ void ObjectRenderer::addShield(std::list<std::shared_ptr<Shield> >& shields,
 	FloatRect box = FloatRect(FloatPoint(p.x - RENDERER_SHIELD_DISTANCE / 2.0,
 										 p.y - RENDERER_SHIELD_DISTANCE / 2.0),
 							  RENDERER_SHIELD_DISTANCE, RENDERER_SHIELD_DISTANCE);
-	shields.push_back(boost::make_shared<Shield>(box, bounds, s->shield_text, s, origin, shield));
+	shields.push_back(std::make_shared<Shield>(box, bounds, s->shield_text, s, origin, shield));
 }
 
 
@@ -103,7 +103,7 @@ void ObjectRenderer::addLabel(std::list<std::shared_ptr<Label> >& labels,
 	double border = s->text_halo_radius;
 	FloatPoint origin = FloatPoint(x - textSize->x_bearing, y - textSize->y_bearing);
 	FloatRect box     = FloatRect(FloatPoint(x, y), textSize->width, textSize->height).grow(border, border);
-	labels.push_back(boost::make_shared<Label>(box, bounds, s->text, s, origin));
+	labels.push_back(std::make_shared<Label>(box, bounds, s->text, s, origin));
 }
 
 ObjectRenderer::ObjectRenderer(const std::shared_ptr<Geodata>& data, const Style* s, const cairo_matrix_t* transform)

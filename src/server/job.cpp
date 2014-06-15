@@ -124,9 +124,9 @@ shared_ptr<Tile> Job::computeEmpty()
 	std::shared_ptr<Tile> tile = manager->getCache()->getTile(emptyID);
 
 	if(!tile->isRendered()) {
-		std::shared_ptr<std::vector<NodeId>> nodeIDs 	= boost::make_shared< std::vector<NodeId>>();
-		std::shared_ptr<std::vector<WayId>> 	wayIDs 		= boost::make_shared< std::vector<WayId>>();
-		std::shared_ptr<std::vector<RelId>> 	relationIDs = boost::make_shared< std::vector<RelId>>();
+		std::shared_ptr<std::vector<NodeId>> nodeIDs 	= std::make_shared< std::vector<NodeId>>();
+		std::shared_ptr<std::vector<WayId>> 	wayIDs 		= std::make_shared< std::vector<WayId>>();
+		std::shared_ptr<std::vector<RelId>> 	relationIDs = std::make_shared< std::vector<RelId>>();
 
 		RenderAttributes renderAttributes;
 

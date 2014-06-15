@@ -106,7 +106,7 @@ public:
 				  const FixedRect& rect, bool returnOnFirst = false ) const;
 	bool contains(const FixedRect& rect) const
 	{
-		std::shared_ptr<std::vector<id_t> > geoIDs = boost::make_shared< std::vector<id_t> >();
+		std::shared_ptr<std::vector<id_t> > geoIDs = std::make_shared< std::vector<id_t> >();
 		return search(geoIDs, rect, true);
 	};
 

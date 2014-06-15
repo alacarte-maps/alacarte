@@ -49,9 +49,9 @@ struct feature_test
 		BOOST_TEST_MESSAGE("Loading data: " << testData.string());
 		BOOST_CHECK(boost::filesystem::exists(testData));
 
-		data = boost::make_shared<Geodata>();
+		data = std::make_shared<Geodata>();
 		data->load(testData.string());
-		renderer = boost::make_shared<Renderer>(data);
+		renderer = std::make_shared<Renderer>(data);
 	}
 
 	//! should be overwriten by all specific tests to generate styles for testing
@@ -150,7 +150,7 @@ struct feature_test
 		RenderCanvasFactory factory;
 		std::shared_ptr<RenderCanvas> canvas = factory.getCanvas(id->getImageFormat());
 		renderer->renderMetaTile(attr, canvas, mid);
-		std::shared_ptr<Tile> tile = boost::make_shared<Tile>(id);
+		std::shared_ptr<Tile> tile = std::make_shared<Tile>(id);
 		renderer->sliceTile(canvas, mid, tile);
 
 		BOOST_TEST_MESSAGE("Writing the tile:");
@@ -571,39 +571,39 @@ struct shield_test : feature_test {
 };
 
 ALAC_START_FIXTURE_TEST(fill_test, "renderer_test.carte")
-	ALAC_FIXTURE_TEST_NAMED(checkTile, fill, "fill", boost::make_shared<TileIdentifier>(4287, 2812, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, fill, "fill", std::make_shared<TileIdentifier>(4287, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
 ALAC_START_FIXTURE_TEST(line_test, "renderer_test.carte")
-	ALAC_FIXTURE_TEST_NAMED(checkTile, line, "line", boost::make_shared<TileIdentifier>(4286, 2812, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, line, "line", std::make_shared<TileIdentifier>(4286, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
 ALAC_START_FIXTURE_TEST(linecaps_test, "renderer_test.carte")
-	ALAC_FIXTURE_TEST_NAMED(checkTile, linecaps, "linecaps", boost::make_shared<TileIdentifier>(4286, 2812, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, linecaps, "linecaps", std::make_shared<TileIdentifier>(4286, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
 ALAC_START_FIXTURE_TEST(linejoins_test, "renderer_test.carte")
-	ALAC_FIXTURE_TEST_NAMED(checkTile, linejoins, "linejoins", boost::make_shared<TileIdentifier>(4286, 2811, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, linejoins, "linejoins", std::make_shared<TileIdentifier>(4286, 2811, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
 ALAC_START_FIXTURE_TEST(dashes_test, "renderer_test.carte")
-	ALAC_FIXTURE_TEST_NAMED(checkTile, dashes, "dashes", boost::make_shared<TileIdentifier>(4286, 2812, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, dashes, "dashes", std::make_shared<TileIdentifier>(4286, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
 ALAC_START_FIXTURE_TEST(icon_test, "renderer_test.carte")
-	ALAC_FIXTURE_TEST_NAMED(checkTile, icon_size, "icon_size", boost::make_shared<TileIdentifier>(4288, 2811, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, icon_size, "icon_size", std::make_shared<TileIdentifier>(4288, 2811, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
 ALAC_START_FIXTURE_TEST(shield_test, "renderer_test.carte")
-	ALAC_FIXTURE_TEST_NAMED(checkTile, shield_node_1, "shield_node_1", boost::make_shared<TileIdentifier>(4288, 2810, 13, "none", TileIdentifier::PNG));
-	ALAC_FIXTURE_TEST_NAMED(checkTile, shield_node_2, "shield_node_2", boost::make_shared<TileIdentifier>(4288, 2809, 13, "none", TileIdentifier::PNG));
-	ALAC_FIXTURE_TEST_NAMED(checkTile, shield_way, "shield_way", boost::make_shared<TileIdentifier>(4288, 2812, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, shield_node_1, "shield_node_1", std::make_shared<TileIdentifier>(4288, 2810, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, shield_node_2, "shield_node_2", std::make_shared<TileIdentifier>(4288, 2809, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, shield_way, "shield_way", std::make_shared<TileIdentifier>(4288, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
 ALAC_START_FIXTURE_TEST(text_test, "renderer_test.carte")
-	ALAC_FIXTURE_TEST_NAMED(checkTile, text_node, "text_node", boost::make_shared<TileIdentifier>(4288, 2811, 13, "none", TileIdentifier::PNG));
-	ALAC_FIXTURE_TEST_NAMED(checkTile, text_way, "text_way", boost::make_shared<TileIdentifier>(4287, 2811, 13, "none", TileIdentifier::PNG));
-	ALAC_FIXTURE_TEST_NAMED(checkTile, text_find, "text_find", boost::make_shared<TileIdentifier>(4288, 2812, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, text_node, "text_node", std::make_shared<TileIdentifier>(4288, 2811, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, text_way, "text_way", std::make_shared<TileIdentifier>(4287, 2811, 13, "none", TileIdentifier::PNG));
+	ALAC_FIXTURE_TEST_NAMED(checkTile, text_find, "text_find", std::make_shared<TileIdentifier>(4288, 2812, 13, "none", TileIdentifier::PNG));
 ALAC_END_FIXTURE_TEST()
 
 BOOST_AUTO_TEST_SUITE_END()

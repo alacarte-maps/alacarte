@@ -112,7 +112,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 		cache = cacheIt->second;
 	} else {
 		// Creating a new cache for stylesheet.
-		cache = boost::make_shared<CacheOfOneStylesheet>();
+		cache = std::make_shared<CacheOfOneStylesheet>();
 		AllCaches[stylesheet] = cache;
 		boost::filesystem::path dir(Config->get<string>(opt::server::cache_path) + "/" + ti->getStylesheetPath());
 		boost::filesystem::create_directories(dir);
@@ -129,11 +129,11 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 		tileIt->second.second = RecentlyUsedList.begin();
 	}  else {
 		// Cache miss
-		tile = boost::make_shared<Tile>(ti);
+		tile = std::make_shared<Tile>(ti);
 		if (ti->getZoom() <= Config->get<int>(opt::server::cache_keep_tile)) {
 			// Try to load prerendered image data from file.
 			boost::filesystem::path path = getTilePath(ti);
-			Tile::ImageType image = boost::make_shared<Tile::ImageType::element_type>();
+			Tile::ImageType image = std::make_shared<Tile::ImageType::element_type>();
 			try {
 				readFile(image, path);
 				tile->setImage(image);
@@ -188,10 +188,10 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 shared_ptr<Tile> Cache::getDefaultTile() {
 	if (!DefaultTile) {
 		string path = Config->get<string>(opt::server::path_to_default_tile);
-		std::shared_ptr<TileIdentifier> ti = boost::make_shared<TileIdentifier>(-1, -1, -1, "/", TileIdentifier::Format::PNG);
-		DefaultTile = boost::make_shared<Tile>(ti);
+		std::shared_ptr<TileIdentifier> ti = std::make_shared<TileIdentifier>(-1, -1, -1, "/", TileIdentifier::Format::PNG);
+		DefaultTile = std::make_shared<Tile>(ti);
 		// Load default tile
-		Tile::ImageType image = boost::make_shared<Tile::ImageType::element_type>();
+		Tile::ImageType image = std::make_shared<Tile::ImageType::element_type>();
 		try {
 			readFile(image, path);
 			DefaultTile->setImage(image);

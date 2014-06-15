@@ -29,9 +29,9 @@ struct tile_test {
 	tile_test () {
 		testData = getInputDirectory() / "karlsruhe_big.carte";
 		BOOST_CHECK(boost::filesystem::exists(testData));
-		geo_r = boost::make_shared<Geodata>();
+		geo_r = std::make_shared<Geodata>();
 		geo_r->load(testData.string());
-		geo_t = boost::make_shared<GeodataMock>(*geo_r);
+		geo_t = std::make_shared<GeodataMock>(*geo_r);
 	}
 
 	template<class id_t>
@@ -80,8 +80,8 @@ struct tile_test {
 		r =FixedRect(FixedPoint(x0, y0), FixedPoint(x1, y1));
 
 		/*Nodes*/
-		std::shared_ptr<std::vector<NodeId> > result_t = boost::make_shared< std::vector<NodeId> >();
-		std::shared_ptr<std::vector<NodeId> > result_r = boost::make_shared< std::vector<NodeId> >();
+		std::shared_ptr<std::vector<NodeId> > result_t = std::make_shared< std::vector<NodeId> >();
+		std::shared_ptr<std::vector<NodeId> > result_r = std::make_shared< std::vector<NodeId> >();
 		result_t = geo_t->getNodeIDs(r);
 		BOOST_TEST_MESSAGE("Returned nodes-mock: " << result_t->size());
 		result_r = geo_r->getNodeIDs(r);
@@ -89,8 +89,8 @@ struct tile_test {
 		compare<NodeId>(result_t, result_r);
 
 		/*Ways*/
-		std::shared_ptr<std::vector<WayId> > way_t = boost::make_shared< std::vector<WayId> >();
-		std::shared_ptr<std::vector<WayId> > way_r = boost::make_shared< std::vector<WayId> >();
+		std::shared_ptr<std::vector<WayId> > way_t = std::make_shared< std::vector<WayId> >();
+		std::shared_ptr<std::vector<WayId> > way_r = std::make_shared< std::vector<WayId> >();
 		way_t = geo_t->getWayIDs(r);
 		BOOST_TEST_MESSAGE("Returned ways-mock: " << way_t->size());
 		way_r = geo_r->getWayIDs(r);
@@ -98,8 +98,8 @@ struct tile_test {
 		compare<WayId>(way_t, way_r);
 
 		/*Relation*/
-		std::shared_ptr<std::vector<RelId> > rel_t = boost::make_shared< std::vector<RelId> >();
-		std::shared_ptr<std::vector<RelId> > rel_r = boost::make_shared< std::vector<RelId> >();
+		std::shared_ptr<std::vector<RelId> > rel_t = std::make_shared< std::vector<RelId> >();
+		std::shared_ptr<std::vector<RelId> > rel_r = std::make_shared< std::vector<RelId> >();
 		rel_t = geo_t->getRelationIDs(r);
 		BOOST_TEST_MESSAGE("Returned relations-mock: " << rel_t->size());
 		rel_r = geo_r->getRelationIDs(r);

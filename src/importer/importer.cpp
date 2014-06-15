@@ -105,9 +105,9 @@ public:
 
 		log.infoStream() << "File size is " << fileSize / (1024) << "kb";
 
-		nodes = boost::make_shared<std::vector<Node> >();
-		ways = boost::make_shared<std::vector<Way> >();
-		relations = boost::make_shared<std::vector<Relation> >();
+		nodes = std::make_shared<std::vector<Node> >();
+		ways = std::make_shared<std::vector<Way> >();
+		relations = std::make_shared<std::vector<Relation> >();
 
 		// Use a cache with an 8 mb buffer
 		eaglexml::stream_cache<> cache(xml_stream, 8 * 1024 * 1024);
@@ -527,7 +527,7 @@ shared_ptr<Geodata> Importer::importXML()
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	OsmXmlParser parser(!config->get<bool>(opt::importer::check_xml_entities));
-	std::shared_ptr<Geodata>	geodata = boost::make_shared<Geodata>();
+	std::shared_ptr<Geodata>	geodata = std::make_shared<Geodata>();
 
 	path xml_file = config->get<string>(opt::importer::path_to_osmdata);
 	log.infoStream() << "Start parsing...";

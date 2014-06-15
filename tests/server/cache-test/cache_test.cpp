@@ -42,7 +42,7 @@ struct cache_test
 		std::shared_ptr<Cache> cache = shared_ptr<Cache>(new Cache(config));
 		// Delete not existing cache.
 		BOOST_CHECK_NO_THROW(cache->deleteTiles("nothing"));
-		std::shared_ptr<TileIdentifier> ti = boost::make_shared<TileIdentifier>(0, 0, 0, "default", TileIdentifier::Format::PNG);
+		std::shared_ptr<TileIdentifier> ti = std::make_shared<TileIdentifier>(0, 0, 0, "default", TileIdentifier::Format::PNG);
 		BOOST_CHECK_NO_THROW(cache->getTile(ti));
 		// Delete existing cache.
 		BOOST_CHECK_NO_THROW(cache->deleteTiles("/default"));
@@ -54,8 +54,8 @@ struct cache_test
 		std::shared_ptr<Configuration> config = mock->Config(argv, 4);
 		std::shared_ptr<Cache> cache = shared_ptr<Cache>(new Cache(config));
 		// tileIdentifier is not in valid range, so it wont be prerendered.
-		std::shared_ptr<TileIdentifier> ti1 = boost::make_shared<TileIdentifier>(200, 1, 1, "default", TileIdentifier::Format::PNG);
-		Tile::ImageType image = boost::make_shared<Tile::ImageType::element_type>();
+		std::shared_ptr<TileIdentifier> ti1 = std::make_shared<TileIdentifier>(200, 1, 1, "default", TileIdentifier::Format::PNG);
+		Tile::ImageType image = std::make_shared<Tile::ImageType::element_type>();
 		// tries to read file that doesn't exist.
 		if (boost::filesystem::exists(config->get<string>(opt::server::cache_path) + "/default/1-200-1.png")) {
 			boost::filesystem::remove(config->get<string>(opt::server::cache_path) + "/default/1-200-1.png");
@@ -68,7 +68,7 @@ struct cache_test
 		BOOST_CHECK_NO_THROW(cache->getTile(ti1));
 		// Access a lot of tiles to bring tile ^ to evict.
 		for(int i = 1; i < 20; i++) {
-			std::shared_ptr<TileIdentifier> ti2 = boost::make_shared<TileIdentifier>(1, i, 15, "default", TileIdentifier::Format::PNG);
+			std::shared_ptr<TileIdentifier> ti2 = std::make_shared<TileIdentifier>(1, i, 15, "default", TileIdentifier::Format::PNG);
 			BOOST_CHECK_NO_THROW(cache->getTile(ti2));
 		}
 		// Main tile should not be evicted, because its not rendered yet.So check if theres no image on harddisk
@@ -77,7 +77,7 @@ struct cache_test
 		tile->setImage(image);
 		// One more time access many tile to evict main tile.
 		for(int i = 1; i < 20; i++) {
-			std::shared_ptr<TileIdentifier> ti2 = boost::make_shared<TileIdentifier>(1, i, 15, "default", TileIdentifier::Format::PNG);
+			std::shared_ptr<TileIdentifier> ti2 = std::make_shared<TileIdentifier>(1, i, 15, "default", TileIdentifier::Format::PNG);
 			BOOST_CHECK_NO_THROW(cache->getTile(ti2));
 		}
 		// Check if main tile has been written to harddrive.

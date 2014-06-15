@@ -17,7 +17,7 @@ struct MapCSSTest
 	// setup
 	MapCSSTest()
 	{
-		data = boost::make_shared<Geodata>();
+		data = std::make_shared<Geodata>();
 	}
 
 	// actual test

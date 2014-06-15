@@ -53,11 +53,11 @@ Statistic::~Statistic()
 shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const string& stylesheet, int zoom)
 {
 #ifdef Statistic_Activated
-	std::shared_ptr<Statistic::JobMeasurement> jm = boost::make_shared<JobMeasurement>(stylesheet, zoom);
+	std::shared_ptr<Statistic::JobMeasurement> jm = std::make_shared<JobMeasurement>(stylesheet, zoom);
 	jm->jobStartTime = boost::posix_time::microsec_clock::universal_time();
 	return jm;
 #endif
-	return boost::make_shared<JobMeasurement>();
+	return std::make_shared<JobMeasurement>();
 }
 void Statistic::setStats(std::shared_ptr<Statistic::JobMeasurement>& job,
 						 unsigned int nodes,

@@ -57,14 +57,14 @@ struct test_requestManage
 
 		Statistic::Init(DefaultConfig);
 		
-		std::shared_ptr<Geodata> geodata = boost::make_shared<Geodata>();
+		std::shared_ptr<Geodata> geodata = std::make_shared<Geodata>();
 		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<string>(opt::server::path_to_geodata)));
 		geodata->load(DefaultConfig->get<string>(opt::server::path_to_geodata));
-		cache = boost::make_shared<Cache>(DefaultConfig);
-		ssm = boost::make_shared<StylesheetManager>(DefaultConfig);
-		std::shared_ptr<Renderer> renderer = boost::make_shared<Renderer>(geodata);
-		req_manager = boost::make_shared<RequestManager>(DefaultConfig, geodata, renderer, cache, ssm);
-		server = boost::make_shared<HttpServer>(DefaultConfig, req_manager);
+		cache = std::make_shared<Cache>(DefaultConfig);
+		ssm = std::make_shared<StylesheetManager>(DefaultConfig);
+		std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(geodata);
+		req_manager = std::make_shared<RequestManager>(DefaultConfig, geodata, renderer, cache, ssm);
+		server = std::make_shared<HttpServer>(DefaultConfig, req_manager);
 		ssm->startStylesheetObserving(req_manager);
 		boost::this_thread::sleep(boost::posix_time::milliseconds(2000));
 	}
@@ -74,14 +74,14 @@ struct test_requestManage
 		//enqueue more request than the server can handle, so it has to reply with service_unavailable
 		boost::asio::io_service service;
 		DefaultConfig->add<int>(opt::server::max_queue_size, 1);
-		std::shared_ptr<TestHttpRequest> request = boost::make_shared<TestHttpRequest>("default/15/17150/11253.png", service, server, req_manager);
-		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17143/11253.png", service, server, req_manager));
-		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17144/11253.png", service, server, req_manager));
-		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17145/11253.png", service, server, req_manager));
-		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17146/11253.png", service, server, req_manager));
-		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17147/11253.png", service, server, req_manager));
-		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17148/11253.png", service, server, req_manager));
-		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17149/11253.png", service, server, req_manager));
+		std::shared_ptr<TestHttpRequest> request = std::make_shared<TestHttpRequest>("default/15/17150/11253.png", service, server, req_manager);
+		req_manager->enqueue(std::make_shared<TestHttpRequest>("default/15/17143/11253.png", service, server, req_manager));
+		req_manager->enqueue(std::make_shared<TestHttpRequest>("default/15/17144/11253.png", service, server, req_manager));
+		req_manager->enqueue(std::make_shared<TestHttpRequest>("default/15/17145/11253.png", service, server, req_manager));
+		req_manager->enqueue(std::make_shared<TestHttpRequest>("default/15/17146/11253.png", service, server, req_manager));
+		req_manager->enqueue(std::make_shared<TestHttpRequest>("default/15/17147/11253.png", service, server, req_manager));
+		req_manager->enqueue(std::make_shared<TestHttpRequest>("default/15/17148/11253.png", service, server, req_manager));
+		req_manager->enqueue(std::make_shared<TestHttpRequest>("default/15/17149/11253.png", service, server, req_manager));
 		req_manager->enqueue(request);
 		BOOST_CHECK(request->isAnswered());
 		BOOST_CHECK_EQUAL(request->getReply().status, HttpRequest::Reply::service_unavailable);
@@ -96,7 +96,7 @@ struct test_requestManage
 		int x = 68595;
 		int y = 45006;
 		int z = 17;
-		std::shared_ptr<TileIdentifier> ti = boost::make_shared<TileIdentifier>(x,y,z,"default", 	TileIdentifier::PNG);
+		std::shared_ptr<TileIdentifier> ti = std::make_shared<TileIdentifier>(x,y,z,"default", 	TileIdentifier::PNG);
 		std::shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(ti);
 
 		req_manager->enqueue(mid);

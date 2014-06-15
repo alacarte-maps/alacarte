@@ -32,7 +32,7 @@
 #include "utils/application.hpp"
 #include "general/configuration.hpp"
 
-using boost::make_shared;
+using std::make_shared;
 
 /**
  * @brief Inits the new Application                                                                     
