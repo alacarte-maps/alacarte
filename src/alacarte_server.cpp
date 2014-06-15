@@ -145,7 +145,7 @@ protected:
 		if (config->has(opt::server::style_source)) {
 			boost::filesystem::path folder = config->get<std::string>(opt::server::style_source);
 			if (!boost::filesystem::is_directory(folder)) {
-				log.errorStream() << opt::server::style_source << " = \"" << folder.std::string() << "\" is not a directory.";
+				log.errorStream() << opt::server::style_source << " = \"" << folder.string() << "\" is not a directory.";
 				return false;
 			}
 			
@@ -160,7 +160,7 @@ protected:
 				try {
 					boost::filesystem::create_directory(folder);
 				} catch (boost::filesystem::filesystem_error) {
-					log.errorStream() << opt::server::cache_path << " = \"" << folder.std::string() << "\" could not be created.";
+					log.errorStream() << opt::server::cache_path << " = \"" << folder.string() << "\" could not be created.";
 					return false;
 				}
 			}

@@ -94,12 +94,12 @@ public:
 		assert(!ways);
 		assert(!relations);
 
-		std::ifstream xml_stream(xml_file.std::string());
+		std::ifstream xml_stream(xml_file.string());
 
 		if(!xml_stream)
-			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(xml_file.std::string()));
+			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(xml_file.string()));
 
-		log.infoStream() << "Load xml-file \"" << xml_file.std::string() << "\"";
+		log.infoStream() << "Load xml-file \"" << xml_file.string() << "\"";
 		
 		fileSize = boost::filesystem::file_size(xml_file);
 
@@ -130,11 +130,11 @@ public:
 			parseEntities(osm);
 
 		}catch(excp::InputFormatException& e) {
-			e << excp::InfoFileName(xml_file.std::string());
+			e << excp::InfoFileName(xml_file.string());
 			throw;
 		}catch(eaglexml::parse_error& e)
 		{
-			BOOST_THROW_EXCEPTION(excp::InputFormatException() << excp::InfoFileName(xml_file.std::string()) << excp::InfoWhat(e.what()));
+			BOOST_THROW_EXCEPTION(excp::InputFormatException() << excp::InfoFileName(xml_file.string()) << excp::InfoWhat(e.what()));
 		}
 	}
 

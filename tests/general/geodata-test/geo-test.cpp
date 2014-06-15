@@ -30,7 +30,7 @@ struct tile_test {
 		testData = getInputDirectory() / "karlsruhe_big.carte";
 		BOOST_CHECK(boost::filesystem::exists(testData));
 		geo_r = std::make_shared<Geodata>();
-		geo_r->load(testData.std::string());
+		geo_r->load(testData.string());
 		geo_t = std::make_shared<GeodataMock>(*geo_r);
 	}
 

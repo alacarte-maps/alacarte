@@ -53,7 +53,7 @@ struct test_requestManage
 		DefaultConfig = TestConfig::Create()
 		->add<int>(opt::server::max_queue_size, 1)
 		->add<int>(opt::server::prerender_level, 0)
-		->add<std::string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").std::string());
+		->add<std::string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").string());
 
 		Statistic::Init(DefaultConfig);
 		

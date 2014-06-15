@@ -418,7 +418,7 @@ shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path, con
 
 	std::shared_ptr<MapCssParser> parser = std::make_shared<MapCssParser>(geodata);
 
-	boost::thread timeoutThread(boost::bind(&MapCssParser::load, parser, path.std::string()));
+	boost::thread timeoutThread(boost::bind(&MapCssParser::load, parser, path.string()));
 
 	if(!timeoutThread.timed_join(boost::posix_time::millisec(timeout)))
 	{

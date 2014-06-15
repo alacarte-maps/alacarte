@@ -79,13 +79,13 @@ Configuration::Configuration(	boost::program_options::options_description& cmd_d
 
 	while(directories.size())
 	{
-		searchDirectories.push_back(directories.front().std::string());
+		searchDirectories.push_back(directories.front().string());
 		path configPath = directories.front() / configFile;
 
 		if(is_regular_file(configPath))
 		{
 			ConfigFileUsed = true;
-			store(parse_config_file<char>(configPath.std::string().c_str(), config_desc, true), options);
+			store(parse_config_file<char>(configPath.string().c_str(), config_desc, true), options);
 			break;
 		}
 

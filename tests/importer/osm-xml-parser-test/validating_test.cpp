@@ -139,7 +139,7 @@ struct ValidatingFixture
 			relationIds.push_back(RelId(rand()));
 		}
 
-		std::ofstream xml(path.std::string(), std::ios::out);
+		std::ofstream xml(path.string(), std::ios::out);
 
 		BOOST_REQUIRE(xml.is_open());
 

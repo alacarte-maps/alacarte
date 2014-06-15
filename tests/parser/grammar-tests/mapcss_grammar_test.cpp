@@ -18,11 +18,11 @@ struct MapCSSParserTest
 
 	void testFile(const fs::path& path)
 	{
-		BOOST_TEST_CHECKPOINT("Checking " << path.std::string());
+		BOOST_TEST_CHECKPOINT("Checking " << path.string());
 
 		bool shouldFail = false;
 		{
-			std::ifstream file(path.std::string());
+			std::ifstream file(path.string());
 			BOOST_REQUIRE(file.is_open());
 
 			std::string firstLine;
@@ -38,7 +38,7 @@ struct MapCSSParserTest
 
 		std::shared_ptr<Geodata> data;
 		MapCssParser parser(data);
-		parser.load(path.std::string());
+		parser.load(path.string());
 
 		BOOST_CHECK_MESSAGE((!parser.parsedStylesheet) == shouldFail, "Expected another conclusion in " << path.filename() << "!");
 		if(!parser.parsedStylesheet && !shouldFail)

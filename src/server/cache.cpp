@@ -49,11 +49,11 @@ Cache::~Cache()
 
 void Cache::readFile(const Tile::ImageType& image, const boost::filesystem::path& filename) {
 	std::ifstream file;
-	file.open(filename.std::string(), std::ios::in | std::ios::binary);
+	file.open(filename.string(), std::ios::in | std::ios::binary);
 	file.seekg(0, std::ios::end);
 	std::streampos length(file.tellg());
 	if (length == std::streampos(-1) || !file.is_open()) {
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.std::string()));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.string()));
 	} else if (length) {
 		file.seekg(0, std::ios::beg);
 
@@ -65,7 +65,7 @@ void Cache::readFile(const Tile::ImageType& image, const boost::filesystem::path
 
 void Cache::writeFile(std::shared_ptr<Tile> tile, const boost::filesystem::path& filename) {
 	boost::filesystem::create_directories(filename.parent_path());
-	std::ofstream out(filename.std::string(), std::ios::out | std::ios::binary);
+	std::ofstream out(filename.string(), std::ios::out | std::ios::binary);
 	if(out.is_open())
 	{
 		Tile::ImageType png = tile->getImage();
@@ -79,7 +79,7 @@ void Cache::writeFile(std::shared_ptr<Tile> tile, const boost::filesystem::path&
 		}
 	} else {
 		// e.g. Disk full
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.std::string()));
+		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(filename.string()));
 	}
 }
 
@@ -138,7 +138,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 				readFile(image, path);
 				tile->setImage(image);
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.std::string();
+				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.string();
 			}
 		}
 		RecentlyUsedList.push_front(tile);
@@ -154,7 +154,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 			try {
 				writeFile(tileToDelete, path);
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path.std::string();
+				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path.string();
 				// Disk is full
 			} catch (excp::InputFormatException) {
 				log << log4cpp::Priority::DEBUG << "WriteFile: Image not yet rendered " << *tile->getIdentifier();

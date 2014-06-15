@@ -115,7 +115,7 @@ void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 	int timeout = config->get<int>(opt::server::parse_timeout);
 
 	try {
-		std::string new_filename = stylesheet_path.filename().std::string() + ".mapcss";
+		std::string new_filename = stylesheet_path.filename().string() + ".mapcss";
 		fs::path filename(new_filename);
 		stylesheet = Stylesheet::Load(stylesheetFolder / filename, manager->getGeodata(), timeout);
 
@@ -124,7 +124,7 @@ void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 		std::shared_ptr<ParserLogger> logger = *boost::get_error_info<excp::InfoParserLogger>(e);
 
 		// Something went wrong!
-		logger->errorStream() << "Parsing of file \"" << excp::ErrorOut<excp::InfoFileName>(e, stylesheet_path.std::string()) << "\" failed:";
+		logger->errorStream() << "Parsing of file \"" << excp::ErrorOut<excp::InfoFileName>(e, stylesheet_path.string()) << "\" failed:";
 		logger->errorStream() << excp::ErrorOut<excp::InfoWhat>(e, "unknown reason!");
 		logger->errorStream() << "In line " << excp::ErrorOut<excp::InfoFailureLine>(e) << " column " << excp::ErrorOut<excp::InfoFailureColumn>(e) << ":";
 
@@ -140,7 +140,7 @@ void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 		return;
 	} catch(excp::TimeoutException&)
 	{
-		std::shared_ptr<ParserLogger> logger = std::make_shared<ParserLogger>(stylesheet_path.std::string());
+		std::shared_ptr<ParserLogger> logger = std::make_shared<ParserLogger>(stylesheet_path.string());
 
 		logger->errorStream() << "Parsing of stylesheet " << stylesheet_path << " took more then " << timeout << " ms!";
 		logger->errorStream() << "Parsing canceled!";
@@ -151,7 +151,7 @@ void StylesheetManager::onNewStylesheet(const fs::path& stylesheet_path)
 	parsedStylesheets[stylesheet_path] = stylesheet;
 
 	// prerenders the upmost tile as well as all higher zoomlevels that are specified in the configuration
-	manager->enqueue(std::make_shared<MetaIdentifier>(TileIdentifier(0, 0, 0, stylesheet_path.std::string(), TileIdentifier::PNG)));
+	manager->enqueue(std::make_shared<MetaIdentifier>(TileIdentifier(0, 0, 0, stylesheet_path.string(), TileIdentifier::PNG)));
 }
 
 // calls must be locked by write-lock
@@ -161,7 +161,7 @@ void StylesheetManager::onRemovedStylesheet(const fs::path& stylesheet_path)
 	std::shared_ptr<RequestManager> manager = this->manager.lock();
 	assert(manager);
 
-	manager->getCache()->deleteTiles(stylesheet_path.std::string());
+	manager->getCache()->deleteTiles(stylesheet_path.string());
 	parsedStylesheets.erase(stylesheet_path);
 	log.infoStream() << "Deleted Stylesheet[" << stylesheet_path << "] from Tile Cache and Stylesheet Cache.";
 }
@@ -185,7 +185,7 @@ void StylesheetManager::onFileSystemEvent(const boost::system::error_code &ec, c
 	fs::path path = fs::path(ev.filename);
 
 	// only act on .mapcss files that additionally aren't hidden files
-	if (path.extension() == ".mapcss" && path.stem().std::string().find(".") != 0) {
+	if (path.extension() == ".mapcss" && path.stem().string().find(".") != 0) {
 		path = path.stem();
 
 		// lock is outside of functions calls so that remove + add (== changed) can be atomic
