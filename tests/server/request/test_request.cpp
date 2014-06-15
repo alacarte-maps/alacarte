@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_SUITE(test_request);
 
 struct test_request
 {
-    boost::shared_ptr<NonPrerenderingRequestManager> req_manager;
+    std::shared_ptr<NonPrerenderingRequestManager> req_manager;
 	TestConfig::Ptr DefaultConfig;
     shared_ptr<boost::thread> thread;
 	shared_ptr<HttpServer> server;

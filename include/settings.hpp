@@ -45,10 +45,6 @@
 #include <stdexcept>
 
 // boost includes
-#include <boost/shared_ptr.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/basic_socket.hpp>
 #include <boost/exception/all.hpp>
@@ -86,18 +82,8 @@
 #define TIMER_SEC(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) + (_X##_stop.tv_usec - _X##_start.tv_usec) / 1000.0 / 1000.0)
 #define TIMER_MIN(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) / 60.0)
 
-using boost::shared_ptr;
-using boost::scoped_ptr;
-using boost::weak_ptr;
-
 // we want to use the std::string as stringtype
 typedef std::string		string;
-typedef std::int8_t		int8;
-typedef std::uint8_t	uint8;
-typedef std::int16_t	int16;
-typedef std::uint16_t	uint16;
-typedef std::int32_t	int32;
-typedef std::uint32_t	uint32;
 typedef std::int32_t	coord_t;
 
 // include utils

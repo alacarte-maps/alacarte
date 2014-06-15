@@ -102,7 +102,7 @@ private:
 public:
 	RTree () {}
 	void build(std::vector<data_t>& data, const string& leafPath);
-	bool search ( boost::shared_ptr<std::vector<id_t> >& result,
+	bool search ( std::shared_ptr<std::vector<id_t> >& result,
 				  const FixedRect& rect, bool returnOnFirst = false ) const;
 	bool contains(const FixedRect& rect) const
 	{
@@ -130,7 +130,7 @@ private:
 	void writeLeaves (const std::vector<id_t>& ids, const std::vector<data_t>& rects, const string& leafPath);
 	void buildLevels ();
 	RLeaf<id_t, data_t>* readLeaf (uint32_t nodeIdx, uint32_t childIdx) const;
-	void getSubTree ( uint32_t rootIdx, boost::shared_ptr<std::vector<id_t> >& ids ) const;
+	void getSubTree ( uint32_t rootIdx, std::shared_ptr<std::vector<id_t> >& ids ) const;
 	FixedRect getBoundingBox ( const FixedRect keys[], size_t size) const;
 	FixedRect getBoundingBox ( const FixedPoint keys[], size_t size) const;
 	coord_t getX (const FixedPoint& p);
@@ -138,11 +138,11 @@ private:
 	coord_t getY (const FixedPoint& p);
 	coord_t getY (const FixedRect& r);
 	bool searchLeaf (const RLeaf<id_t, FixedPoint>* leaf,
-					 boost::shared_ptr<std::vector<id_t> >& result,
+					 std::shared_ptr<std::vector<id_t> >& result,
 					 const FixedRect& rect,
 					 bool returnOnFirst) const;
 	bool searchLeaf (const RLeaf<id_t, FixedRect>* leaf,
-					 boost::shared_ptr<std::vector<id_t> >& result,
+					 std::shared_ptr<std::vector<id_t> >& result,
 					 const FixedRect& rect,
 					 bool returnOnFirst) const;
 
@@ -403,7 +403,7 @@ bool RTree<id_t, data_t>::validate () const
 //! Specialisation for bounding box based data
 template<class id_t, class data_t>
 bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedRect>* leaf,
-									  boost::shared_ptr<std::vector<id_t> >& result,
+									  std::shared_ptr<std::vector<id_t> >& result,
 									  const FixedRect& rect,
 									  bool returnOnFirst) const
 {
@@ -423,7 +423,7 @@ bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedRect>* leaf,
 //! Specialisation for point based data
 template<class id_t, class data_t>
 bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedPoint>* leaf,
-									  boost::shared_ptr<std::vector<id_t> >& result,
+									  std::shared_ptr<std::vector<id_t> >& result,
 									  const FixedRect& rect,
 									  bool returnOnFirst) const
 {
@@ -442,7 +442,7 @@ bool RTree<id_t, data_t>::searchLeaf (const RLeaf<id_t, FixedPoint>* leaf,
 
 //! if returnOnFirst is set it return true if it found data in the querry rectangle
 template<class id_t, class data_t>
-bool RTree<id_t, data_t>::search (boost::shared_ptr<std::vector<id_t> >& result,
+bool RTree<id_t, data_t>::search (std::shared_ptr<std::vector<id_t> >& result,
 								  const FixedRect& rect,
 								  bool returnOnFirst) const
 {
@@ -512,7 +512,7 @@ bool RTree<id_t, data_t>::search (boost::shared_ptr<std::vector<id_t> >& result,
 
 //! used when a sub-tree is fully contained in the search rectangle
 template<class id_t, class data_t>
-void RTree<id_t, data_t>::getSubTree ( uint32_t rootIdx, boost::shared_ptr<std::vector<id_t> >& ids ) const
+void RTree<id_t, data_t>::getSubTree ( uint32_t rootIdx, std::shared_ptr<std::vector<id_t> >& ids ) const
 {
 	std::stack<uint32_t> subTreeStack;
 	subTreeStack.push(rootIdx);
