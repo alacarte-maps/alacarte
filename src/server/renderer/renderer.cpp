@@ -80,7 +80,7 @@ struct CompareObjects
 
 //! Sort labels according to their area and minX (for determinism)
 template <typename LabelType>
-bool CompareLabels(const std::shared_ptr<LabelType>& first, const shared_ptr<LabelType>& second) {
+bool CompareLabels(const std::shared_ptr<LabelType>& first, const std::shared_ptr<LabelType>& second) {
 	return (first->style->font_size >  second->style->font_size)
 		|| (first->style->font_size == second->style->font_size
 			&& first->box.minX < second->box.minX);
@@ -586,7 +586,7 @@ void Renderer::sliceTile(const std::shared_ptr<RenderCanvas>& canvas,
 	tile->setImage(canvas->copySliceImage());
 }
 
-void Renderer::renderMetaTile(RenderAttributes& map, const std::shared_ptr<RenderCanvas>& canvas, const shared_ptr<MetaIdentifier>& id)
+void Renderer::renderMetaTile(RenderAttributes& map, const std::shared_ptr<RenderCanvas>& canvas, const std::shared_ptr<MetaIdentifier>& id)
 {
 	int width = id->getWidth() * TILE_SIZE;
 	int height = id->getHeight() * TILE_SIZE;

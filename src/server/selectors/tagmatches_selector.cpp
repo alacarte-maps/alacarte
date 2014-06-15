@@ -30,7 +30,7 @@
 #include "server/tile_identifier.hpp"
 
 
-TagMatchesSelector::TagMatchesSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const std::string& tag, const std::string& value)
+TagMatchesSelector::TagMatchesSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next, const std::string& tag, const std::string& value)
 	: Selector(rule, next)
 	, tag(tag)
 	, expression(value)

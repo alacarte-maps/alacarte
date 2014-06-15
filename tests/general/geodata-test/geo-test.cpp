@@ -35,7 +35,7 @@ struct tile_test {
 	}
 
 	template<class id_t>
-	void compare(const std::shared_ptr<std::vector<id_t>>& mock, const shared_ptr<std::vector<id_t>>& imp)
+	void compare(const std::shared_ptr<std::vector<id_t>>& mock, const std::shared_ptr<std::vector<id_t>>& imp)
 	{
 		std::sort(mock->begin(), mock->end(), CompareObjects<id_t>());
 		std::sort(imp->begin(), imp->end(), CompareObjects<id_t>());

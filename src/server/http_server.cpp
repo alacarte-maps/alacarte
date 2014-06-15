@@ -32,7 +32,7 @@
  * @param config The Configuration which should be used
  * @param manager The RequestManager in which the HttpRequest should be enqueued.
  **/
-HttpServer::HttpServer( const std::shared_ptr<Configuration>& config, const shared_ptr<RequestManager>& manager )
+HttpServer::HttpServer( const std::shared_ptr<Configuration>& config, const std::shared_ptr<RequestManager>& manager )
 	: config(config)
 	, manager(manager)
 	, io_service()

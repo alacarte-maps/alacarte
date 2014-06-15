@@ -30,7 +30,7 @@
 
 #include "utils/precached_strings.hpp"
 
-HasNotTagSelector::HasNotTagSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const std::string& tag)
+HasNotTagSelector::HasNotTagSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next, const std::string& tag)
 	: Selector(rule, next)
 	, tag(tag)
 {

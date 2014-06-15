@@ -23,7 +23,7 @@
 #include "server/selectors/selector.hpp"
 #include "server/rule.hpp"
 
-Selector::Selector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next)
+Selector::Selector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next)
 	: rule(rule)
 	, next(next)
 	, geodata(rule->getGeodata())

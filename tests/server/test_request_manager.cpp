@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_SUITE(test_requestManage)
 class TestHttpRequest : public HttpRequest
 {
 public:
-	explicit TestHttpRequest (std::string uri, boost::asio::io_service &ioService, const std::shared_ptr< HttpServer >& server, const shared_ptr< RequestManager >& manager )
+	explicit TestHttpRequest (std::string uri, boost::asio::io_service &ioService, const std::shared_ptr< HttpServer >& server, const std::shared_ptr< RequestManager >& manager )
 	: HttpRequest(ioService, server, manager)
 	{
 		data.uri = uri;

@@ -22,13 +22,13 @@ struct cache_test
 		char* argv[] = {(char*)"ala.carte", (char*)"ala.carte"};
 		ConfigMockup* mock = new ConfigMockup();
 		std::shared_ptr<Configuration> config = mock->Config(argv, 2);
-		std::shared_ptr<Cache> cache = shared_ptr<Cache>(new Cache(config));
+		std::shared_ptr<Cache> cache = std::shared_ptr<Cache>(new Cache(config));
 		BOOST_CHECK_THROW(std::shared_ptr<Tile> tile = cache->getDefaultTile(), excp);*/
 		// Config with valid path
 		char* argv[] = {(char*)"ala.carte", (char*)"ala.carte", (char*)"-t", (char*)"../tests/data/default.png"};
 		ConfigMockup* mock = new ConfigMockup();
 		std::shared_ptr<Configuration> config = mock->Config(argv, 4);
-		std::shared_ptr<Cache> cache = shared_ptr<Cache>(new Cache(config));
+		std::shared_ptr<Cache> cache = std::shared_ptr<Cache>(new Cache(config));
 		std::shared_ptr<Tile> tile;
 		BOOST_CHECK_NO_THROW(tile = cache->getDefaultTile());
 		BOOST_CHECK(tile->getIdentifier()->isDefaultIdentifier());
@@ -39,7 +39,7 @@ struct cache_test
 		char* argv[] = {(char*)"ala.carte", (char*)"ala.carte"};
 		ConfigMockup* mock = new ConfigMockup();
 		std::shared_ptr<Configuration> config = mock->Config(argv, 2);
-		std::shared_ptr<Cache> cache = shared_ptr<Cache>(new Cache(config));
+		std::shared_ptr<Cache> cache = std::shared_ptr<Cache>(new Cache(config));
 		// Delete not existing cache.
 		BOOST_CHECK_NO_THROW(cache->deleteTiles("nothing"));
 		std::shared_ptr<TileIdentifier> ti = std::make_shared<TileIdentifier>(0, 0, 0, "default", TileIdentifier::Format::PNG);
@@ -52,7 +52,7 @@ struct cache_test
 		char* argv[] = {(char*)"ala.carte", (char*)"ala.carte", (char*)"--server.cache-size", (char*)"10"};
 		ConfigMockup* mock = new ConfigMockup();
 		std::shared_ptr<Configuration> config = mock->Config(argv, 4);
-		std::shared_ptr<Cache> cache = shared_ptr<Cache>(new Cache(config));
+		std::shared_ptr<Cache> cache = std::shared_ptr<Cache>(new Cache(config));
 		// tileIdentifier is not in valid range, so it wont be prerendered.
 		std::shared_ptr<TileIdentifier> ti1 = std::make_shared<TileIdentifier>(200, 1, 1, "default", TileIdentifier::Format::PNG);
 		Tile::ImageType image = std::make_shared<Tile::ImageType::element_type>();

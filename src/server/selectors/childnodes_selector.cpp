@@ -28,7 +28,7 @@
 #include "general/relation.hpp"
 #include "server/tile_identifier.hpp"
 
-ChildNodesSelector::ChildNodesSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next) : Selector(rule, next)
+ChildNodesSelector::ChildNodesSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next) : Selector(rule, next)
 {
 }
 

@@ -28,7 +28,7 @@
 #include "general/relation.hpp"
 #include "server/tile_identifier.hpp"
 
-ChildWaysSelector::ChildWaysSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next)
+ChildWaysSelector::ChildWaysSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next)
 	: Selector(rule, next)
 {
 }

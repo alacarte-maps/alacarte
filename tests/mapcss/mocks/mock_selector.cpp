@@ -7,7 +7,7 @@
 
 class MockSelector : public Selector {
 public:
-	MockSelector(std::shared_ptr<Rule> rule) : Selector(rule, shared_ptr<Selector>()) {}
+	MockSelector(std::shared_ptr<Rule> rule) : Selector(rule, std::shared_ptr<Selector>()) {}
 	virtual ~MockSelector() {}
 
 	MOCK_CONST_METHOD3(matchNode, void(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes));

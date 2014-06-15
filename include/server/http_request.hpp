@@ -87,7 +87,7 @@ public:
 	HttpRequest(const HttpRequest& req) = delete;
 	HttpRequest& operator=(const HttpRequest& req) = delete;
 
-	explicit HttpRequest ( boost::asio::io_service &ioService, const std::shared_ptr<HttpServer>& server, const shared_ptr<RequestManager> &manager );
+	explicit HttpRequest ( boost::asio::io_service &ioService, const std::shared_ptr<HttpServer>& server, const std::shared_ptr<RequestManager> &manager );
 
 	TESTABLE const std::string& getURL() const;
 

@@ -54,7 +54,7 @@ public:
 		assert(member);
 	}
 
-	void addAttribute(const std::shared_ptr<StyleTemplate>& styleTemplate, const std::string& specifier, const shared_ptr<ParserLogger>& logger, const ParseInfo& info)
+	void addAttribute(const std::shared_ptr<StyleTemplate>& styleTemplate, const std::string& specifier, const std::shared_ptr<ParserLogger>& logger, const ParseInfo& info)
 	{
 		assert(styleTemplate);
 		(styleTemplate.get()->*member) = std::make_shared< eval::Eval<Type> >(specifier, logger, info);

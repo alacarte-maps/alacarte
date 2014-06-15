@@ -109,7 +109,7 @@ private:
 
 	fs::path stylesheetFolder;
 
-	static std::shared_ptr<Stylesheet> makeFallbackStylesheet(const shared_ptr<Geodata>& geodata);
+	static std::shared_ptr<Stylesheet> makeFallbackStylesheet(const std::shared_ptr<Geodata>& geodata);
 
 	boost::asio::io_service						ioService;
 	boost::thread								monitorThread;

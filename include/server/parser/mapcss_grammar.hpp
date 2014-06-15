@@ -200,7 +200,7 @@ struct UnaryTypes : qi::symbols<char, op::UnaryTypesEnum>
 
 struct AttributeCreator
 {
-	virtual void addAttribute(const std::shared_ptr<StyleTemplate>& styleTemplate, const std::string& specifier, const shared_ptr<ParserLogger>& logger, const ParseInfo& info) = 0;
+	virtual void addAttribute(const std::shared_ptr<StyleTemplate>& styleTemplate, const std::string& specifier, const std::shared_ptr<ParserLogger>& logger, const ParseInfo& info) = 0;
 };
 
 //! symbols for the attributes

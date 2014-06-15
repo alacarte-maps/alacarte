@@ -29,7 +29,7 @@
 #include "server/tile_identifier.hpp"
 
 
-HasTagSelector::HasTagSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const std::string& tag)
+HasTagSelector::HasTagSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next, const std::string& tag)
 	: Selector(rule, next)
 	, tag(tag)
 {

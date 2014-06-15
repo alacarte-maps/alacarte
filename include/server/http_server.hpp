@@ -36,7 +36,7 @@ class HttpRequest;
 class HttpServer : public std::enable_shared_from_this<HttpServer>
 {
 public:
-	HttpServer ( const std::shared_ptr<Configuration>& config,  const shared_ptr<RequestManager>& manager );
+	HttpServer ( const std::shared_ptr<Configuration>& config,  const std::shared_ptr<RequestManager>& manager );
 	~HttpServer();
 
 	TESTABLE void listen();

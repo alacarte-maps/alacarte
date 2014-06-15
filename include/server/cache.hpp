@@ -63,7 +63,7 @@ public:
 	Cache(const std::shared_ptr<Configuration>& config);
 	~Cache();
 	
-	TESTABLE std::shared_ptr<Tile> getTile(const shared_ptr<TileIdentifier>& tl);
+	TESTABLE std::shared_ptr<Tile> getTile(const std::shared_ptr<TileIdentifier>& tl);
 	TESTABLE std::shared_ptr<Tile> getDefaultTile();
 	TESTABLE void deleteTiles(const std::string path);
 

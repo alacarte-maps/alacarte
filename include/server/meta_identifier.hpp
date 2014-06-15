@@ -31,7 +31,7 @@
 class MetaIdentifier : public TileIdentifier
 {
 public:
-	static std::shared_ptr<MetaIdentifier> Create(const shared_ptr<TileIdentifier>& origin);
+	static std::shared_ptr<MetaIdentifier> Create(const std::shared_ptr<TileIdentifier>& origin);
 	MetaIdentifier(const TileIdentifier& origin);
 
 	TESTABLE int getWidth() const;

@@ -40,7 +40,7 @@ class Stylesheet : public std::enable_shared_from_this<Stylesheet>
 {
 	friend struct MapCssParser;
 public:
-	Stylesheet(const std::shared_ptr<Geodata>& geodata, const std::vector<shared_ptr<Rule> >& rules, const shared_ptr<StyleTemplate>& canvasStyle);
+	Stylesheet(const std::shared_ptr<Geodata>& geodata, const std::vector<shared_ptr<Rule> >& rules, const std::shared_ptr<StyleTemplate>& canvasStyle);
 
 
 	/**
@@ -49,7 +49,7 @@ public:
 	 * @param path the absolute or relative path to the stylesheet
 	 * @param data a reference to the geodata object to use to resolve GeoObject IDs to the actual Geoobject
 	 */
-	static std::shared_ptr<Stylesheet> Load(const boost::filesystem::path& path, const shared_ptr<Geodata>& geodata, int timeout);
+	static std::shared_ptr<Stylesheet> Load(const boost::filesystem::path& path, const std::shared_ptr<Geodata>& geodata, int timeout);
 
 	/**
 	 * @brief Returns a new RenderAttributes with a Style object for each given Node and Way.

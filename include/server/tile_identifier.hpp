@@ -48,7 +48,7 @@ public:
 private:
 	static const std::string FormatString[enumSize];
 public:
-	static std::shared_ptr<TileIdentifier> Create(const std::string& url, shared_ptr<StylesheetManager> StylesheetManager, const shared_ptr<Configuration>& config);
+	static std::shared_ptr<TileIdentifier> Create(const std::string& url, std::shared_ptr<StylesheetManager> StylesheetManager, const std::shared_ptr<Configuration>& config);
 	static std::shared_ptr<TileIdentifier> CreateEmptyTID(const std::string& stylesheetPath,
 												 	 TileIdentifier::Format format);
 	static int std::stringToInt(const char* c);

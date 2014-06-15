@@ -69,7 +69,7 @@ int TileIdentifier::stringToInt(const char *p) {
  * @return A new TileIdentifier
  * @throws MalformedURLException if some part of the url isn't parseable.
  **/
-shared_ptr<TileIdentifier> TileIdentifier::Create(const std::string& url, std::shared_ptr<StylesheetManager> stylesheetManager, const shared_ptr<Configuration>& config)
+shared_ptr<TileIdentifier> TileIdentifier::Create(const std::string& url, std::shared_ptr<StylesheetManager> stylesheetManager, const std::shared_ptr<Configuration>& config)
 {
 	int x, y, zoom;
 	std::string styleSheetpath;

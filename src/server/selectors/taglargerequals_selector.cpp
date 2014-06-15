@@ -29,7 +29,7 @@
 #include "server/tile_identifier.hpp"
 
 
-TagLargerEqualsSelector::TagLargerEqualsSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const std::string& tag, const int& value)
+TagLargerEqualsSelector::TagLargerEqualsSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next, const std::string& tag, const int& value)
 	: Selector(rule, next)
 	, tag(tag)
 	, value(value)

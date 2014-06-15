@@ -37,7 +37,7 @@
 
 class ChildWaysSelector : public Selector {
 public:
-	ChildWaysSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next);
+	ChildWaysSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next);
 	
 	virtual void matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
 	virtual void matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;

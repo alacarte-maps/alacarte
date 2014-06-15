@@ -28,7 +28,7 @@
 #include "server/http_server.hpp"
 #include "server/cache.hpp"
 
-HttpRequest::HttpRequest ( boost::asio::io_service &ioService, const std::shared_ptr<HttpServer>& server, const shared_ptr<RequestManager> &manager )
+HttpRequest::HttpRequest ( boost::asio::io_service &ioService, const std::shared_ptr<HttpServer>& server, const std::shared_ptr<RequestManager> &manager )
 	: socket ( ioService )
 	, server ( server )
 	, manager ( manager )

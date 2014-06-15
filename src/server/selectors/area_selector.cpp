@@ -29,7 +29,7 @@
 
 #include "utils/precached_strings.hpp"
 
-AreaSelector::AreaSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next) : Selector(rule, next)
+AreaSelector::AreaSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next) : Selector(rule, next)
 {
 }
 

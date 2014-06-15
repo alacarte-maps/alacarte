@@ -37,7 +37,7 @@
 
 class TagEqualsSelector : public Selector {
 public:
-	TagEqualsSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const std::string& tag, const std::string& value);
+	TagEqualsSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next, const std::string& tag, const std::string& value);
 	virtual void matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
 	virtual void matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
 	virtual void matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;

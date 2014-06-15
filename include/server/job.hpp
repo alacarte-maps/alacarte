@@ -49,7 +49,7 @@ public:
 
 	void process();
 	void deliver();
-	void addRequest(const std::shared_ptr<HttpRequest>& req, const shared_ptr<TileIdentifier>& id)
+	void addRequest(const std::shared_ptr<HttpRequest>& req, const std::shared_ptr<TileIdentifier>& id)
 	{
 		requests[*id].push_back(req);
 	}

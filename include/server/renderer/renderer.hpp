@@ -52,9 +52,9 @@ public:
 	Renderer(const std::shared_ptr<Geodata>& data);
 	~Renderer();
 
-	TESTABLE void renderEmptyTile(RenderAttributes& map, const std::shared_ptr<RenderCanvas>& canvas, const shared_ptr<Tile>& tile);
-	TESTABLE void renderMetaTile(RenderAttributes& map,  const std::shared_ptr<RenderCanvas>& canvas, const shared_ptr<MetaIdentifier>& id);
-	TESTABLE void sliceTile(const std::shared_ptr<RenderCanvas>& canvas, const shared_ptr<MetaIdentifier>& id, const shared_ptr<Tile>& tile) const;
+	TESTABLE void renderEmptyTile(RenderAttributes& map, const std::shared_ptr<RenderCanvas>& canvas, const std::shared_ptr<Tile>& tile);
+	TESTABLE void renderMetaTile(RenderAttributes& map,  const std::shared_ptr<RenderCanvas>& canvas, const std::shared_ptr<MetaIdentifier>& id);
+	TESTABLE void sliceTile(const std::shared_ptr<RenderCanvas>& canvas, const std::shared_ptr<MetaIdentifier>& id, const std::shared_ptr<Tile>& tile) const;
 
 protected:
 	void placeLabels(const std::list<std::shared_ptr<Label> >& labels,

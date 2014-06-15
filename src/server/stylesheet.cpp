@@ -30,7 +30,7 @@
 #include "general/way.hpp"
 #include "general/relation.hpp"
 
-Stylesheet::Stylesheet(const std::shared_ptr<Geodata>& geodata, const std::vector<shared_ptr<Rule> >& rules, const shared_ptr<StyleTemplate>& canvasStyle)
+Stylesheet::Stylesheet(const std::shared_ptr<Geodata>& geodata, const std::vector<shared_ptr<Rule> >& rules, const std::shared_ptr<StyleTemplate>& canvasStyle)
 	: geodata(geodata)
 	, rules(rules)
 	, canvasStyle(canvasStyle)

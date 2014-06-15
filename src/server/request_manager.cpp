@@ -50,7 +50,7 @@ public:
 	}
 
 	//! @return true if the job needs to be executed
-	bool start(Job* job, const std::shared_ptr<TileIdentifier>& ti, const shared_ptr<HttpRequest>& r)
+	bool start(Job* job, const std::shared_ptr<TileIdentifier>& ti, const std::shared_ptr<HttpRequest>& r)
 	{
 		boost::mutex::scoped_lock lock(runningMutex);
 		for (auto j : jobs) {

@@ -28,7 +28,7 @@
 #include "server/tile_identifier.hpp"
 #include "utils/precached_strings.hpp"
 
-LineSelector::LineSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next) : Selector(rule, next)
+LineSelector::LineSelector(const std::shared_ptr<Rule>& rule, const std::shared_ptr<Selector>& next) : Selector(rule, next)
 {
 }
 
