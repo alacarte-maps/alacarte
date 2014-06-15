@@ -43,8 +43,7 @@ namespace fs = boost::filesystem;
  * drop deleted ones off the Cache.
  */
 class StylesheetManager
-	: public boost::enable_shared_from_this<StylesheetManager>
-	, public boost::noncopyable
+	: public std::enable_shared_from_this<StylesheetManager>
 {
 public:
 	/**
@@ -82,6 +81,9 @@ public:
 	TESTABLE bool hasStylesheet(const std::string& path);
 
 private:
+	StylesheetManager(const StylesheetManager& sm) = delete;
+	StylesheetManager& operator=(const StylesheetManager& sm) = delete;
+
 	/**
 	 * @brief tries to read and parse the given file.
 	 * 			If that succeeds, saves it in the Stylesheet Cache and enqueues it for prerendering.

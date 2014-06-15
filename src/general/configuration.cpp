@@ -75,7 +75,7 @@ Configuration::Configuration(	boost::program_options::options_description& cmd_d
 	directories.push("/etc");
 
 	assert(options.count(opt::config));
-	path configFile = options[opt::config].as<string>();
+	path configFile = options[opt::config].as<std::string>();
 
 	while(directories.size())
 	{
@@ -112,7 +112,7 @@ bool Configuration::usedConfigFile() const
 	return ConfigFileUsed;
 }
 
-const std::vector<string> & Configuration::getSeachDirectories() const
+const std::vector<std::string> & Configuration::getSeachDirectories() const
 {
 	return searchDirectories;
 }
@@ -140,10 +140,10 @@ void Configuration::printConfigToLog()
 			} else {
 				log.infoStream() << it->first << ": " << it->second.as<std::string>();
 			}
-		}else if (v.type() == typeid(std::vector<string>))
+		}else if (v.type() == typeid(std::vector<std::string>))
 		{
 			std::stringstream ss;
-			for(std::string name : it->second.as<std::vector<string>>()) {
+			for(std::string name : it->second.as<std::vector<std::string>>()) {
 				ss << name << ", ";
 			}
 			log.infoStream() << it->first << ": " << ss.str();

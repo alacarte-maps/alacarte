@@ -38,7 +38,7 @@ class HttpRequest;
 class TileIdentifier;
 class RenderCanvasFactory;
 
-class RequestManager : public boost::enable_shared_from_this<RequestManager>
+class RequestManager : public std::enable_shared_from_this<RequestManager>
 {
 public:
 	RequestManager( const std::shared_ptr<Configuration>& config, const shared_ptr<Geodata>& data, const shared_ptr<Renderer>& renderer, const shared_ptr<Cache>& cache, const shared_ptr<StylesheetManager>& ssm);

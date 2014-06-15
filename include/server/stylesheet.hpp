@@ -36,7 +36,7 @@ class StyleTemplate;
  * Additionally, for a given set of GeoObjects, the Stylesheet generates a RenderAttributes
  * object containing all MapCSS attributes needed to draw the GeoObjects.
  */
-class Stylesheet : public boost::enable_shared_from_this<Stylesheet>
+class Stylesheet : public std::enable_shared_from_this<Stylesheet>
 {
 	friend struct MapCssParser;
 public:

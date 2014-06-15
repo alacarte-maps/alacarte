@@ -94,8 +94,11 @@ CachedString::StringStorageElement::StringStorageElement(const StringStorageElem
  * This is an singleton
  **/
 class CachedString::StringStorage
-	: public boost::noncopyable
 {
+private:
+	StringStorage() { }
+	StringStorage(const StringStorage& ss) = delete;
+	StringStorage& operator=( const StringStorage& ) = delete;
 public:
 	/**
 	 * @brief Returns the Storage
@@ -127,7 +130,7 @@ public:
 	{
 		return emptyString;
 	}
-	
+
 	/**
 	 * @brief Returns the storage element for a given std::string
 	 *

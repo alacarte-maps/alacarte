@@ -29,7 +29,7 @@
 #include "settings.hpp"
 
 class ParserLogger
-	: public boost::enable_shared_from_this<ParserLogger>
+	: public std::enable_shared_from_this<ParserLogger>
 {
 public:
 	enum Category

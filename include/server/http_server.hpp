@@ -33,7 +33,7 @@ class HttpRequest;
 /**
  * @brief A HttpServer waits for connections and creates HttpRequests.
  **/
-class HttpServer : public boost::enable_shared_from_this<HttpServer>
+class HttpServer : public std::enable_shared_from_this<HttpServer>
 {
 public:
 	HttpServer ( const std::shared_ptr<Configuration>& config,  const shared_ptr<RequestManager>& manager );

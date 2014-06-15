@@ -112,7 +112,7 @@ namespace opt {
  * @brief Represents a set of options accessible via std::strings.
  *
  **/
-class Configuration : public boost::enable_shared_from_this<Configuration>
+class Configuration : public std::enable_shared_from_this<Configuration>
 {
 public:
 	Configuration();

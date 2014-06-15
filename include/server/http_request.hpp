@@ -30,7 +30,7 @@ class HttpServer;
 class Tile;
 class RequestManager;
 
-class HttpRequest : public boost::enable_shared_from_this<HttpRequest>, private boost::noncopyable
+class HttpRequest : public std::enable_shared_from_this<HttpRequest>
 {
 	friend class HttpRequestParser;
 public:
@@ -82,8 +82,11 @@ public:
 		/// not be changed until the write operation has completed.
 		std::vector<boost::asio::const_buffer> toBuffers();
 	};
-	
+
 public:
+	HttpRequest(const HttpRequest& req) = delete;
+	HttpRequest& operator=(const HttpRequest& req) = delete;
+
 	explicit HttpRequest ( boost::asio::io_service &ioService, const std::shared_ptr<HttpServer>& server, const shared_ptr<RequestManager> &manager );
 
 	TESTABLE const std::string& getURL() const;
@@ -107,25 +110,23 @@ private:
 	void answer();
 	bool checkifAnswered();
 	void readSome();
-	
+
 protected:
 	bool answered;
 	/// The reply to be sent back to the client.
 	Reply reply;
 	RequestData data;
 private:
-	
 	/// Socket for the connection.
 	boost::asio::ip::tcp::socket socket;
 	/// Buffer for incoming data.
 	boost::array<char, 8192> buffer;
 	/// The parser for the incoming request.
 	HttpRequestParser parser;
-	
-	weak_ptr<RequestManager> manager;
-	weak_ptr<HttpServer> server;
 
-	
+	std::weak_ptr<RequestManager> manager;
+	std::weak_ptr<HttpServer> server;
+
 	log4cpp::Category& log;
 };
 
