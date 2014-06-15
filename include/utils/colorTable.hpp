@@ -36,13 +36,13 @@ public:
 
 	void resolve(const std::string& name, Color* target) const;
 
-	const boost::unordered_map<string, Color>& getTable() const;
+	const boost::unordered_map<std::string, Color>& getTable() const;
 
 
 	static const ColorTable& Inst();
 private:
 	//! Value of the table
-	boost::unordered_map<string, Color> table;
+	boost::unordered_map<std::string, Color> table;
 };
 
 

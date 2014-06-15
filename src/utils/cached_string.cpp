@@ -56,7 +56,7 @@ struct CachedString::StringStorageElement::Hasher
  *
  **/
 struct CachedString::StringStorageElement::StringComparator
-	: public std::binary_function<string, StringStorageElement, bool>
+	: public std::binary_function<std::string, StringStorageElement, bool>
 {
 	bool operator()(const std::string& str, const StringStorageElement& sse) const
 	{
@@ -72,7 +72,7 @@ struct CachedString::StringStorageElement::StringComparator
  **/
 CachedString::StringStorageElement::StringStorageElement( const std::string& str )
 	: value(str)
-	, hash(boost::hash<string>()(str))
+	, hash(boost::hash<std::string>()(str))
 {
 }
 

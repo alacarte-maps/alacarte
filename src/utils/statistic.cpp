@@ -47,7 +47,7 @@ Statistic::Statistic(const std::shared_ptr<Configuration>& config)
 Statistic::~Statistic()
 {
 	if (config->has(opt::server::performance_log))
-		writeToFile(config->get<string>(opt::server::performance_log).c_str());
+		writeToFile(config->get<std::string>(opt::server::performance_log).c_str());
 }
 
 shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const std::string& stylesheet, int zoom)
@@ -135,7 +135,7 @@ void Statistic::finished(std::shared_ptr<Statistic::JobMeasurement>& job)
 	measurementsBuffer.push_back(job);
 	if(measurementsBuffer.size() > 100)
 	{
-		writeToFile(config->get<string>(opt::server::performance_log).c_str());
+		writeToFile(config->get<std::string>(opt::server::performance_log).c_str());
 		measurementsBuffer.clear();
 	}
 #endif

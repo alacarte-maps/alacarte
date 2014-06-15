@@ -47,7 +47,7 @@ struct EvalConstructionTest
 
 
 typedef EvalConstructionTest<Color> ColorEvalConstructionTest;
-typedef EvalConstructionTest<string> StringEvalConstructionTest;
+typedef EvalConstructionTest<std::string> StringEvalConstructionTest;
 
 
 ALAC_START_FIXTURE_TEST(ColorEvalConstructionTest)
@@ -129,7 +129,7 @@ ALAC_FIXTURE_TEST(testString, "eval(2) eval(0)");
 ALAC_END_FIXTURE_TEST();
 
 
-typedef EvalListConstructionTest<string> StringListEvalConstructionTest;
+typedef EvalListConstructionTest<std::string> StringListEvalConstructionTest;
 
 ALAC_START_FIXTURE_TEST(DoubleListEvalConstructionTest)
 

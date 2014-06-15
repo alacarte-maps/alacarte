@@ -529,7 +529,7 @@ shared_ptr<Geodata> Importer::importXML()
 	OsmXmlParser parser(!config->get<bool>(opt::importer::check_xml_entities));
 	std::shared_ptr<Geodata>	geodata = std::make_shared<Geodata>();
 
-	path xml_file = config->get<string>(opt::importer::path_to_osmdata);
+	path xml_file = config->get<std::string>(opt::importer::path_to_osmdata);
 	log.infoStream() << "Start parsing...";
 	parser.parse(xml_file);
 

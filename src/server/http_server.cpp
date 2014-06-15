@@ -70,8 +70,8 @@ void HttpServer::listen()
 	// Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
 	boost::asio::ip::tcp::resolver resolver(io_service);
 	boost::asio::ip::tcp::resolver::query query(
-												config->get<string>(opt::server::server_address), 
-												config->get<string>(opt::server::server_port)
+												config->get<std::string>(opt::server::server_address), 
+												config->get<std::string>(opt::server::server_port)
 											   );
 	boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
 	acceptor.open(endpoint.protocol());
@@ -80,8 +80,8 @@ void HttpServer::listen()
 		acceptor.bind(endpoint);
 	} catch (boost::system::system_error ex) {
 		log.errorStream() 	<< "Invalid host name: " << ex.what() 
-							<< " (" << config->get<string>(opt::server::server_address) << ":" 
-							<< config->get<string>(opt::server::server_port) << ")";
+							<< " (" << config->get<std::string>(opt::server::server_address) << ":" 
+							<< config->get<std::string>(opt::server::server_port) << ")";
 		return;
 	}
 	acceptor.listen();

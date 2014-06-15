@@ -78,7 +78,7 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const std::string& url, std::s
 	static int boundaries[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144};
 
 	// Parsing the URL
-	std::vector<string> parts;
+	std::vector<std::string> parts;
 	boost::split(parts, url, boost::is_any_of("/"));
 	int length = parts.size();
 	// Check if there are enough parts for a valid url.
@@ -86,7 +86,7 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const std::string& url, std::s
 	if (length < 4) {
 		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Not enough arguments."));
 	}
-	std::vector<string> subparts;
+	std::vector<std::string> subparts;
 	boost::split(subparts, parts.at(length-1), boost::is_any_of("."));
 	if (subparts.size() < 2) {
 		BOOST_THROW_EXCEPTION(excp::MalformedURLException() << excp::InfoWhat("Not enough arguments (No y.format)."));
@@ -135,7 +135,7 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const std::string& url, std::s
 	}
 	if (styleSheetpath == "" || !stylesheetManager->hasStylesheet(styleSheetpath))
 	{
-		styleSheetpath = config->get<string>(opt::server::path_to_default_style);
+		styleSheetpath = config->get<std::string>(opt::server::path_to_default_style);
 
 		if (!stylesheetManager->hasStylesheet(styleSheetpath))
 			styleSheetpath = ".fallback";

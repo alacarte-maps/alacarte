@@ -150,7 +150,7 @@ public:
 	 *
 	 * @return :queue< std::string, std::deque< string, std::allocator< string > > >
 	 **/
-	const std::vector<string>& getSeachDirectories() const;
+	const std::vector<std::string>& getSeachDirectories() const;
 protected:
 	TESTABLE const boost::any& getValueByKey(const std::string& key) const;
 
@@ -158,7 +158,7 @@ protected:
 	boost::program_options::variables_map options;
 	
 	bool ConfigFileUsed;
-	std::vector<string> searchDirectories;
+	std::vector<std::string> searchDirectories;
 };
 
 

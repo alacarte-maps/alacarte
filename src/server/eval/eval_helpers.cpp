@@ -97,7 +97,7 @@ bool Conv(const std::string& str, MaybeCachedString* out, bool tryToCache )
 {
 	std::string extr;
 
-	bool result = Conv<string>(str, &extr);
+	bool result = Conv<std::string>(str, &extr);
 
 	if(result)
 	{

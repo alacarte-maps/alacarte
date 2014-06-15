@@ -33,7 +33,7 @@ void testGrammar(Grammar& grammar, Result& result, const std::string& expr, cons
 				<< excp::InfoFailureLine(pos.line)
 				<< excp::InfoFailureColumn(pos.column)
 				<< excp::InfoFailureLineContent(e.first.get_currentline())
-				<< excp::InfoWhat("Illegal syntax! Expected valid " + boost::lexical_cast<string>(e.what_) + "!"));
+				<< excp::InfoWhat("Illegal syntax! Expected valid " + boost::lexical_cast<std::string>(e.what_) + "!"));
 
 		} catch(excp::ParseException& e)
 		{
@@ -77,12 +77,12 @@ void testGrammar(Grammar& grammar, Result& result, std::string::const_iterator b
 				BOOST_THROW_EXCEPTION(excp::ParseException() << excp::InfoWhat("Failed to parse eval"));
 			}
 
-		} catch(const qi::expectation_failure<string::iterator>& e)
+		} catch(const qi::expectation_failure<std::string::iterator>& e)
 		{
 
 			BOOST_THROW_EXCEPTION(excp::ParseException() 
 				<< excp::InfoFailureLineContent(std::string(begin, end))
-				<< excp::InfoWhat(std::string("Illegal syntax! Expected valid ") + boost::lexical_cast<string>(e.what_) + "!"));
+				<< excp::InfoWhat(std::string("Illegal syntax! Expected valid ") + boost::lexical_cast<std::string>(e.what_) + "!"));
 
 		} 
 	} catch(excp::ParseException& e) 

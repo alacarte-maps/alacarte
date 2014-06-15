@@ -23,7 +23,7 @@ public:
 	LabelRenderer() : Renderer(std::make_shared<Geodata>())
 	{
 	}
-	void renderLabels(cairo_t* cr, std::vector<std::pair<string, FloatPoint> >& toPlace) {
+	void renderLabels(cairo_t* cr, std::vector<std::pair<std::string, FloatPoint> >& toPlace) {
 		cairo_save(cr);
 		cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.5);
 		cairo_font_face_t* font = cairo_toy_font_face_create(DEFAULT_FONT, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
@@ -96,19 +96,19 @@ struct placement_test
 		cairo_paint(cr);
 		cairo_restore(cr);
 
-		std::vector<std::pair<string, FloatPoint>> toPlace;
-		toPlace.push_back(std::pair<string, FloatPoint>("Karlsruhe", FloatPoint(40, 200)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Mannheim", FloatPoint(400, 200)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Stuttgard", FloatPoint(200, 260)));
-		toPlace.push_back(std::pair<string, FloatPoint>("München", FloatPoint(380, 660)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Pforzheim", FloatPoint(200, 600)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Wien", FloatPoint(240, 680)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Paris", FloatPoint(40, 880)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Rom", FloatPoint(-40, 880)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Nothing", FloatPoint(400, 760)));
-		toPlace.push_back(std::pair<string, FloatPoint>("To See", FloatPoint(720, 880)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Here", FloatPoint(720, 560)));
-		toPlace.push_back(std::pair<string, FloatPoint>("Bielefeld", FloatPoint(420, 840)));
+		std::vector<std::pair<std::string, FloatPoint>> toPlace;
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Karlsruhe", FloatPoint(40, 200)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Mannheim", FloatPoint(400, 200)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Stuttgard", FloatPoint(200, 260)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("München", FloatPoint(380, 660)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Pforzheim", FloatPoint(200, 600)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Wien", FloatPoint(240, 680)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Paris", FloatPoint(40, 880)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Rom", FloatPoint(-40, 880)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Nothing", FloatPoint(400, 760)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("To See", FloatPoint(720, 880)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Here", FloatPoint(720, 560)));
+		toPlace.push_back(std::pair<std::string, FloatPoint>("Bielefeld", FloatPoint(420, 840)));
 		renderer->renderLabels(cr, toPlace);
 
 		BOOST_TEST_MESSAGE("Writing.");

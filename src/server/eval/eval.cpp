@@ -96,7 +96,7 @@ struct ColorVisitor : public boost::static_visitor<Color>
 	Color operator()(const eval::Eval::node_ptr& node) const { ColorTable::Inst().resolve(node->eval(obj), target); return Color(); }
 };
 
-struct StringVisitor : public boost::static_visitor<string>
+struct StringVisitor : public boost::static_visitor<std::string>
 {
 	GeoObject* obj;
 	std::string* target;

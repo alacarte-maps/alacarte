@@ -57,7 +57,7 @@ public:
 	/**
 	 * @brief HashMap with path to MapCSS as key and std::shared_ptr to CacheOfOneStylesheet as value.
 	 **/
-	typedef boost::unordered_map<string, std::shared_ptr<CacheOfOneStylesheet> > CacheContainer;
+	typedef boost::unordered_map<std::string, std::shared_ptr<CacheOfOneStylesheet> > CacheContainer;
 	
 	
 	Cache(const std::shared_ptr<Configuration>& config);

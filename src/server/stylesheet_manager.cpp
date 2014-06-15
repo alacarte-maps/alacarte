@@ -42,7 +42,7 @@ StylesheetManager::StylesheetManager(const std::shared_ptr<Configuration>& confi
 	, monitorService(new boost::asio::dir_monitor(ioService))
 	, log(log4cpp::Category::getInstance("stylesheet-manager"))
 {
-	stylesheetFolder = config->get<string>(opt::server::style_source);
+	stylesheetFolder = config->get<std::string>(opt::server::style_source);
 }
 
 
@@ -65,7 +65,7 @@ void StylesheetManager::startStylesheetObserving(const std::shared_ptr<RequestMa
 		}
 	}
 
-	monitorService->add_directory(config->get<string>(opt::server::style_source));
+	monitorService->add_directory(config->get<std::string>(opt::server::style_source));
 	monitorService->async_monitor(boost::bind(&StylesheetManager::onFileSystemEvent, shared_from_this(), _1, _2));
 
 	monitorThread = boost::thread(boost::bind(&boost::asio::io_service::run, &ioService));

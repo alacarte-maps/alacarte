@@ -53,13 +53,13 @@ struct test_requestManage
 		DefaultConfig = TestConfig::Create()
 		->add<int>(opt::server::max_queue_size, 1)
 		->add<int>(opt::server::prerender_level, 0)
-		->add<string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").std::string());
+		->add<std::string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").std::string());
 
 		Statistic::Init(DefaultConfig);
 		
 		std::shared_ptr<Geodata> geodata = std::make_shared<Geodata>();
-		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<string>(opt::server::path_to_geodata)));
-		geodata->load(DefaultConfig->get<string>(opt::server::path_to_geodata));
+		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<std::string>(opt::server::path_to_geodata)));
+		geodata->load(DefaultConfig->get<std::string>(opt::server::path_to_geodata));
 		cache = std::make_shared<Cache>(DefaultConfig);
 		ssm = std::make_shared<StylesheetManager>(DefaultConfig);
 		std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(geodata);
@@ -91,7 +91,7 @@ struct test_requestManage
 	{
 		//prerender a Tile and check if the (child?) Tiles are prerendered.
 		DefaultConfig->add<int>(opt::server::prerender_level, 18);
-		DefaultConfig->add<string>(opt::server::performance_log, 	"unitTest_Performance_log.delete_me");
+		DefaultConfig->add<std::string>(opt::server::performance_log, 	"unitTest_Performance_log.delete_me");
 
 		int x = 68595;
 		int y = 45006;

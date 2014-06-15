@@ -33,7 +33,7 @@ protected:
 	const boost::any& getValueByKey(const std::string& key) const;
 
 private:
-	std::map<string, boost::any> testOptions;
+	std::map<std::string, boost::any> testOptions;
 
 };
 

@@ -138,7 +138,7 @@ void HttpRequest::answer ( const std::shared_ptr<Tile>& tile, Reply::StatusType 
 	reply.tile = tile;
 	reply.headers.resize ( 2 );
 	reply.headers[0].name = "Content-Length";
-	reply.headers[0].value = boost::lexical_cast<string> ( tile->getImage()->size() );
+	reply.headers[0].value = boost::lexical_cast<std::string> ( tile->getImage()->size() );
 	reply.headers[1].name = "Content-Type";
 	reply.headers[1].value = "image/";
 	reply.headers[1].value.append ( tile->getIdentifier()->getImageFormatString() );

@@ -26,13 +26,13 @@ struct test_request
     test_request()
 	{
 		DefaultConfig = TestConfig::Create()
-		->add<string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").std::string());
+		->add<std::string>(opt::server::path_to_geodata, 	(getInputDirectory() / "karlsruhe_big.carte").std::string());
 		
 		Statistic::Init(DefaultConfig);
 
 		std::shared_ptr<Geodata> geodata = std::make_shared<Geodata>();
-		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<string>(opt::server::path_to_geodata)));
-		geodata->load(DefaultConfig->get<string>(opt::server::path_to_geodata));
+		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<std::string>(opt::server::path_to_geodata)));
+		geodata->load(DefaultConfig->get<std::string>(opt::server::path_to_geodata));
 		std::shared_ptr<Cache> cache = std::make_shared<Cache>(DefaultConfig);
 		ssm = std::make_shared<StylesheetManager>(DefaultConfig);
 		std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(geodata);
@@ -52,7 +52,7 @@ struct test_request
 		using boost::asio::ip::tcp;
 		// Get a list of endpoints corresponding to the server name.
 		tcp::resolver resolver(io_service);
-		tcp::resolver::query query(DefaultConfig->get<string>(opt::server::server_address), DefaultConfig->get<string>(opt::server::server_port));
+		tcp::resolver::query query(DefaultConfig->get<std::string>(opt::server::server_address), DefaultConfig->get<string>(opt::server::server_port));
 		tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
 		tcp::resolver::iterator end;
 		
@@ -75,7 +75,7 @@ struct test_request
 		boost::asio::streambuf request;
 		std::ostream request_stream(&request);
 		request_stream << "GET " << path << " HTTP/1.0\r\n";
-		request_stream << "Host: " << DefaultConfig->get<string>(opt::server::server_address) << "\r\n";
+		request_stream << "Host: " << DefaultConfig->get<std::string>(opt::server::server_address) << "\r\n";
 		request_stream << "Accept: */*\r\n";
 		request_stream << "Connection: close\r\n\r\n";
 		

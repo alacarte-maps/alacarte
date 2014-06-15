@@ -67,30 +67,30 @@ public:
 
 		cmd_desc.add_options()
 			(OPT(opt::help, "h"),																			"produce help message")
-			(OPT(opt::config, "c"),	value<string>()->default_value(DEFAULT_CONFIG_NAME)/*->value_name("path")*/,
+			(OPT(opt::config, "c"),	value<std::string>()->default_value(DEFAULT_CONFIG_NAME)/*->value_name("path")*/,
 				"Specifies a config file which will be loaded at program start. Absolute and relative paths are possible. Additionally we search in /etc/.")
 			;
 
 		// in cmd and config
 		config_desc.add_options()
-			(OPT(opt::logfile, "l"), value<string>()->default_value("log.txt")/*->value_name("path")*/,										"specifies the logfile")
-			(OPT(opt::server::path_to_geodata, "g"),	value<string>()->required()/*->value_name("path")*/,								"path, where preprocessed data will be saved")
-			(OPT(opt::server::style_source, "s"),	value<string>()->required()->default_value(".")/*->value_name("path")*/,				"path, to be observed for stylesheets")
-			(OPT(opt::server::access_log, "a"),	value<string>()->default_value("access_log.txt")/*->value_name("path")*/,					"file where server access will be logged")
-			(OPT(opt::server::path_to_default_style, "d"),	value<string>()->default_value("default"),										"default stylesheet")
-			(OPT(opt::server::path_to_default_tile, "t"),	value<string>()->default_value("default.png")/*->value_name("image")*/,			"default tile")
+			(OPT(opt::logfile, "l"), value<std::string>()->default_value("log.txt")/*->value_name("path")*/,										"specifies the logfile")
+			(OPT(opt::server::path_to_geodata, "g"),	value<std::string>()->required()/*->value_name("path")*/,								"path, where preprocessed data will be saved")
+			(OPT(opt::server::style_source, "s"),	value<std::string>()->required()->default_value(".")/*->value_name("path")*/,				"path, to be observed for stylesheets")
+			(OPT(opt::server::access_log, "a"),	value<std::string>()->default_value("access_log.txt")/*->value_name("path")*/,					"file where server access will be logged")
+			(OPT(opt::server::path_to_default_style, "d"),	value<std::string>()->default_value("default"),										"default stylesheet")
+			(OPT(opt::server::path_to_default_tile, "t"),	value<std::string>()->default_value("default.png")/*->value_name("image")*/,			"default tile")
 			(OPT(opt::server::num_threads, "n"),	value<int>()->default_value(std::thread::hardware_concurrency())/*->value_name("num")*/,"number of threads used to process a request")
 			(OPT(opt::server::parse_timeout, "o"),	value<int>()->default_value(750)/*->value_name("ms")*/,									"maximal time in ms to parse a stylesheet")
 			//(OPT(opt::server::request_timeout, "r"),	value<int>()/*->value_name("ms")*/,													"maximal time in ms to process a request")
 			(OPT(opt::server::prerender_level, "z"),	value<int>()->default_value(12)/*->value_name("ms")*/,								"highest zoomlevel to enqueue for prerendering")
-			(opt::server::server_address,				value<string>()->default_value("0.0.0.0")/*->value_name("addr")*/,				"Address of the server")
-			(OPT(opt::server::server_port, "p"),		value<string>()->required()->default_value("8080")/*->value_name("port")*/,			"port to bind the server")
+			(opt::server::server_address,				value<std::string>()->default_value("0.0.0.0")/*->value_name("addr")*/,				"Address of the server")
+			(OPT(opt::server::server_port, "p"),		value<std::string>()->required()->default_value("8080")/*->value_name("port")*/,			"port to bind the server")
 			(OPT(opt::server::max_queue_size, "q"),		value<int>()->default_value(1024)/*->value_name("size")*/,							"size for server queue")
 			(opt::server::cache_size,					value<int>()->default_value(1024)/*->value_name("size")*/,							"maximal amount of tiles in cache")
 			(opt::server::cache_keep_tile,				value<int>()->default_value(12)/*->value_name("size")*/,							"from 0 this zoomlevel, tiles are written to harddrive")
-			(opt::server::cache_path,					value<string>()->default_value("cache")/*->value_name("path")*/,					"path to store evicted prerendered tiles")
-			(opt::server::log_mute_component, 			value<std::vector<string> >()->multitoken(), 										"List of all components which should be muted.")
-			(opt::server::performance_log, 				value<string>(), 																	"path, where the performance log will be saved. If not set the performance log will not be created.")
+			(opt::server::cache_path,					value<std::string>()->default_value("cache")/*->value_name("path")*/,					"path to store evicted prerendered tiles")
+			(opt::server::log_mute_component, 			value<std::vector<std::string> >()->multitoken(), 										"List of all components which should be muted.")
+			(opt::server::performance_log, 				value<std::string>(), 																	"path, where the performance log will be saved. If not set the performance log will not be created.")
 			;
 
 
@@ -143,7 +143,7 @@ protected:
 		}
 		*/
 		if (config->has(opt::server::style_source)) {
-			boost::filesystem::path folder = config->get<string>(opt::server::style_source);
+			boost::filesystem::path folder = config->get<std::string>(opt::server::style_source);
 			if (!boost::filesystem::is_directory(folder)) {
 				log.errorStream() << opt::server::style_source << " = \"" << folder.std::string() << "\" is not a directory.";
 				return false;
@@ -155,7 +155,7 @@ protected:
 		}
 		
 		if (config->has(opt::server::cache_path)) {
-			boost::filesystem::path folder = config->get<string>(opt::server::cache_path);
+			boost::filesystem::path folder = config->get<std::string>(opt::server::cache_path);
 			if (!boost::filesystem::is_directory(folder)) {
 				try {
 					boost::filesystem::create_directory(folder);
@@ -176,13 +176,13 @@ protected:
 		log4cpp::PatternLayout *accessLogFileLayout = new log4cpp::PatternLayout();
 		accessLogFileLayout->setConversionPattern("%m%n");
 		
-		log4cpp::Appender *accessLogFileAppender = new log4cpp::FileAppender("AccessLogFile", config->get<string>(opt::server::access_log), false);
+		log4cpp::Appender *accessLogFileAppender = new log4cpp::FileAppender("AccessLogFile", config->get<std::string>(opt::server::access_log), false);
 		accessLogFileAppender->setLayout(accessLogFileLayout);
 		
 		log4cpp::Category::getInstance("AccessLog").addAppender(accessLogFileAppender);
 		log4cpp::Category::getInstance("AccessLog").setAdditivity(false);
 		if( config->has(opt::server::log_mute_component) ) {
-			std::vector<string> list = config->get<std::vector<string>>(opt::server::log_mute_component);
+			std::vector<std::string> list = config->get<std::vector<string>>(opt::server::log_mute_component);
 			for(std::string component : list) {
 				log4cpp::Category::getInstance(component).addAppender(logFile);
 				log4cpp::Category::getInstance(component).setAdditivity(false);
@@ -203,7 +203,7 @@ protected:
 
 		std::shared_ptr<Geodata> geodata = make_shared<Geodata>();
 		try {
-			geodata->load(config->get<string>(opt::server::path_to_geodata));
+			geodata->load(config->get<std::string>(opt::server::path_to_geodata));
 		} catch(...)
 		{
 			log4cpp::Category& log = log4cpp::Category::getRoot();

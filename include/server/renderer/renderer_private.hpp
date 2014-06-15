@@ -38,7 +38,7 @@ class Style;
 // TODO make thread safe
 class AssetCache {
 private:
-	boost::unordered_map<string, cairo_surface_t*> images;
+	boost::unordered_map<std::string, cairo_surface_t*> images;
 
 public:
 	~AssetCache()

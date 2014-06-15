@@ -29,7 +29,7 @@
 class Archive
 {
 	private:
-		std::vector<string> paths;
+		std::vector<std::string> paths;
 		std::string archPath;
 
 	public:

@@ -28,7 +28,7 @@ struct EvalGrammarTest
 
 	void testString(const std::string& expr, const string& expected)
 	{
-		eval::Eval<string>::node_ptr result;
+		eval::Eval<std::string>::node_ptr result;
 		eval::EvalGrammer grammar;
 
 		testGrammar(grammar, result, expr, chs::space);

@@ -7,7 +7,7 @@
 
 
 TestConfig::Ptr DefaultConfig = TestConfig::Create()
-									->add<string>("name", "SirTobi")
+									->add<std::string>("name", "SirTobi")
 									->add<int>("age", 20);
 
 
@@ -15,10 +15,10 @@ TestConfig::Ptr DefaultConfig = TestConfig::Create()
 ALAC_PARAM_TEST_CASE(needTestConfig, TestConfig::Ptr config)
 {
 	// do nothing
-	BOOST_CHECK_EQUAL(config->get<string>("additional"), "additional config");
+	BOOST_CHECK_EQUAL(config->get<std::string>("additional"), "additional config");
 }
 
 ALAC_PARAM_TEST(needTestConfig,
 				DefaultConfig->clone()
-					->add<string>("additional", "additional config")
+					->add<std::string>("additional", "additional config")
 				)

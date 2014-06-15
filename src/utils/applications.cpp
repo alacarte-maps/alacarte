@@ -126,13 +126,13 @@ void Application::appRun(int argc, char** argv)
 	
 	log4cpp::Category& log = log4cpp::Category::getInstance("StartupDiagnostic");
 	
-	if (config->get<string>(opt::config) != DEFAULT_CONFIG_NAME && !config->usedConfigFile())
+	if (config->get<std::string>(opt::config) != DEFAULT_CONFIG_NAME && !config->usedConfigFile())
 	{
-		const std::vector<string> &dirs = config->getSeachDirectories();
+		const std::vector<std::string> &dirs = config->getSeachDirectories();
 		log.errorStream() << "The given config file was not found. Searched for:";
 		std::for_each(begin(dirs), end(dirs), [&](const std::string &dir)
 		{
-			log.errorStream() << opt::config << " = \"" << dir << "/" << config->get<string>(opt::config) << "\"";
+			log.errorStream() << opt::config << " = \"" << dir << "/" << config->get<std::string>(opt::config) << "\"";
 		});
 		return;
 	}
@@ -160,7 +160,7 @@ void Application::initLog(const std::shared_ptr<Configuration>& config)
 	log4cpp::Appender *rootAappender = new log4cpp::OstreamAppender("Console", &std::cout);
 	rootAappender->setLayout(rootLayout);
 
-	log4cpp::Appender *logFileAppender = new log4cpp::FileAppender("LogFile", config->get<string>(opt::logfile), false);
+	log4cpp::Appender *logFileAppender = new log4cpp::FileAppender("LogFile", config->get<std::string>(opt::logfile), false);
 	logFileAppender->setLayout(logFileLayout);
 
 	log4cpp::Category& root = log4cpp::Category::getRoot();
@@ -178,7 +178,7 @@ void Application::initLog(const std::shared_ptr<Configuration>& config)
 bool Application::diagnosticCheckFile(const std::shared_ptr<Configuration>& config, const std::string& key, log4cpp::Category& log) 
 {
 	if (config->has(key)) {
-		boost::filesystem::path file = config->get<string>(key);
+		boost::filesystem::path file = config->get<std::string>(key);
 		bool exists =  boost::filesystem::exists(file);
 		if (!exists) {
 			log.errorStream() << key << " = \"" << file.std::string() << "\" does not exist.";

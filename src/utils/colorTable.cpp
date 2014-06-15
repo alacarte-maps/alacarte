@@ -234,7 +234,7 @@ void ColorTable::resolve(const std::string& name, Color* target) const
  *
  * \return Table with color mappings
  **/
-const boost::unordered_map<string, Color>& ColorTable::getTable() const
+const boost::unordered_map<std::string, Color>& ColorTable::getTable() const
 {
 	return table;
 }

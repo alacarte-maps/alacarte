@@ -81,11 +81,11 @@ struct ColorVisitor : boost::static_visitor<Color>
 	Color operator()(const std::string& s) const { return ResolveColorName(s); }
 };
 
-struct StringVisitor : boost::static_visitor<string>
+struct StringVisitor : boost::static_visitor<std::string>
 {
-	std::string operator()(int i) const { return boost::lexical_cast<string>(i); }
-	std::string operator()(const Color& color) const { return boost::lexical_cast<string>(color); }
-	std::string operator()(double d) const { return boost::lexical_cast<string>(d); }
+	std::string operator()(int i) const { return boost::lexical_cast<std::string>(i); }
+	std::string operator()(const Color& color) const { return boost::lexical_cast<std::string>(color); }
+	std::string operator()(double d) const { return boost::lexical_cast<std::string>(d); }
 	std::string operator()(const string& s) const { return s; }
 };*/
 //! \endcond
@@ -394,7 +394,7 @@ void MapCssParser::load(const std::string& path)
 									<< excp::InfoFailureLine(pos.line)
 									<< excp::InfoFailureColumn(pos.column)
 									<< excp::InfoFailureLineContent(TabToSpace(e.first.get_currentline()))
-									<< excp::InfoWhat("Illegal syntax! Expected valid " + boost::lexical_cast<string>(e.what_) + "!"));
+									<< excp::InfoWhat("Illegal syntax! Expected valid " + boost::lexical_cast<std::string>(e.what_) + "!"));
 		}
 
 	} catch(excp::ParseException& e)

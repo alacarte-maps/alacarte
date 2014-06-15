@@ -85,7 +85,7 @@ void Cache::writeFile(std::shared_ptr<Tile> tile, const boost::filesystem::path&
 
 const boost::filesystem::path Cache::getTilePath(const std::shared_ptr<TileIdentifier>& ti) {
 	std::stringstream path;
-	path << Config->get<string>(opt::server::cache_path) << "/";
+	path << Config->get<std::string>(opt::server::cache_path) << "/";
 	path << ti->getStylesheetPath() << "/";
 	path << ti->getZoom() << "/";
 	path << ti->getX() << "/";
@@ -114,7 +114,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 		// Creating a new cache for stylesheet.
 		cache = std::make_shared<CacheOfOneStylesheet>();
 		AllCaches[stylesheet] = cache;
-		boost::filesystem::path dir(Config->get<string>(opt::server::cache_path) + "/" + ti->getStylesheetPath());
+		boost::filesystem::path dir(Config->get<std::string>(opt::server::cache_path) + "/" + ti->getStylesheetPath());
 		boost::filesystem::create_directories(dir);
 		log << log4cpp::Priority::DEBUG << "Stylesheetcache " << stylesheet << " created.";
 	}
@@ -187,7 +187,7 @@ shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
  **/
 shared_ptr<Tile> Cache::getDefaultTile() {
 	if (!DefaultTile) {
-		std::string path = Config->get<string>(opt::server::path_to_default_tile);
+		std::string path = Config->get<std::string>(opt::server::path_to_default_tile);
 		std::shared_ptr<TileIdentifier> ti = std::make_shared<TileIdentifier>(-1, -1, -1, "/", TileIdentifier::Format::PNG);
 		DefaultTile = std::make_shared<Tile>(ti);
 		// Load default tile
@@ -210,7 +210,7 @@ shared_ptr<Tile> Cache::getDefaultTile() {
 void Cache::deleteTiles(const std::string path)
 {
 	try {
-		boost::filesystem::path dir(Config->get<string>(opt::server::cache_path) + path);
+		boost::filesystem::path dir(Config->get<std::string>(opt::server::cache_path) + path);
 		boost::system::error_code ec;
 		boost::filesystem::remove_all(dir, ec);
 		if (ec.value() == 39) {
