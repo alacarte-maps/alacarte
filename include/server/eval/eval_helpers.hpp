@@ -56,7 +56,7 @@ bool Conv(const std::string& str, Color* out, bool tryToCache);
 
 //! Use some extra function for std::string conversion
 template<>
-bool Conv(const std::string& str, string* out, bool tryToCache );
+bool Conv(const std::string& str, std::string* out, bool tryToCache );
 
 //! Use some extra function for MaybeCachedString conversion
 template<>

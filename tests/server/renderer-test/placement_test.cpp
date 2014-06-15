@@ -118,7 +118,7 @@ struct placement_test
 
 	void checkTile(const char* name)
 	{
-		std::string p = (getRenderedDirectory() / string(name)).native() + string(".png");
+		std::string p = (getRenderedDirectory() / std::string(name)).native() + std::string(".png");
 		renderLabels(p.c_str());
 
 		compareTile(name);

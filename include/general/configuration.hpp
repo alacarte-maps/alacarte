@@ -145,10 +145,10 @@ public:
 	 **/
 	bool usedConfigFile() const;
 	/**
-	 * @brief Returns a queue of std::strings. Each string is a folder in which we searched for a config file.
+	 * @brief Returns a queue of std::strings. Each std::string is a folder in which we searched for a config file.
 	 * If usedConfigFile() is true then the last entry is the folder in which we found the config file.
 	 *
-	 * @return :queue< std::string, std::deque< string, std::allocator< string > > >
+	 * @return :queue< std::string, std::deque< std::string, std::allocator< std::string > > >
 	 **/
 	const std::vector<std::string>& getSeachDirectories() const;
 protected:

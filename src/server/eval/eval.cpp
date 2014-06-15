@@ -108,7 +108,7 @@ struct StringVisitor : public boost::static_visitor<std::string>
 	std::string operator()(int i) const { return (*target = ToString(i)); }
 	std::string operator()(const Color& color) const {return (*target = ToString(color));  }
 	std::string operator()(double d) const { return (*target = ToString(d)); }
-	std::string operator()(const string& s) const { return *target = s; }
+	std::string operator()(const std::string& s) const { return *target = s; }
 	std::string operator()(const eval::Eval::node_ptr& node) const { return *target = node->eval(obj); }
 };*/
 
@@ -166,7 +166,7 @@ void Eval::overwrite(GeoObject* obj, Color* cv) const
 */
 
 /**
- * @brief Overwrites the std::string if the internal value can be resolved into a string
+ * @brief Overwrites the std::string if the internal value can be resolved into a std::string
  *
  * \param obj which will be used to execute an eval expression
  * \param sv The value to overwrite
@@ -190,7 +190,7 @@ void Eval::overwrite(GeoObject* obj, std::string* sv) const
  *
  * \return the root node for the expression or null, if something failed.
  **/
-shared_ptr<STNode> parseEval(std::string::const_iterator begin, string::const_iterator end, const std::shared_ptr<ParserLogger>& logger)
+shared_ptr<STNode> parseEval(std::string::const_iterator begin, std::string::const_iterator end, const std::shared_ptr<ParserLogger>& logger)
 {
 	EvalGrammer eval_;
 	std::shared_ptr<STNode> root;

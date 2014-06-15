@@ -41,7 +41,7 @@ class GeoObject;
 namespace eval {
 
 
-shared_ptr<STNode> parseEval(std::string::const_iterator begin, string::const_iterator end, const std::shared_ptr<ParserLogger>& logger);
+shared_ptr<STNode> parseEval(std::string::const_iterator begin, std::string::const_iterator end, const std::shared_ptr<ParserLogger>& logger);
 
 /**
  * @brief Represents a value in a style template

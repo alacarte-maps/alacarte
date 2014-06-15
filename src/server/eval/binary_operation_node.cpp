@@ -27,7 +27,7 @@ namespace eval {
 
 
 template<typename FloatOperator, typename IntOperation>
-string calculation(const std::string& left, const string& right, FloatOperator fop, IntOperation iop)
+string calculation(const std::string& left, const std::string& right, FloatOperator fop, IntOperation iop)
 {
 	float f1, f2;
 	int i1, i2;

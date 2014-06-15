@@ -72,7 +72,7 @@ protected:
 	std::shared_ptr<RTree<RelId, FixedRect>> relTree;
 
 private:
-	void buildTrees(const std::string& nodePath, const string& wayPath, const string& relationPath);
+	void buildTrees(const std::string& nodePath, const std::string& wayPath, const std::string& relationPath);
 	void serialize(const std::string& serPath) const;
 	TESTABLE FixedRect calculateBoundingBox(const Way& way) const;
 	TESTABLE FixedRect calculateBoundingBox(const Relation& relation) const;

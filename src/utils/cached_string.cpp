@@ -140,8 +140,8 @@ public:
 	const StringStorageElement* resolveString(const std::string& str)
 	{
 		boost::upgrade_lock<boost::shared_mutex> guard(accessMutex);
-		// Search for the std::string using a direct string search
-		auto it = storage.find(str, std::stringStorageElementHasher, stringComperator);
+		// Search for the std::string using a direct std::string search
+		auto it = storage.find(str, std::stringStorageElementHasher, std::stringComperator);
 
 		// check if std::string was already in storage
 		if(it == storage.end())
@@ -197,7 +197,7 @@ CachedString::CachedString(const char* str)
 }
 
 /**
- * @brief Creates a new cached std::string from a std string
+ * @brief Creates a new cached std::string from a std std::string
  *
  **/
 CachedString::CachedString( const std::string& str )
@@ -206,7 +206,7 @@ CachedString::CachedString( const std::string& str )
 }
 
 /**
- * @brief Creates a new cached std::string from another cached string
+ * @brief Creates a new cached std::string from another cached std::string
  *
  **/
 CachedString::CachedString( const CachedString& other )
@@ -224,7 +224,7 @@ CachedString::~CachedString()
 }
 
 /**
- * @brief Compares this cached std::string with an non cached string
+ * @brief Compares this cached std::string with an non cached std::string
  *
  **/
 bool CachedString::equals( const std::string& other ) const
@@ -233,7 +233,7 @@ bool CachedString::equals( const std::string& other ) const
 }
 
 /**
- * @brief Creates a new cached std::string from another cached string
+ * @brief Creates a new cached std::string from another cached std::string
  *
  **/
 bool CachedString::equals( const CachedString& other ) const
@@ -288,7 +288,7 @@ void CachedString::assign( const CachedString& other )
 
 
 /**
- * @brief Sets this std::string to the empty string
+ * @brief Sets this std::string to the empty std::string
  *
  **/
 void CachedString::clear()
@@ -350,7 +350,7 @@ MaybeCachedString::MaybeCachedString( const char* str )
 }*/
 
 /**
- * @brief Creates a non cached std::string from a string
+ * @brief Creates a non cached std::string from a std::string
  *
  **/
 MaybeCachedString::MaybeCachedString( const std::string& str )
@@ -360,7 +360,7 @@ MaybeCachedString::MaybeCachedString( const std::string& str )
 }
 
 /**
- * @brief Creates a cached std::string from a cached string
+ * @brief Creates a cached std::string from a cached std::string
  *
  **/
 MaybeCachedString::MaybeCachedString( const CachedString& other )
@@ -370,7 +370,7 @@ MaybeCachedString::MaybeCachedString( const CachedString& other )
 }
 
 /**
- * @brief Creates a maybe cached std::string from another maybe cached string
+ * @brief Creates a maybe cached std::string from another maybe cached std::string
  **/
 MaybeCachedString::MaybeCachedString( const MaybeCachedString& other )
 	: cached(true)
@@ -461,7 +461,7 @@ void MaybeCachedString::assign( const CachedString& other )
 }
 
 /**
- * @brief Compares this std::string with a given std string
+ * @brief Compares this std::string with a given std std::string
  *
  **/
 bool MaybeCachedString::equals( const std::string& other ) const
@@ -470,7 +470,7 @@ bool MaybeCachedString::equals( const std::string& other ) const
 }
 
 /**
- * @brief Compares this std::string with a cached string
+ * @brief Compares this std::string with a cached std::string
  *
  **/
 bool MaybeCachedString::equals( const CachedString& other ) const
@@ -484,7 +484,7 @@ bool MaybeCachedString::equals( const CachedString& other ) const
 }
 
 /**
- * @brief Compares this std::string with another maybe cached string
+ * @brief Compares this std::string with another maybe cached std::string
  *
  **/
 bool MaybeCachedString::equals( const MaybeCachedString& other ) const
@@ -528,7 +528,7 @@ std::size_t MaybeCachedString::hash() const
 }
 
 /**
- * @brief Sets this std::string to be the empty string
+ * @brief Sets this std::string to be the empty std::string
  *
  **/
 void MaybeCachedString::clear()

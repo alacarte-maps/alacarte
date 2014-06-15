@@ -73,7 +73,7 @@ path getValidDirectory()
  */
 void compareTile(const char* name)
 {
-	std::string file = string(name) + ".png";
+	std::string file = std::string(name) + ".png";
 	path rendered = getRenderedDirectory() / file;
 	path valid = getValidDirectory() / file;
 	path diff = getDiffDirectory() / file;
@@ -120,7 +120,7 @@ void compareTile(const char* name)
  */
 void compareFile(const char* name)
 {
-	std::string file = string(name);
+	std::string file = std::string(name);
 	path rendered = getRenderedDirectory() / file;
 	path valid = getValidDirectory() / file;
 	using namespace std;

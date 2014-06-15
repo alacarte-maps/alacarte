@@ -54,7 +54,7 @@ Geodata::~Geodata()
 }
 
 //! called when data is serialized to file
-void Geodata::buildTrees(const std::string& nodePath, const string& wayPath, const string& relationPath)
+void Geodata::buildTrees(const std::string& nodePath, const std::string& wayPath, const std::string& relationPath)
 {
 	if (nodes->size() > 0)
 	{

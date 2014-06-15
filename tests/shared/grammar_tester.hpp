@@ -64,7 +64,7 @@ void testGrammar(Grammar& grammar, Result& result, const std::string& expr, cons
 
 
 template<typename Grammar, typename Result, typename Skipper>
-void testGrammar(Grammar& grammar, Result& result, std::string::const_iterator begin, string::const_iterator end, const Skipper& skipper)
+void testGrammar(Grammar& grammar, Result& result, std::string::const_iterator begin, std::string::const_iterator end, const Skipper& skipper)
 {
 	try
 	{

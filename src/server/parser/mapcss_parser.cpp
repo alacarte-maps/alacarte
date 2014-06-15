@@ -86,7 +86,7 @@ struct StringVisitor : boost::static_visitor<std::string>
 	std::string operator()(int i) const { return boost::lexical_cast<std::string>(i); }
 	std::string operator()(const Color& color) const { return boost::lexical_cast<std::string>(color); }
 	std::string operator()(double d) const { return boost::lexical_cast<std::string>(d); }
-	std::string operator()(const string& s) const { return s; }
+	std::string operator()(const std::string& s) const { return s; }
 };*/
 //! \endcond
 
