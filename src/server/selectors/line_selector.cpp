@@ -28,15 +28,15 @@
 #include "server/tile_identifier.hpp"
 #include "utils/precached_strings.hpp"
 
-LineSelector::LineSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next) : Selector(rule, next)
+LineSelector::LineSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next) : Selector(rule, next)
 {
 }
 
-void LineSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void LineSelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 }
 
 
-void LineSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void LineSelector::matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Way* way = geodata->getWay(wayID);
 	auto& nodes = way->getNodeIDs();
 
@@ -51,5 +51,5 @@ void LineSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, R
 	}
 }
 
-void LineSelector::matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void LineSelector::matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 }

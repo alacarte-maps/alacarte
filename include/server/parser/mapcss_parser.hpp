@@ -38,29 +38,29 @@ class Stylesheet;
 
 struct MapCssParser
 {
-	void addAttributeToTemplate(StylePtr& style, const shared_ptr<AttributeCreator>& attrType, const string& specifier, const ParseInfo& info);
+	void addAttributeToTemplate(StylePtr& style, const std::shared_ptr<AttributeCreator>& attrType, const string& specifier, const ParseInfo& info);
 	void applyStyleToRules(std::vector<RulePtr>& rules, const StylePtr& style);
-	SelectorPtr createSelectorFromObjectType(const SelectorPtr& next, const shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType, Rule::AcceptableTypes& type);
-	SelectorPtr createChildSelectorFromObjectType(const SelectorPtr& next, const shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType);
-	SelectorPtr createSelectorFromUnaryCondition(const SelectorPtr& next, const shared_ptr<Rule>& rule, const UnaryCondition& condition);
-	SelectorPtr createSelectorFromBinaryCondition(const SelectorPtr& next, const shared_ptr<Rule>& rule, const BinaryCondition& condition);
-	SelectorPtr createSelectorFromCondition(const SelectorPtr& next, const shared_ptr<Rule>& rule, const ConditionType& condition);
+	SelectorPtr createSelectorFromObjectType(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType, Rule::AcceptableTypes& type);
+	SelectorPtr createChildSelectorFromObjectType(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType);
+	SelectorPtr createSelectorFromUnaryCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const UnaryCondition& condition);
+	SelectorPtr createSelectorFromBinaryCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const BinaryCondition& condition);
+	SelectorPtr createSelectorFromCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const ConditionType& condition);
 	RulePtr createSelectorChain(const std::vector<SelectorItem>& items);
 	void warnUnsupportedAttribute(const string& attribute) const;
 
-	MapCssParser(const shared_ptr<Geodata>& geodata);
+	MapCssParser(const std::shared_ptr<Geodata>& geodata);
 	void load(const string& path);
 
 	//! The log used by the parser
 	log4cpp::Category& log;
 	//! The geodata used to inject them in the rules
-	shared_ptr<Geodata> geodata;
+	std::shared_ptr<Geodata> geodata;
 	//! The parsed stylesheet
-	shared_ptr<Stylesheet> parsedStylesheet;
+	std::shared_ptr<Stylesheet> parsedStylesheet;
 	//! The exception that may be catched
 	excp::ParseException catchedException;
 	//! Output logger for errors and warnings
-	shared_ptr<ParserLogger> logger;
+	std::shared_ptr<ParserLogger> logger;
 };
 
 #endif

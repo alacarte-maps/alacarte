@@ -36,12 +36,12 @@ class HttpRequest;
 class HttpServer : public boost::enable_shared_from_this<HttpServer>
 {
 public:
-	HttpServer ( const shared_ptr<Configuration>& config,  const shared_ptr<RequestManager>& manager );
+	HttpServer ( const std::shared_ptr<Configuration>& config,  const shared_ptr<RequestManager>& manager );
 	~HttpServer();
 
 	TESTABLE void listen();
 	TESTABLE void quit();
-	void stopRequest ( shared_ptr<HttpRequest> request );
+	void stopRequest ( std::shared_ptr<HttpRequest> request );
 
 private:
 	void start_accept();
@@ -58,13 +58,13 @@ private:
 	boost::asio::ip::tcp::acceptor acceptor;
 
 	/// The next connection to be accepted.
-	shared_ptr<HttpRequest> nextRequest;
+	std::shared_ptr<HttpRequest> nextRequest;
 
 	/// The managed requests.
-	std::set<shared_ptr<HttpRequest>> requests;
+	std::set<std::shared_ptr<HttpRequest>> requests;
 
-	shared_ptr<Configuration> config;
-	shared_ptr<RequestManager> manager;
+	std::shared_ptr<Configuration> config;
+	std::shared_ptr<RequestManager> manager;
 };
 
 #endif

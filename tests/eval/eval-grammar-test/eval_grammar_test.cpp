@@ -37,7 +37,7 @@ struct EvalGrammarTest
 		BOOST_CHECK_EQUAL(expected, evaluated);
 	}
 
-	shared_ptr<GeoObject> object;
+	std::shared_ptr<GeoObject> object;
 };
 
 

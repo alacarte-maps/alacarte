@@ -72,7 +72,7 @@ void ObjectRenderer::paintLine(cairo_t* cr,
  * @brief used by node and way renderer to place a shield.
  * @param p point at the center of the shield
  */
-void ObjectRenderer::addShield(std::list<shared_ptr<Shield> >& shields,
+void ObjectRenderer::addShield(std::list<std::shared_ptr<Shield> >& shields,
 							   const FloatPoint& p,
 							   const cairo_text_extents_t* textSize) const
 {
@@ -94,7 +94,7 @@ void ObjectRenderer::addShield(std::list<shared_ptr<Shield> >& shields,
  * @brief used by node and way renderer to place a shield.
  * @param p point at the center of the shield
  */
-void ObjectRenderer::addLabel(std::list<shared_ptr<Label> >& labels,
+void ObjectRenderer::addLabel(std::list<std::shared_ptr<Label> >& labels,
 							   const FloatPoint& p,
 							   const cairo_text_extents_t* textSize) const
 {
@@ -106,7 +106,7 @@ void ObjectRenderer::addLabel(std::list<shared_ptr<Label> >& labels,
 	labels.push_back(boost::make_shared<Label>(box, bounds, s->text, s, origin));
 }
 
-ObjectRenderer::ObjectRenderer(const shared_ptr<Geodata>& data, const Style* s, const cairo_matrix_t* transform)
+ObjectRenderer::ObjectRenderer(const std::shared_ptr<Geodata>& data, const Style* s, const cairo_matrix_t* transform)
 	: data(data)
 	, s(s)
 	, transform(transform)

@@ -41,20 +41,20 @@ public:
 
 protected:
 
-	virtual void onRun(const shared_ptr<Configuration>& config) = 0;
-	virtual void customInitLog(const shared_ptr<Configuration>& config, log4cpp::Appender *logFile) {};
-	virtual bool startupDiagnostic(const shared_ptr<Configuration>& config) = 0;
+	virtual void onRun(const std::shared_ptr<Configuration>& config) = 0;
+	virtual void customInitLog(const std::shared_ptr<Configuration>& config, log4cpp::Appender *logFile) {};
+	virtual bool startupDiagnostic(const std::shared_ptr<Configuration>& config) = 0;
 
 	boost::program_options::options_description				cmd_desc;
 	boost::program_options::options_description				config_desc;
 	boost::program_options::positional_options_description	pos_desc;
 	
-	bool diagnosticCheckFile(const shared_ptr<Configuration>& config, const string& key, log4cpp::Category& log);
+	bool diagnosticCheckFile(const std::shared_ptr<Configuration>& config, const string& key, log4cpp::Category& log);
 
 private:
 	void appRun(int argc, char** argv);
 
-	void initLog(const shared_ptr<Configuration>& config);
+	void initLog(const std::shared_ptr<Configuration>& config);
 
 private:
 	bool mLogInitialized;

@@ -39,7 +39,7 @@ private:
 	Node* node;
 
 public:
-	NodeRenderer(const shared_ptr<Geodata>& data,
+	NodeRenderer(const std::shared_ptr<Geodata>& data,
 				 NodeId nid,
 				 const Style* s,
 				 const cairo_matrix_t* transform);
@@ -47,9 +47,9 @@ public:
 	void casing(cairo_t* cr);
 	void stroke(cairo_t* cr);
 	void label(cairo_t* cr,
-			std::list<shared_ptr<Label> >& labels, AssetCache& cache);
+			std::list<std::shared_ptr<Label> >& labels, AssetCache& cache);
 	void shield(cairo_t* cr,
-			std::list<shared_ptr<Shield> >& shields, AssetCache& cache);
+			std::list<std::shared_ptr<Shield> >& shields, AssetCache& cache);
 	void icon(cairo_t* cr, AssetCache& cache);
 };
 

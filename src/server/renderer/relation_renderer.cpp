@@ -34,7 +34,7 @@
 #include "relation_renderer.hpp"
 
 
-RelationRenderer::RelationRenderer(const shared_ptr<Geodata>& data,
+RelationRenderer::RelationRenderer(const std::shared_ptr<Geodata>& data,
 								   RelId rid,
 								   const Style* s,
 								   const cairo_matrix_t* transform)

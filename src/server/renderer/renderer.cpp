@@ -80,14 +80,14 @@ struct CompareObjects
 
 //! Sort labels according to their area and minX (for determinism)
 template <typename LabelType>
-bool CompareLabels(const shared_ptr<LabelType>& first, const shared_ptr<LabelType>& second) {
+bool CompareLabels(const std::shared_ptr<LabelType>& first, const shared_ptr<LabelType>& second) {
 	return (first->style->font_size >  second->style->font_size)
 		|| (first->style->font_size == second->style->font_size
 			&& first->box.minX < second->box.minX);
 }
 
 
-Renderer::Renderer(const shared_ptr<Geodata>& data)
+Renderer::Renderer(const std::shared_ptr<Geodata>& data)
 	: 	data(data), bounds(FloatRect(0.0, 0.0, TILE_SIZE*META_TILE_SIZE, TILE_SIZE*META_TILE_SIZE))
 {
 	double borderX = bounds.getWidth() * TILE_OVERLAP;
@@ -119,7 +119,7 @@ Renderer::~Renderer()
 
 //! Debug function that prints identifier on the tile
 void Renderer::printTileId(cairo_t* cr,
-						   const shared_ptr<TileIdentifier>& id) const
+						   const std::shared_ptr<TileIdentifier>& id) const
 {
 	cairo_save(cr);
 
@@ -179,8 +179,8 @@ void Renderer::renderObjects(CairoLayer* layers,
 							 std::vector<NodeId>& nodes,
 							 std::vector<WayId>& ways,
 							 std::vector<RelId>& relations,
-							 std::list<shared_ptr<Label>>& labels,
-							 std::list<shared_ptr<Shield>>& shields,
+							 std::list<std::shared_ptr<Label>>& labels,
+							 std::list<std::shared_ptr<Shield>>& shields,
 							 AssetCache& cache) const
 {
 	const boost::unordered_map<WayId, Style*> &wayStyles = map.getWayMap();
@@ -266,7 +266,7 @@ void Renderer::renderObjects(CairoLayer* layers,
 
 //! Only renders the shield background, the text is rendered in renderLabels
 void Renderer::renderShields(cairo_t* cr,
-							 std::vector<shared_ptr<Shield> >& shields) const
+							 std::vector<std::shared_ptr<Shield> >& shields) const
 {
 	cairo_save(cr);
 
@@ -317,7 +317,7 @@ void Renderer::renderShields(cairo_t* cr,
 
 template <typename LabelType>
 void Renderer::renderLabels(cairo_t* cr,
-							std::vector<shared_ptr<LabelType> >& labels,
+							std::vector<std::shared_ptr<LabelType> >& labels,
 							AssetCache& cache) const
 {
 	cairo_save(cr);
@@ -326,7 +326,7 @@ void Renderer::renderLabels(cairo_t* cr,
 
 	for (auto it = labels.rbegin(); it != labels.rend(); it++)
 	{
-		const shared_ptr<LabelType>& label = *it;
+		const std::shared_ptr<LabelType>& label = *it;
 		const Style* s = label->style;
 
 		cairo_set_font_size(cr, s->font_size);
@@ -365,10 +365,10 @@ bool Renderer::isCutOff(const FloatRect& box, const FloatRect& owner)
 }
 
 //! Place labels with greedy algorithm
-void Renderer::placeLabels(const std::list<shared_ptr<Label> >& labels,
-						   std::vector<shared_ptr<Label> >& placed)
+void Renderer::placeLabels(const std::list<std::shared_ptr<Label> >& labels,
+						   std::vector<std::shared_ptr<Label> >& placed)
 {
-	std::vector<shared_ptr<Label>> contained;
+	std::vector<std::shared_ptr<Label>> contained;
 	contained.reserve(labels.size());
 
 	// first sort out all out-of-bounds labels
@@ -427,10 +427,10 @@ void Renderer::placeLabels(const std::list<shared_ptr<Label> >& labels,
 }
 
 //! Place labels with greedy algorithm
-void Renderer::placeShields(const std::list<shared_ptr<Shield> >& shields,
-						   std::vector<shared_ptr<Shield> >& placed)
+void Renderer::placeShields(const std::list<std::shared_ptr<Shield> >& shields,
+						   std::vector<std::shared_ptr<Shield> >& placed)
 {
-	std::vector<shared_ptr<Shield>> contained;
+	std::vector<std::shared_ptr<Shield>> contained;
 	contained.reserve(10);
 
 	// first sort out all out-of-bounds labels
@@ -489,10 +489,10 @@ void Renderer::paintBackground(CairoLayer& layer, const Style* canvasStyle) cons
 }
 
 void Renderer::renderEmptyTile(RenderAttributes& map,
-	const shared_ptr<RenderCanvas>& canvas,
-	const shared_ptr<Tile>& tile)
+	const std::shared_ptr<RenderCanvas>& canvas,
+	const std::shared_ptr<Tile>& tile)
 {
-	const shared_ptr<TileIdentifier>& id = tile->getIdentifier();
+	const std::shared_ptr<TileIdentifier>& id = tile->getIdentifier();
 
 	canvas->clear();
 
@@ -514,7 +514,7 @@ void Renderer::renderEmptyTile(RenderAttributes& map,
 }
 
 void Renderer::renderArea(const FixedRect& area,
-						  const shared_ptr<RenderCanvas>& canvas,
+						  const std::shared_ptr<RenderCanvas>& canvas,
 						  double width, double height,
 						  RenderAttributes& map,
 						  AssetCache& cache)
@@ -535,14 +535,14 @@ void Renderer::renderArea(const FixedRect& area,
 
 	paintBackground(layers[0], map.getCanvasStyle());
 
-	std::list<shared_ptr<Label> > labels;
-	std::list<shared_ptr<Shield> > shields;
+	std::list<std::shared_ptr<Label> > labels;
+	std::list<std::shared_ptr<Shield> > shields;
 
 	// render objects and collect label positions
 	renderObjects(layers, map, &trans, nodes, ways, relations, labels, shields, cache);
 
 	// sort, place and render shields
-	std::vector<shared_ptr<Shield> > placedShields;
+	std::vector<std::shared_ptr<Shield> > placedShields;
 	placedShields.reserve(10);
 	shields.sort(&CompareLabels<Shield>);
 	placeShields(shields, placedShields);
@@ -550,7 +550,7 @@ void Renderer::renderArea(const FixedRect& area,
 	renderLabels<Shield>(layers[RenderCanvas::LAYER_LABELS].cr, placedShields, cache);
 
 	// sort, place and render labels
-	std::vector<shared_ptr<Label> > placedLabels;
+	std::vector<std::shared_ptr<Label> > placedLabels;
 	placedLabels.reserve(labels.size());
 	labels.sort(&CompareLabels<Label>);
 	placeLabels(labels, placedLabels);
@@ -560,9 +560,9 @@ void Renderer::renderArea(const FixedRect& area,
 }
 
 
-void Renderer::sliceTile(const shared_ptr<RenderCanvas>& canvas,
-						 const shared_ptr<MetaIdentifier>& mid,
-						 const shared_ptr<Tile>& tile) const
+void Renderer::sliceTile(const std::shared_ptr<RenderCanvas>& canvas,
+						 const std::shared_ptr<MetaIdentifier>& mid,
+						 const std::shared_ptr<Tile>& tile) const
 {
 	int tx0 = mid->getX();
 	int ty0 = mid->getY();
@@ -572,7 +572,7 @@ void Renderer::sliceTile(const shared_ptr<RenderCanvas>& canvas,
 
 	cairo_surface_flush(layers[0].surface);
 
-	const shared_ptr<TileIdentifier>& tid = tile->getIdentifier();
+	const std::shared_ptr<TileIdentifier>& tid = tile->getIdentifier();
 	int dx = (tid->getX() - tx0) * TILE_SIZE;
 	int dy = (tid->getY() - ty0) * TILE_SIZE;
 
@@ -586,7 +586,7 @@ void Renderer::sliceTile(const shared_ptr<RenderCanvas>& canvas,
 	tile->setImage(canvas->copySliceImage());
 }
 
-void Renderer::renderMetaTile(RenderAttributes& map, const shared_ptr<RenderCanvas>& canvas, const shared_ptr<MetaIdentifier>& id)
+void Renderer::renderMetaTile(RenderAttributes& map, const std::shared_ptr<RenderCanvas>& canvas, const shared_ptr<MetaIdentifier>& id)
 {
 	int width = id->getWidth() * TILE_SIZE;
 	int height = id->getHeight() * TILE_SIZE;

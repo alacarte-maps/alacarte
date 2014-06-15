@@ -54,7 +54,7 @@ namespace excp {
 	//! Contains the content of the line where a failure appeared
 	typedef boost::error_info<struct TagFailureLineContent, string> InfoFailureLineContent;
 	//! Contains the logger used while parsing
-	typedef boost::error_info<struct TagParserLogger, shared_ptr<ParserLogger> > InfoParserLogger;
+	typedef boost::error_info<struct TagParserLogger, std::shared_ptr<ParserLogger> > InfoParserLogger;
 
 	//! Base of most exceptions thrown by alacarte
 	struct ExceptionBase : public boost::exception, std::exception

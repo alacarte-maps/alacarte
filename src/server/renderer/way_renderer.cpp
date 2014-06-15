@@ -141,7 +141,7 @@ void WayRenderer::getShieldPosition(cairo_path_t* path, std::list<FloatPoint>& p
 	}
 }
 
-WayRenderer::WayRenderer(const shared_ptr<Geodata>& data,
+WayRenderer::WayRenderer(const std::shared_ptr<Geodata>& data,
 						 WayId wid,
 						 const Style* s,
 						 const cairo_matrix_t* transform)
@@ -236,7 +236,7 @@ void WayRenderer::stroke(cairo_t* cr, AssetCache& cache)
 }
 
 void WayRenderer::label(cairo_t* cr,
-		std::list<shared_ptr<Label> >& labels, AssetCache& cache)
+		std::list<std::shared_ptr<Label> >& labels, AssetCache& cache)
 {
 	if (s->text.str().size() == 0 || s->font_size <= 0.0)
 		return;
@@ -295,7 +295,7 @@ void WayRenderer::label(cairo_t* cr,
 }
 
 void WayRenderer::shield(cairo_t* cr,
-		std::list<shared_ptr<Shield> >& shields,
+		std::list<std::shared_ptr<Shield> >& shields,
 		AssetCache& cache)
 {
 	if (s->shield_text.str().size() == 0 || s->font_size <= 0.0)

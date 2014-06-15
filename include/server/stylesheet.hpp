@@ -40,7 +40,7 @@ class Stylesheet : public boost::enable_shared_from_this<Stylesheet>
 {
 	friend struct MapCssParser;
 public:
-	Stylesheet(const shared_ptr<Geodata>& geodata, const std::vector<shared_ptr<Rule> >& rules, const shared_ptr<StyleTemplate>& canvasStyle);
+	Stylesheet(const std::shared_ptr<Geodata>& geodata, const std::vector<shared_ptr<Rule> >& rules, const shared_ptr<StyleTemplate>& canvasStyle);
 
 
 	/**
@@ -49,7 +49,7 @@ public:
 	 * @param path the absolute or relative path to the stylesheet
 	 * @param data a reference to the geodata object to use to resolve GeoObject IDs to the actual Geoobject
 	 */
-	static shared_ptr<Stylesheet> Load(const boost::filesystem::path& path, const shared_ptr<Geodata>& geodata, int timeout);
+	static std::shared_ptr<Stylesheet> Load(const boost::filesystem::path& path, const shared_ptr<Geodata>& geodata, int timeout);
 
 	/**
 	 * @brief Returns a new RenderAttributes with a Style object for each given Node and Way.
@@ -57,10 +57,10 @@ public:
 	 *
 	 * @param styleMap the output parameter to return a new RenderAttributes. Has to be deleted manually.
 	 */
-	TESTABLE void match(const shared_ptr<std::vector<NodeId> >& nodeIDs,
-						const shared_ptr<std::vector<WayId> >& wayIDs,
-						const shared_ptr<std::vector<RelId> >& relIDs,
-						const shared_ptr<TileIdentifier>& ti,
+	TESTABLE void match(const std::shared_ptr<std::vector<NodeId> >& nodeIDs,
+						const std::shared_ptr<std::vector<WayId> >& wayIDs,
+						const std::shared_ptr<std::vector<RelId> >& relIDs,
+						const std::shared_ptr<TileIdentifier>& ti,
 						RenderAttributes* styleMap) const;
 
 	/**
@@ -69,9 +69,9 @@ public:
 	TESTABLE const boost::filesystem::path getPath() const;
 
 private:
-	shared_ptr<Geodata> geodata;
-	const std::vector<shared_ptr<Rule> > rules;
-	shared_ptr<StyleTemplate> canvasStyle;
+	std::shared_ptr<Geodata> geodata;
+	const std::vector<std::shared_ptr<Rule> > rules;
+	std::shared_ptr<StyleTemplate> canvasStyle;
 	boost::filesystem::path path;
 };
 

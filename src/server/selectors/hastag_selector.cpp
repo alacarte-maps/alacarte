@@ -29,13 +29,13 @@
 #include "server/tile_identifier.hpp"
 
 
-HasTagSelector::HasTagSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag)
+HasTagSelector::HasTagSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag)
 	: Selector(rule, next)
 	, tag(tag)
 {
 }
 
-void HasTagSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void HasTagSelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Node* node = geodata->getNode(nodeID);
 	auto& map = node->getTags();
 	if (map.find(tag) != map.end()) {
@@ -43,7 +43,7 @@ void HasTagSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& 
 	}
 }
 
-void HasTagSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void HasTagSelector::matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Way* way = geodata->getWay(wayID);
 	auto& map = way->getTags();
 	if (map.find(tag) != map.end()) {
@@ -51,7 +51,7 @@ void HasTagSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti,
 	}
 }
 
-void HasTagSelector::matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void HasTagSelector::matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Relation* relation = geodata->getRelation(relID);
 
 	auto& map = relation->getTags();

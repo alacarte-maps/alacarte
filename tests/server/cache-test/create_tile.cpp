@@ -9,7 +9,7 @@
 class MockStylesheetManager : public StylesheetManager
 {
 public:
-	MockStylesheetManager(const shared_ptr<Configuration>& config)
+	MockStylesheetManager(const std::shared_ptr<Configuration>& config)
 		: StylesheetManager(config)
 	{
 	}
@@ -23,8 +23,8 @@ public:
 BOOST_AUTO_TEST_SUITE(tile_identifier_test)
 struct tile_identifier_test
 {
-	shared_ptr<Configuration> config;
-	shared_ptr<StylesheetManager> ssm;
+	std::shared_ptr<Configuration> config;
+	std::shared_ptr<StylesheetManager> ssm;
 	tile_identifier_test() {
 		ConfigMockup* mock = new ConfigMockup();
 		const char* argv[] = {"alacarte-server", "-g", "ala.carte"};
@@ -59,7 +59,7 @@ struct tile_identifier_test
 	}
 	
 	void test_correct() {
-		shared_ptr<TileIdentifier> ti;
+		std::shared_ptr<TileIdentifier> ti;
 		BOOST_CHECK_NO_THROW(ti = TileIdentifier::Create((const string&)"/folder/stylesheet/2/1/0.svg", ssm, config));
 		BOOST_CHECK_EQUAL(ti->getX(), 1);
 		BOOST_CHECK_EQUAL(ti->getY(), 0);

@@ -31,12 +31,12 @@
 #include "general/relation.hpp"
 #include "server/tile_identifier.hpp"
 
-ApplySelector::ApplySelector(const shared_ptr<Rule>& rule)
-	: Selector(rule, shared_ptr<Selector>())
+ApplySelector::ApplySelector(const std::shared_ptr<Rule>& rule)
+	: Selector(rule, std::shared_ptr<Selector>())
 {
 }
 
-void ApplySelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void ApplySelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	auto entry = attributes->getNodeMap().find(nodeID);
 	Style* style;
 	if (entry == attributes->getNodeMap().end()) {
@@ -50,7 +50,7 @@ void ApplySelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& t
 	style->overmerge(geodata->getNode(nodeID), rule.lock()->getStyleTemplate());
 }
 
-void ApplySelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void ApplySelector::matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	auto entry = attributes->getWayMap().find(wayID);
 	Style* style;
 	if (entry == attributes->getWayMap().end()) {
@@ -64,7 +64,7 @@ void ApplySelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, 
 }
 
 // this should only be reached for relations of type multipolygon
-void ApplySelector::matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void ApplySelector::matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	auto entry = attributes->getRelationMap().find(relID);
 	Style* style;
 	if (entry == attributes->getRelationMap().end()) {

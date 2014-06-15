@@ -30,7 +30,7 @@
 #include "general/way.hpp"
 #include "general/relation.hpp"
 
-Stylesheet::Stylesheet(const shared_ptr<Geodata>& geodata, const std::vector<shared_ptr<Rule> >& rules, const shared_ptr<StyleTemplate>& canvasStyle)
+Stylesheet::Stylesheet(const std::shared_ptr<Geodata>& geodata, const std::vector<shared_ptr<Rule> >& rules, const shared_ptr<StyleTemplate>& canvasStyle)
 	: geodata(geodata)
 	, rules(rules)
 	, canvasStyle(canvasStyle)
@@ -38,10 +38,10 @@ Stylesheet::Stylesheet(const shared_ptr<Geodata>& geodata, const std::vector<sha
 }
 
 
-void Stylesheet::match( const shared_ptr<std::vector<NodeId> >& nodeIDs,
-						const shared_ptr<std::vector<WayId> >& wayIDs,
-						const shared_ptr<std::vector<RelId> >& relIDs,
-						const shared_ptr<TileIdentifier>& ti,
+void Stylesheet::match( const std::shared_ptr<std::vector<NodeId> >& nodeIDs,
+						const std::shared_ptr<std::vector<WayId> >& wayIDs,
+						const std::shared_ptr<std::vector<RelId> >& relIDs,
+						const std::shared_ptr<TileIdentifier>& ti,
 						RenderAttributes* styleMap) const
 {
 	for(auto& rule : rules)

@@ -37,10 +37,10 @@
 
 class TagEqualsSelector : public Selector {
 public:
-	TagEqualsSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const string& value);
-	virtual void matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
-	virtual void matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
-	virtual void matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	TagEqualsSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const string& value);
+	virtual void matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	virtual void matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	virtual void matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
 
 private:
 	const CachedString tag;

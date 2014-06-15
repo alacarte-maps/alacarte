@@ -37,7 +37,7 @@ private:
 	std::list<Job*> jobs;
 
 public:
-	bool start(Job* job, const shared_ptr<MetaIdentifier>& mid)
+	bool start(Job* job, const std::shared_ptr<MetaIdentifier>& mid)
 	{
 		boost::mutex::scoped_lock lock(runningMutex);
 		for (auto j : jobs) {
@@ -50,7 +50,7 @@ public:
 	}
 
 	//! @return true if the job needs to be executed
-	bool start(Job* job, const shared_ptr<TileIdentifier>& ti, const shared_ptr<HttpRequest>& r)
+	bool start(Job* job, const std::shared_ptr<TileIdentifier>& ti, const shared_ptr<HttpRequest>& r)
 	{
 		boost::mutex::scoped_lock lock(runningMutex);
 		for (auto j : jobs) {
@@ -81,11 +81,11 @@ public:
  * @param cache The Cache
  * @param ssm The StylesheetManager
  **/
-RequestManager::RequestManager( const shared_ptr<Configuration>& config,
-								const shared_ptr<Geodata>& data,
-								const shared_ptr<Renderer>& renderer,
-								const shared_ptr<Cache>& cache,
-								const shared_ptr<StylesheetManager>& ssm )
+RequestManager::RequestManager( const std::shared_ptr<Configuration>& config,
+								const std::shared_ptr<Geodata>& data,
+								const std::shared_ptr<Renderer>& renderer,
+								const std::shared_ptr<Cache>& cache,
+								const std::shared_ptr<StylesheetManager>& ssm )
 	: config(config)
 	, data(data)
 	, renderer(renderer)
@@ -137,7 +137,7 @@ void RequestManager::stop()
  *
  * @param r The HttpRequest which should be processed.
  **/
-void RequestManager::enqueue(const shared_ptr<HttpRequest>& r)
+void RequestManager::enqueue(const std::shared_ptr<HttpRequest>& r)
 {
 	boost::mutex::scoped_lock userLock(userRJMutex);
 	if (userRequests.size() >= config->get<int>(opt::server::max_queue_size)) {
@@ -156,7 +156,7 @@ void RequestManager::enqueue(const shared_ptr<HttpRequest>& r)
  *
  * @param ti The MetaIdentifier which identifies the Tile which should be renderer.
  **/
-void RequestManager::enqueue(const shared_ptr<MetaIdentifier>& ti)
+void RequestManager::enqueue(const std::shared_ptr<MetaIdentifier>& ti)
 {
 	preRJMutex.lock();
 	preRenderRequests.push(ti);
@@ -185,11 +185,11 @@ bool RequestManager::nextUserRequest()
 	if (userRequests.empty())
 		return false;
 
-	shared_ptr<HttpRequest> req = userRequests.front();
+	std::shared_ptr<HttpRequest> req = userRequests.front();
 	userRequests.pop();
 	userLock.unlock();
 
-	shared_ptr<TileIdentifier> ti;
+	std::shared_ptr<TileIdentifier> ti;
 	try
 	{
 		ti = TileIdentifier::Create(req->getURL(), this->ssm, config);
@@ -213,14 +213,14 @@ bool RequestManager::nextUserRequest()
 	if (!ti)
 		return true;
 
-	shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(ti);
+	std::shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(ti);
 
 	factoriesMutex.lock();
-	shared_ptr<RenderCanvasFactory> factory = factories.front();
+	std::shared_ptr<RenderCanvasFactory> factory = factories.front();
 	factories.pop();
 	factoriesMutex.unlock();
 
-	shared_ptr<RenderCanvas> canvas = factory->getCanvas(ti->getImageFormat());
+	std::shared_ptr<RenderCanvas> canvas = factory->getCanvas(ti->getImageFormat());
 
 	Job job(mid, config, shared_from_this(), canvas);
 
@@ -247,17 +247,17 @@ bool RequestManager::nextPreRenderRequest()
 	if (preRenderRequests.empty())
 		return false;
 
-	shared_ptr<MetaIdentifier> mid = preRenderRequests.front();
+	std::shared_ptr<MetaIdentifier> mid = preRenderRequests.front();
 	preRenderRequests.pop();
 	currentPrerenderingThreads++;
 	preLock.unlock();
 
 	factoriesMutex.lock();
-	shared_ptr<RenderCanvasFactory> factory = factories.front();
+	std::shared_ptr<RenderCanvasFactory> factory = factories.front();
 	factories.pop();
 	factoriesMutex.unlock();
 
-	shared_ptr<RenderCanvas> canvas = factory->getCanvas(mid->getImageFormat());
+	std::shared_ptr<RenderCanvas> canvas = factory->getCanvas(mid->getImageFormat());
 
 	Job job(mid, config, shared_from_this(), canvas);
 
@@ -276,7 +276,7 @@ bool RequestManager::nextPreRenderRequest()
 	factoriesMutex.unlock();
 
 	if (!job.isEmpty() && mid->getZoom() < config->get<int>(opt::server::prerender_level)) {
-		std::vector<shared_ptr<MetaIdentifier>> children;
+		std::vector<std::shared_ptr<MetaIdentifier>> children;
 		mid->getSubIdentifiers(children);
 		for (auto& c : children)
 			enqueue(c);

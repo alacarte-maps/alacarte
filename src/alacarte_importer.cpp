@@ -73,7 +73,7 @@ public:
 	}
 
 protected:
-	virtual bool startupDiagnostic(const shared_ptr<Configuration>& config)
+	virtual bool startupDiagnostic(const std::shared_ptr<Configuration>& config)
 	{
 		log4cpp::Category& log = log4cpp::Category::getInstance("StartupDiagnostic");
 		if (!diagnosticCheckFile(config, opt::importer::path_to_osmdata, log) ) return false;
@@ -85,13 +85,13 @@ protected:
 	 *
 	 * @param config the configuration for the application
 	 **/
-	virtual void onRun( const shared_ptr<Configuration>& config ) 
+	virtual void onRun( const std::shared_ptr<Configuration>& config ) 
 	{
 		log4cpp::Category& log = log4cpp::Category::getInstance("Importer");
 
-		shared_ptr<Importer> importer = boost::make_shared<Importer>(config);
+		std::shared_ptr<Importer> importer = boost::make_shared<Importer>(config);
 
-		shared_ptr<Geodata> geodata;
+		std::shared_ptr<Geodata> geodata;
 
 		try {
 			geodata = importer->importXML();

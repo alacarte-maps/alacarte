@@ -12,7 +12,7 @@
 
 struct MapCSSTest
 {
-	shared_ptr<Geodata> data;
+	std::shared_ptr<Geodata> data;
 
 	// setup
 	MapCSSTest()
@@ -30,23 +30,23 @@ struct MapCSSTest
 
 	void testOvermerge() {
 		Style style1;
-		shared_ptr<Style> style2;
+		std::shared_ptr<Style> style2;
 		//TODO: init style1 and style2 with default values, and then change some
 		//style1.overmerge(style2);
 		BOOST_CHECK(true);
 	}
 
 	void testLoadStylesheet() {
-		shared_ptr<Stylesheet> stylesheet = Stylesheet::Load(string("test/stylesheet.mapcss"), data, 1000);
+		std::shared_ptr<Stylesheet> stylesheet = Stylesheet::Load(string("test/stylesheet.mapcss"), data, 1000);
 	}
 
 	void testMatch() {
-		shared_ptr<Stylesheet> stylesheet = Stylesheet::Load(string("test/stylesheet.mapcss"), data, 1000);
+		std::shared_ptr<Stylesheet> stylesheet = Stylesheet::Load(string("test/stylesheet.mapcss"), data, 1000);
 
-		shared_ptr<std::vector<NodeId> > nodeIDs(new std::vector<NodeId>());
-		shared_ptr<std::vector<WayId> > wayIDs(new std::vector<WayId>());
-		shared_ptr<std::vector<RelId> > relIDs(new std::vector<RelId>());
-		shared_ptr<TileIdentifier> tileId(new TileIdentifier(0, 0, 2, string("path"), TileIdentifier::Format::PNG));
+		std::shared_ptr<std::vector<NodeId> > nodeIDs(new std::vector<NodeId>());
+		std::shared_ptr<std::vector<WayId> > wayIDs(new std::vector<WayId>());
+		std::shared_ptr<std::vector<RelId> > relIDs(new std::vector<RelId>());
+		std::shared_ptr<TileIdentifier> tileId(new TileIdentifier(0, 0, 2, string("path"), TileIdentifier::Format::PNG));
 		RenderAttributes* attributes;
 
 		stylesheet->match(nodeIDs, wayIDs, relIDs, tileId, attributes);
@@ -54,21 +54,21 @@ struct MapCSSTest
 
 	void testStartStylesheetObserving() {
 		//TODO: pass zoomlevel and stylesheet directory here
-		shared_ptr<Configuration> config;
+		std::shared_ptr<Configuration> config;
 		//TODO: create mock request manager
-		shared_ptr<RequestManager> requestManager;
+		std::shared_ptr<RequestManager> requestManager;
 		StylesheetManager stylesheet_manager(config);
 		stylesheet_manager.startStylesheetObserving(requestManager);
 	}
 
 	void testGetStylesheet() {
 		// pass zoomlevel and stylesheet directory here
-		shared_ptr<Configuration> config;
-		shared_ptr<RequestManager> requestManager;
+		std::shared_ptr<Configuration> config;
+		std::shared_ptr<RequestManager> requestManager;
 		StylesheetManager stylesheetManager(config);
 		stylesheetManager.startStylesheetObserving(requestManager);
-		shared_ptr<TileIdentifier> tileId(new TileIdentifier(0, 0, 2, string("path"), TileIdentifier::Format::PNG));
-		shared_ptr<Stylesheet> stylesheet = stylesheetManager.getStylesheet(tileId);
+		std::shared_ptr<TileIdentifier> tileId(new TileIdentifier(0, 0, 2, string("path"), TileIdentifier::Format::PNG));
+		std::shared_ptr<Stylesheet> stylesheet = stylesheetManager.getStylesheet(tileId);
 	}
 
 	// teardown

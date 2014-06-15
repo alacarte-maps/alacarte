@@ -30,7 +30,7 @@
 
 #include "config.hpp"
 
-Rule::Rule(const shared_ptr<Geodata>& geodata)
+Rule::Rule(const std::shared_ptr<Geodata>& geodata)
 	: geodata(geodata)
 	, zoombottom(ALAC_ZOOM_BOTTOM)
 	, zoomtop(ALAC_ZOOM_TOP)
@@ -38,10 +38,10 @@ Rule::Rule(const shared_ptr<Geodata>& geodata)
 {
 }
 
-void Rule::match(const shared_ptr<std::vector<NodeId> >& nodeIDs,
-				 const shared_ptr<std::vector<WayId> >& wayIDs,
-				 const shared_ptr<std::vector<RelId> >& relIDs,
-				 const shared_ptr<TileIdentifier>& ti,
+void Rule::match(const std::shared_ptr<std::vector<NodeId> >& nodeIDs,
+				 const std::shared_ptr<std::vector<WayId> >& wayIDs,
+				 const std::shared_ptr<std::vector<RelId> >& relIDs,
+				 const std::shared_ptr<TileIdentifier>& ti,
 				 RenderAttributes* renderAttributes) const
 {
 	if(zoombottom <= ti->getZoom() && ti->getZoom() <= zoomtop)
@@ -66,19 +66,19 @@ void Rule::match(const shared_ptr<std::vector<NodeId> >& nodeIDs,
 	}
 }
 
-const shared_ptr<Geodata>& Rule::getGeodata() const {
+const std::shared_ptr<Geodata>& Rule::getGeodata() const {
 	return geodata;
 }
 
-const shared_ptr<StyleTemplate>& Rule::getStyleTemplate() const {
+const std::shared_ptr<StyleTemplate>& Rule::getStyleTemplate() const {
 	return styleTemplate;
 }
 
-void Rule::setStyleTemplate(const shared_ptr<StyleTemplate>& styleTemplate) {
+void Rule::setStyleTemplate(const std::shared_ptr<StyleTemplate>& styleTemplate) {
 	this->styleTemplate = styleTemplate;
 }
 
-void Rule::setFirstSelector(const shared_ptr<Selector>& first) {
+void Rule::setFirstSelector(const std::shared_ptr<Selector>& first) {
 	this->first = first;
 }
 

@@ -30,7 +30,7 @@
  * \param cat Category for this outputstream
  *
  **/
-ParserLogger::LogStream::LogStream( const shared_ptr<ParserLogger>& logger, Category cat )
+ParserLogger::LogStream::LogStream( const std::shared_ptr<ParserLogger>& logger, Category cat )
 	: logger(logger)
 	, category(cat)
 {

@@ -41,42 +41,42 @@ class RenderCanvas;
 class Job
 {
 public:
-	Job(const shared_ptr<MetaIdentifier>& mid,
-		const shared_ptr<Configuration>& config,
-		const shared_ptr<RequestManager>& manager,
-		const shared_ptr<RenderCanvas>& canvas);
+	Job(const std::shared_ptr<MetaIdentifier>& mid,
+		const std::shared_ptr<Configuration>& config,
+		const std::shared_ptr<RequestManager>& manager,
+		const std::shared_ptr<RenderCanvas>& canvas);
 	virtual ~Job();
 
 	void process();
 	void deliver();
-	void addRequest(const shared_ptr<HttpRequest>& req, const shared_ptr<TileIdentifier>& id)
+	void addRequest(const std::shared_ptr<HttpRequest>& req, const shared_ptr<TileIdentifier>& id)
 	{
 		requests[*id].push_back(req);
 	}
 	bool isEmpty() { return empty; }
-	const shared_ptr<MetaIdentifier>& getIdentifier() { return mid; }
+	const std::shared_ptr<MetaIdentifier>& getIdentifier() { return mid; }
 
 private:
-	TESTABLE shared_ptr<Tile> computeEmpty();
-	TESTABLE FixedRect computeRect(const shared_ptr<TileIdentifier>& ti);
-	TESTABLE FixedRect computeRect(const shared_ptr<MetaIdentifier>& ti);
+	TESTABLE std::shared_ptr<Tile> computeEmpty();
+	TESTABLE FixedRect computeRect(const std::shared_ptr<TileIdentifier>& ti);
+	TESTABLE FixedRect computeRect(const std::shared_ptr<MetaIdentifier>& ti);
 	bool initTiles();
 
 private:
 	//! RequestManager which holds all important components.
-	shared_ptr<RequestManager> manager;
+	std::shared_ptr<RequestManager> manager;
 	//! supplied by worker thread
-	shared_ptr<RenderCanvas> canvas;
-	shared_ptr<Configuration> config;
-	shared_ptr<MetaIdentifier> mid;
+	std::shared_ptr<RenderCanvas> canvas;
+	std::shared_ptr<Configuration> config;
+	std::shared_ptr<MetaIdentifier> mid;
 	bool empty;
 	bool cached;
 	//! initialized by initTiles
-	std::vector<shared_ptr<Tile>> tiles;
-	boost::unordered_map<TileIdentifier, std::list<shared_ptr<HttpRequest>>> requests;
+	std::vector<std::shared_ptr<Tile>> tiles;
+	boost::unordered_map<TileIdentifier, std::list<std::shared_ptr<HttpRequest>>> requests;
 
 	//! used to generate statistics
-	shared_ptr<Statistic::JobMeasurement> measurement;
+	std::shared_ptr<Statistic::JobMeasurement> measurement;
 };
 
 #endif

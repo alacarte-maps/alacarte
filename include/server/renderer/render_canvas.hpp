@@ -91,11 +91,11 @@ public:
 	RenderCanvasFactory();
 
 	/**
-	 * Returns an empty shared_ptr if format is not supported.
+	 * Returns an empty std::shared_ptr if format is not supported.
 	 */
-	shared_ptr<RenderCanvas> getCanvas(TileIdentifier::Format type)
+	std::shared_ptr<RenderCanvas> getCanvas(TileIdentifier::Format type)
 	{
-		shared_ptr<RenderCanvas> canvas;
+		std::shared_ptr<RenderCanvas> canvas;
 		switch(type)
 		{
 			case TileIdentifier::Format::PNG:
@@ -112,8 +112,8 @@ public:
 	}
 
 private:
-	shared_ptr<RenderCanvas> svgCanvas;
-	shared_ptr<RenderCanvas> pngCanvas;
+	std::shared_ptr<RenderCanvas> svgCanvas;
+	std::shared_ptr<RenderCanvas> pngCanvas;
 };
 
 #endif

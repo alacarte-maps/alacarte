@@ -200,11 +200,11 @@ struct UnaryTypes : qi::symbols<char, op::UnaryTypesEnum>
 
 struct AttributeCreator
 {
-	virtual void addAttribute(const shared_ptr<StyleTemplate>& styleTemplate, const string& specifier, const shared_ptr<ParserLogger>& logger, const ParseInfo& info) = 0;
+	virtual void addAttribute(const std::shared_ptr<StyleTemplate>& styleTemplate, const string& specifier, const shared_ptr<ParserLogger>& logger, const ParseInfo& info) = 0;
 };
 
 //! symbols for the attributes
-struct AttributeTypes : qi::symbols<char, shared_ptr<AttributeCreator> >
+struct AttributeTypes : qi::symbols<char, std::shared_ptr<AttributeCreator> >
 {
 	AttributeTypes();
 };
@@ -236,7 +236,7 @@ struct MapCSSGrammar : public qi::grammar<GrammarIterator, StylesheetPtr(), qi::
 	MapCSSGrammar(MapCssParser& parser);
 
 	//! Rule to parse a styleset of a rule
-	qi::rule<ItType, StylePtr(), qi::locals<shared_ptr<AttributeCreator>, ParseInfo>, Skipper> rule_styleset;
+	qi::rule<ItType, StylePtr(), qi::locals<std::shared_ptr<AttributeCreator>, ParseInfo>, Skipper> rule_styleset;
 	//! Rule to parse generic (unknown) attribute name
 	qi::rule<ItType, string(), Skipper> attribute_name;
 	//! Rule to parse the specifier

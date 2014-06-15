@@ -28,18 +28,18 @@
 #include "general/relation.hpp"
 #include "server/tile_identifier.hpp"
 
-ChildWaysSelector::ChildWaysSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next)
+ChildWaysSelector::ChildWaysSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next)
 	: Selector(rule, next)
 {
 }
 
-void ChildWaysSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void ChildWaysSelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 }
 
-void ChildWaysSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void ChildWaysSelector::matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 }
 
-void ChildWaysSelector::matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void ChildWaysSelector::matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	for (WayId wayID : geodata->getRelation(relID)->getWayIDs()) {
 		next->matchWay(wayID, ti, attributes);
 	}

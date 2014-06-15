@@ -32,20 +32,20 @@ public:
 		cairo_set_line_width(cr, 2.0);
 
 		cairo_text_extents_t textSize;
-		std::list<shared_ptr<Label> > labels;
+		std::list<std::shared_ptr<Label> > labels;
 		int i = 0;
-		std::vector<shared_ptr<Style>> styles;
+		std::vector<std::shared_ptr<Style>> styles;
 		for (auto& pair : toPlace)
 		{
 			string& text = pair.first;
 			cairo_text_extents(cr, text.c_str(), &textSize);
-			shared_ptr<Style> s = boost::make_shared<Style>();
+			std::shared_ptr<Style> s = boost::make_shared<Style>();
 			s->text = text;
 			styles.push_back(s);
 			FloatPoint center = pair.second + FloatPoint(textSize.width/2.0, textSize.height/2.0);
 			FloatRect owner = FloatRect(center.x, center.y, center.x, center.y);
 			FloatPoint origin = pair.second - FloatPoint(textSize.x_bearing, textSize.y_bearing);
-			shared_ptr<Label> l = boost::make_shared<Label>(FloatRect(pair.second, textSize.width, textSize.height), owner, s->text, s.get(), origin);
+			std::shared_ptr<Label> l = boost::make_shared<Label>(FloatRect(pair.second, textSize.width, textSize.height), owner, s->text, s.get(), origin);
 
 			cairo_rectangle(cr, l->box.minX, l->box.minY, l->box.getWidth(), l->box.getHeight());
 			cairo_stroke(cr);
@@ -53,7 +53,7 @@ public:
 			labels.push_back(l);
 		}
 
-		std::vector<shared_ptr<Label> > placed;
+		std::vector<std::shared_ptr<Label> > placed;
 		placeLabels(labels, placed);
 
 		for (auto& l: placed)
@@ -75,7 +75,7 @@ public:
 struct placement_test
 {
 	LabelRenderer* renderer;
-	shared_ptr<Geodata> data;
+	std::shared_ptr<Geodata> data;
 
 	placement_test()
 	{

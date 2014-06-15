@@ -100,7 +100,7 @@ public:
 	}
 	
 protected:
-	virtual bool startupDiagnostic(const shared_ptr<Configuration>& config)
+	virtual bool startupDiagnostic(const std::shared_ptr<Configuration>& config)
 	{
 		log4cpp::Category& log = log4cpp::Category::getInstance("StartupDiagnostic");
 
@@ -172,7 +172,7 @@ protected:
 		return true;
 	}
 	
-	virtual void customInitLog(const shared_ptr<Configuration>& config, log4cpp::Appender *logFile) 
+	virtual void customInitLog(const std::shared_ptr<Configuration>& config, log4cpp::Appender *logFile) 
 	{
 		log4cpp::PatternLayout *accessLogFileLayout = new log4cpp::PatternLayout();
 		accessLogFileLayout->setConversionPattern("%m%n");
@@ -198,11 +198,11 @@ protected:
 	 *
 	 * @param config the configuration for the application
 	 **/
-	virtual void onRun( const shared_ptr<Configuration>& config )
+	virtual void onRun( const std::shared_ptr<Configuration>& config )
 	{
 		Statistic::Init(config);
 
-		shared_ptr<Geodata> geodata = make_shared<Geodata>();
+		std::shared_ptr<Geodata> geodata = make_shared<Geodata>();
 		try {
 			geodata->load(config->get<string>(opt::server::path_to_geodata));
 		} catch(...)
@@ -212,15 +212,15 @@ protected:
 			log.errorStream() << "Try to import your osm data again!";
 			return;
 		}
-		shared_ptr<Cache> cache = make_shared<Cache>(config);
+		std::shared_ptr<Cache> cache = make_shared<Cache>(config);
 
-		shared_ptr<StylesheetManager> ssm = make_shared<StylesheetManager>(config);
+		std::shared_ptr<StylesheetManager> ssm = make_shared<StylesheetManager>(config);
 
-		shared_ptr<Renderer> renderer = make_shared<Renderer>(geodata);
+		std::shared_ptr<Renderer> renderer = make_shared<Renderer>(geodata);
 
-		shared_ptr<RequestManager> req_manager = make_shared<RequestManager>(config, geodata, renderer, cache, ssm);
+		std::shared_ptr<RequestManager> req_manager = make_shared<RequestManager>(config, geodata, renderer, cache, ssm);
 
-		shared_ptr<HttpServer> server = make_shared<HttpServer>(config, req_manager);
+		std::shared_ptr<HttpServer> server = make_shared<HttpServer>(config, req_manager);
 
 		ssm->startStylesheetObserving(req_manager);
 

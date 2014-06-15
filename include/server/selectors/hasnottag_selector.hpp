@@ -37,10 +37,10 @@
 
 class HasNotTagSelector : public Selector {
 public:
-	HasNotTagSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag);
-	virtual void matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
-	virtual void matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
-	virtual void matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	HasNotTagSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag);
+	virtual void matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	virtual void matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	virtual void matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
 
 private:
 	const CachedString tag;

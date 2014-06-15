@@ -18,10 +18,10 @@ using ::testing::AnyNumber;
 
 class TagEqualsAndTagUnequalsSelectorTest {
 public:
-	shared_ptr<MockGeodata> geodata;
-	shared_ptr<MockRule> rule;
-	shared_ptr<TileIdentifier> tileId;
-	shared_ptr<MockSelector> next;
+	std::shared_ptr<MockGeodata> geodata;
+	std::shared_ptr<MockRule> rule;
+	std::shared_ptr<TileIdentifier> tileId;
+	std::shared_ptr<MockSelector> next;
 	MockRenderAttributes renderAttributes;
 
 	NodeId nodeId0;
@@ -36,9 +36,9 @@ public:
 	DataMap<NodeId, CachedString> nodeRoles;
 	DataMap<WayId, CachedString> wayRoles;
 
-	shared_ptr<Node> node;
-	shared_ptr<Way> way;
-	shared_ptr<Relation> relation;
+	std::shared_ptr<Node> node;
+	std::shared_ptr<Way> way;
+	std::shared_ptr<Relation> relation;
 
 	TagEqualsAndTagUnequalsSelectorTest()
 		: nodeId0(0)

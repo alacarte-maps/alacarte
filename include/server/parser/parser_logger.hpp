@@ -41,7 +41,7 @@ public:
 	class LogStream
 	{
 	public:
-		LogStream(const shared_ptr<ParserLogger>& logger, Category cat);
+		LogStream(const std::shared_ptr<ParserLogger>& logger, Category cat);
 		LogStream(const LogStream& other);
 		~LogStream();
 
@@ -55,7 +55,7 @@ public:
 		string logvalue() const;
 	private:
 		std::ostringstream		value;
-		shared_ptr<ParserLogger> logger;
+		std::shared_ptr<ParserLogger> logger;
 		Category				category;
 	};
 

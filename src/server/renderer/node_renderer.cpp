@@ -41,7 +41,7 @@
 #include "server/renderer/renderer_private.hpp"
 #include "node_renderer.hpp"
 
-NodeRenderer::NodeRenderer(const shared_ptr<Geodata>& data,
+NodeRenderer::NodeRenderer(const std::shared_ptr<Geodata>& data,
 						  NodeId nid,
 						  const Style* s,
 						  const cairo_matrix_t* transform)
@@ -88,7 +88,7 @@ void NodeRenderer::stroke(cairo_t* cr)
 }
 
 void NodeRenderer::label(cairo_t* cr,
-		std::list<shared_ptr<Label> >& labels,
+		std::list<std::shared_ptr<Label> >& labels,
 		AssetCache& cache)
 {
 	// nothing to print
@@ -114,7 +114,7 @@ void NodeRenderer::label(cairo_t* cr,
 }
 
 void NodeRenderer::shield(cairo_t* cr,
-		std::list<shared_ptr<Shield> >& shields,
+		std::list<std::shared_ptr<Shield> >& shields,
 		AssetCache& cache)
 {
 	// nothing to print

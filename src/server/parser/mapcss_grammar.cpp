@@ -46,7 +46,7 @@ class SpecificAttributeCreator
 	: public AttributeCreator
 {
 public:
-	typedef shared_ptr<eval::Eval<Type> > StyleTemplate::*attr_member;
+	typedef std::shared_ptr<eval::Eval<Type> > StyleTemplate::*attr_member;
 
 	SpecificAttributeCreator(attr_member member)
 		: member(member)
@@ -54,7 +54,7 @@ public:
 		assert(member);
 	}
 
-	void addAttribute(const shared_ptr<StyleTemplate>& styleTemplate, const string& specifier, const shared_ptr<ParserLogger>& logger, const ParseInfo& info)
+	void addAttribute(const std::shared_ptr<StyleTemplate>& styleTemplate, const string& specifier, const shared_ptr<ParserLogger>& logger, const ParseInfo& info)
 	{
 		assert(styleTemplate);
 		(styleTemplate.get()->*member) = boost::make_shared< eval::Eval<Type> >(specifier, logger, info);
@@ -65,7 +65,7 @@ private:
 };
 
 template<typename Type>
-shared_ptr< SpecificAttributeCreator<Type> > CreateAttribute(shared_ptr<eval::Eval<Type> > StyleTemplate::*attr)
+shared_ptr< SpecificAttributeCreator<Type> > CreateAttribute(std::shared_ptr<eval::Eval<Type> > StyleTemplate::*attr)
 {
 	return boost::make_shared< SpecificAttributeCreator<Type> >(attr);
 }

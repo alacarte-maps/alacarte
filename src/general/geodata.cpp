@@ -84,21 +84,21 @@ void Geodata::buildTrees(const string& nodePath, const string& wayPath, const st
 	}
 }
 
-void Geodata::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
+void Geodata::insertNodes(const std::shared_ptr<std::vector<Node> >& nodes)
 {
 	this->nodes = nodes;
 	if (nodes->size() > 0)
 		this->nodesTree = boost::make_shared<RTree<NodeId, FixedPoint> >();
 }
 
-void Geodata::insertWays(const shared_ptr<std::vector<Way> >& ways)
+void Geodata::insertWays(const std::shared_ptr<std::vector<Way> >& ways)
 {
 	this->ways = ways;
 	if (ways->size() > 0)
 		this->waysTree = boost::make_shared<RTree<WayId, FixedRect> >();
 }
 
-void Geodata::insertRelations(const shared_ptr<std::vector<Relation> >& relations)
+void Geodata::insertRelations(const std::shared_ptr<std::vector<Relation> >& relations)
 {
 	this->relations = relations;
 	if (relations->size() > 0)
@@ -114,7 +114,7 @@ bool Geodata::containsData(const FixedRect &rect) const
 
 shared_ptr<std::vector<NodeId> > Geodata::getNodeIDs(const FixedRect& rect) const
 {
-	shared_ptr<std::vector<NodeId> > nodeIDs = boost::make_shared< std::vector<NodeId> >();
+	std::shared_ptr<std::vector<NodeId> > nodeIDs = boost::make_shared< std::vector<NodeId> >();
 	if (nodesTree)
 		nodesTree->search(nodeIDs, rect);
 	return nodeIDs;
@@ -122,7 +122,7 @@ shared_ptr<std::vector<NodeId> > Geodata::getNodeIDs(const FixedRect& rect) cons
 
 shared_ptr<std::vector<WayId> > Geodata::getWayIDs(const FixedRect& rect) const
 {
-	shared_ptr<std::vector<WayId> > wayIDs = boost::make_shared< std::vector<WayId> >();
+	std::shared_ptr<std::vector<WayId> > wayIDs = boost::make_shared< std::vector<WayId> >();
 	if (waysTree)
 		waysTree->search(wayIDs, rect);
 	return wayIDs;
@@ -130,7 +130,7 @@ shared_ptr<std::vector<WayId> > Geodata::getWayIDs(const FixedRect& rect) const
 
 shared_ptr<std::vector<RelId> > Geodata::getRelationIDs(const FixedRect& rect) const
 {
-	shared_ptr<std::vector<RelId> > relationIDs = boost::make_shared< std::vector<RelId> >();
+	std::shared_ptr<std::vector<RelId> > relationIDs = boost::make_shared< std::vector<RelId> >();
 	if (relTree)
 		relTree->search(relationIDs, rect);
 	return relationIDs;

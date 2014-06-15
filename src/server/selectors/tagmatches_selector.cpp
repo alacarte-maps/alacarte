@@ -30,14 +30,14 @@
 #include "server/tile_identifier.hpp"
 
 
-TagMatchesSelector::TagMatchesSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const string& value)
+TagMatchesSelector::TagMatchesSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const string& value)
 	: Selector(rule, next)
 	, tag(tag)
 	, expression(value)
 {
 }
 
-void TagMatchesSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void TagMatchesSelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Node* node = geodata->getNode(nodeID);
 	auto entry = node->getTags().find(tag);
 	if (entry != node->getTags().end()) {
@@ -47,7 +47,7 @@ void TagMatchesSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifie
 	}
 }
 
-void TagMatchesSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void TagMatchesSelector::matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Way* way = geodata->getWay(wayID);
 	auto entry = way->getTags().find(tag);
 	if (entry != way->getTags().end()) {
@@ -57,7 +57,7 @@ void TagMatchesSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>&
 	}
 }
 
-void TagMatchesSelector::matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void TagMatchesSelector::matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Relation* relation = geodata->getRelation(relID);
 	auto entry = relation->getTags().find(tag);
 	if (entry != relation->getTags().end()) {

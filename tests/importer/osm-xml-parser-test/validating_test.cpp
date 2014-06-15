@@ -278,9 +278,9 @@ struct ValidatingFixture
 	const boost::filesystem::path path;
 
 
-	shared_ptr< std::vector<Node> > nodes;
-	shared_ptr< std::vector<Way> > ways;
-	shared_ptr< std::vector<Relation> > relations;
+	std::shared_ptr< std::vector<Node> > nodes;
+	std::shared_ptr< std::vector<Way> > ways;
+	std::shared_ptr< std::vector<Relation> > relations;
 };
 
 ALAC_START_FIXTURE_TEST(ValidatingFixture, 100, "tmp1.xml")

@@ -29,7 +29,7 @@
  *
  * @param id The TileIdentifier which identifies the Tile.
  **/
-Tile::Tile(const shared_ptr<TileIdentifier>& id)
+Tile::Tile(const std::shared_ptr<TileIdentifier>& id)
 	: id(id)
 {
 }
@@ -74,7 +74,7 @@ void Tile::setImage(const Tile::ImageType&  image)
  *
  * @return The TileIdentifier of this Tile.
  **/
-const shared_ptr<TileIdentifier>& Tile::getIdentifier() const
+const std::shared_ptr<TileIdentifier>& Tile::getIdentifier() const
 {
 	return id;
 }

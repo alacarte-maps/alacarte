@@ -29,14 +29,14 @@
 #include "server/tile_identifier.hpp"
 
 
-TagSmallerSelector::TagSmallerSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const int& value)
+TagSmallerSelector::TagSmallerSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const int& value)
 	: Selector(rule, next)
 	, tag(tag)
 	, value(value)
 {
 }
 
-void TagSmallerSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void TagSmallerSelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Node* node = geodata->getNode(nodeID);
 	auto entry = node->getTags().find(tag);
 
@@ -53,7 +53,7 @@ void TagSmallerSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifie
 
 }
 
-void TagSmallerSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void TagSmallerSelector::matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Way* way = geodata->getWay(wayID);
 	auto entry = way->getTags().find(tag);
 
@@ -68,7 +68,7 @@ void TagSmallerSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>&
 	}
 }
 
-void TagSmallerSelector::matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void TagSmallerSelector::matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Relation* relation = geodata->getRelation(relID);
 	auto entry = relation->getTags().find(tag);
 

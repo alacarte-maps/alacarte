@@ -36,7 +36,7 @@ struct MapCSSParserTest
 			shouldFail = isFalse;
 		}
 
-		shared_ptr<Geodata> data;
+		std::shared_ptr<Geodata> data;
 		MapCssParser parser(data);
 		parser.load(path.string());
 

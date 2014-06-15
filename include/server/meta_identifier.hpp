@@ -31,15 +31,15 @@
 class MetaIdentifier : public TileIdentifier
 {
 public:
-	static shared_ptr<MetaIdentifier> Create(const shared_ptr<TileIdentifier>& origin);
+	static std::shared_ptr<MetaIdentifier> Create(const shared_ptr<TileIdentifier>& origin);
 	MetaIdentifier(const TileIdentifier& origin);
 
 	TESTABLE int getWidth() const;
 	TESTABLE int getHeight() const;
-	bool contains(const shared_ptr<TileIdentifier> tid) const;
+	bool contains(const std::shared_ptr<TileIdentifier> tid) const;
 
-	TESTABLE const std::vector<shared_ptr<TileIdentifier>>& getIdentifiers() const;
-	TESTABLE void getSubIdentifiers(std::vector<shared_ptr<MetaIdentifier>>& tiles) const;
+	TESTABLE const std::vector<std::shared_ptr<TileIdentifier>>& getIdentifiers() const;
+	TESTABLE void getSubIdentifiers(std::vector<std::shared_ptr<MetaIdentifier>>& tiles) const;
 
 private:
 	//! with of the meta tile in tiles
@@ -47,7 +47,7 @@ private:
 	//! height of the meta tile in tiles
 	int height;
 	//! list of all contained tiles
-	std::vector<shared_ptr<TileIdentifier>> tids;
+	std::vector<std::shared_ptr<TileIdentifier>> tids;
 };
 
 #endif

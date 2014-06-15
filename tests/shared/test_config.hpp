@@ -13,7 +13,7 @@
 class TestConfig : public Configuration
 {
 public:
-	typedef shared_ptr<TestConfig> Ptr;
+	typedef std::shared_ptr<TestConfig> Ptr;
 public:
 	TestConfig();
 
@@ -27,7 +27,7 @@ public:
 
 	static Ptr Create();
 
-	shared_ptr<TestConfig> clone() const;
+	std::shared_ptr<TestConfig> clone() const;
 
 protected:
 	const boost::any& getValueByKey(const string& key) const;

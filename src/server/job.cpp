@@ -49,10 +49,10 @@
  * @param config The Configuration, e.g. for the prerender_level.
  * @param manager The RequestManager which holds all important components.
  **/
-Job::Job(const shared_ptr<MetaIdentifier>& mid,
-		 const shared_ptr<Configuration>& config,
-		 const shared_ptr<RequestManager>& manager,
-		 const shared_ptr<RenderCanvas>& canvas)
+Job::Job(const std::shared_ptr<MetaIdentifier>& mid,
+		 const std::shared_ptr<Configuration>& config,
+		 const std::shared_ptr<RequestManager>& manager,
+		 const std::shared_ptr<RenderCanvas>& canvas)
 	: manager(manager)
 	, config(config)
 	, mid(mid)
@@ -70,7 +70,7 @@ Job::~Job()
  *
  * @param ti The TileIdentifier.
  **/
-FixedRect Job::computeRect(const shared_ptr<TileIdentifier>& ti)
+FixedRect Job::computeRect(const std::shared_ptr<TileIdentifier>& ti)
 {
 	int zoom = ti->getZoom();
 	coord_t x0, x1, y0, y1;
@@ -92,7 +92,7 @@ FixedRect Job::computeRect(const shared_ptr<TileIdentifier>& ti)
  *
  * @param ti The MetaIdentifier.
  **/
-FixedRect Job::computeRect(const shared_ptr<MetaIdentifier>& ti)
+FixedRect Job::computeRect(const std::shared_ptr<MetaIdentifier>& ti)
 {
 	int zoom = ti->getIdentifiers()[0]->getZoom();
 	coord_t x0, x1, y0, y1;
@@ -119,14 +119,14 @@ shared_ptr<Tile> Job::computeEmpty()
 {
 	const string& path = mid->getStylesheetPath();
 	const TileIdentifier::Format format = mid->getImageFormat();
-	shared_ptr<Stylesheet> stylesheet = manager->getStylesheetManager()->getStylesheet(mid->getStylesheetPath());
-	shared_ptr<TileIdentifier> emptyID = TileIdentifier::CreateEmptyTID(path, format);
-	shared_ptr<Tile> tile = manager->getCache()->getTile(emptyID);
+	std::shared_ptr<Stylesheet> stylesheet = manager->getStylesheetManager()->getStylesheet(mid->getStylesheetPath());
+	std::shared_ptr<TileIdentifier> emptyID = TileIdentifier::CreateEmptyTID(path, format);
+	std::shared_ptr<Tile> tile = manager->getCache()->getTile(emptyID);
 
 	if(!tile->isRendered()) {
-		shared_ptr<std::vector<NodeId>> nodeIDs 	= boost::make_shared< std::vector<NodeId>>();
-		shared_ptr<std::vector<WayId>> 	wayIDs 		= boost::make_shared< std::vector<WayId>>();
-		shared_ptr<std::vector<RelId>> 	relationIDs = boost::make_shared< std::vector<RelId>>();
+		std::shared_ptr<std::vector<NodeId>> nodeIDs 	= boost::make_shared< std::vector<NodeId>>();
+		std::shared_ptr<std::vector<WayId>> 	wayIDs 		= boost::make_shared< std::vector<WayId>>();
+		std::shared_ptr<std::vector<RelId>> 	relationIDs = boost::make_shared< std::vector<RelId>>();
 
 		RenderAttributes renderAttributes;
 
@@ -146,7 +146,7 @@ bool Job::initTiles()
 	bool rendered = true;
 	for (auto& id : mid->getIdentifiers())
 	{
-		shared_ptr<Tile> tile = manager->getCache()->getTile(id);
+		std::shared_ptr<Tile> tile = manager->getCache()->getTile(id);
 		rendered = rendered && tile->isRendered();
 		tiles.push_back(tile);
 	}
@@ -160,7 +160,7 @@ bool Job::initTiles()
  **/
 void Job::process()
 {
-	shared_ptr<Geodata> geodata = manager->getGeodata();
+	std::shared_ptr<Geodata> geodata = manager->getGeodata();
 
 	FixedRect rect = computeRect(mid);
 	STAT_START(Statistic::GeoContainsData);
@@ -192,13 +192,13 @@ void Job::process()
 
 	STAT_STATS(nodeIDs->size(), wayIDs->size(), relationIDs->size());
 
-	shared_ptr<Stylesheet> stylesheet = manager->getStylesheetManager()->getStylesheet(mid->getStylesheetPath());
+	std::shared_ptr<Stylesheet> stylesheet = manager->getStylesheetManager()->getStylesheet(mid->getStylesheetPath());
 	RenderAttributes renderAttributes;
 	STAT_START(Statistic::StylesheetMatch);
 		stylesheet->match(nodeIDs, wayIDs, relationIDs, mid, &renderAttributes);
 	STAT_STOP(Statistic::StylesheetMatch);
 
-	const shared_ptr<Renderer>& renderer = manager->getRenderer();
+	const std::shared_ptr<Renderer>& renderer = manager->getRenderer();
 	STAT_START(Statistic::Renderer);
 		renderer->renderMetaTile(renderAttributes, canvas, mid);
 	STAT_STOP(Statistic::Renderer);
@@ -211,14 +211,14 @@ void Job::deliver()
 {
 	if (empty)
 	{
-		shared_ptr<Tile> tile = computeEmpty();
+		std::shared_ptr<Tile> tile = computeEmpty();
 		for (auto& id : mid->getIdentifiers())
 		{
 			for (auto& req : requests[*id])
 				req->answer(tile);
 		}
 	} else {
-		const shared_ptr<Renderer>& renderer = manager->getRenderer();
+		const std::shared_ptr<Renderer>& renderer = manager->getRenderer();
 		STAT_START(Statistic::Slicing);
 		for (auto& tile : tiles) {
 			if (!tile->isRendered())

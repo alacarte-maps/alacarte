@@ -97,7 +97,7 @@ int Application::start(int argc, char** argv)
  **/
 void Application::appRun(int argc, char** argv)
 {
-	shared_ptr<Configuration> config;
+	std::shared_ptr<Configuration> config;
 
 	// create and parse config
 	try{
@@ -147,7 +147,7 @@ void Application::appRun(int argc, char** argv)
  *
  * @param config Configuration containing more information about the logfile
  **/
-void Application::initLog(const shared_ptr<Configuration>& config)
+void Application::initLog(const std::shared_ptr<Configuration>& config)
 {
 	assert(!mLogInitialized);
 	
@@ -175,7 +175,7 @@ void Application::initLog(const shared_ptr<Configuration>& config)
 	root.info("Logfile opened...");
 }
 
-bool Application::diagnosticCheckFile(const shared_ptr<Configuration>& config, const string& key, log4cpp::Category& log) 
+bool Application::diagnosticCheckFile(const std::shared_ptr<Configuration>& config, const string& key, log4cpp::Category& log) 
 {
 	if (config->has(key)) {
 		boost::filesystem::path file = config->get<string>(key);

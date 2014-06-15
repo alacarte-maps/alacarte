@@ -44,15 +44,15 @@ public:
 	Geodata();
 	~Geodata();
 
-	TESTABLE void insertNodes(const shared_ptr<std::vector<Node> >& nodes);
-	TESTABLE void insertWays(const shared_ptr<std::vector<Way> >& ways);
-	TESTABLE void insertRelations(const shared_ptr<std::vector<Relation> >& relations);
+	TESTABLE void insertNodes(const std::shared_ptr<std::vector<Node> >& nodes);
+	TESTABLE void insertWays(const std::shared_ptr<std::vector<Way> >& ways);
+	TESTABLE void insertRelations(const std::shared_ptr<std::vector<Relation> >& relations);
 
 	bool containsData(const FixedRect &rect) const;
-	TESTABLE shared_ptr<std::vector<NodeId> > getNodeIDs(const FixedRect& rect) const;
+	TESTABLE std::shared_ptr<std::vector<NodeId> > getNodeIDs(const FixedRect& rect) const;
 
-	TESTABLE shared_ptr<std::vector<WayId> > getWayIDs(const FixedRect& rect) const;
-	TESTABLE shared_ptr<std::vector<RelId> > getRelationIDs(const FixedRect& rect) const;
+	TESTABLE std::shared_ptr<std::vector<WayId> > getWayIDs(const FixedRect& rect) const;
+	TESTABLE std::shared_ptr<std::vector<RelId> > getRelationIDs(const FixedRect& rect) const;
 
 	TESTABLE Node* getNode(NodeId id) const;
 	TESTABLE Way* getWay(WayId id) const ;
@@ -62,14 +62,14 @@ public:
 	TESTABLE void save(const string& path);
 
 protected:
-	shared_ptr<std::vector<Way> > ways;
-	shared_ptr<std::vector<Node> > nodes;
-	shared_ptr<std::vector<Relation> > relations;
+	std::shared_ptr<std::vector<Way> > ways;
+	std::shared_ptr<std::vector<Node> > nodes;
+	std::shared_ptr<std::vector<Relation> > relations;
 
 	//! note the trees are initialized by buildTree on serialisation
-	shared_ptr<RTree<NodeId, FixedPoint>> nodesTree;
-	shared_ptr<RTree<WayId, FixedRect>> waysTree;
-	shared_ptr<RTree<RelId, FixedRect>> relTree;
+	std::shared_ptr<RTree<NodeId, FixedPoint>> nodesTree;
+	std::shared_ptr<RTree<WayId, FixedRect>> waysTree;
+	std::shared_ptr<RTree<RelId, FixedRect>> relTree;
 
 private:
 	void buildTrees(const string& nodePath, const string& wayPath, const string& relationPath);

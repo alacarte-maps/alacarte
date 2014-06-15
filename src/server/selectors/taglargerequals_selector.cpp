@@ -29,14 +29,14 @@
 #include "server/tile_identifier.hpp"
 
 
-TagLargerEqualsSelector::TagLargerEqualsSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const int& value)
+TagLargerEqualsSelector::TagLargerEqualsSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag, const int& value)
 	: Selector(rule, next)
 	, tag(tag)
 	, value(value)
 {
 }
 
-void TagLargerEqualsSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void TagLargerEqualsSelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Node* node = geodata->getNode(nodeID);
 	auto entry = node->getTags().find(tag);
 
@@ -53,7 +53,7 @@ void TagLargerEqualsSelector::matchNode(NodeId nodeID, const shared_ptr<TileIden
 
 }
 
-void TagLargerEqualsSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void TagLargerEqualsSelector::matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Way* way = geodata->getWay(wayID);
 	auto entry = way->getTags().find(tag);
 
@@ -68,7 +68,7 @@ void TagLargerEqualsSelector::matchWay(WayId wayID, const shared_ptr<TileIdentif
 	}
 }
 
-void TagLargerEqualsSelector::matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void TagLargerEqualsSelector::matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Relation* relation = geodata->getRelation(relID);
 	auto entry = relation->getTags().find(tag);
 

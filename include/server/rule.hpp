@@ -44,40 +44,40 @@ public:
 	};
 
 private:
-	const shared_ptr<Geodata> geodata;
-	shared_ptr<Selector> first;
-	shared_ptr<StyleTemplate> styleTemplate;
+	const std::shared_ptr<Geodata> geodata;
+	std::shared_ptr<Selector> first;
+	std::shared_ptr<StyleTemplate> styleTemplate;
 	int zoombottom, zoomtop;
 	AcceptableTypes accepableType;
 
 public:
-	Rule(const shared_ptr<Geodata>& geodata);
+	Rule(const std::shared_ptr<Geodata>& geodata);
 
 	/**
 	 * @brief
 	 */
-	TESTABLE void match(const shared_ptr<std::vector<NodeId> >& nodeIDs,
-						const shared_ptr<std::vector<WayId> >& wayIDs,
-						const shared_ptr<std::vector<RelId> >& relIDs,
-						const shared_ptr<TileIdentifier>& ti,
+	TESTABLE void match(const std::shared_ptr<std::vector<NodeId> >& nodeIDs,
+						const std::shared_ptr<std::vector<WayId> >& wayIDs,
+						const std::shared_ptr<std::vector<RelId> >& relIDs,
+						const std::shared_ptr<TileIdentifier>& ti,
 						RenderAttributes* renderAttributes) const;
 
-	TESTABLE const shared_ptr<Geodata>& getGeodata() const;
+	TESTABLE const std::shared_ptr<Geodata>& getGeodata() const;
 
 	/**
 	 * @return the StyleTemplate representation of the attributes specified in the MapCSS file for this rule.
 	 */
-	TESTABLE const shared_ptr<StyleTemplate>& getStyleTemplate() const;
+	TESTABLE const std::shared_ptr<StyleTemplate>& getStyleTemplate() const;
 
 	/**
 	 * @brief sets the StyleTemplate representation of the attributes specified in the MapCSS file for this rule.
 	 */
-	TESTABLE void setStyleTemplate(const shared_ptr<StyleTemplate>& styleTemplate);
+	TESTABLE void setStyleTemplate(const std::shared_ptr<StyleTemplate>& styleTemplate);
 
 	/**
 	 * @brief what is the first selector in the selector chain for this rule?
 	 */
-	TESTABLE void setFirstSelector(const shared_ptr<Selector>& first);
+	TESTABLE void setFirstSelector(const std::shared_ptr<Selector>& first);
 
 	/**
 	 * @brief from which to which zoom level does this rule apply?

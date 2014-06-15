@@ -32,7 +32,7 @@
  * @param config The Configuration which should be used
  * @param manager The RequestManager in which the HttpRequest should be enqueued.
  **/
-HttpServer::HttpServer( const shared_ptr<Configuration>& config, const shared_ptr<RequestManager>& manager )
+HttpServer::HttpServer( const std::shared_ptr<Configuration>& config, const shared_ptr<RequestManager>& manager )
 	: config(config)
 	, manager(manager)
 	, io_service()
@@ -101,7 +101,7 @@ void HttpServer::listen()
  *
  * @param request The HttpRequest which should be stopped.
  **/
-void HttpServer::stopRequest ( shared_ptr<HttpRequest> request ) {
+void HttpServer::stopRequest ( std::shared_ptr<HttpRequest> request ) {
 	requests.erase(request);
 	request->close();
 }

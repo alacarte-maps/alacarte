@@ -7,11 +7,11 @@
 class NonPrerenderingRequestManager : public RequestManager 
 {
 public:
-	NonPrerenderingRequestManager( 	const shared_ptr<Configuration>& config,
-									const shared_ptr<Geodata>& data,
-									const shared_ptr<Renderer>& renderer,
-									const shared_ptr<Cache>& cache,
-									const shared_ptr<StylesheetManager>& ssm
+	NonPrerenderingRequestManager( 	const std::shared_ptr<Configuration>& config,
+									const std::shared_ptr<Geodata>& data,
+									const std::shared_ptr<Renderer>& renderer,
+									const std::shared_ptr<Cache>& cache,
+									const std::shared_ptr<StylesheetManager>& ssm
 								 )
 	: RequestManager(config, data, renderer, cache, ssm)
 	, pseudoQueueSize(0)
@@ -20,7 +20,7 @@ public:
 	
 	virtual ~NonPrerenderingRequestManager() {}
 	//Disabled to prevent prerendering
-	void enqueue(const shared_ptr<TileIdentifier>& ti)
+	void enqueue(const std::shared_ptr<TileIdentifier>& ti)
 	{
 		pseudoQueueSize++;
 	}

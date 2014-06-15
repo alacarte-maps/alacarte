@@ -42,40 +42,40 @@ public:
 	/**
 	 * @brief A list that will store the last recently used tiles.
 	 **/
-	typedef std::list<shared_ptr<Tile>> TileList;
+	typedef std::list<std::shared_ptr<Tile>> TileList;
 	
 	/**
-	 * @brief An element stored in the cache. Consists of shared_ptr to the Tile and an iterator pointing to the element in the least recently used list.
+	 * @brief An element stored in the cache. Consists of std::shared_ptr to the Tile and an iterator pointing to the element in the least recently used list.
 	 **/
-	typedef std::pair<shared_ptr<Tile>, TileList::iterator> CacheElement;
+	typedef std::pair<std::shared_ptr<Tile>, TileList::iterator> CacheElement;
 	
 	/**
-	 * @brief HashMap with TileIdentifier as key and shared_ptr to Tiles as value.
+	 * @brief HashMap with TileIdentifier as key and std::shared_ptr to Tiles as value.
 	 **/
 	typedef boost::unordered_map<TileIdentifier, CacheElement> CacheOfOneStylesheet;
 	
 	/**
-	 * @brief HashMap with path to MapCSS as key and shared_ptr to CacheOfOneStylesheet as value.
+	 * @brief HashMap with path to MapCSS as key and std::shared_ptr to CacheOfOneStylesheet as value.
 	 **/
-	typedef boost::unordered_map<string, shared_ptr<CacheOfOneStylesheet> > CacheContainer;
+	typedef boost::unordered_map<string, std::shared_ptr<CacheOfOneStylesheet> > CacheContainer;
 	
 	
-	Cache(const shared_ptr<Configuration>& config);
+	Cache(const std::shared_ptr<Configuration>& config);
 	~Cache();
 	
-	TESTABLE shared_ptr<Tile> getTile(const shared_ptr<TileIdentifier>& tl);
-	TESTABLE shared_ptr<Tile> getDefaultTile();
+	TESTABLE std::shared_ptr<Tile> getTile(const shared_ptr<TileIdentifier>& tl);
+	TESTABLE std::shared_ptr<Tile> getDefaultTile();
 	TESTABLE void deleteTiles(const string path);
 
 private:
-	shared_ptr<Configuration> Config;
+	std::shared_ptr<Configuration> Config;
 	boost::mutex GlobalCacheLock;
 	CacheContainer AllCaches;
 	TileList RecentlyUsedList;
-	shared_ptr<Tile> DefaultTile;
+	std::shared_ptr<Tile> DefaultTile;
 	void readFile(const Tile::ImageType& image, const boost::filesystem::path& filename);
-	void writeFile(shared_ptr<Tile> tile, const boost::filesystem::path& filename);
-	const boost::filesystem::path getTilePath(const shared_ptr<TileIdentifier>& ti);
+	void writeFile(std::shared_ptr<Tile> tile, const boost::filesystem::path& filename);
+	const boost::filesystem::path getTilePath(const std::shared_ptr<TileIdentifier>& ti);
 	
 	log4cpp::Category& log;
 };

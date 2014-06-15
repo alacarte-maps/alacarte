@@ -16,13 +16,13 @@ using ::testing::Return;
 
 class AreaAndLineSelectorTest {
 public:
-	shared_ptr<MockGeodata> geodata;
-	shared_ptr<MockRule> rule;
-	shared_ptr<TileIdentifier> tileId;
-	shared_ptr<MockSelector> next;
+	std::shared_ptr<MockGeodata> geodata;
+	std::shared_ptr<MockRule> rule;
+	std::shared_ptr<TileIdentifier> tileId;
+	std::shared_ptr<MockSelector> next;
 	MockRenderAttributes renderAttributes;
-	shared_ptr<AreaSelector> areaSelector;
-	shared_ptr<LineSelector> lineSelector;
+	std::shared_ptr<AreaSelector> areaSelector;
+	std::shared_ptr<LineSelector> lineSelector;
 
 	std::vector<NodeId> openWayNodes;
 	std::vector<NodeId> closedWayNodes;

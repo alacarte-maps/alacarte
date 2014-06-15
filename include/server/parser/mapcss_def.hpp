@@ -126,19 +126,19 @@ class ApplySelector;
 class Style;
 
 //! Shortcut for a shared pointer to stylesheet
-typedef shared_ptr<Stylesheet> StylesheetPtr;
+typedef std::shared_ptr<Stylesheet> StylesheetPtr;
 
 //! Shortcut for a shared pointer to rule
-typedef shared_ptr<Rule> RulePtr;
+typedef std::shared_ptr<Rule> RulePtr;
 
 //! Shortcut for a shared pointer to the base of all selectors
-typedef shared_ptr<Selector> SelectorPtr;
+typedef std::shared_ptr<Selector> SelectorPtr;
 
 //! Shortcut for a shared pointer to thr apply selector
-typedef shared_ptr<ApplySelector> ApplySelectorPtr;
+typedef std::shared_ptr<ApplySelector> ApplySelectorPtr;
 
 //! Shortcut for a shared pointer to style
-typedef shared_ptr<StyleTemplate> StylePtr;
+typedef std::shared_ptr<StyleTemplate> StylePtr;
 
 
 

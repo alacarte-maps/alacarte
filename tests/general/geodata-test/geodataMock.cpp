@@ -29,17 +29,17 @@ GeodataMock::~GeodataMock()
 {
 }
 
-void GeodataMock::insertNodes(const shared_ptr<std::vector<Node> >& nodes)
+void GeodataMock::insertNodes(const std::shared_ptr<std::vector<Node> >& nodes)
 {
 	this->nodes = nodes;
 }
 
-void GeodataMock::insertWays(const shared_ptr<std::vector<Way> >& ways)
+void GeodataMock::insertWays(const std::shared_ptr<std::vector<Way> >& ways)
 {
 	this->ways = ways;
 }
 
-void GeodataMock::insertRelations(const shared_ptr<std::vector<Relation> >& relations)
+void GeodataMock::insertRelations(const std::shared_ptr<std::vector<Relation> >& relations)
 {	
 		this->relations = relations;
 }
@@ -48,7 +48,7 @@ void GeodataMock::insertRelations(const shared_ptr<std::vector<Relation> >& rela
 
 shared_ptr<std::vector<NodeId> > GeodataMock::getNodeIDs(const FixedRect& rect) const
 {
-	shared_ptr<std::vector<NodeId> > nodeIDs = boost::make_shared< std::vector<NodeId> >();
+	std::shared_ptr<std::vector<NodeId> > nodeIDs = boost::make_shared< std::vector<NodeId> >();
  	for(int i = 0; i < nodes->size(); i++) {
  		if(rect.contains(nodes->at(i).getLocation())) {
  			nodeIDs->push_back(NodeId(i));
@@ -57,9 +57,9 @@ shared_ptr<std::vector<NodeId> > GeodataMock::getNodeIDs(const FixedRect& rect) 
 	return nodeIDs;
 }
 
- shared_ptr<std::vector<WayId> > GeodataMock::getWayIDs(const FixedRect& rect) const
+ std::shared_ptr<std::vector<WayId> > GeodataMock::getWayIDs(const FixedRect& rect) const
  {
- 	shared_ptr<std::vector<WayId> > wayIDs = boost::make_shared< std::vector<WayId> >();
+ 	std::shared_ptr<std::vector<WayId> > wayIDs = boost::make_shared< std::vector<WayId> >();
  	for(int i = 0; i < ways->size(); i++) {
  		if(rect.intersects(calculateBoundingBox(&ways->at(i)))) {
  				wayIDs->push_back(WayId(i));
@@ -69,9 +69,9 @@ shared_ptr<std::vector<NodeId> > GeodataMock::getNodeIDs(const FixedRect& rect) 
  }
 
 
- shared_ptr<std::vector<RelId> > GeodataMock::getRelationIDs(const FixedRect& rect) const
+ std::shared_ptr<std::vector<RelId> > GeodataMock::getRelationIDs(const FixedRect& rect) const
  {
-	shared_ptr<std::vector<RelId> > relationIDs = boost::make_shared< std::vector<RelId> >();
+	std::shared_ptr<std::vector<RelId> > relationIDs = boost::make_shared< std::vector<RelId> >();
 
  	for(int i = 0; i < relations->size(); i++) {
  		if ( rect.intersects ( calculateBoundingBox(&relations->at(i)))) {

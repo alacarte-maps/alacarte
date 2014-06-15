@@ -42,7 +42,7 @@ void HttpRequestParser::reset()
 	state_ = method_start;
 }
 
-boost::tribool HttpRequestParser::consume ( shared_ptr<HttpRequest> req, char input )
+boost::tribool HttpRequestParser::consume ( std::shared_ptr<HttpRequest> req, char input )
 {
 	switch ( state_ ) {
 	case method_start:

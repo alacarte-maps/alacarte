@@ -35,7 +35,7 @@
 									templ-> _attr ->overwrite(obj, &(this-> _attr ));	\
 								}
 
-void Style::overmerge(GeoObject* obj, const shared_ptr<StyleTemplate>& templ)
+void Style::overmerge(GeoObject* obj, const std::shared_ptr<StyleTemplate>& templ)
 {
 	OVERMERGE_IMPL(color);
 	OVERMERGE_IMPL(fill_color);
@@ -85,7 +85,7 @@ void Style::overmerge(GeoObject* obj, const shared_ptr<StyleTemplate>& templ)
 	OVERMERGE_IMPL(z_index);
 }
 
-void Style::finish(GeoObject* associatedObject, shared_ptr<const Stylesheet> stylesheet)
+void Style::finish(GeoObject* associatedObject, std::shared_ptr<const Stylesheet> stylesheet)
 {
 
 	if (this->icon_image.str().size()) {

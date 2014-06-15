@@ -7,13 +7,13 @@
 
 class MockRule : public Rule {
 public:
-	MockRule(const shared_ptr<Geodata> geodata) : Rule(geodata) {}
+	MockRule(const std::shared_ptr<Geodata> geodata) : Rule(geodata) {}
 
-	MOCK_CONST_METHOD5(match, void(const shared_ptr<std::vector<NodeId> >& nodeIDs,
-									const shared_ptr<std::vector<WayId> >& wayIDs,
-									const shared_ptr<std::vector<RelId> >& relIDs,
-									const shared_ptr<TileIdentifier>& ti,
+	MOCK_CONST_METHOD5(match, void(const std::shared_ptr<std::vector<NodeId> >& nodeIDs,
+									const std::shared_ptr<std::vector<WayId> >& wayIDs,
+									const std::shared_ptr<std::vector<RelId> >& relIDs,
+									const std::shared_ptr<TileIdentifier>& ti,
 									RenderAttributes* renderAttributes));
 
-	MOCK_CONST_METHOD0(getStyleTemplate, const shared_ptr<StyleTemplate>&());
+	MOCK_CONST_METHOD0(getStyleTemplate, const std::shared_ptr<StyleTemplate>&());
 };

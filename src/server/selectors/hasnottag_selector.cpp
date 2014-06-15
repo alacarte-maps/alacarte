@@ -30,14 +30,14 @@
 
 #include "utils/precached_strings.hpp"
 
-HasNotTagSelector::HasNotTagSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag)
+HasNotTagSelector::HasNotTagSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next, const string& tag)
 	: Selector(rule, next)
 	, tag(tag)
 {
 }
 
 
-void HasNotTagSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void HasNotTagSelector::matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Node* node = geodata->getNode(nodeID);
 	auto entry = node->getTags().find(tag);
 	if (entry == node->getTags().end() || entry->second == precached_no || entry->second == precached_false) {
@@ -45,7 +45,7 @@ void HasNotTagSelector::matchNode(NodeId nodeID, const shared_ptr<TileIdentifier
 	}
 }
 
-void HasNotTagSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void HasNotTagSelector::matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Way* way = geodata->getWay(wayID);
 	auto entry = way->getTags().find(tag);
 	if (entry == way->getTags().end() || entry->second == precached_no || entry->second == precached_false) {
@@ -53,7 +53,7 @@ void HasNotTagSelector::matchWay(WayId wayID, const shared_ptr<TileIdentifier>& 
 	}
 }
 
-void HasNotTagSelector::matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
+void HasNotTagSelector::matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const {
 	Relation* relation = geodata->getRelation(relID);
 	auto entry = relation->getTags().find(tag);
 	if (entry == relation->getTags().end() || entry->second == precached_no || entry->second == precached_false) {

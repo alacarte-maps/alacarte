@@ -18,12 +18,12 @@ BOOST_AUTO_TEST_SUITE(test_requestManage)
 class TestHttpRequest : public HttpRequest
 {
 public:
-	explicit TestHttpRequest (std::string uri, boost::asio::io_service &ioService, const shared_ptr< HttpServer >& server, const shared_ptr< RequestManager >& manager )
+	explicit TestHttpRequest (std::string uri, boost::asio::io_service &ioService, const std::shared_ptr< HttpServer >& server, const shared_ptr< RequestManager >& manager )
 	: HttpRequest(ioService, server, manager)
 	{
 		data.uri = uri;
 	}
-	void answer ( const  shared_ptr<Tile>& tile, Reply::StatusType status = Reply::ok )
+	void answer ( const  std::shared_ptr<Tile>& tile, Reply::StatusType status = Reply::ok )
 	{
 		reply.status = status;
 		answered = true;
@@ -42,11 +42,11 @@ public:
 
 struct test_requestManage
 {
-	shared_ptr<RequestManager> req_manager;
+	std::shared_ptr<RequestManager> req_manager;
 	TestConfig::Ptr DefaultConfig;
-	shared_ptr<Cache> cache;
-	shared_ptr<HttpServer> server;
-	shared_ptr<StylesheetManager> ssm;
+	std::shared_ptr<Cache> cache;
+	std::shared_ptr<HttpServer> server;
+	std::shared_ptr<StylesheetManager> ssm;
 	// setup
 	test_requestManage()
 	{
@@ -57,12 +57,12 @@ struct test_requestManage
 
 		Statistic::Init(DefaultConfig);
 		
-		shared_ptr<Geodata> geodata = boost::make_shared<Geodata>();
+		std::shared_ptr<Geodata> geodata = boost::make_shared<Geodata>();
 		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<string>(opt::server::path_to_geodata)));
 		geodata->load(DefaultConfig->get<string>(opt::server::path_to_geodata));
 		cache = boost::make_shared<Cache>(DefaultConfig);
 		ssm = boost::make_shared<StylesheetManager>(DefaultConfig);
-		shared_ptr<Renderer> renderer = boost::make_shared<Renderer>(geodata);
+		std::shared_ptr<Renderer> renderer = boost::make_shared<Renderer>(geodata);
 		req_manager = boost::make_shared<RequestManager>(DefaultConfig, geodata, renderer, cache, ssm);
 		server = boost::make_shared<HttpServer>(DefaultConfig, req_manager);
 		ssm->startStylesheetObserving(req_manager);
@@ -74,7 +74,7 @@ struct test_requestManage
 		//enqueue more request than the server can handle, so it has to reply with service_unavailable
 		boost::asio::io_service service;
 		DefaultConfig->add<int>(opt::server::max_queue_size, 1);
-		shared_ptr<TestHttpRequest> request = boost::make_shared<TestHttpRequest>("default/15/17150/11253.png", service, server, req_manager);
+		std::shared_ptr<TestHttpRequest> request = boost::make_shared<TestHttpRequest>("default/15/17150/11253.png", service, server, req_manager);
 		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17143/11253.png", service, server, req_manager));
 		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17144/11253.png", service, server, req_manager));
 		req_manager->enqueue(boost::make_shared<TestHttpRequest>("default/15/17145/11253.png", service, server, req_manager));
@@ -96,15 +96,15 @@ struct test_requestManage
 		int x = 68595;
 		int y = 45006;
 		int z = 17;
-		shared_ptr<TileIdentifier> ti = boost::make_shared<TileIdentifier>(x,y,z,"default", 	TileIdentifier::PNG);
-		shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(ti);
+		std::shared_ptr<TileIdentifier> ti = boost::make_shared<TileIdentifier>(x,y,z,"default", 	TileIdentifier::PNG);
+		std::shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(ti);
 
 		req_manager->enqueue(mid);
 		//wait for prerendering
 		boost::this_thread::sleep(boost::posix_time::milliseconds(5000));
 
 		//now ask for a prerenderd Tile
-		std::vector<shared_ptr<MetaIdentifier>> children;
+		std::vector<std::shared_ptr<MetaIdentifier>> children;
 		mid->getSubIdentifiers(children);
 		for (auto& c : children)
 		{

@@ -76,7 +76,7 @@ public:
 		/// The content to be sent in the Reply.
 		std::string content;
 		/// The Tile to be sent in the Reply.
-		shared_ptr<Tile> tile;
+		std::shared_ptr<Tile> tile;
 		/// Convert the Reply into a vector of buffers. The buffers do not own the
 		/// underlying memory blocks, therefore the reply object must remain valid and
 		/// not be changed until the write operation has completed.
@@ -84,11 +84,11 @@ public:
 	};
 	
 public:
-	explicit HttpRequest ( boost::asio::io_service &ioService, const shared_ptr<HttpServer>& server, const shared_ptr<RequestManager> &manager );
+	explicit HttpRequest ( boost::asio::io_service &ioService, const std::shared_ptr<HttpServer>& server, const shared_ptr<RequestManager> &manager );
 
 	TESTABLE const string& getURL() const;
 
-	TESTABLE void answer ( const  shared_ptr<Tile>& tile, Reply::StatusType status = Reply::ok );
+	TESTABLE void answer ( const  std::shared_ptr<Tile>& tile, Reply::StatusType status = Reply::ok );
 	TESTABLE void answer ( Reply::StatusType status );
 	/// Start the first asynchronous operation for the connection.
 	void startCollectingData();

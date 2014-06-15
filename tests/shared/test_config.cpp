@@ -12,7 +12,7 @@ TestConfig::TestConfig()
 
 shared_ptr<TestConfig> TestConfig::clone() const
 {
-	shared_ptr<TestConfig> config = boost::make_shared<TestConfig>();
+	std::shared_ptr<TestConfig> config = boost::make_shared<TestConfig>();
 
 	config->options = options;
 

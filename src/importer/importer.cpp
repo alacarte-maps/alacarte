@@ -143,7 +143,7 @@ public:
 	 *
 	 * @return parsed nodes
 	 **/
-	shared_ptr< std::vector<Node> > getParsedNodes() const
+	std::shared_ptr< std::vector<Node> > getParsedNodes() const
 	{
 		assert(nodes);
 		return nodes;
@@ -154,7 +154,7 @@ public:
 	 *
 	 * @return parsed ways
 	 **/
-	shared_ptr< std::vector<Way> > getParsedWays() const
+	std::shared_ptr< std::vector<Way> > getParsedWays() const
 	{
 		assert(ways);
 		return ways;
@@ -165,7 +165,7 @@ public:
 	 *
 	 * @return parsed relations
 	 **/
-	shared_ptr< std::vector<Relation> > getParsedRelations() const
+	std::shared_ptr< std::vector<Relation> > getParsedRelations() const
 	{
 		assert(relations);
 		return relations;
@@ -476,13 +476,13 @@ private:
 	boost::unordered_map<OsmIdType, WayId>	wayIdMapping;
 
 	//! List to be filled with nodes
-	shared_ptr< std::vector<Node> > nodes;
+	std::shared_ptr< std::vector<Node> > nodes;
 
 	//! List to be filled with ways
-	shared_ptr< std::vector<Way> > ways;
+	std::shared_ptr< std::vector<Way> > ways;
 
 	//! List to be filled with relations
-	shared_ptr< std::vector<Relation> > relations;
+	std::shared_ptr< std::vector<Relation> > relations;
 
 	//! Size of the xml file in bytes
 	std::uintmax_t	fileSize;
@@ -513,7 +513,7 @@ private:
  *
  * @param config Configuration used by the importer
  **/
-Importer::Importer(const shared_ptr<Configuration>& config)
+Importer::Importer(const std::shared_ptr<Configuration>& config)
 	: config(config)
 {
 }
@@ -527,7 +527,7 @@ shared_ptr<Geodata> Importer::importXML()
 {
 	log4cpp::Category& log = log4cpp::Category::getRoot();
 	OsmXmlParser parser(!config->get<bool>(opt::importer::check_xml_entities));
-	shared_ptr<Geodata>	geodata = boost::make_shared<Geodata>();
+	std::shared_ptr<Geodata>	geodata = boost::make_shared<Geodata>();
 
 	path xml_file = config->get<string>(opt::importer::path_to_osmdata);
 	log.infoStream() << "Start parsing...";

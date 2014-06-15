@@ -37,11 +37,11 @@
 
 class ApplySelector : public Selector {
 public:
-	ApplySelector(const shared_ptr<Rule>& rule);
+	ApplySelector(const std::shared_ptr<Rule>& rule);
 
-	virtual void matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
-	virtual void matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
-	virtual void matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	virtual void matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	virtual void matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	virtual void matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
 
 };
 

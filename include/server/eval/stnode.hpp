@@ -38,7 +38,7 @@ class STNode
 {
 public:
 	//! Shared ptr to this node
-	typedef shared_ptr<STNode> node_ptr;
+	typedef std::shared_ptr<STNode> node_ptr;
 
 	/**
 	 * @brief Evaluates a subtree under this node

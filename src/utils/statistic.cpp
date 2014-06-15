@@ -33,7 +33,7 @@ Statistic::duration Statistic::JobMeasurement::getDuration(int i)
 	return stopTime[i] - startTime[i];
 }
 
-Statistic::Statistic(const shared_ptr<Configuration>& config)
+Statistic::Statistic(const std::shared_ptr<Configuration>& config)
 	: config(config)
 {
 
@@ -53,13 +53,13 @@ Statistic::~Statistic()
 shared_ptr<Statistic::JobMeasurement> Statistic::startNewMeasurement(const string& stylesheet, int zoom)
 {
 #ifdef Statistic_Activated
-	shared_ptr<Statistic::JobMeasurement> jm = boost::make_shared<JobMeasurement>(stylesheet, zoom);
+	std::shared_ptr<Statistic::JobMeasurement> jm = boost::make_shared<JobMeasurement>(stylesheet, zoom);
 	jm->jobStartTime = boost::posix_time::microsec_clock::universal_time();
 	return jm;
 #endif
 	return boost::make_shared<JobMeasurement>();
 }
-void Statistic::setStats(shared_ptr<Statistic::JobMeasurement>& job,
+void Statistic::setStats(std::shared_ptr<Statistic::JobMeasurement>& job,
 						 unsigned int nodes,
 						 unsigned int ways,
 						 unsigned int relations)
@@ -70,14 +70,14 @@ void Statistic::setStats(shared_ptr<Statistic::JobMeasurement>& job,
 	job->relations = relations;
 #endif
 }
-void Statistic::start(shared_ptr<Statistic::JobMeasurement>& job, Component component) const
+void Statistic::start(std::shared_ptr<Statistic::JobMeasurement>& job, Component component) const
 {
 #ifdef Statistic_Activated
 	job->startTime[component] = boost::posix_time::microsec_clock::universal_time();
 #endif
 }
 
-void Statistic::stop(shared_ptr<Statistic::JobMeasurement>& job, Component component) const
+void Statistic::stop(std::shared_ptr<Statistic::JobMeasurement>& job, Component component) const
 {
 #ifdef Statistic_Activated
 	job->stopTime[component] = boost::posix_time::microsec_clock::universal_time();
@@ -109,7 +109,7 @@ void Statistic::printStatistic() const
 #endif
 }
 
-void Statistic::finished(shared_ptr<Statistic::JobMeasurement>& job)
+void Statistic::finished(std::shared_ptr<Statistic::JobMeasurement>& job)
 {
 #ifdef Statistic_Activated
 	avgLock.lock();

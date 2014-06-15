@@ -6,7 +6,7 @@
 class ConfigMockup
 {
 public:
-	shared_ptr<Configuration> Config(char* argv[], int argc);
+	std::shared_ptr<Configuration> Config(char* argv[], int argc);
 	
 	template<typename T>
 	T get(const string& key)

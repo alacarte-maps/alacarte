@@ -48,10 +48,10 @@ geschlossen und area = no:       - Ja
 
 class LineSelector : public Selector {
 public:
-	LineSelector(const shared_ptr<Rule>& rule, const shared_ptr<Selector>& next);
-	virtual void matchNode(NodeId nodeID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
-	virtual void matchWay(WayId wayID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
-	virtual void matchRelation(RelId relID, const shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	LineSelector(const std::shared_ptr<Rule>& rule, const shared_ptr<Selector>& next);
+	virtual void matchNode(NodeId nodeID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	virtual void matchWay(WayId wayID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
+	virtual void matchRelation(RelId relID, const std::shared_ptr<TileIdentifier>& ti, RenderAttributes* attributes) const;
 
 };
 

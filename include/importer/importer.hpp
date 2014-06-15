@@ -32,13 +32,13 @@ class Importer
 public:
 	class OsmXmlParser;
 public:
-	Importer(const shared_ptr<Configuration>& config);
+	Importer(const std::shared_ptr<Configuration>& config);
 
 
-	TESTABLE shared_ptr<Geodata> importXML();
+	TESTABLE std::shared_ptr<Geodata> importXML();
 
 private:
-	shared_ptr<Configuration> config;
+	std::shared_ptr<Configuration> config;
 };
 
 

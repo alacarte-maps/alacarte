@@ -68,12 +68,12 @@ public:
 	 * 			and uses them to overwrite the properties of this Style.
 	 * @param style the StyleTemplate to take all non-"null" properties from
 	 */
-	TESTABLE void overmerge(GeoObject* obj, const shared_ptr<StyleTemplate>& style);
+	TESTABLE void overmerge(GeoObject* obj, const std::shared_ptr<StyleTemplate>& style);
 
 	/**
 	 * @brief Performs finishing operations on the style, like resolve tags for texts or check for icon path existence.
 	 */
-	void finish(GeoObject* associatedObject, shared_ptr<const Stylesheet> stylesheet);
+	void finish(GeoObject* associatedObject, std::shared_ptr<const Stylesheet> stylesheet);
 
 	Color color;
 	Color fill_color;

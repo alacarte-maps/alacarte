@@ -73,22 +73,22 @@ public:
 		ptime stopTime[Component::Size];
 	};
 
-	shared_ptr<JobMeasurement> startNewMeasurement(const string& stylesheet, int zoom);
-	void start(shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
-	void stop(shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
-	void finished(shared_ptr<Statistic::JobMeasurement>& job);
-	void setStats(shared_ptr<Statistic::JobMeasurement>& job, unsigned int nodes, unsigned int ways, unsigned int relations);
+	std::shared_ptr<JobMeasurement> startNewMeasurement(const string& stylesheet, int zoom);
+	void start(std::shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
+	void stop(std::shared_ptr<Statistic::JobMeasurement>& job, Component component) const;
+	void finished(std::shared_ptr<Statistic::JobMeasurement>& job);
+	void setStats(std::shared_ptr<Statistic::JobMeasurement>& job, unsigned int nodes, unsigned int ways, unsigned int relations);
 	void printStatistic() const;
 
-	static const shared_ptr<Statistic>& Get()
+	static const std::shared_ptr<Statistic>& Get()
 	{
 		assert(instance);
 		return instance;
 	}
 
-	static void Init(const shared_ptr<Configuration>& conf)
+	static void Init(const std::shared_ptr<Configuration>& conf)
 	{
-		instance = shared_ptr<Statistic>(new Statistic(conf));
+		instance = std::shared_ptr<Statistic>(new Statistic(conf));
 	}
 
 
@@ -97,15 +97,15 @@ private:
 	void writeToFile(const char* filename);
 	string componentToName(Component component) const;
 
-	Statistic(const shared_ptr<Configuration>& config);
+	Statistic(const std::shared_ptr<Configuration>& config);
 	Statistic(const Statistic&){};
 
-	static shared_ptr<Statistic> instance;
+	static std::shared_ptr<Statistic> instance;
 
 private:
-	shared_ptr<Configuration> config;
+	std::shared_ptr<Configuration> config;
 	boost::mutex bufferLock;
-	std::vector<shared_ptr<JobMeasurement>> measurementsBuffer;
+	std::vector<std::shared_ptr<JobMeasurement>> measurementsBuffer;
 
 	struct AvgMeasurement
 	{

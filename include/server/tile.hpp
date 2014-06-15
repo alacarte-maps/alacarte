@@ -30,20 +30,20 @@ class Cache;
 class Tile
 {
 public:
-	typedef shared_ptr< std::vector<uint8_t> > ImageType;
+	typedef std::shared_ptr< std::vector<uint8_t> > ImageType;
 
-	Tile(const shared_ptr<TileIdentifier>& id);
+	Tile(const std::shared_ptr<TileIdentifier>& id);
 	~Tile();
 	TESTABLE bool isRendered() const;
 	TESTABLE const ImageType& getImage() const;
 	TESTABLE void setImage(const ImageType& image);
-	TESTABLE const shared_ptr<TileIdentifier>& getIdentifier() const;
+	TESTABLE const std::shared_ptr<TileIdentifier>& getIdentifier() const;
 
 private:
 	//! Pointer to a memory block, which contains the rendered Image.
 	ImageType image;
 	//! TileIdentifier which identifies this Tile.
-	const shared_ptr<TileIdentifier> id;
+	const std::shared_ptr<TileIdentifier> id;
 };
 
 

@@ -17,21 +17,21 @@ using ::testing::AnyNumber;
 
 class ChildNodesAndChildWaysSelectorTest {
 public:
-	shared_ptr<MockGeodata> geodata;
-	shared_ptr<MockRule> rule;
-	shared_ptr<TileIdentifier> tileId;
-	shared_ptr<MockSelector> next;
+	std::shared_ptr<MockGeodata> geodata;
+	std::shared_ptr<MockRule> rule;
+	std::shared_ptr<TileIdentifier> tileId;
+	std::shared_ptr<MockSelector> next;
 	MockRenderAttributes renderAttributes;
-	shared_ptr<ChildNodesSelector> childNodesSelector;
-	shared_ptr<ChildWaysSelector> childWaysSelector;
+	std::shared_ptr<ChildNodesSelector> childNodesSelector;
+	std::shared_ptr<ChildWaysSelector> childWaysSelector;
 
 	DataMap<CachedString, CachedString> tags;
 	std::vector<NodeId> nodes;
 	std::vector<WayId> ways;
 	DataMap<NodeId, CachedString> nodeRoles;
 	DataMap<WayId, CachedString> wayRoles;
-	shared_ptr<Way> way;
-	shared_ptr<Relation> relation;
+	std::shared_ptr<Way> way;
+	std::shared_ptr<Relation> relation;
 
 	NodeId nodeId0;
 	WayId wayId0;

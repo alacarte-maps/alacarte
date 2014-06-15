@@ -43,13 +43,13 @@ public:
 	GeodataMock(const Geodata& data);
 	~GeodataMock();
 
-	TESTABLE void insertNodes(const shared_ptr<std::vector<Node> >& nodes);
-	TESTABLE void insertWays(const shared_ptr<std::vector<Way> >& ways);
-	TESTABLE void insertRelations(const shared_ptr<std::vector<Relation> >& relations);
-	TESTABLE shared_ptr<std::vector<NodeId> > getNodeIDs(const FixedRect& rect) const;
+	TESTABLE void insertNodes(const std::shared_ptr<std::vector<Node> >& nodes);
+	TESTABLE void insertWays(const std::shared_ptr<std::vector<Way> >& ways);
+	TESTABLE void insertRelations(const std::shared_ptr<std::vector<Relation> >& relations);
+	TESTABLE std::shared_ptr<std::vector<NodeId> > getNodeIDs(const FixedRect& rect) const;
 
-	TESTABLE shared_ptr<std::vector<WayId> > getWayIDs(const FixedRect& rect) const;
-	TESTABLE shared_ptr<std::vector<RelId> > getRelationIDs(const FixedRect& rect) const;
+	TESTABLE std::shared_ptr<std::vector<WayId> > getWayIDs(const FixedRect& rect) const;
+	TESTABLE std::shared_ptr<std::vector<RelId> > getRelationIDs(const FixedRect& rect) const;
 
 	TESTABLE Node* getNode(NodeId id) const;
 	TESTABLE Way* getWay(WayId id) const ;

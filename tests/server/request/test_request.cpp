@@ -19,9 +19,9 @@ struct test_request
 {
     std::shared_ptr<NonPrerenderingRequestManager> req_manager;
 	TestConfig::Ptr DefaultConfig;
-    shared_ptr<boost::thread> thread;
-	shared_ptr<HttpServer> server;
-	shared_ptr<StylesheetManager> ssm;
+    std::shared_ptr<boost::thread> thread;
+	std::shared_ptr<HttpServer> server;
+	std::shared_ptr<StylesheetManager> ssm;
 	// setup
     test_request()
 	{
@@ -30,12 +30,12 @@ struct test_request
 		
 		Statistic::Init(DefaultConfig);
 
-		shared_ptr<Geodata> geodata = boost::make_shared<Geodata>();
+		std::shared_ptr<Geodata> geodata = boost::make_shared<Geodata>();
 		BOOST_CHECK(boost::filesystem::exists(DefaultConfig->get<string>(opt::server::path_to_geodata)));
 		geodata->load(DefaultConfig->get<string>(opt::server::path_to_geodata));
-		shared_ptr<Cache> cache = boost::make_shared<Cache>(DefaultConfig);
+		std::shared_ptr<Cache> cache = boost::make_shared<Cache>(DefaultConfig);
 		ssm = boost::make_shared<StylesheetManager>(DefaultConfig);
-		shared_ptr<Renderer> renderer = boost::make_shared<Renderer>(geodata);
+		std::shared_ptr<Renderer> renderer = boost::make_shared<Renderer>(geodata);
 		req_manager = boost::make_shared<NonPrerenderingRequestManager>(DefaultConfig, geodata, renderer, cache, ssm);
         server = boost::make_shared<HttpServer>(DefaultConfig, req_manager);
 		ssm->startStylesheetObserving(req_manager);

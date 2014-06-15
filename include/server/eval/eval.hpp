@@ -41,7 +41,7 @@ class GeoObject;
 namespace eval {
 
 
-shared_ptr<STNode> parseEval(string::const_iterator begin, string::const_iterator end, const shared_ptr<ParserLogger>& logger);
+shared_ptr<STNode> parseEval(string::const_iterator begin, string::const_iterator end, const std::shared_ptr<ParserLogger>& logger);
 
 /**
  * @brief Represents a value in a style template
@@ -53,7 +53,7 @@ template<typename TargetType>
 class Eval
 {
 public:
-	typedef shared_ptr<STNode> node_ptr;
+	typedef std::shared_ptr<STNode> node_ptr;
 	typedef boost::variant<TargetType, node_ptr> value_type;
 
 	/**
@@ -82,13 +82,13 @@ public:
 	 * \param logger which should be used by this eval
 	 * \param info about the eval
 	 **/
-	Eval(const string& expr, const shared_ptr<ParserLogger>& logger, const ParseInfo& info)
+	Eval(const string& expr, const std::shared_ptr<ParserLogger>& logger, const ParseInfo& info)
 		: value(TargetType())
 		, logger(logger)
 		, failed(false)
 		, info(info)
 	{
-		shared_ptr<STNode> result = parseEval(expr.cbegin(), expr.cend(), logger);
+		std::shared_ptr<STNode> result = parseEval(expr.cbegin(), expr.cend(), logger);
 
 		// If this is now eval expression, try to parse the type directly
 		if(result)
@@ -151,7 +151,7 @@ private:
 	value_type value;
 
 	// Logger for this eval
-	shared_ptr<ParserLogger> logger;
+	std::shared_ptr<ParserLogger> logger;
 	
 	// Flag if this eval failed before
 	mutable bool failed;
@@ -171,7 +171,7 @@ template<typename TargetType>
 class Eval< std::vector<TargetType> >
 {
 public:
-	typedef shared_ptr<STNode> node_ptr;
+	typedef std::shared_ptr<STNode> node_ptr;
 	typedef boost::variant<TargetType, node_ptr> value_type;
 
 	Eval(const std::vector<TargetType>& values)
@@ -182,7 +182,7 @@ public:
 
 	}
 
-	Eval(const string& expr, const shared_ptr<ParserLogger>& logger, const ParseInfo& info)
+	Eval(const string& expr, const std::shared_ptr<ParserLogger>& logger, const ParseInfo& info)
 		: logger(logger)
 		, failed(false)
 		, info(info)
@@ -295,7 +295,7 @@ private:
 		valuelist.push_back(TargetType());
 		if(!Conv(part, &boost::get<TargetType>(valuelist.back()), true))
 		{
-			shared_ptr<STNode> result = parseEval(part.cbegin(), part.cend(), logger);
+			std::shared_ptr<STNode> result = parseEval(part.cbegin(), part.cend(), logger);
 
 			if(!result)
 				BOOST_THROW_EXCEPTION(excp::ParseException()
@@ -312,7 +312,7 @@ private:
 	std::vector<value_type> valuelist;
 
 	// Logger for this eval
-	shared_ptr<ParserLogger> logger;
+	std::shared_ptr<ParserLogger> logger;
 
 	// Flag if this eval failed before
 	mutable bool failed;

@@ -33,7 +33,7 @@
 #include <fstream>
 
 
-Cache::Cache(const shared_ptr<Configuration>& config)
+Cache::Cache(const std::shared_ptr<Configuration>& config)
 	: Config(config)
 	, AllCaches()
 	, RecentlyUsedList()
@@ -63,7 +63,7 @@ void Cache::readFile(const Tile::ImageType& image, const boost::filesystem::path
 	}
 }
 
-void Cache::writeFile(shared_ptr<Tile> tile, const boost::filesystem::path& filename) {
+void Cache::writeFile(std::shared_ptr<Tile> tile, const boost::filesystem::path& filename) {
 	boost::filesystem::create_directories(filename.parent_path());
 	std::ofstream out(filename.string(), std::ios::out | std::ios::binary);
 	if(out.is_open())
@@ -83,7 +83,7 @@ void Cache::writeFile(shared_ptr<Tile> tile, const boost::filesystem::path& file
 	}
 }
 
-const boost::filesystem::path Cache::getTilePath(const shared_ptr<TileIdentifier>& ti) {
+const boost::filesystem::path Cache::getTilePath(const std::shared_ptr<TileIdentifier>& ti) {
 	std::stringstream path;
 	path << Config->get<string>(opt::server::cache_path) << "/";
 	path << ti->getStylesheetPath() << "/";
@@ -100,11 +100,11 @@ const boost::filesystem::path Cache::getTilePath(const shared_ptr<TileIdentifier
  * 
  * @param ti A shared pointer to the TileIdentifier of the Tile.
  **/
-shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
+shared_ptr<Tile> Cache::getTile(const std::shared_ptr<TileIdentifier>& ti)
 {
 	// TODO: Finer Synchronization
 	GlobalCacheLock.lock();
-	shared_ptr<CacheOfOneStylesheet> cache;
+	std::shared_ptr<CacheOfOneStylesheet> cache;
 	const string& stylesheet = ti->getStylesheetPath();
 	auto cacheIt = AllCaches.find(stylesheet);
 	if (cacheIt != AllCaches.end()) {
@@ -119,7 +119,7 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 		log << log4cpp::Priority::DEBUG << "Stylesheetcache " << stylesheet << " created.";
 	}
 	// Get tile from map
-	shared_ptr<Tile> tile;
+	std::shared_ptr<Tile> tile;
 	auto tileIt = cache->find(*ti);
 	if (tileIt != cache->end()) {
 		// Cache hit
@@ -145,11 +145,11 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 		cache->insert(std::make_pair(*ti, CacheElement(tile, RecentlyUsedList.begin())));
 	}
 	while (RecentlyUsedList.size() > Config->get<int>(opt::server::cache_size)) {
-		shared_ptr<Tile> tileToDelete = RecentlyUsedList.back();
+		std::shared_ptr<Tile> tileToDelete = RecentlyUsedList.back();
 		// Evict a Tile when cache is full.
 		if (tileToDelete->getIdentifier()->getZoom() <= Config->get<int>(opt::server::cache_keep_tile)) {
 			// Evict to hard drive.
-			shared_ptr<TileIdentifier> tiToDelete = tileToDelete->getIdentifier();
+			std::shared_ptr<TileIdentifier> tiToDelete = tileToDelete->getIdentifier();
 			boost::filesystem::path path = getTilePath(tiToDelete);
 			try {
 				writeFile(tileToDelete, path);
@@ -183,12 +183,12 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 /**
  * @brief Get the default tile used for error and such.
  * 
- * @return shared_ptr to the default Tile with loaded png (image can be null if file not found).
+ * @return std::shared_ptr to the default Tile with loaded png (image can be null if file not found).
  **/
 shared_ptr<Tile> Cache::getDefaultTile() {
 	if (!DefaultTile) {
 		string path = Config->get<string>(opt::server::path_to_default_tile);
-		shared_ptr<TileIdentifier> ti = boost::make_shared<TileIdentifier>(-1, -1, -1, "/", TileIdentifier::Format::PNG);
+		std::shared_ptr<TileIdentifier> ti = boost::make_shared<TileIdentifier>(-1, -1, -1, "/", TileIdentifier::Format::PNG);
 		DefaultTile = boost::make_shared<Tile>(ti);
 		// Load default tile
 		Tile::ImageType image = boost::make_shared<Tile::ImageType::element_type>();

@@ -69,7 +69,7 @@ int TileIdentifier::stringToInt(const char *p) {
  * @return A new TileIdentifier
  * @throws MalformedURLException if some part of the url isn't parseable.
  **/
-shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, shared_ptr<StylesheetManager> stylesheetManager, const shared_ptr<Configuration>& config)
+shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, std::shared_ptr<StylesheetManager> stylesheetManager, const shared_ptr<Configuration>& config)
 {
 	int x, y, zoom;
 	string styleSheetpath;
@@ -147,7 +147,7 @@ shared_ptr<TileIdentifier> TileIdentifier::Create(const string& url, shared_ptr<
 /**
  * @brief Return the TileIdentifier used for Tiles without data.
  * 
- * @return shared_ptr to TileIdentifier
+ * @return std::shared_ptr to TileIdentifier
  **/
 shared_ptr<TileIdentifier> TileIdentifier::CreateEmptyTID(const string& stylesheetPath, TileIdentifier::Format format)
 {

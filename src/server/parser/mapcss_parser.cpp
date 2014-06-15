@@ -115,7 +115,7 @@ struct StringVisitor : boost::static_visitor<string>
  * \param attrType type of the attribute
  * \param specifier for the attribute
  */
-void MapCssParser::addAttributeToTemplate(StylePtr& style, const shared_ptr<AttributeCreator>& attrType, const string& specifier, const ParseInfo& info)
+void MapCssParser::addAttributeToTemplate(StylePtr& style, const std::shared_ptr<AttributeCreator>& attrType, const string& specifier, const ParseInfo& info)
 {
 	assert(style);
 	assert(attrType);
@@ -157,7 +157,7 @@ void MapCssParser::applyStyleToRules(std::vector<RulePtr>& rules, const StylePtr
  * \param objType which should be selected by the selector
  * \return The created selector
  */
-SelectorPtr MapCssParser::createSelectorFromObjectType(const SelectorPtr& next, const shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType, Rule::AcceptableTypes& type)
+SelectorPtr MapCssParser::createSelectorFromObjectType(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType, Rule::AcceptableTypes& type)
 {
 	switch(objType)
 	{
@@ -181,7 +181,7 @@ SelectorPtr MapCssParser::createSelectorFromObjectType(const SelectorPtr& next, 
  * \param objType which should be selected by this selector
  * \return The created selector
  */
-SelectorPtr MapCssParser::createChildSelectorFromObjectType(const SelectorPtr& next, const shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType)
+SelectorPtr MapCssParser::createChildSelectorFromObjectType(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, obj::ObjectTypeEnum objType)
 {
 	switch(objType)
 	{
@@ -204,7 +204,7 @@ SelectorPtr MapCssParser::createChildSelectorFromObjectType(const SelectorPtr& n
  * \param condition used to select objects
  * \return The created selector
  */
-SelectorPtr MapCssParser::createSelectorFromUnaryCondition(const SelectorPtr& next, const shared_ptr<Rule>& rule, const UnaryCondition& condition)
+SelectorPtr MapCssParser::createSelectorFromUnaryCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const UnaryCondition& condition)
 {
 	const string& tag = fsio::at_c<1>(condition);
 
@@ -227,7 +227,7 @@ SelectorPtr MapCssParser::createSelectorFromUnaryCondition(const SelectorPtr& ne
  * \param condition used to select objects
  * \return The created selector
  */
-SelectorPtr MapCssParser::createSelectorFromBinaryCondition(const SelectorPtr& next, const shared_ptr<Rule>& rule, const BinaryCondition& condition)
+SelectorPtr MapCssParser::createSelectorFromBinaryCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const BinaryCondition& condition)
 {
 	const string& tag = fsio::at_c<0>(condition);
 	const string& value = fsio::at_c<2>(condition);
@@ -260,7 +260,7 @@ SelectorPtr MapCssParser::createSelectorFromBinaryCondition(const SelectorPtr& n
  * \param condition used to select objects
  * \return The created selector
  */
-SelectorPtr MapCssParser::createSelectorFromCondition(const SelectorPtr& next, const shared_ptr<Rule>& rule, const ConditionType& condition)
+SelectorPtr MapCssParser::createSelectorFromCondition(const SelectorPtr& next, const std::shared_ptr<Rule>& rule, const ConditionType& condition)
 {
 	switch(condition.which())
 	{
@@ -335,7 +335,7 @@ void MapCssParser::warnUnsupportedAttribute(const string& attribute) const {
  *
  *	\param geodata used in created rules
  */
-MapCssParser::MapCssParser(const shared_ptr<Geodata>& geodata)
+MapCssParser::MapCssParser(const std::shared_ptr<Geodata>& geodata)
 	: log(log4cpp::Category::getInstance("mapcss-parser"))
 	, geodata(geodata)
 {
@@ -413,10 +413,10 @@ void MapCssParser::load(const string& path)
  *	\param geodata used by in this stylesheet
  *	\return The created stylesheet
  */
-shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path, const shared_ptr<Geodata>& geodata, int timeout)
+shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path, const std::shared_ptr<Geodata>& geodata, int timeout)
 {
 
-	shared_ptr<MapCssParser> parser = boost::make_shared<MapCssParser>(geodata);
+	std::shared_ptr<MapCssParser> parser = boost::make_shared<MapCssParser>(geodata);
 
 	boost::thread timeoutThread(boost::bind(&MapCssParser::load, parser, path.string()));
 
@@ -426,7 +426,7 @@ shared_ptr<Stylesheet> Stylesheet::Load(const boost::filesystem::path& path, con
 	}
 
 
-	shared_ptr<Stylesheet> stylesheet = parser->parsedStylesheet;
+	std::shared_ptr<Stylesheet> stylesheet = parser->parsedStylesheet;
 
 	if(!stylesheet)
 	{

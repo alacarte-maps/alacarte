@@ -30,7 +30,7 @@
  *
  * @param topLeft corner of the meta-tile
  **/
-shared_ptr<MetaIdentifier> MetaIdentifier::Create(const shared_ptr<TileIdentifier>& origin)
+shared_ptr<MetaIdentifier> MetaIdentifier::Create(const std::shared_ptr<TileIdentifier>& origin)
 {
 	return boost::make_shared<MetaIdentifier>(*origin);
 }
@@ -61,7 +61,7 @@ MetaIdentifier::MetaIdentifier(const TileIdentifier& origin)
 		}
 }
 
-const std::vector<shared_ptr<TileIdentifier>>& MetaIdentifier::getIdentifiers() const
+const std::vector<std::shared_ptr<TileIdentifier>>& MetaIdentifier::getIdentifiers() const
 {
 	return tids;
 }
@@ -76,7 +76,7 @@ int MetaIdentifier::getHeight() const
 	return height;
 }
 
-bool MetaIdentifier::contains(const shared_ptr<TileIdentifier> tid) const
+bool MetaIdentifier::contains(const std::shared_ptr<TileIdentifier> tid) const
 {
 	int tx = tid->getX();
 	int ty = tid->getY();
@@ -90,7 +90,7 @@ bool MetaIdentifier::contains(const shared_ptr<TileIdentifier> tid) const
  * @brief get all tiles that are below this tile on the next zoom level.
  *        Used by RequestManager to enqueue meta tile for pre-rendering.
  */
-void MetaIdentifier::getSubIdentifiers(std::vector<shared_ptr<MetaIdentifier>>& tiles) const
+void MetaIdentifier::getSubIdentifiers(std::vector<std::shared_ptr<MetaIdentifier>>& tiles) const
 {
 	int z = this->zoom + 1;
 	int x = this->x*2;

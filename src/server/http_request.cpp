@@ -28,7 +28,7 @@
 #include "server/http_server.hpp"
 #include "server/cache.hpp"
 
-HttpRequest::HttpRequest ( boost::asio::io_service &ioService, const shared_ptr<HttpServer>& server, const shared_ptr<RequestManager> &manager )
+HttpRequest::HttpRequest ( boost::asio::io_service &ioService, const std::shared_ptr<HttpServer>& server, const shared_ptr<RequestManager> &manager )
 	: socket ( ioService )
 	, server ( server )
 	, manager ( manager )
@@ -58,8 +58,8 @@ void HttpRequest::readSome()
 }
 void HttpRequest::handleRead ( const boost::system::error_code &e, std::size_t bytes_transferred )
 {
-	shared_ptr<RequestManager> manager = this->manager.lock();
-	shared_ptr<HttpServer> server = this->server.lock();
+	std::shared_ptr<RequestManager> manager = this->manager.lock();
+	std::shared_ptr<HttpServer> server = this->server.lock();
 	assert(manager && server);
 
 	if ( !e ) {
@@ -82,7 +82,7 @@ void HttpRequest::handleRead ( const boost::system::error_code &e, std::size_t b
 
 void HttpRequest::handleWrite ( const boost::system::error_code &e )
 {
-	shared_ptr<HttpServer> server = this->server.lock();
+	std::shared_ptr<HttpServer> server = this->server.lock();
 	assert(server);
 
 	if ( !e ) {
@@ -124,13 +124,13 @@ void HttpRequest::answer()
 
 void HttpRequest::answer ( Reply::StatusType status )
 {
-	shared_ptr<RequestManager> manager = this->manager.lock();
+	std::shared_ptr<RequestManager> manager = this->manager.lock();
 	assert(manager);
 
 	answer(manager->getCache()->getDefaultTile(), status);
 }
 
-void HttpRequest::answer ( const shared_ptr<Tile>& tile, Reply::StatusType status )
+void HttpRequest::answer ( const std::shared_ptr<Tile>& tile, Reply::StatusType status )
 {
 	if (checkifAnswered()) return;
 	reply.status = status;

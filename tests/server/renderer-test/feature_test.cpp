@@ -34,8 +34,8 @@ BOOST_AUTO_TEST_SUITE(feature_test)
  */
 struct feature_test
 {
-	shared_ptr<Renderer> renderer;
-	shared_ptr<Geodata> data;
+	std::shared_ptr<Renderer> renderer;
+	std::shared_ptr<Geodata> data;
 
 	//! mapping from the value of tag 'name' to the corresponding style if the object
 	boost::unordered_map<CachedString, Style> styles;
@@ -57,7 +57,7 @@ struct feature_test
 	//! should be overwriten by all specific tests to generate styles for testing
 	virtual void generateStyles() = 0;
 
-	void styleWays(const shared_ptr<std::vector<WayId> >& ids, RenderAttributes& attr) const
+	void styleWays(const std::shared_ptr<std::vector<WayId> >& ids, RenderAttributes& attr) const
 	{
 		for (auto id : *ids)
 		{
@@ -76,7 +76,7 @@ struct feature_test
 		}
 	}
 
-	void styleNodes(const shared_ptr<std::vector<NodeId> >& ids, RenderAttributes& attr) const
+	void styleNodes(const std::shared_ptr<std::vector<NodeId> >& ids, RenderAttributes& attr) const
 	{
 		for (auto id : *ids)
 		{
@@ -95,7 +95,7 @@ struct feature_test
 		}
 	}
 
-	void styleRelations(const shared_ptr<std::vector<RelId> >& ids, RenderAttributes& attr) const
+	void styleRelations(const std::shared_ptr<std::vector<RelId> >& ids, RenderAttributes& attr) const
 	{
 		for (auto id : *ids)
 		{
@@ -119,7 +119,7 @@ struct feature_test
 	 * \param tilePath path to the resulting tile
 	 * \param id identifier of the tile that should be rendered
 	 */
-	void renderTile(const char* tilePath, shared_ptr<TileIdentifier> id)
+	void renderTile(const char* tilePath, std::shared_ptr<TileIdentifier> id)
 	{
 		BOOST_TEST_MESSAGE("Render: " << tilePath);
 		RenderAttributes attr;
@@ -146,11 +146,11 @@ struct feature_test
 		BOOST_TEST_MESSAGE(" - relations " << relations->size());
 		styleRelations(relations, attr);
 
-		shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(id);
+		std::shared_ptr<MetaIdentifier> mid = MetaIdentifier::Create(id);
 		RenderCanvasFactory factory;
-		shared_ptr<RenderCanvas> canvas = factory.getCanvas(id->getImageFormat());
+		std::shared_ptr<RenderCanvas> canvas = factory.getCanvas(id->getImageFormat());
 		renderer->renderMetaTile(attr, canvas, mid);
-		shared_ptr<Tile> tile = boost::make_shared<Tile>(id);
+		std::shared_ptr<Tile> tile = boost::make_shared<Tile>(id);
 		renderer->sliceTile(canvas, mid, tile);
 
 		BOOST_TEST_MESSAGE("Writing the tile:");
@@ -168,7 +168,7 @@ struct feature_test
 	 * \param name basename of the file (e.g. 'test' for 'test.png')
 	 * \param id the tile to render and compare
 	 */
-	void checkTile(const char* name, shared_ptr<TileIdentifier> id)
+	void checkTile(const char* name, std::shared_ptr<TileIdentifier> id)
 	{
 		string p = (getRenderedDirectory() / string(name)).native() + string(".png");
 		renderTile(p.c_str(), id);

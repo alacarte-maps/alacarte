@@ -52,7 +52,7 @@ public:
 	 * 
 	 * @param config the Configuration object to read the stylesheet directory path and prerender level from
 	 */
-	StylesheetManager(const shared_ptr<Configuration>& config);
+	StylesheetManager(const std::shared_ptr<Configuration>& config);
 
 	~StylesheetManager();
 
@@ -63,7 +63,7 @@ public:
 	 * 
 	 * @param manager the RequestManager to use to enqueue new Tiles to prerender
 	 */
-	TESTABLE void startStylesheetObserving(const shared_ptr<RequestManager>& manager);
+	TESTABLE void startStylesheetObserving(const std::shared_ptr<RequestManager>& manager);
 
 	/**
 	 * @brief Stops the folder observation
@@ -78,7 +78,7 @@ public:
 	 * @param path path of the stylesheet
 	 * @return the Stylesheet specified or the default Stylesheet
 	 */
-	TESTABLE shared_ptr<Stylesheet> getStylesheet(const string& path);
+	TESTABLE std::shared_ptr<Stylesheet> getStylesheet(const string& path);
 	TESTABLE bool hasStylesheet(const string& path);
 
 private:
@@ -99,15 +99,15 @@ private:
 	TESTABLE void onFileSystemEvent(const boost::system::error_code &ec, const boost::asio::dir_monitor_event &ev);
 
 private:
-	shared_ptr<Configuration> config;
+	std::shared_ptr<Configuration> config;
 	weak_ptr<RequestManager> manager;
 
 	boost::shared_mutex stylesheetsLock;
-	boost::unordered_map<fs::path, shared_ptr<Stylesheet> > parsedStylesheets;
+	boost::unordered_map<fs::path, std::shared_ptr<Stylesheet> > parsedStylesheets;
 
 	fs::path stylesheetFolder;
 
-	static shared_ptr<Stylesheet> makeFallbackStylesheet(const shared_ptr<Geodata>& geodata);
+	static std::shared_ptr<Stylesheet> makeFallbackStylesheet(const shared_ptr<Geodata>& geodata);
 
 	boost::asio::io_service						ioService;
 	boost::thread								monitorThread;
