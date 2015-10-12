@@ -106,7 +106,7 @@ RequestManager::RequestManager( const shared_ptr<Configuration>& config,
 	}
 
 	// start prerender timing
-	gettimeofday(&prerender_start, NULL);
+        prerender_start = std::chrono::system_clock::now();
 }
 
 /**
@@ -287,8 +287,10 @@ bool RequestManager::nextPreRenderRequest()
 	preLock.unlock();
 
 	if (currentPrerenderingThreads == 0 && preRenderRequests.size() == 0) {
-		TIMER_STOP(prerender);
-		log.info("Prerendering finished in %02i:%02i", (int) TIMER_MIN(prerender), ((int) TIMER_SEC(prerender)) % 60);
+		prerender_stop = std::chrono::system_clock::now();
+                int elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>
+                             (prerender_stop-prerender_start).count();
+		log.info("Prerendering finished in %02i:%02i", elapsed_seconds / 60, elapsed_seconds % 60);
 	}
 
 	return true;

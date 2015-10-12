@@ -80,12 +80,6 @@
 										}															\
 									}
 
-#define TIMER_START(_X) timeval _X##_start, _X##_stop; gettimeofday(&_X##_start, NULL)
-#define TIMER_STOP(_X) gettimeofday(&_X##_stop, NULL);
-#define TIMER_MSEC(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) * 1000.0 + (_X##_stop.tv_usec - _X##_start.tv_usec) / 1000.0)
-#define TIMER_SEC(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) + (_X##_stop.tv_usec - _X##_start.tv_usec) / 1000.0 / 1000.0)
-#define TIMER_MIN(_X) ((_X##_stop.tv_sec - _X##_start.tv_sec) / 60.0)
-
 using boost::shared_ptr;
 using boost::scoped_ptr;
 using boost::weak_ptr;
