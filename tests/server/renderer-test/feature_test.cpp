@@ -170,7 +170,7 @@ struct feature_test
 	 */
 	void checkTile(const char* name, shared_ptr<TileIdentifier> id)
 	{
-		string p = (getRenderedDirectory() / string(name)).native() + string(".png");
+		string p = (getRenderedDirectory() / (string(name)+".png")).string();
 		renderTile(p.c_str(), id);
 
 		compareTile(name);
