@@ -1,17 +1,42 @@
 language: cpp
 compiler: gcc
 
+# dependency specification specified for travis' new container-based infrastructure
+sudo: false
+addons:
+  apt:
+    sources:
+      # new boost
+      - boost-latest
+      # new gcc
+      - ubuntu-toolchain-r-test
+      # new cmake
+      - kalakris-cmake
+      # TODO: do we still need new cairo? ppa:ricotz/testing is not whitelisted, so we can't use it here.
+      # - ricotz-testing
+    packages:
+      - cmake
+      - g++-4.8
+      - libboost1.55-all-dev
+      - libboost-log1.55-dev
+      - libcairo2-dev
+      - libpng12-dev
+# end new infrastructure
+
 before_install:
-  #new boost
-  - sudo add-apt-repository --yes ppa:boost-latest/ppa
-  #new gcc
-  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-  #new cairo
-  - sudo add-apt-repository --yes ppa:ricotz/testing
-  # new cmake
-  - sudo add-apt-repository --yes ppa:kalakris/cmake
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq cmake g++-4.8 libboost1.55-all-dev libboost-log1.55-dev libcairo2-dev libpng12-dev
+  # keep the legacy infrastrucute spec around in case we need it again for not whitelisted PPAs
+  # dependency specification for travis' legacy infrastructure
+  # # new boost
+  # - sudo add-apt-repository --yes ppa:boost-latest/ppa
+  # # new gcc
+  # - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+  # # new cairo
+  # - sudo add-apt-repository --yes ppa:ricotz/testing
+  # # new cmake
+  # - sudo add-apt-repository --yes ppa:kalakris/cmake
+  # - sudo apt-get update -qq
+  # - sudo apt-get install -qq cmake g++-4.8 libboost1.55-all-dev libboost-log1.55-dev libcairo2-dev libpng12-dev
+  # end legacy infrastructure
 
   #if GCC
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
@@ -23,7 +48,8 @@ before_script:
 
 script:
   - make
-  - ctest -VV -E unitTests_server
+  # - ctest -VV -E unitTests_server
+  - ctest -VV
 
 notifications:
   email:
