@@ -248,7 +248,7 @@ SelectorPtr MapCssParser::createSelectorFromBinaryCondition(const SelectorPtr& n
 		}
 	}catch (boost::bad_lexical_cast&)
 	{
-		log.warn("Can not compare non numeric values");
+		LOG_SEV(style_log, warning) << "Can not compare non numeric values";
 		return next;
 	}
 }
@@ -327,7 +327,7 @@ RulePtr MapCssParser::createSelectorChain(const std::vector<SelectorItem>& items
  * \param attribute name
  */
 void MapCssParser::warnUnsupportedAttribute(const string& attribute) const {
-	log.warnStream() << "Unsupported attribute '" << attribute << "' was ignored!";
+	LOG_SEV(style_log, warning) << "Unsupported attribute '" << attribute << "' was ignored!";
 }
 
 /**
@@ -336,8 +336,7 @@ void MapCssParser::warnUnsupportedAttribute(const string& attribute) const {
  *	\param geodata used in created rules
  */
 MapCssParser::MapCssParser(const shared_ptr<Geodata>& geodata)
-	: log(log4cpp::Category::getInstance("mapcss-parser"))
-	, geodata(geodata)
+	: geodata(geodata)
 {
 }
 
@@ -351,7 +350,7 @@ MapCssParser::MapCssParser(const shared_ptr<Geodata>& geodata)
 void MapCssParser::load(const string& path)
 {
 	logger = boost::make_shared<ParserLogger>(path);
-	log.infoStream() << "Load stylesheet[" << path << "]";
+	LOG_SEV(style_log, info) <<  "Load stylesheet[" << path << "]";
 	MapCSSGrammar mapscc_grammar(*this);
 
 
@@ -360,7 +359,7 @@ void MapCssParser::load(const string& path)
 
 	if(!cssStream)
 	{
-		log.warnStream() << "Failed to load stylesheet '" << path << "'!";
+		LOG_SEV(style_log, warning) << "Failed to load stylesheet '" << path << "'!";
 		BOOST_THROW_EXCEPTION(excp::FileNotFoundException() << excp::InfoFileName(path));
 	}
 	cssStream >> std::noskipws;

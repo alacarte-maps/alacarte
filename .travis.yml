@@ -20,7 +20,7 @@ before_script:
   - cd build
   - cmake ..
 
-script: make alacarte-importer
+script: make
 
 notifications:
   email:

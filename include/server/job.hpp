@@ -45,7 +45,6 @@ public:
 		const shared_ptr<Configuration>& config,
 		const shared_ptr<RequestManager>& manager,
 		const shared_ptr<RenderCanvas>& canvas);
-	virtual ~Job();
 
 	void process();
 	void deliver();

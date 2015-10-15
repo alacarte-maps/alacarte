@@ -27,12 +27,6 @@
 
 #include "utils/application.hpp"
 
-#include <log4cpp/Category.hh>
-#include <log4cpp/Appender.hh>
-#include <log4cpp/FileAppender.hh>
-#include <log4cpp/Priority.hh>
-#include <log4cpp/PatternLayout.hh>
-
 #include "general/configuration.hpp"
 #include "general/geodata.hpp"
 
@@ -42,6 +36,8 @@
 #include "server/request_manager.hpp"
 #include "server/stylesheet_manager.hpp"
 
+#include <boost/log/expressions.hpp>
+#include <boost/log/utility/setup/file.hpp>
 
 
 using boost::program_options::options_description;
@@ -102,13 +98,11 @@ public:
 protected:
 	virtual bool startupDiagnostic(const shared_ptr<Configuration>& config)
 	{
-		log4cpp::Category& log = log4cpp::Category::getInstance("StartupDiagnostic");
-
-		if (!diagnosticCheckFile(config, opt::server::path_to_geodata, log) ) 	return false;
+		if (!diagnosticCheckFile(config, opt::server::path_to_geodata)) 	return false;
 
 		int max_queue_size = config->get<int>(opt::server::max_queue_size);
 		if (max_queue_size < 1) {
-			log.errorStream() << "It's not possible to use a max_queue_size(" << opt::server::max_queue_size << ") less than 1";
+			LOG_SEV(server_log, error) << "It's not possible to use a max_queue_size(" << opt::server::max_queue_size << ") less than 1";
 			return false;
 		}
 
@@ -116,22 +110,22 @@ protected:
 		int threads = config->get<int>(opt::server::num_threads);
 		if (hardware_concurrency  == 0)
 		{
-			log.infoStream() << "Couldn't detect amount of cores in this machine.";
+			LOG_SEV(server_log, info) << "Couldn't detect amount of cores in this machine.";
 		} 
 		else if (threads > hardware_concurrency)
 		{
-			log.infoStream() << "It's not recommended to use more than " << hardware_concurrency << " (amount of cores) threads.";
+			LOG_SEV(server_log, info) << "It's not recommended to use more than " << hardware_concurrency << " (amount of cores) threads.";
 		}
 
 		if (threads < 1)
 		{
-			log.errorStream() << "It's not possible to use less then 1 thread for rendering. Please set " << opt::server::num_threads << " appropriate.";
+			LOG_SEV(server_log, error) << "It's not possible to use less then 1 thread for rendering. Please set " << opt::server::num_threads << " appropriate.";
 			return false;
 		}
 
 		int parse_timeout = config->get<int>(opt::server::parse_timeout);
 		if (parse_timeout < 50) {
-			log.errorStream() << "It's not possible to use less than 50ms for " << opt::server::parse_timeout;
+			LOG_SEV(server_log, error) << "It's not possible to use less than 50ms for " << opt::server::parse_timeout;
 			return false;
 		}
 		/*
@@ -140,18 +134,18 @@ protected:
 		}
 		
 		if (true) {
-			log.infoStream() << opt::server::request_timeout << " not implemented yet";
+			LOG_SEV(server_log, info) << opt::server::request_timeout << " not implemented yet";
 		}
 		*/
 		if (config->has(opt::server::style_source)) {
 			boost::filesystem::path folder = config->get<string>(opt::server::style_source);
 			if (!boost::filesystem::is_directory(folder)) {
-				log.errorStream() << opt::server::style_source << " = \"" << folder.string() << "\" is not a directory.";
+				LOG_SEV(server_log, error) << opt::server::style_source << " = \"" << folder.string() << "\" is not a directory.";
 				return false;
 			}
 			
 		} else {
-			log.errorStream() << opt::server::style_source << " is not set.";
+			LOG_SEV(server_log, error) << opt::server::style_source << " is not set.";
 			return false;
 		}
 		
@@ -161,38 +155,30 @@ protected:
 				try {
 					boost::filesystem::create_directory(folder);
 				} catch (boost::filesystem::filesystem_error) {
-					log.errorStream() << opt::server::cache_path << " = \"" << folder.string() << "\" could not be created.";
+					LOG_SEV(server_log, error) << opt::server::cache_path << " = \"" << folder.string() << "\" could not be created.";
 					return false;
 				}
 			}
 		}
 		
-		if (!diagnosticCheckFile(config, opt::server::path_to_default_tile, log))	return false;
+		return diagnosticCheckFile(config, opt::server::path_to_default_tile);
+	}
 
-		return true;
-	}
-	
-	virtual void customInitLog(const shared_ptr<Configuration>& config, log4cpp::Appender *logFile) 
+	virtual void customInitLog(const shared_ptr<Configuration>& config)
 	{
-		log4cpp::PatternLayout *accessLogFileLayout = new log4cpp::PatternLayout();
-		accessLogFileLayout->setConversionPattern("%m%n");
-		
-		log4cpp::Appender *accessLogFileAppender = new log4cpp::FileAppender("AccessLogFile", config->get<string>(opt::server::access_log), false);
-		accessLogFileAppender->setLayout(accessLogFileLayout);
-		
-		log4cpp::Category::getInstance("AccessLog").addAppender(accessLogFileAppender);
-		log4cpp::Category::getInstance("AccessLog").setAdditivity(false);
-		if( config->has(opt::server::log_mute_component) ) {
-			std::vector<string> list = config->get<std::vector<string>>(opt::server::log_mute_component);
-			for(string component : list) {
-				log4cpp::Category::getInstance(component).addAppender(logFile);
-				log4cpp::Category::getInstance(component).setAdditivity(false);
-			}
-		}
+		fileLogger->set_filter(logging::expressions::attr<std::string>("Channel") != "Access");
+		consoleLogger->set_filter(logging::expressions::attr<std::string>("Channel") != "Access");
+
+		logging::add_file_log(
+			keywords::file_name = config->get<string>(opt::server::access_log),
+			keywords::rotation_size = 10 * 1024 * 1024,
+			keywords::time_based_rotation = logging::sinks::file::rotation_at_time_point(0, 0, 0),
+			keywords::format = "<%TimeStamp%>: %Message%",
+			keywords::filter = (logging::expressions::attr<std::string>("Channel") == "Access")
+			);
 	}
-	
-	
-	
+
+
 	/**
 	 * @brief Contains the main functionality for the server                                                                  
 	 *
@@ -207,9 +193,8 @@ protected:
 			geodata->load(config->get<string>(opt::server::path_to_geodata));
 		} catch(...)
 		{
-			log4cpp::Category& log = log4cpp::Category::getRoot();
-			log.errorStream() << "Failed to load geodata!";
-			log.errorStream() << "Try to import your osm data again!";
+			BOOST_LOG_TRIVIAL(error) << "Failed to load geodata!";
+			BOOST_LOG_TRIVIAL(error) << "Try to import your osm data again!";
 			return;
 		}
 		shared_ptr<Cache> cache = make_shared<Cache>(config);

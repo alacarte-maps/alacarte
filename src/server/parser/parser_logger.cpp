@@ -79,16 +79,6 @@ string ParserLogger::LogStream::logvalue() const
  **/
 ParserLogger::ParserLogger(const string& parsedFile)
 	: filename(parsedFile + ".error")
-	, log(log4cpp::Category::getInstance("parser"))
-{
-
-}
-
-/**
- * @brief Destroyes the parse logger
- *
- **/
-ParserLogger::~ParserLogger()
 {
 
 }
@@ -150,7 +140,7 @@ void ParserLogger::logToStream(Category cat, const string& str )
 
 		if(!outputStream.is_open())
 		{
-			log.critStream() << "Failed to open \"" + filename + "\"";
+			LOG_SEV(style_log, fatal) << "Failed to open \"" + filename + "\"";
 			filename.clear();
 			return;
 		}
@@ -160,12 +150,12 @@ void ParserLogger::logToStream(Category cat, const string& str )
 	{
 	case ParserLogger::Warning:
 		outputStream << "Waring: " << str << "\n";
-		log.warnStream() << str;
+		LOG_SEV(style_log, warning) << str;
 		break;
 	default:
 	case ParserLogger::Error:
 		outputStream << "Error: " << str << "\n";
-		log.errorStream() << str;
+		LOG_SEV(style_log, error) << str;
 		break;
 	}
 

@@ -129,14 +129,14 @@ void Application::appRun(int argc, char** argv)
  **/
 void Application::initLog(const shared_ptr<Configuration>& config)
 {
-	logging::add_file_log(
+	fileLogger = logging::add_file_log(
 			keywords::file_name = config->get<string>(opt::logfile),
 			keywords::rotation_size = 10 * 1024 * 1024,
 			keywords::time_based_rotation = logging::sinks::file::rotation_at_time_point(0, 0, 0),
 			keywords::format = "<%TimeStamp%>: [%Channel%] %Severity%: %Message%"
 			);
 
-	logging::add_console_log(std::clog,
+	consoleLogger = logging::add_console_log(std::clog,
 			keywords::format = "[%Channel%] %Severity%: %Message%"
 			);
 
@@ -146,6 +146,8 @@ void Application::initLog(const shared_ptr<Configuration>& config)
 	(
 		logging::trivial::severity >= logging::trivial::info
 	);
+
+	customInitLog(config);
 }
 
 bool Application::diagnosticCheckFile(const shared_ptr<Configuration>& config, const string& key) 

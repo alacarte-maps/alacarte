@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #
-# Depends on boost version from Debian Jesie
+# Depends on boost version from Debian Jessie
 #
 find_package(Boost 1.55.0 COMPONENTS system filesystem thread unit_test_framework program_options serialization regex
 	iostreams log log_setup REQUIRED)

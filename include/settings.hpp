@@ -68,6 +68,12 @@ BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(app_log, logger_mt, (keywords::channel 
 BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(importer_log, logger_mt, (keywords::channel = "Importer"))
 BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(geo_log, logger_mt, (keywords::channel = "Geodata"))
 BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(stat_log, logger_mt, (keywords::channel = "Statistics"))
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(server_log, logger_mt, (keywords::channel = "Server"))
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(access_log, logger_mt, (keywords::channel = "Access"))
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(style_log, logger_mt, (keywords::channel = "Stylesheets"))
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(cache_log, logger_mt, (keywords::channel = "Cache"))
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(request_log, logger_mt, (keywords::channel = "Request"))
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(render_log, logger_mt, (keywords::channel = "Renderer"))
 
 #define LOG_SEV(log, lvl)\
 	BOOST_LOG_SEV(log::get(), (logging::trivial::lvl))

@@ -60,7 +60,6 @@ public:
 	};
 
 	ParserLogger(const string& parsedFile);
-	~ParserLogger();
 
 	LogStream warnStream();
 	LogStream errorStream();
@@ -72,7 +71,6 @@ private:
 
 	std::ofstream		outputStream;
 	string				filename;
-	log4cpp::Category&	log;
 };
 
 

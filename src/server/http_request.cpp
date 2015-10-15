@@ -33,7 +33,6 @@ HttpRequest::HttpRequest ( boost::asio::io_service &ioService, const shared_ptr<
 	, server ( server )
 	, manager ( manager )
 	, answered (false)
-	, log(log4cpp::Category::getInstance("HttpRequest"))
 {
 
 };
@@ -109,7 +108,7 @@ boost::asio::ip::tcp::socket &HttpRequest::getSocket()
 bool HttpRequest::checkifAnswered()
 {
 	if (answered) {
-		log.errorStream() << "Tried to answer an already answered HttpRequest: " << getURL();
+		LOG_SEV(server_log, error) << "Tried to answer an already answered HttpRequest: " << getURL();
 	}
 	return answered;
 }
@@ -145,9 +144,8 @@ void HttpRequest::answer ( const shared_ptr<Tile>& tile, Reply::StatusType statu
 
 	//	IP					Date				Method		url			Version  Reply Size duration
 	//80.101.90.180 - [02/Jun/2009:15:11:52 -0400] "GET /css/style.css HTTP/1.1" 200 2816 12
-	auto now = boost::posix_time::second_clock::local_time();	
-	log4cpp::Category& accessLog = log4cpp::Category::getInstance("AccessLog");
-	accessLog.infoStream() 	<< socket.remote_endpoint().address().to_string()
+	auto now = boost::posix_time::second_clock::local_time();
+	LOG_SEV(access_log, info) << socket.remote_endpoint().address().to_string()
 						<< " - ["
 						<< now.date().day() << "/" << now.date().month() << "/" << now.date().year()
 						<< ":" << now.time_of_day().hours() << ":" << now.time_of_day().minutes() << ":" << now.time_of_day().seconds()
@@ -155,7 +153,7 @@ void HttpRequest::answer ( const shared_ptr<Tile>& tile, Reply::StatusType statu
 						<< data.method << " " << data.uri << " HTTP/" << data.http_version_major << "." << data.http_version_minor << "\" "
 						<< reply.status << " " << reply.headers[0].value;
 
-	log.infoStream() 	<< "Answered \"" << data.uri << "\"";
+	LOG_SEV(server_log, info) << "Answered \"" << data.uri << "\"";
 	answer();
 }
 

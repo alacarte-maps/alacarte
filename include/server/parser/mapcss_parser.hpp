@@ -51,8 +51,6 @@ struct MapCssParser
 	MapCssParser(const shared_ptr<Geodata>& geodata);
 	void load(const string& path);
 
-	//! The log used by the parser
-	log4cpp::Category& log;
 	//! The geodata used to inject them in the rules
 	shared_ptr<Geodata> geodata;
 	//! The parsed stylesheet

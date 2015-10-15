@@ -28,7 +28,6 @@
 #include "server/job.hpp"
 #include "general/configuration.hpp"
 
-#define DEBUG(...) (log4cpp::Category::getInstance("RequestManager").info(__VA_ARGS__));
 
 class RequestManager::RunningQueue
 {
@@ -93,7 +92,6 @@ RequestManager::RequestManager( const shared_ptr<Configuration>& config,
 	, ssm(ssm)
 	, preventStop(jobPool)
 	, running(new RunningQueue())
-	, log(log4cpp::Category::getInstance("RequestManager"))
 {
 	int threads = config->get<int>(opt::server::num_threads);
 	currentPrerenderingThreads = 0;
@@ -115,7 +113,7 @@ RequestManager::RequestManager( const shared_ptr<Configuration>& config,
  **/
 RequestManager::~RequestManager() {
 	stop();
-	log.debugStream() << "RequestManager destructed";
+	LOG_SEV(request_log, debug) << "RequestManager destructed";
 }
 
 /**
@@ -172,7 +170,7 @@ void RequestManager::processNextRequest()
 {
 	if (!nextUserRequest())
 		if (!nextPreRenderRequest())
-			log << log4cpp::Priority::ERROR << "Trying to run a job, but there is none.";
+			LOG_SEV(request_log, error) << "Trying to run a job, but there is none.";
 }
 
 /**
@@ -196,14 +194,14 @@ bool RequestManager::nextUserRequest()
 	}
 	catch (excp::MalformedURLException &e)
 	{
-		log.infoStream() << "MalformedURLException: "
+		LOG_SEV(request_log, info) << "MalformedURLException: "
 			<< e.what()  << " Url: " << req->getURL();
 
 		req->answer(HttpRequest::Reply::forbidden);
 	}
 	catch (excp::UnknownImageFormatException &e)
 	{
-		log.infoStream() << "UnknownImageFormatException: "
+		LOG_SEV(request_log, info) << "UnknownImageFormatException: "
 			<< e.what()  << " Url: " << req->getURL();
 
 		req->answer(HttpRequest::Reply::not_implemented);
@@ -288,7 +286,8 @@ bool RequestManager::nextPreRenderRequest()
 
 	if (currentPrerenderingThreads == 0 && preRenderRequests.size() == 0) {
 		TIMER_STOP(prerender);
-		log.info("Prerendering finished in %02i:%02i", (int) TIMER_MIN(prerender), ((int) TIMER_SEC(prerender)) % 60);
+		LOG_SEV(request_log, info) << "Prerendering finished in "
+			<< std::setfill('0') << std::setw(2) << (int) TIMER_MIN(prerender) << ":" << ((int) TIMER_SEC(prerender)) % 60;
 	}
 
 	return true;

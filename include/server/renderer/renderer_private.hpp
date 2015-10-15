@@ -25,8 +25,6 @@
 
 #include <cairo.h>
 
-#define DEBUG(...) (log4cpp::Category::getInstance("Renderer").info(__VA_ARGS__));
-
 #define RENDERER_SHIELD_DISTANCE 128.0
 #define RENDERER_SHIELD_OVERLAP 0.1
 #define RENDERER_LABEL_OVERLAP 0.1
