@@ -53,9 +53,25 @@
 #include <boost/asio/basic_socket.hpp>
 #include <boost/exception/all.hpp>
 
-// log4cpp
-#include <log4cpp/Priority.hh>
-#include <log4cpp/Category.hh>
+// boost log
+#include <boost/log/trivial.hpp>
+#include <boost/log/sources/severity_channel_logger.hpp>
+#include <boost/log/sources/global_logger_storage.hpp>
+namespace logging = boost::log;
+namespace keywords = boost::log::keywords;
+typedef logging::sources::severity_channel_logger_mt<
+    logging::trivial::severity_level, // those are: trace, debug, info, warning, error, fatal
+    std::string
+> logger_mt;
+
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(app_log, logger_mt, (keywords::channel = "Application"))
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(importer_log, logger_mt, (keywords::channel = "Importer"))
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(geo_log, logger_mt, (keywords::channel = "Geodata"))
+BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(stat_log, logger_mt, (keywords::channel = "Statistics"))
+
+#define LOG_SEV(log, lvl)\
+	BOOST_LOG_SEV(log::get(), (logging::trivial::lvl))
+
 
 #ifdef ALACARTE_TEST
 	#define TESTABLE virtual

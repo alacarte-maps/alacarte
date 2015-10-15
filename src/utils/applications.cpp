@@ -21,13 +21,10 @@
 
 #include <boost/filesystem.hpp>
 
-#include <log4cpp/Category.hh>
-#include <log4cpp/Appender.hh>
-#include <log4cpp/FileAppender.hh>
-#include <log4cpp/OstreamAppender.hh>
-#include <log4cpp/BasicLayout.hh>
-#include <log4cpp/Priority.hh>
-#include <log4cpp/PatternLayout.hh>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/console.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/formatter_parser.hpp>
 
 #include "utils/application.hpp"
 #include "general/configuration.hpp"
@@ -39,18 +36,8 @@ using boost::make_shared;
  *
  **/
 Application::Application()
-	: mLogInitialized(false)
 {
 
-}
-
-/**
- * @brief Tidy up hole Application                                                                     
- *
- **/
-Application::~Application()
-{
-	log4cpp::Category::shutdown();
 }
 
 /**
@@ -75,13 +62,7 @@ int Application::start(int argc, char** argv)
 		// We don't even have the slightest idea, what might have happened
 		std::string info = boost::current_exception_diagnostic_information();
 
-		if(mLogInitialized)
-		{
-			log4cpp::Category& log = log4cpp::Category::getRoot();
-			log.critStream() << "Boost diagnostic:\n" << info;
-		}else{
-			std::cout << info;
-		}
+		BOOST_LOG_TRIVIAL(fatal) << "Boost diagnostic:\n" << info;
 		return 1;
 	}
 #endif
@@ -122,17 +103,16 @@ void Application::appRun(int argc, char** argv)
 	initLog(config);
 
 	config->printConfigToLog();
-	
-	
-	log4cpp::Category& log = log4cpp::Category::getInstance("StartupDiagnostic");
-	
+
+
 	if (config->get<string>(opt::config) != DEFAULT_CONFIG_NAME && !config->usedConfigFile())
 	{
 		const std::vector<string> &dirs = config->getSeachDirectories();
-		log.errorStream() << "The given config file was not found. Searched for:";
+		LOG_SEV(app_log, error) << "The given config file was not found. Searched for:";
+
 		std::for_each(begin(dirs), end(dirs), [&](const string &dir)
 		{
-			log.errorStream() << opt::config << " = \"" << dir << "/" << config->get<string>(opt::config) << "\"";
+			LOG_SEV(app_log, error) << opt::config << " = \"" << dir << "/" << config->get<string>(opt::config) << "\"";
 		});
 		return;
 	}
@@ -149,43 +129,36 @@ void Application::appRun(int argc, char** argv)
  **/
 void Application::initLog(const shared_ptr<Configuration>& config)
 {
-	assert(!mLogInitialized);
-	
-	log4cpp::PatternLayout *rootLayout = new log4cpp::PatternLayout();
-	rootLayout->setConversionPattern("[%p] [%c] %m%n");
-	
-	log4cpp::PatternLayout *logFileLayout = new log4cpp::PatternLayout();
-	logFileLayout->setConversionPattern("%d [%p] [%c] %m%n");
-	
-	log4cpp::Appender *rootAappender = new log4cpp::OstreamAppender("Console", &std::cout);
-	rootAappender->setLayout(rootLayout);
+	logging::add_file_log(
+			keywords::file_name = config->get<string>(opt::logfile),
+			keywords::rotation_size = 10 * 1024 * 1024,
+			keywords::time_based_rotation = logging::sinks::file::rotation_at_time_point(0, 0, 0),
+			keywords::format = "<%TimeStamp%>: [%Channel%] %Severity%: %Message%"
+			);
 
-	log4cpp::Appender *logFileAppender = new log4cpp::FileAppender("LogFile", config->get<string>(opt::logfile), false);
-	logFileAppender->setLayout(logFileLayout);
+	logging::add_console_log(std::clog,
+			keywords::format = "[%Channel%] %Severity%: %Message%"
+			);
 
-	log4cpp::Category& root = log4cpp::Category::getRoot();
-	root.setPriority(log4cpp::Priority::INFO);
-	root.addAppender(rootAappender);
-	root.addAppender(logFileAppender);
-	
-	customInitLog(config, logFileAppender);
-	
-	mLogInitialized = true;
+	logging::add_common_attributes();
 
-	root.info("Logfile opened...");
+	logging::core::get()->set_filter
+	(
+		logging::trivial::severity >= logging::trivial::info
+	);
 }
 
-bool Application::diagnosticCheckFile(const shared_ptr<Configuration>& config, const string& key, log4cpp::Category& log) 
+bool Application::diagnosticCheckFile(const shared_ptr<Configuration>& config, const string& key) 
 {
 	if (config->has(key)) {
 		boost::filesystem::path file = config->get<string>(key);
 		bool exists =  boost::filesystem::exists(file);
 		if (!exists) {
-			log.errorStream() << key << " = \"" << file.string() << "\" does not exist.";
+			LOG_SEV(app_log, error) << key << " = \"" << file.string() << "\" does not exist.";
 		}
 		return exists;
 	} else {
-		log.errorStream() << key << " is not set.";
+		LOG_SEV(app_log, error) << key << " is not set.";
 		return false;
 	}
 }

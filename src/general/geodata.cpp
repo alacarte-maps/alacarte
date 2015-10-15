@@ -153,8 +153,7 @@ Relation* Geodata::getRelation(RelId id) const
 
 void Geodata::load(const string& path)
 {
-	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
-	log.infoStream() << "Load geodata from \"" << path << "\"";
+	LOG_SEV(geo_log, info) << "Load geodata from \"" << path << "\"";
 
 	Archive a(path);
 	std::vector<Archive::entry_t> entries;
@@ -183,8 +182,7 @@ void Geodata::load(const string& path)
 
 void Geodata::serialize(const string& serPath) const
 {
-	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
-	log.infoStream() << "Serialize to \"" << serPath << "\"";
+	LOG_SEV(geo_log, info) << "Serialize to \"" << serPath << "\"";
 
 	std::ofstream ofs(serPath, std::ios::binary | std::ios::out);
 	boost::archive::binary_oarchive oa(ofs);
@@ -204,8 +202,7 @@ void Geodata::save(const string& outPath)
 
 	serialize(serPath);
 
-	log4cpp::Category& log = log4cpp::Category::getInstance("Geodata");
-	log.infoStream() << "Save geodata to \"" << outPath << "\"";
+	LOG_SEV(geo_log, info) << "Save geodata to \"" << outPath << "\"";
 	Archive a(outPath);
 	a.addFile(serPath);
 	if (nodesTree)

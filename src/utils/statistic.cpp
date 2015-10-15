@@ -24,7 +24,6 @@
 #include "utils/statistic.hpp"
 #include "general/configuration.hpp"
 
-#define DEBUG(...) (log4cpp::Category::getInstance("Statistic").info(__VA_ARGS__));
 
 shared_ptr<Statistic> Statistic::instance;
 
@@ -104,8 +103,7 @@ void Statistic::printStatistic() const
 		}
 	}
 
-	log4cpp::Category &log = log4cpp::Category::getInstance("Statistic");
-	log.infoStream() << ss.str();
+	LOG_SEV(stat_log, info) << ss.str();
 #endif
 }
 
