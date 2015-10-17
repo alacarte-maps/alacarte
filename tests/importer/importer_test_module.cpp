@@ -7,7 +7,7 @@
 #include <log4cpp/Category.hh>
 #include <log4cpp/OstreamAppender.hh>
 
-class TestSetup
+struct TestSetup
 {
 public:
 	TestSetup() {
@@ -21,4 +21,4 @@ public:
 	}
 };
 
-TestSetup setup;
+BOOST_GLOBAL_FIXTURE( TestSetup );
