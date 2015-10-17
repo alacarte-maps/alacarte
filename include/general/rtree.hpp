@@ -359,6 +359,9 @@ void RTree<id_t, data_t>::buildLevels ()
 
 //! reads a leaf from file
 template<class id_t, class data_t>
+#ifdef _MSC_VER
+typename
+#endif
 RTree<id_t, data_t>::RLeaf<id_t, data_t>*
 RTree<id_t, data_t>::readLeaf (uint32_t nodeIdx, uint32_t childIdx) const
 {
