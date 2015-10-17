@@ -33,10 +33,14 @@ UnaryOperationNode::UnaryOperationNode(op::UnaryOperationEnum operation, const n
 
 }
 
+/**
+ * This method does nothing for now as UnaryOperations are not used in parser
+ */
 string UnaryOperationNode::eval(GeoObject* obj) const
 {
-	// This is needed beacase of MSVC
 	assert(false);
+	// This is needed because of MSVC
+	return "";
 }
 
 

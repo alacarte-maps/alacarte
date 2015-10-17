@@ -20,7 +20,14 @@ before_script:
   - cd build
   - cmake ..
 
-script: make
+script:
+  - make
+  - make tests
+  - ./unitTests_importer
+  - ./unitTests_general
+  - ./unitTests_utils
+  - ./unitTests_parser
+  - ./unitTests_server
 
 notifications:
   email:

@@ -118,7 +118,7 @@ struct placement_test
 
 	void checkTile(const char* name)
 	{
-		string p = (getRenderedDirectory() / string(name)).native() + string(".png");
+		string p = (getRenderedDirectory() / (string(name)+".png")).string();
 		renderLabels(p.c_str());
 
 		compareTile(name);

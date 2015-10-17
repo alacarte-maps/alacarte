@@ -212,7 +212,7 @@ private:
 			DWORD bytes_transferred; 
 			completion_key *ck; 
 			OVERLAPPED *overlapped; 
-			BOOL res = GetQueuedCompletionStatus(iocp_, &bytes_transferred, reinterpret_cast<unsigned long*>(&ck), &overlapped, INFINITE); 
+			BOOL res = GetQueuedCompletionStatus(iocp_, &bytes_transferred, reinterpret_cast<PULONG_PTR>(&ck), &overlapped, INFINITE); 
 			if (!res) 
 			{ 
 				DWORD last_error = GetLastError(); 

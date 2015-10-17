@@ -14,20 +14,6 @@ if (NOT Boost_FOUND)
     message(FATAL_ERROR "Fatal error: Boost (version >= 1.55.0) required.\n")
 endif (NOT Boost_FOUND)
 
-# Check if boost compiles with libc.
-set(CMAKE_REQUIRED_INCLUDES ${Boost_INCLUDE_DIRS})
-include(CheckCXXSourceCompiles)
-check_cxx_source_compiles("
-#include <boost/thread/xtime.hpp>
-int main(void)
-{
-    return 0;
-}
-" BOOST_XTIME)
-if (NOT BOOST_XTIME)
-    message (FATAL_ERROR "Fatal error: Boost xtime seems to be broken. Consider upgrading Boost to >= 1.55")
-endif()
-
 #find other packages
 IF(WIN32)
 	SET(ENV{FREETYPE_DIR} ${CMAKE_FIND_ROOT_PATH})
@@ -38,6 +24,8 @@ ENDIF(WIN32)
 find_package(Cairo REQUIRED)
 find_package(Freetype REQUIRED)
 
+find_package(Threads REQUIRED)
+find_package(Doxygen)
 
 #
 # Build options
@@ -75,7 +63,6 @@ set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
 link_directories(${Boost_LIBRARY_DIRS})
 include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
 
-ADD_DEFINITIONS("-std=c++0x")
 #ADD_DEFINITIONS("-fdiagnostics-color=auto")
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
@@ -89,10 +76,20 @@ IF(EXISTS "${PROJECT_SOURCE_DIR}/gmock" AND IS_DIRECTORY "${PROJECT_SOURCE_DIR}/
     SET(GMOCK_FOUND 1)
 ENDIF(EXISTS "${PROJECT_SOURCE_DIR}/gmock" AND IS_DIRECTORY "${PROJECT_SOURCE_DIR}/gmock")
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-SET(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ftest-coverage -fprofile-arcs -fprofile-values -fvpt -pg")
-SET(CMAKE_CXX_FLAGS_SANITIZE "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=thread -fno-omit-frame-pointer")
+if(MSVC)
+   ADD_DEFINITIONS(-D_WIN32_WINNT=0x0501)
+   ADD_DEFINITIONS(-DNOMINMAX)
+   ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
+else()
+   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+   SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+   SET(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ftest-coverage -fprofile-arcs -fprofile-values -fvpt -pg")
+   SET(CMAKE_CXX_FLAGS_SANITIZE "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=thread -fno-omit-frame-pointer")
+   ADD_DEFINITIONS("-std=c++11")
+   #ADD_DEFINITIONS("-fdiagnostics-color=auto")
+   ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+endif()
+
 MARK_AS_ADVANCED(CMAKE_CXX_FLAGS_PROFILE)
 SET( CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING
     "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel Profile Sanitize."
@@ -140,6 +137,7 @@ configure_file("include/config.hpp.in" "${CMAKE_SOURCE_DIR}/include/config.hpp")
 
 add_executable(alacarte-server      src/alacarte_server.cpp     ${server_sources}   ${alacarte_sources})
 add_executable(alacarte-importer    src/alacarte_importer.cpp   ${importer_sources} ${alacarte_sources})
+
 add_executable(unitTests_utils      EXCLUDE_FROM_ALL ${UnitTests_utils_sources} ${alacarte_sources} ${UnitTests_shared_sources})
 add_executable(unitTests_parser     EXCLUDE_FROM_ALL ${UnitTests_parser_sources} ${alacarte_sources} ${server_sources} ${UnitTests_shared_sources})
 add_executable(unitTests_general    EXCLUDE_FROM_ALL ${UnitTests_general_sources} ${alacarte_sources} ${UnitTests_shared_sources})
@@ -160,17 +158,18 @@ IF(GMOCK_FOUND)
     set_target_properties(unitTests_mapcss PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
 ENDIF(GMOCK_FOUND)
 
-target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} pthread ${SYSTEM_LIBRARIES})
-target_link_libraries(alacarte-importer     ${Boost_LIBRARIES} pthread ${SYSTEM_LIBRARIES})
-target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
-target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
-target_link_libraries(unitTests_importer    ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
-target_link_libraries(unitTests_server      ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
-target_link_libraries(unitTests_parser      ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
+target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
+target_link_libraries(alacarte-importer     ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
+target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unitTests_importer    ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unitTests_server      ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unitTests_parser      ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 IF(GMOCK_FOUND)
-    target_link_libraries(unitTests_mapcss  ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} pthread gmock gtest)
+    target_link_libraries(unitTests_mapcss  ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} gmock gtest)
 ENDIF(GMOCK_FOUND)
-target_link_libraries(unitTests_eval        ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} pthread)
+target_link_libraries(unitTests_eval        ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
 
 set(test_files "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte")
 

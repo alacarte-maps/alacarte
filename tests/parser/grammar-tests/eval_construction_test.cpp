@@ -37,7 +37,7 @@ struct EvalConstructionTest
 		{
 			if(res != Failed)
 			{
-				BOOST_MESSAGE(boost::diagnostic_information(e));
+				BOOST_TEST_MESSAGE(boost::diagnostic_information(e));
 			}
 			BOOST_CHECK_EQUAL(res, Failed);
 		}
@@ -97,7 +97,7 @@ struct EvalListConstructionTest
 			}
 		} catch(excp::ParseException& e)
 		{
-			BOOST_MESSAGE(boost::diagnostic_information(e));
+			BOOST_TEST_MESSAGE(boost::diagnostic_information(e));
 		}
 	}
 
