@@ -22,6 +22,7 @@
 #define REQUEST_MANAGER_HPP
 
 
+#include <chrono>
 #include <boost/asio.hpp>
 #include <boost/thread/thread.hpp>
 
@@ -85,7 +86,7 @@ private:
 
 	log4cpp::Category& log;
 
-	timeval prerender_start, prerender_stop;
+	std::chrono::system_clock::time_point prerender_start, prerender_stop;
 };
 
 
