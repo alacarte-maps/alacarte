@@ -1,24 +1,22 @@
 ﻿// Simply define the module
 #define BOOST_TEST_MODULE server test
 
-
 #include <boost/test/unit_test.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
 
-#include <log4cpp/Appender.hh>
-#include <log4cpp/Category.hh>
-#include <log4cpp/OstreamAppender.hh>
+namespace logging = boost::log;
 
 struct TestSetup
 {
 public:
 	TestSetup() {
-		log4cpp::Appender *appender1 = new log4cpp::OstreamAppender("console", &std::cout);
-		appender1->setLayout(new log4cpp::BasicLayout());
+		logging::core::get()->set_filter(
+			logging::trivial::severity >= logging::trivial::debug
+			);
 
 		BOOST_TEST_MESSAGE("Start logging.");
-		log4cpp::Category& root = log4cpp::Category::getRoot();
-		root.setPriority(log4cpp::Priority::DEBUG);
-		root.addAppender(appender1);
 	}
 };
 
