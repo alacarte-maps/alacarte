@@ -2833,7 +2833,7 @@ namespace eaglexml {
 					StackSegment* toDelete = segment;
 					segment = segment->next;
 					allocator.destroy(toDelete);
-					allocator.deallocate(toDelete, Size);
+					allocator.deallocate(toDelete, 1);
 				}
 			}
 
@@ -2932,7 +2932,7 @@ namespace eaglexml {
 					StackSegment* toDelete = segment;
 					segment = segment->next;
 					allocator.destroy(toDelete);
-					allocator.deallocate(toDelete, Size);
+					allocator.deallocate(toDelete, 1);
 				}
 			}
 
