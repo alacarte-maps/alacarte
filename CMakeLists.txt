@@ -10,6 +10,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Boost 1.55.0 COMPONENTS system filesystem thread unit_test_framework program_options serialization regex
 	iostreams log log_setup REQUIRED)
 
+OPTION(BUILD_TESTS "Build tests automatically and allow running them with ctest" OFF)
+
 if (NOT Boost_FOUND)
     message(FATAL_ERROR "Fatal error: Boost (version >= 1.55.0) required.\n")
 endif (NOT Boost_FOUND)
@@ -160,6 +162,7 @@ add_executable(unitTests_parser    EXCLUDE_FROM_ALL ${UnitTests_parser_sources} 
 add_executable(unitTests_general   EXCLUDE_FROM_ALL ${UnitTests_general_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:server-obj-test> $<TARGET_OBJECTS:alacarte-obj-test>)
 add_executable(unitTests_importer  EXCLUDE_FROM_ALL ${UnitTests_importer_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:alacarte-obj-test>)
 add_executable(unitTests_server    EXCLUDE_FROM_ALL ${UnitTests_server_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:server-obj-test> $<TARGET_OBJECTS:alacarte-obj-test>)
+
 IF(GMOCK_FOUND)
     add_executable(unitTests_mapcss EXCLUDE_FROM_ALL ${UnitTests_mapcss_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:server-obj-test> $<TARGET_OBJECTS:alacarte-obj-test>)
 ENDIF(GMOCK_FOUND)
@@ -193,9 +196,27 @@ add_custom_command(
     COMMAND alacarte-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte"
 )
 
-add_custom_target(tests
+IF(BUILD_TESTS)
+   SET(BT_FLAG ALL)
+ENDIF()
+
+add_custom_target(tests ${BT_FLAG}
     DEPENDS alacarte-importer unitTests_server unitTests_importer unitTests_general unitTests_parser unitTests_utils unitTests_eval ${test_files}
 )
+
+IF(BUILD_TESTS)
+   enable_testing()
+   include(CTest)
+   add_test(unitTests_utils unitTests_utils DEPENDS tests)
+   add_test(unitTests_eval unitTests_eval)
+   add_test(unitTests_parser unitTests_parser)
+   add_test(unitTests_general unitTests_general)
+   add_test(unitTests_importer unitTests_importer)
+   add_test(unitTests_server unitTests_server)
+IF(GMOCK_FOUND)
+   add_test(unitTests_mapcss unitTests_mapcss)
+ENDIF(GMOCK_FOUND)
+ENDIF()
 
 #
 # Add cpplint target
