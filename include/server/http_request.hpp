@@ -124,9 +124,6 @@ private:
 	
 	weak_ptr<RequestManager> manager;
 	weak_ptr<HttpServer> server;
-
-	
-	log4cpp::Category& log;
 };
 
 

@@ -84,8 +84,6 @@ private:
 
 	unsigned int currentPrerenderingThreads;
 
-	log4cpp::Category& log;
-
 	std::chrono::system_clock::time_point prerender_start, prerender_stop;
 };
 

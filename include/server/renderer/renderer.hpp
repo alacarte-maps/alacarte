@@ -50,7 +50,6 @@ class Renderer
 {
 public:
 	Renderer(const shared_ptr<Geodata>& data);
-	~Renderer();
 
 	TESTABLE void renderEmptyTile(RenderAttributes& map, const shared_ptr<RenderCanvas>& canvas, const shared_ptr<Tile>& tile);
 	TESTABLE void renderMetaTile(RenderAttributes& map,  const shared_ptr<RenderCanvas>& canvas, const shared_ptr<MetaIdentifier>& id);

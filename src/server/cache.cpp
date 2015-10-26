@@ -38,13 +38,7 @@ Cache::Cache(const shared_ptr<Configuration>& config)
 	, AllCaches()
 	, RecentlyUsedList()
 	, DefaultTile()
-	, log(log4cpp::Category::getInstance("Cache"))
 {
-}
-
-Cache::~Cache()
-{
-	log.debugStream() << "Cache destructed";
 }
 
 void Cache::readFile(const Tile::ImageType& image, const boost::filesystem::path& filename) {
@@ -116,7 +110,7 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 		AllCaches[stylesheet] = cache;
 		boost::filesystem::path dir(Config->get<string>(opt::server::cache_path) + "/" + ti->getStylesheetPath());
 		boost::filesystem::create_directories(dir);
-		log << log4cpp::Priority::DEBUG << "Stylesheetcache " << stylesheet << " created.";
+		LOG_SEV(cache_log, debug) << "Stylesheetcache " << stylesheet << " created.";
 	}
 	// Get tile from map
 	shared_ptr<Tile> tile;
@@ -138,7 +132,7 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 				readFile(image, path);
 				tile->setImage(image);
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "readFile: Not found: " << path.string();
+				LOG_SEV(cache_log, debug) << "readFile: Not found: " << path.string();
 			}
 		}
 		RecentlyUsedList.push_front(tile);
@@ -154,10 +148,10 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 			try {
 				writeFile(tileToDelete, path);
 			} catch (excp::FileNotFoundException) {
-				log << log4cpp::Priority::DEBUG << "WriteFile: Could not open file " << path.string();
+				LOG_SEV(cache_log, debug) << "WriteFile: Could not open file " << path.string();
 				// Disk is full
 			} catch (excp::InputFormatException) {
-				log << log4cpp::Priority::DEBUG << "WriteFile: Image not yet rendered " << *tile->getIdentifier();
+				LOG_SEV(cache_log, debug) << "WriteFile: Image not yet rendered " << *tile->getIdentifier();
 				RecentlyUsedList.push_front(tileToDelete);
 				cacheIt = AllCaches.find(tileToDelete->getIdentifier()->getStylesheetPath());
 				if (cacheIt != AllCaches.end()) {
@@ -169,7 +163,7 @@ shared_ptr<Tile> Cache::getTile(const shared_ptr<TileIdentifier>& ti)
 			}
 		}
 		// Delete tile
-		log << log4cpp::Priority::DEBUG << "Deleting least recently used Tile." << *tileToDelete->getIdentifier();
+		LOG_SEV(cache_log, debug) << "Deleting least recently used Tile." << *tileToDelete->getIdentifier();
 		cacheIt = AllCaches.find(tileToDelete->getIdentifier()->getStylesheetPath());
 		if (cacheIt != AllCaches.end()) {
 			cacheIt->second->erase(*tileToDelete->getIdentifier());
@@ -214,11 +208,11 @@ void Cache::deleteTiles(const string path)
 		boost::system::error_code ec;
 		boost::filesystem::remove_all(dir, ec);
 		if (ec.value() == 39) {
-			log << log4cpp::Priority::WARN << "could not delete all tiles in folder.";
+			LOG_SEV(cache_log, warning) << "could not delete all tiles in folder.";
 		}
 		AllCaches.erase(path);
 	} catch (std::out_of_range) {
-		log << log4cpp::Priority::WARN << "trying to delete Tiles of non existant Stylesheet.";
+		LOG_SEV(cache_log, warning) << "trying to delete Tiles of non existant Stylesheet.";
 	}
 }
 

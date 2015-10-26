@@ -23,8 +23,6 @@
 #include "server/tile_identifier.hpp"
 #include "server/meta_identifier.hpp"
 
-#define DEBUG(...) (log4cpp::Category::getInstance("MetaIdentifier").info(__VA_ARGS__));
-
 /**
  * @brief Constructs a new TileIdentifier with the given parameters.
  *

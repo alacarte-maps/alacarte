@@ -50,23 +50,12 @@ HttpServer::HttpServer( const shared_ptr<Configuration>& config, const shared_pt
 	signals.async_wait(boost::bind(&HttpServer::quit, this));
 }
 
-/**
- * @brief Empty destructor
- *
- **/
-HttpServer::~HttpServer()
-{
-	log4cpp::Category::getRoot().debugStream() << "Http server destructed";
-}
-
-
 
 /**
  * @brief The HttpServer starts listening for new connections. This function will never return (Blocking call).
  **/
 void HttpServer::listen()
 {
-	log4cpp::Category& log = log4cpp::Category::getInstance("HttpServer");
 	// Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
 	boost::asio::ip::tcp::resolver resolver(io_service);
 	boost::asio::ip::tcp::resolver::query query(
@@ -79,16 +68,16 @@ void HttpServer::listen()
 	try {
 		acceptor.bind(endpoint);
 	} catch (boost::system::system_error ex) {
-		log.errorStream() 	<< "Invalid host name: " << ex.what() 
-							<< " (" << config->get<string>(opt::server::server_address) << ":" 
+		LOG_SEV(server_log, error) << "Invalid host name: " << ex.what()
+							<< " (" << config->get<string>(opt::server::server_address) << ":"
 							<< config->get<string>(opt::server::server_port) << ")";
 		return;
 	}
 	acceptor.listen();
 	start_accept();
 
-	log.infoStream() << "Server is now waiting for new connections ...";
-	log.infoStream() << "Send a \"SIGINT\", \"SIGTERM\" or \"SIGQUIT\" signal to shut down the server. (ctrl-c)";
+	LOG_SEV(server_log, info) << "Server is now waiting for new connections ...";
+	LOG_SEV(server_log, info) << "Send a \"SIGINT\", \"SIGTERM\" or \"SIGQUIT\" signal to shut down the server. (ctrl-c)";
 	// The io_service::run() call will block until all asynchronous operations
 	// have finished. While the server is running, there is always at least one
 	// asynchronous operation outstanding: the asynchronous accept call waiting

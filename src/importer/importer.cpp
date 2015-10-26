@@ -71,7 +71,6 @@ public:
 		, alreadyRead(0)
 		, fileSize(0)
 		, segmentSize(1024 * 1024)
-		, log(log4cpp::Category::getInstance("Importer"))
 		, outputIgnoreRelation(false)
 		, outputIgnoreBounds(false)
 	{
@@ -99,11 +98,11 @@ public:
 		if(!xml_stream)
 			BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(xml_file.string()));
 
-		log.infoStream() << "Load xml-file \"" << xml_file.string() << "\"";
+		LOG_SEV(importer_log, info) << "Load xml-file \"" << xml_file.string() << "\"";
 		
 		fileSize = boost::filesystem::file_size(xml_file);
 
-		log.infoStream() << "File size is " << fileSize / (1024) << "kb";
+		LOG_SEV(importer_log, info) << "File size is " << fileSize / (1024) << "kb";
 
 		nodes = boost::make_shared<std::vector<Node> >();
 		ways = boost::make_shared<std::vector<Way> >();
@@ -201,7 +200,7 @@ private:
 			try{ 
 				(this->*(entityIt->second))(&*it);
 			}catch(excp::BadOsmIdException& e) {
-				log.warnStream() << "Bad osm id[" << *boost::get_error_info<excp::InfoUnresolvableId>(e)  << "]. Entity is skipped!";
+				LOG_SEV(importer_log, warning) << "Bad osm id[" << *boost::get_error_info<excp::InfoUnresolvableId>(e)  << "]. Entity is skipped!";
 			}
 		}
 	}
@@ -215,7 +214,7 @@ private:
 	{
 		if(!outputIgnoreBounds)
 		{
-			log.infoStream() << "Bounds tag in osm data is ignored by this software!";
+			LOG_SEV(importer_log, info) << "Bounds tag in osm data is ignored by this software!";
 			outputIgnoreBounds = true;
 		}
 	}
@@ -381,8 +380,8 @@ private:
 					
 					if(!outputIgnoreRelation)
 					{
-						log.warnStream() << "This software does not support relation member in relations!";
-						log.warnStream() << "Reference is ignored!";
+						LOG_SEV(importer_log, warning) << "This software does not support relation member in relations!";
+						LOG_SEV(importer_log, warning) << "Reference is ignored!";
 						outputIgnoreRelation = true;
 					}
 					continue;
@@ -458,7 +457,7 @@ private:
 		int after  = int(100 * (double)alreadyRead / (double)fileSize);
 
 		if(after != before)
-			log.infoStream() << "Loading [" << std::min(after, 99) << "%]";
+			LOG_SEV(importer_log, info) << "Loading [" << std::min(after, 99) << "%]";
 	}
 
 
@@ -493,9 +492,6 @@ private:
 	//! Number of bytes read by one read operation
 	unsigned int	segmentSize;
 
-	//! Log for the importer
-	log4cpp::Category& log;
-
 	//! Booleans for some output, which should only appear once
 	bool outputIgnoreRelation, outputIgnoreBounds;
 };
@@ -525,15 +521,14 @@ Importer::Importer(const shared_ptr<Configuration>& config)
  **/
 shared_ptr<Geodata> Importer::importXML()
 {
-	log4cpp::Category& log = log4cpp::Category::getRoot();
 	OsmXmlParser parser(!config->get<bool>(opt::importer::check_xml_entities));
 	shared_ptr<Geodata>	geodata = boost::make_shared<Geodata>();
 
 	path xml_file = config->get<string>(opt::importer::path_to_osmdata);
-	log.infoStream() << "Start parsing...";
+	LOG_SEV(importer_log, info) << "Start parsing...";
 	parser.parse(xml_file);
 
-	log.infoStream() << "Insert into geodata...";
+	LOG_SEV(importer_log, info) << "Insert into geodata...";
 	geodata->insertNodes(parser.getParsedNodes());
 	geodata->insertWays(parser.getParsedWays());
 	geodata->insertRelations(parser.getParsedRelations());

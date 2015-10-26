@@ -111,12 +111,6 @@ Renderer::Renderer(const shared_ptr<Geodata>& data)
 }
 
 
-Renderer::~Renderer()
-{
-	log4cpp::Category::getRoot().debugStream() << "Renderer destructed";
-}
-
-
 //! Debug function that prints identifier on the tile
 void Renderer::printTileId(cairo_t* cr,
 						   const shared_ptr<TileIdentifier>& id) const

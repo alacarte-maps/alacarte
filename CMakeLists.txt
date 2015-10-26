@@ -5,12 +5,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #
-# Depends
+# Depends on boost version from Debian Jessie
 #
-find_package(Boost 1.47.0 COMPONENTS system filesystem thread unit_test_framework program_options serialization regex iostreams REQUIRED)
+find_package(Boost 1.55.0 COMPONENTS system filesystem thread unit_test_framework program_options serialization regex
+	iostreams log log_setup REQUIRED)
 
 if (NOT Boost_FOUND)
-    message(FATAL_ERROR "Fatal error: Boost (version >= 1.47.0) required.\n")
+    message(FATAL_ERROR "Fatal error: Boost (version >= 1.55.0) required.\n")
 endif (NOT Boost_FOUND)
 
 #find other packages
@@ -22,17 +23,9 @@ ENDIF(WIN32)
 
 find_package(Cairo REQUIRED)
 find_package(Freetype REQUIRED)
-find_package(Log4Cpp REQUIRED)
 
 find_package(Threads REQUIRED)
 find_package(Doxygen)
-
-# FIXME hack for log4cpp backward compability
-if (NOT Log4Cpp_LIBRARIES)
-    set (Log4Cpp_LIBRARIES "${LOG4CPP_LIBRARIES}")
-    set (Log4Cpp_DEFINITIONS "${LOG4CPP_DEFINITIONS}")
-    set (Log4Cpp_INCLUDE_DIRS "${LOG4CPP_INCLUDE_DIRS}")
-endif()
 
 #
 # Build options
@@ -68,9 +61,11 @@ ENDIF(MINGW)
 set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
 
 link_directories(${Boost_LIBRARY_DIRS})
-include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Log4Cpp_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
 
-ADD_DEFINITIONS(${Log4Cpp_DEFINITIONS})
+#ADD_DEFINITIONS("-fdiagnostics-color=auto")
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 ADD_DEFINITIONS(-DStatistic_Activated)
 
 # check for local static build gmock directory
@@ -86,13 +81,16 @@ if(MSVC)
    ADD_DEFINITIONS(-DNOMINMAX)
    ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
 else()
-   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-   SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-   SET(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ftest-coverage -fprofile-arcs -fprofile-values -fvpt -pg")
-   SET(CMAKE_CXX_FLAGS_SANITIZE "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=thread -fno-omit-frame-pointer")
-   ADD_DEFINITIONS("-std=c++11")
-   #ADD_DEFINITIONS("-fdiagnostics-color=auto")
-   ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+    # don't enable -Werror with clang as it throws many warnings with boost.log 1.55
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+    endif()
+    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    SET(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ftest-coverage -fprofile-arcs -fprofile-values -fvpt -pg")
+    SET(CMAKE_CXX_FLAGS_SANITIZE "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=thread -fno-omit-frame-pointer")
+    ADD_DEFINITIONS("-std=c++11")
+    #ADD_DEFINITIONS("-fdiagnostics-color=auto")
+    ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 endif()
 
 MARK_AS_ADVANCED(CMAKE_CXX_FLAGS_PROFILE)
@@ -163,17 +161,18 @@ IF(GMOCK_FOUND)
     set_target_properties(unitTests_mapcss PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
 ENDIF(GMOCK_FOUND)
 
-target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
-target_link_libraries(alacarte-importer     ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
-target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(unitTests_importer    ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(unitTests_server      ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(unitTests_parser      ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
+target_link_libraries(alacarte-importer     ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
+target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unitTests_importer    ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unitTests_server      ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
+target_link_libraries(unitTests_parser      ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
 IF(GMOCK_FOUND)
-    target_link_libraries(unitTests_mapcss  ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} gmock gtest)
+    target_link_libraries(unitTests_mapcss  ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} gmock gtest)
 ENDIF(GMOCK_FOUND)
-target_link_libraries(unitTests_eval        ${Boost_LIBRARIES} ${Log4Cpp_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(unitTests_eval        ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
+
 
 set(test_files "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte")
 

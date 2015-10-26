@@ -37,7 +37,6 @@ class HttpServer : public boost::enable_shared_from_this<HttpServer>
 {
 public:
 	HttpServer ( const shared_ptr<Configuration>& config,  const shared_ptr<RequestManager>& manager );
-	~HttpServer();
 
 	TESTABLE void listen();
 	TESTABLE void quit();

@@ -122,7 +122,6 @@ const std::vector<string> & Configuration::getSeachDirectories() const
  **/
 void Configuration::printConfigToLog()
 {
-	log4cpp::Category& log = log4cpp::Category::getInstance("Configuration");
 	for(auto it = options.begin();
 		it != options.end();
 		++it)
@@ -132,13 +131,13 @@ void Configuration::printConfigToLog()
 
 		if(v.type() == typeid(int))
 		{
-			log.infoStream() << it->first << ": " << it->second.as<int>();
+			LOG_SEV(app_log, info) << it->first << ": " << it->second.as<int>();
 		}else if (v.type() == typeid(std::string))
 		{
 			if (it->first == opt::config && ConfigFileUsed && !searchDirectories.back().empty()) {
-				log.infoStream() << it->first << ": " << searchDirectories.back() << "/" << it->second.as<std::string>();
+				LOG_SEV(app_log, info) << it->first << ": " << searchDirectories.back() << "/" << it->second.as<std::string>();
 			} else {
-				log.infoStream() << it->first << ": " << it->second.as<std::string>();
+				LOG_SEV(app_log, info) << it->first << ": " << it->second.as<std::string>();
 			}
 		}else if (v.type() == typeid(std::vector<string>))
 		{
@@ -146,12 +145,12 @@ void Configuration::printConfigToLog()
 			for(string name : it->second.as<std::vector<string>>()) {
 				ss << name << ", ";
 			}
-			log.infoStream() << it->first << ": " << ss.str();
+			LOG_SEV(app_log, info) << it->first << ": " << ss.str();
 		}else{
 			// We only take care of int and string, so if this message is printed on the log
 			// feel free to add other types.
 			// boost::any does not support implicit casting!!!
-			log.infoStream() << "Unknown type[" << v.type().name() << "]";
+			LOG_SEV(app_log, info) << "Unknown type[" << v.type().name() << "]";
 		}
 	}
 }

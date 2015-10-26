@@ -59,7 +59,7 @@ public:
 
 		// in cmd and config
 		config_desc.add_options()
-			(OPT(opt::logfile, "l"), value<string>()->default_value("log.txt")/*->value_name("path")*/,										"specifies the logfile")
+			(OPT(opt::logfile, "l"), value<string>()->default_value("alacarte_%N.log")/*->value_name("path")*/,										"specifies the logfile")
 			(OPT(opt::importer::path_to_osmdata, "i"),	value<string>()->required()/*->value_name("path")*/,								"path to a xml file containing osm data")
 			(OPT(opt::importer::path_to_geodata, "g"),	value<string>()->required()->default_value("ala.carte")/*->value_name("path")*/,	"path, where preprocessed data will be saved")
 			(OPT(opt::importer::check_xml_entities, "x"),	value<bool>()->required()->default_value(true)/*->value_name("path")*/,			
@@ -75,9 +75,7 @@ public:
 protected:
 	virtual bool startupDiagnostic(const shared_ptr<Configuration>& config)
 	{
-		log4cpp::Category& log = log4cpp::Category::getInstance("StartupDiagnostic");
-		if (!diagnosticCheckFile(config, opt::importer::path_to_osmdata, log) ) return false;
-		return true;
+		return diagnosticCheckFile(config, opt::importer::path_to_osmdata);
 	}
 	
 	/**
@@ -87,8 +85,6 @@ protected:
 	 **/
 	virtual void onRun( const shared_ptr<Configuration>& config ) 
 	{
-		log4cpp::Category& log = log4cpp::Category::getInstance("Importer");
-
 		shared_ptr<Importer> importer = boost::make_shared<Importer>(config);
 
 		shared_ptr<Geodata> geodata;
@@ -98,9 +94,9 @@ protected:
 
 		} catch(excp::InputFormatException& e)
 		{
-			log.errorStream() << "Failed to parse \"" << excp::ErrorOut<excp::InfoFileName>(e) << "\"!";
-			log.errorStream() << "Error:";
-			log.errorStream() << excp::ErrorOut<excp::InfoWhat>(e);
+			LOG_SEV(importer_log, error) << "Failed to parse \"" << excp::ErrorOut<excp::InfoFileName>(e) << "\"!";
+			LOG_SEV(importer_log, error) << "Error:";
+			LOG_SEV(importer_log, error) << excp::ErrorOut<excp::InfoWhat>(e);
 
 			return;
 		}

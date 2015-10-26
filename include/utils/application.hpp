@@ -26,6 +26,10 @@
 #include <boost/exception/enable_error_info.hpp>
 #include <boost/exception/error_info.hpp>
 
+#include <boost/log/sinks/sync_frontend.hpp>
+#include <boost/log/sinks/text_file_backend.hpp>
+#include <boost/log/sinks/text_ostream_backend.hpp>
+
 #include "settings.hpp"
 
 
@@ -35,29 +39,28 @@ class Application
 {
 public:
 	Application();
-	~Application();
 
 	int start(int argc, char** argv);
 
 protected:
 
 	virtual void onRun(const shared_ptr<Configuration>& config) = 0;
-	virtual void customInitLog(const shared_ptr<Configuration>& config, log4cpp::Appender *logFile) {};
+	virtual void customInitLog(const shared_ptr<Configuration>& config) {};
 	virtual bool startupDiagnostic(const shared_ptr<Configuration>& config) = 0;
 
 	boost::program_options::options_description				cmd_desc;
 	boost::program_options::options_description				config_desc;
 	boost::program_options::positional_options_description	pos_desc;
 	
-	bool diagnosticCheckFile(const shared_ptr<Configuration>& config, const string& key, log4cpp::Category& log);
+	bool diagnosticCheckFile(const shared_ptr<Configuration>& config, const string& key);
+
+	shared_ptr< logging::sinks::synchronous_sink< logging::sinks::text_file_backend > > fileLogger;
+	shared_ptr< logging::sinks::synchronous_sink< logging::sinks::basic_text_ostream_backend< char > >> consoleLogger;
 
 private:
 	void appRun(int argc, char** argv);
 
 	void initLog(const shared_ptr<Configuration>& config);
-
-private:
-	bool mLogInitialized;
 };
 
 

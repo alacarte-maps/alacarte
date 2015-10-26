@@ -35,21 +35,13 @@
 #include <math.h>
 #include "server/parser/parser_logger.hpp"
 
-#define DEBUG(...) (log4cpp::Category::getInstance("StylesheetManager").info(__VA_ARGS__));
-
 StylesheetManager::StylesheetManager(const shared_ptr<Configuration>& config)
 	: config(config)
 	, monitorService(new boost::asio::dir_monitor(ioService))
-	, log(log4cpp::Category::getInstance("stylesheet-manager"))
 {
 	stylesheetFolder = config->get<string>(opt::server::style_source);
 }
 
-
-StylesheetManager::~StylesheetManager()
-{
-	log.debugStream() << "StylesheetManager destructed";
-}
 
 void StylesheetManager::startStylesheetObserving(const shared_ptr<RequestManager>& manager)
 {
@@ -163,7 +155,7 @@ void StylesheetManager::onRemovedStylesheet(const fs::path& stylesheet_path)
 
 	manager->getCache()->deleteTiles(stylesheet_path.string());
 	parsedStylesheets.erase(stylesheet_path);
-	log.infoStream() << "Deleted Stylesheet[" << stylesheet_path << "] from Tile Cache and Stylesheet Cache.";
+	LOG_SEV(style_log, info) << "Deleted Stylesheet[" << stylesheet_path << "] from Tile Cache and Stylesheet Cache.";
 }
 
 void StylesheetManager::onFileSystemEvent(const boost::system::error_code &ec, const boost::asio::dir_monitor_event &ev)
@@ -175,8 +167,8 @@ void StylesheetManager::onFileSystemEvent(const boost::system::error_code &ec, c
 		// We don't need to inform about the end of watching
 		if(ec != boost::asio::error::operation_aborted)
 		{
-			log.errorStream() << "Error while watching the stylesheet folder[" << stylesheetFolder << "]:";
-			log.errorStream() << ec.message();
+			LOG_SEV(style_log, error) << "Error while watching the stylesheet folder[" << stylesheetFolder << "]:";
+			LOG_SEV(style_log, error) << ec.message();
 		}
 
 		return;
@@ -194,19 +186,19 @@ void StylesheetManager::onFileSystemEvent(const boost::system::error_code &ec, c
 		{
 		case eventtype::added:
 			{
-				log.infoStream() << "Stylesheet[" << path << "] added!";
+				LOG_SEV(style_log, info) << "Stylesheet[" << path << "] added!";
 				onNewStylesheet(path);
 			}break;
 
 		case eventtype::removed:
 			{
-				log.infoStream() << "Stylesheet[" << path << "] removed!";
+				LOG_SEV(style_log, info) << "Stylesheet[" << path << "] removed!";
 				onRemovedStylesheet(path);
 			}break;
 
 		case eventtype::modified:
 			{
-				log.infoStream() << "Stylesheet[" << path << "] modified!";
+				LOG_SEV(style_log, info) << "Stylesheet[" << path << "] modified!";
 				onRemovedStylesheet(path);
 				onNewStylesheet(path);
 			}break;

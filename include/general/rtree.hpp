@@ -168,17 +168,16 @@ private:
 template<class id_t, class data_t>
 void RTree<id_t, data_t>::build(std::vector<data_t>& data, const string& leafPath)
 {
-	log4cpp::Category& log = log4cpp::Category::getRoot();
-	log.infoStream() << "Objects: " << data.size();
+	LOG_SEV(geo_log, info) << "Objects: " << data.size();
 
 	// create leaf file and first tree level
 	buildLeaves(data, leafPath);
 
 	// build inner tree nodes
-	log.infoStream() << " - build levels";
+	LOG_SEV(geo_log, info) << " - build levels";
 	buildLevels();
 
-	log.infoStream() << " - reverse";
+	LOG_SEV(geo_log, info) << " - reverse";
 	std::reverse(tree.begin(), tree.end());
 	for (RNode& node : tree)
 	{
@@ -224,14 +223,12 @@ coord_t RTree<id_t, data_t>::getY (const FixedPoint& p)
 template<class id_t, class data_t>
 void RTree<id_t, data_t>::buildLeaves (const std::vector<data_t>& data, const string& leafPath)
 {
-	log4cpp::Category& log = log4cpp::Category::getRoot();
-
-	log.infoStream() << " - computing ids";
+	LOG_SEV(geo_log, info) << " - computing ids";
 	std::vector<id_t> ids;
 	for (int i = 0; i < data.size(); i++)
 		ids.push_back(id_t(i));
 
-	log.infoStream() << " - sorting leaves";
+	LOG_SEV(geo_log, info) << " - sorting leaves";
 	std::sort(ids.begin(), ids.end(),
 		[&](id_t a, id_t b)
 		{
@@ -272,8 +269,7 @@ void RTree<id_t, data_t>::writeLeaves (const std::vector<id_t>& ids,
 									   const std::vector<data_t>& data,
 									   const string& leafPath)
 {
-	log4cpp::Category& log = log4cpp::Category::getRoot();
-	log.infoStream() << " - writing leaves";
+	LOG_SEV(geo_log, info) << " - writing leaves";
 
 	std::ofstream output(leafPath, std::ios::out | std::ios::binary);
 
@@ -353,8 +349,7 @@ void RTree<id_t, data_t>::buildLevels ()
 		end = tree.size() - 1;
 	}
 
-	log4cpp::Category& log = log4cpp::Category::getRoot();
-	log.infoStream() << "  -> " << levels << " levels.";
+	LOG_SEV(geo_log, info) << "  -> " << levels << " levels.";
 }
 
 //! reads a leaf from file

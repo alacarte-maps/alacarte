@@ -54,8 +54,6 @@ public:
 	 */
 	StylesheetManager(const shared_ptr<Configuration>& config);
 
-	~StylesheetManager();
-
 	/**
 	 * @brief starts observing the Stylesheet directory.
 	 * On new or changed stylesheet files, the Tiles to prerender get enqueued in the RequestManager. 
@@ -112,9 +110,6 @@ private:
 	boost::asio::io_service						ioService;
 	boost::thread								monitorThread;
 	boost::scoped_ptr<boost::asio::dir_monitor>	monitorService;
-
-	//! The log used by the stylesheet manager
-	log4cpp::Category& log;
 };
 
 
