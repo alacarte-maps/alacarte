@@ -1,8 +1,10 @@
 project(alacarte)
 
-cmake_minimum_required( VERSION 2.8 )
+cmake_minimum_required( VERSION 2.8.8 )
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+include(CTest)
 
 #
 # Depends on boost version from Debian Jessie
@@ -138,28 +140,33 @@ configure_file("data/config/alacarte.conf.in" "${CMAKE_SOURCE_DIR}/data/config/a
 configure_file("tests/config.hpp.in" "${CMAKE_SOURCE_DIR}/tests/config.hpp")
 configure_file("include/config.hpp.in" "${CMAKE_SOURCE_DIR}/include/config.hpp")
 
-add_executable(alacarte-server      src/alacarte_server.cpp     ${server_sources}   ${alacarte_sources})
-add_executable(alacarte-importer    src/alacarte_importer.cpp   ${importer_sources} ${alacarte_sources})
+add_library(alacarte-obj OBJECT ${alacarte_sources})
+add_library(server-obj OBJECT ${server_sources})
 
-add_executable(unitTests_utils      EXCLUDE_FROM_ALL ${UnitTests_utils_sources} ${alacarte_sources} ${UnitTests_shared_sources})
-add_executable(unitTests_parser     EXCLUDE_FROM_ALL ${UnitTests_parser_sources} ${alacarte_sources} ${server_sources} ${UnitTests_shared_sources})
-add_executable(unitTests_general    EXCLUDE_FROM_ALL ${UnitTests_general_sources} ${alacarte_sources} ${UnitTests_shared_sources})
-add_executable(unitTests_importer   EXCLUDE_FROM_ALL ${UnitTests_importer_sources} ${UnitTests_shared_sources} ${importer_source} ${alacarte_sources})
-add_executable(unitTests_server     EXCLUDE_FROM_ALL ${UnitTests_server_sources} ${UnitTests_shared_sources} ${server_sources} ${alacarte_sources})
-IF(GMOCK_FOUND)
-    add_executable(unitTests_mapcss EXCLUDE_FROM_ALL ${UnitTests_mapcss_sources} ${UnitTests_shared_sources} ${server_sources} ${alacarte_sources})
-ENDIF(GMOCK_FOUND)
-add_executable(unitTests_eval       EXCLUDE_FROM_ALL ${UnitTests_eval_sources} ${UnitTests_shared_sources} ${server_sources} ${alacarte_sources})
+add_executable(alacarte-server      src/alacarte_server.cpp     $<TARGET_OBJECTS:server-obj> $<TARGET_OBJECTS:alacarte-obj>)
+add_executable(alacarte-importer    src/alacarte_importer.cpp   ${importer_sources} $<TARGET_OBJECTS:alacarte-obj>)
 
-set_target_properties(unitTests_eval       PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
-set_target_properties(unitTests_general    PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
-set_target_properties(unitTests_utils      PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
-set_target_properties(unitTests_parser     PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
-set_target_properties(unitTests_eval       PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
-set_target_properties(unitTests_server     PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
+#
+#  Building tests
+#  All sources are rebuilt with ALACARTE_TEST (it is used in .cpp files)
+#
+
+add_definitions(-DALACARTE_TEST)
+
+add_library(alacarte-obj-test EXCLUDE_FROM_ALL OBJECT ${alacarte_sources})
+add_library(server-obj-test EXCLUDE_FROM_ALL OBJECT ${server_sources})
+add_library(UnitTests-shared-obj EXCLUDE_FROM_ALL OBJECT ${UnitTests_shared_sources})
+
+add_executable(unitTests_utils     EXCLUDE_FROM_ALL ${UnitTests_utils_sources}  $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:alacarte-obj-test>)
+add_executable(unitTests_parser    EXCLUDE_FROM_ALL ${UnitTests_parser_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:server-obj-test> $<TARGET_OBJECTS:alacarte-obj-test>)
+add_executable(unitTests_general   EXCLUDE_FROM_ALL ${UnitTests_general_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:server-obj-test> $<TARGET_OBJECTS:alacarte-obj-test>)
+add_executable(unitTests_importer  EXCLUDE_FROM_ALL ${UnitTests_importer_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:alacarte-obj-test>)
+add_executable(unitTests_server    EXCLUDE_FROM_ALL ${UnitTests_server_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:server-obj-test> $<TARGET_OBJECTS:alacarte-obj-test>)
+
 IF(GMOCK_FOUND)
-    set_target_properties(unitTests_mapcss PROPERTIES COMPILE_DEFINITIONS "ALACARTE_TEST")
+    add_executable(unitTests_mapcss EXCLUDE_FROM_ALL ${UnitTests_mapcss_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:server-obj-test> $<TARGET_OBJECTS:alacarte-obj-test>)
 ENDIF(GMOCK_FOUND)
+add_executable(unitTests_eval       EXCLUDE_FROM_ALL ${UnitTests_eval_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:server-obj-test> $<TARGET_OBJECTS:alacarte-obj-test>)
 
 target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
 target_link_libraries(alacarte-importer     ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
@@ -189,16 +196,39 @@ add_custom_command(
     COMMAND alacarte-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte"
 )
 
-add_custom_target(tests
-    DEPENDS alacarte-importer unitTests_server unitTests_importer unitTests_general unitTests_parser unitTests_utils ${test_files}
+IF(BUILD_TESTING)
+   SET(BT_FLAG ALL)
+ENDIF()
+
+add_custom_target(tests ${BT_FLAG}
+    DEPENDS alacarte-importer unitTests_server unitTests_importer unitTests_general unitTests_parser unitTests_utils unitTests_eval ${test_files}
 )
 
+IF(BUILD_TESTING)
+   add_test(unitTests_utils unitTests_utils DEPENDS tests)
+   add_test(unitTests_eval unitTests_eval)
+   add_test(unitTests_parser unitTests_parser)
+   add_test(unitTests_general unitTests_general)
+   add_test(unitTests_importer unitTests_importer)
+   add_test(unitTests_server unitTests_server)
+IF(GMOCK_FOUND)
+   add_test(unitTests_mapcss unitTests_mapcss)
+ENDIF(GMOCK_FOUND)
+ENDIF()
+
+#
+# Add cpplint target
+#
 add_custom_target(lint
 	COMMAND cpplint --filter=-whitespace --extensions=c,h,cpp,hpp ${server_sources} ${importer_source} ${alacarte_sources}
 	COMMENT "Check if there are style violations" VERBATIM
 )
 
+
+#
+# Generate documentation
 # add a target to generate API documentation with Doxygen
+#
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc.doxy ${CMAKE_CURRENT_BINARY_DIR}/doc.doxy @ONLY)
     add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc.doxy

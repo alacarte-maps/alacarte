@@ -8,7 +8,8 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
   #new cairo
   - sudo add-apt-repository --yes ppa:ricotz/testing
-
+  # new cmake
+  - sudo add-apt-repository --yes ppa:kalakris/cmake
   - sudo apt-get update -qq
   - sudo apt-get install -qq cmake g++-4.8 libboost1.55-all-dev libboost-log1.55-dev libcairo2-dev libpng12-dev
 
@@ -18,16 +19,11 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake .. -DBUILD_TESTING=ON
 
 script:
   - make
-  - make tests
-  - ./unitTests_importer
-  - ./unitTests_general
-  - ./unitTests_utils
-  - ./unitTests_parser
-  - ./unitTests_server
+  - ctest -VV -E unitTests_server
 
 notifications:
   email:
