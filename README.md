@@ -25,7 +25,7 @@ alaCarte has also has a growing website at [http://alacarte-maps.github.io](http
 ## Features ##
 
 * easy to use
-* most MapCSS attributes are implemented
+* most MapCSS attributes are implemented (see [MapCSS wiki page](http://wiki.openstreetmap.org/wiki/MapCSS/0.2#Vocabulary) for comparison)
 * no need to filter OSM exports, you have full access to all attributes at runtime
 * stylesheets are updated at runtime (changes are detected automatically)
 * tiles can be rendered in groups ("meta tile") to speed up rendering _(not in 0.2)_
@@ -35,14 +35,19 @@ alaCarte has also has a growing website at [http://alacarte-maps.github.io](http
 	mkdir build
 	cd build
 	cmake .. -DCMAKE_BUILD_TYPE=Release
-	make
+	# this starts one job per available core to build alacarte n times faster.
+	# Just run “make” without parameters if you don’t want that or run into problems.
+	make -j $(nproc)
 
 ## Dependencies ##
 * Cairo (>=1.12.0), Cairomm
-* Boost (Spirit)
+* Boost (>= 1.55) (Spirit)
 * SigC++
 * libpng
-* log4cpp
+* cmake (>= 2.8.8)
+
+alacarte's dependency policy is to depend on nothing that's not included or newer than Debian stable.
+So currently, we target and test on Debian Jessie, but we're open to support any other OS.
 
 ## Usage ##
 
@@ -67,10 +72,11 @@ running alacarte has permissions to write to the specified directories for cachi
 and logging.
 
 # To Do #
-* Real database backend
+* Real database backend (Postgresql?)
+* Why can't we render tiles in svg / vector graphics format?
+  Should work in theory, but in practice, something in cario seems to rasterize the result in the end…
 * Better font rendering (Pango?)
 * Unicode support
 * Implement MapCSS-include
 * Better caching of fonts and icons
 * Option to "tune" imported data for specific stylesheets
-
