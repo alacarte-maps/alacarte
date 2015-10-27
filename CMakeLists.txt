@@ -4,13 +4,13 @@ cmake_minimum_required( VERSION 2.8.8 )
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+include(CTest)
+
 #
 # Depends on boost version from Debian Jessie
 #
 find_package(Boost 1.55.0 COMPONENTS system filesystem thread unit_test_framework program_options serialization regex
 	iostreams log log_setup REQUIRED)
-
-OPTION(BUILD_TESTS "Build tests automatically and allow running them with ctest" OFF)
 
 if (NOT Boost_FOUND)
     message(FATAL_ERROR "Fatal error: Boost (version >= 1.55.0) required.\n")
@@ -196,7 +196,7 @@ add_custom_command(
     COMMAND alacarte-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte"
 )
 
-IF(BUILD_TESTS)
+IF(BUILD_TESTING)
    SET(BT_FLAG ALL)
 ENDIF()
 
@@ -204,9 +204,7 @@ add_custom_target(tests ${BT_FLAG}
     DEPENDS alacarte-importer unitTests_server unitTests_importer unitTests_general unitTests_parser unitTests_utils unitTests_eval ${test_files}
 )
 
-IF(BUILD_TESTS)
-   enable_testing()
-   include(CTest)
+IF(BUILD_TESTING)
    add_test(unitTests_utils unitTests_utils DEPENDS tests)
    add_test(unitTests_eval unitTests_eval)
    add_test(unitTests_parser unitTests_parser)

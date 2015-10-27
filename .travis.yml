@@ -19,17 +19,11 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake .. -DBUILD_TESTING=ON
 
 script:
   - make
-  - make tests
-  - ./unitTests_importer
-  - ./unitTests_general
-  - ./unitTests_utils
-  - ./unitTests_parser
-  - ./unitTests_eval
-# - ./unitTests_server # skip for now until the test is fixed
+  - ctest -VV -E unitTests_server
 
 notifications:
   email:
