@@ -31,7 +31,7 @@
 #include "config.hpp"
 #include <boost/unordered_map.hpp>
 #include <boost/math/constants/constants.hpp>
-#include <cairo/cairo-svg.h>
+#include <cairo-svg.h>
 #include <time.h>
 
 #include "utils/transform.hpp"
