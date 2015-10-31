@@ -31,7 +31,7 @@
 
 #include "config.hpp"
 
-#include <cairo/cairo-svg.h>
+#include <cairo-svg.h>
 #include <boost/pointer_cast.hpp>
 
 #include "server/tile.hpp"

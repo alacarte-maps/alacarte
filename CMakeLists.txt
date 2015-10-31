@@ -65,9 +65,6 @@ set(TEST_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
 link_directories(${Boost_LIBRARY_DIRS})
 include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
 
-#ADD_DEFINITIONS("-fdiagnostics-color=auto")
-ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
-ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 ADD_DEFINITIONS(-DStatistic_Activated)
 
 # check for local static build gmock directory
@@ -93,6 +90,7 @@ else()
     ADD_DEFINITIONS("-std=c++11")
     #ADD_DEFINITIONS("-fdiagnostics-color=auto")
     ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+    ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 endif()
 
 MARK_AS_ADVANCED(CMAKE_CXX_FLAGS_PROFILE)

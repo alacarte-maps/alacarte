@@ -24,6 +24,7 @@
 
 #include "settings.hpp"
 
+#include <set>
 #include <boost/asio.hpp>
 
 class Configuration;
