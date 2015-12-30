@@ -76,7 +76,7 @@ and logging.
 * Why can't we render tiles in svg / vector graphics format?
   Should work in theory, but in practice, something in cario seems to rasterize the result in the end…
 * Better font rendering (Pango?)
-* Unicode support
+* Unicode support (alaCarte itself supports unicode, the problem is unicode font rendering using Cairo / Pango)
 * Implement MapCSS-include
 * Better caching of fonts and icons
 * Option to "tune" imported data for specific stylesheets
