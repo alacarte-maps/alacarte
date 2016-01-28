@@ -80,3 +80,4 @@ and logging.
 * Implement MapCSS-include
 * Better caching of fonts and icons
 * Option to "tune" imported data for specific stylesheets
+* Use bloom filters for CSS matching, see e.g. https://github.com/servo/rust-selectors
