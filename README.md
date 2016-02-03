@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/alacarte-maps/alacarte.png?branch=master)](https://travis-ci.org/alacarte-maps/alacarte)
+[![AGPLv3 licensed](https://img.shields.io/badge/license-AGPLv3-blue.svg)](./LICENSE)
 
 # What is alaCarte? #
 
