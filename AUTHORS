@@ -15,7 +15,7 @@ alaCarte is written by:
 
 With help from many libraries and frameworks including:
 	* boost
-	* cairo / cairomm
+	* cairo
 	* dirwatch
 	* log4cpp
 	* eaglexml

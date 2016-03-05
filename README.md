@@ -41,7 +41,7 @@ alaCarte also has a growing website at [http://alacarte-maps.github.io](http://a
 	make -j $(nproc)
 
 ## Dependencies ##
-* Cairo (>=1.12.0), Cairomm
+* Cairo (>=1.12.0)
 * Boost (>= 1.55) (Spirit)
 * SigC++
 * libpng

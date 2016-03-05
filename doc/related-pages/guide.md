@@ -14,9 +14,7 @@ Abhängigkeiten:
 - Boost		(Ubuntu: libboost-all-dev)
 - CMake		(Ubuntu: cmake)
 - Doxygen	(Ubuntu: doxygen)
-- log4cpp	(Ubuntu: liblog4cpp5-dev)
 - Cairo     (Ubuntu: libcairo2-dev)
-- Cairomm   (Ubuntu: libcairomm-1.0-dev)
 - SigC++2.0 (Ubuntu: libsigc++-2.0-dev)
 
 1.	Installiere die Abhängigkeiten.

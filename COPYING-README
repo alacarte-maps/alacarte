@@ -5,7 +5,6 @@ unless otherwise noted.
 Licensing of used libraries:
 	* boost: Boost Software License
 	* cairo: LGPL / MPL
-	* cairomm: LGPL
 	* dirwatch: Boost Software License
 	* log4cpp: LGPL
 	* eaglexml: MIT
