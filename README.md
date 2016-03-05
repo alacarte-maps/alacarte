@@ -29,7 +29,7 @@ alaCarte also has a growing website at [http://alacarte-maps.github.io](http://a
 * most MapCSS attributes are implemented (see [MapCSS wiki page](http://wiki.openstreetmap.org/wiki/MapCSS/0.2#Vocabulary) for comparison)
 * no need to filter OSM exports, you have full access to all attributes at runtime
 * stylesheets are updated at runtime (changes are detected automatically)
-* tiles can be rendered in groups ("meta tile") to speed up rendering _(not in 0.2)_
+* tiles can be rendered in groups ("meta tile") to speed up rendering
 
 # How to build #
 
