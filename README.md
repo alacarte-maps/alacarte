@@ -43,7 +43,6 @@ alaCarte also has a growing website at [http://alacarte-maps.github.io](http://a
 ## Dependencies ##
 * Cairo (>=1.12.0)
 * Boost (>= 1.55) (Spirit)
-* SigC++
 * libpng
 * cmake (>= 2.8.8)
 

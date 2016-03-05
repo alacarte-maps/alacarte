@@ -15,7 +15,6 @@ Abhängigkeiten:
 - CMake		(Ubuntu: cmake)
 - Doxygen	(Ubuntu: doxygen)
 - Cairo     (Ubuntu: libcairo2-dev)
-- SigC++2.0 (Ubuntu: libsigc++-2.0-dev)
 
 1.	Installiere die Abhängigkeiten.
 2.	Gehe ins Hauptverzeichnis von alacarte (also da wo ihr "include" und "src" seht)

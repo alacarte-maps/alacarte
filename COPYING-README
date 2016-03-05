@@ -6,8 +6,6 @@ Licensing of used libraries:
 	* boost: Boost Software License
 	* cairo: LGPL / MPL
 	* dirwatch: Boost Software License
-	* log4cpp: LGPL
 	* eaglexml: MIT
-	* SigC++: LGPL
 
 Attribution information for alaCarte is contained in the AUTHORS file.

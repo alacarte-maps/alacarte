@@ -17,8 +17,6 @@ With help from many libraries and frameworks including:
 	* boost
 	* cairo
 	* dirwatch
-	* log4cpp
 	* eaglexml
-	* SigC++
 
 und unendlich vielen sehr hilfreichen Threads auf auf stackoverflow.
