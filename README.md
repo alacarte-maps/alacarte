@@ -18,10 +18,10 @@ at leat 8GB RAM, alaCarte can handle a unfiltered export from the federal state
 of Baden-Wuerttemberg (Germany).
 
 alaCarte was developed as part of a lab course student software project at [KIT](http://algo2.iti.kit.edu).
-For the old project files (mostly in German) see the [old project repository](https://bitbucket.org/TheMarex/alacarte).
+For the old project files (mostly in German), see the [old project repository](https://bitbucket.org/TheMarex/alacarte).
 
 
-alaCarte has also has a growing website at [http://alacarte-maps.github.io](http://alacarte-maps.github.io/).
+alaCarte also has a growing website at [http://alacarte-maps.github.io](http://alacarte-maps.github.io/).
 
 ## Features ##
 
@@ -68,7 +68,7 @@ You can download fresh OSM exports from [Geofabrik](http://download.geofabrik.de
 
 	make install
 
-The config-file is located in */etc/alacarte.conf*. You should make sure the user
+The config file is located in */etc/alacarte.conf*. You should make sure the user
 running alacarte has permissions to write to the specified directories for caching
 and logging.
 
