@@ -11,7 +11,7 @@ rendering and Boost-Spirit for [MapCSS](http://wiki.openstreetmap.org/wiki/MapCS
 The rendered tiles are served over HTTP using the [Slippy map tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) convention.
 
 To compute which data is needed for rendering a tile, alaCarte uses a variant of
-a kd-Tree.
+a STR-Tree.
 
 alaCarte was designed with medium dataset size in mind. On a typical machine with
 at leat 8GB RAM, alaCarte can handle a unfiltered export from the federal state
