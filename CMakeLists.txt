@@ -1,4 +1,4 @@
-project(alacarte)
+project(alacarte-maps)
 
 cmake_minimum_required( VERSION 2.8.8 )
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
@@ -134,15 +134,15 @@ file(GLOB_RECURSE UnitTests_shared_sources      tests/shared/*.cpp)
 #
 # Targets
 #
-configure_file("data/config/alacarte.conf.in" "${CMAKE_SOURCE_DIR}/data/config/alacarte.conf")
+configure_file("data/config/alacarte-maps.conf.in" "${CMAKE_SOURCE_DIR}/data/config/alacarte-maps.conf")
 configure_file("tests/config.hpp.in" "${CMAKE_SOURCE_DIR}/tests/config.hpp")
 configure_file("include/config.hpp.in" "${CMAKE_SOURCE_DIR}/include/config.hpp")
 
 add_library(alacarte-obj OBJECT ${alacarte_sources})
 add_library(server-obj OBJECT ${server_sources})
 
-add_executable(alacarte-server      src/alacarte_server.cpp     $<TARGET_OBJECTS:server-obj> $<TARGET_OBJECTS:alacarte-obj>)
-add_executable(alacarte-importer    src/alacarte_importer.cpp   ${importer_sources} $<TARGET_OBJECTS:alacarte-obj>)
+add_executable(alacarte-maps-server      src/alacarte_server.cpp     $<TARGET_OBJECTS:server-obj> $<TARGET_OBJECTS:alacarte-obj>)
+add_executable(alacarte-maps-importer    src/alacarte_importer.cpp   ${importer_sources} $<TARGET_OBJECTS:alacarte-obj>)
 
 #
 #  Building tests
@@ -166,8 +166,8 @@ IF(GMOCK_FOUND)
 ENDIF(GMOCK_FOUND)
 add_executable(unitTests_eval       EXCLUDE_FROM_ALL ${UnitTests_eval_sources} $<TARGET_OBJECTS:UnitTests-shared-obj> $<TARGET_OBJECTS:server-obj-test> $<TARGET_OBJECTS:alacarte-obj-test>)
 
-target_link_libraries(alacarte-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
-target_link_libraries(alacarte-importer     ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
+target_link_libraries(alacarte-maps-server       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
+target_link_libraries(alacarte-maps-importer     ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
 target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(unitTests_importer    ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
@@ -183,15 +183,15 @@ set(test_files "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte
 
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte"
-    COMMAND alacarte-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte"
+    COMMAND alacarte-maps-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/karlsruhe_big.carte"
 )
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte"
-    COMMAND alacarte-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte"
+    COMMAND alacarte-maps-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/test_tiles.carte"
 )
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte"
-    COMMAND alacarte-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte"
+    COMMAND alacarte-maps-importer "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.osm" "${CMAKE_CURRENT_SOURCE_DIR}/tests/data/input/renderer_test.carte"
 )
 
 IF(BUILD_TESTING)
@@ -199,7 +199,7 @@ IF(BUILD_TESTING)
 ENDIF()
 
 add_custom_target(tests ${BT_FLAG}
-    DEPENDS alacarte-importer unitTests_server unitTests_importer unitTests_general unitTests_parser unitTests_utils unitTests_eval ${test_files}
+    DEPENDS alacarte-maps-importer unitTests_server unitTests_importer unitTests_general unitTests_parser unitTests_utils unitTests_eval ${test_files}
 )
 
 IF(BUILD_TESTING)
@@ -240,10 +240,10 @@ endif(DOXYGEN_FOUND)
 #
 # Installation
 #
-install(TARGETS alacarte-server RUNTIME DESTINATION bin)
-install(TARGETS alacarte-importer RUNTIME DESTINATION bin)
-install(FILES data/config/alacarte.conf DESTINATION /etc)
-install(FILES data/default.png DESTINATION share/alacarte)
-install(DIRECTORY data/mapcss/ DESTINATION share/alacarte/styles)
-install(DIRECTORY data/img DESTINATION share/alacarte)
-install(DIRECTORY data/icons DESTINATION share/alacarte)
+install(TARGETS alacarte-maps-server RUNTIME DESTINATION bin)
+install(TARGETS alacarte-maps-importer RUNTIME DESTINATION bin)
+install(FILES data/config/alacarte-maps.conf DESTINATION /etc)
+install(FILES data/default.png DESTINATION share/alacarte-maps)
+install(DIRECTORY data/mapcss/ DESTINATION share/alacarte-maps/styles)
+install(DIRECTORY data/img DESTINATION share/alacarte-maps)
+install(DIRECTORY data/icons DESTINATION share/alacarte-maps)
