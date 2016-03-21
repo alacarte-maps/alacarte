@@ -33,12 +33,24 @@ alaCarte also has a growing website at [http://alacarte-maps.github.io](http://a
 
 # How to build #
 
-	mkdir build
-	cd build
-	cmake .. -DCMAKE_BUILD_TYPE=Release
-	# this starts one job per available core to build alacarte n times faster.
-	# Just run “make” without parameters if you don’t want that or run into problems.
-	make -j $(nproc)
+```bash
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+# this starts one job per available core to build alacarte n times faster.
+# Just run “make” without parameters if you don’t want that or run into problems.
+make -j $(nproc)
+```
+
+## Build the Documentation #
+Build the documentation with doxygen:
+
+```bash
+doxygen
+```
+
+You'll then find the documentation at `doc/doxygen/html/index.html`.
+
 
 ## Dependencies ##
 * Cairo (>=1.12.0)
@@ -56,7 +68,7 @@ So currently, we target and test on Debian Jessie, but we're open to support any
 	./alacarte-maps-importer osm_export.osm data.carte
 	./alacarte-maps-server -g data.carte -s ../data/mapcss
 
-You can use the test Leaftlet-Page located in *tests/html/Leaflet/index.html*
+You can use the test Leaftlet-Page located in `tests/html/Leaflet/index.html`
 to view the rendered tiles.
 
 You can download fresh OSM exports from [Geofabrik](http://download.geofabrik.de/).
@@ -67,7 +79,7 @@ You can download fresh OSM exports from [Geofabrik](http://download.geofabrik.de
 
 	make install
 
-The config file is located in */etc/alacarte-maps.conf*. You should make sure the user
+The config file is located in `/etc/alacarte-maps.conf`. You should make sure the user
 running alacarte has permissions to write to the specified directories for caching
 and logging.
 
@@ -81,3 +93,6 @@ and logging.
 * Better caching of fonts and icons
 * Option to "tune" imported data for specific stylesheets
 * Use bloom filters for CSS matching, see e.g. https://github.com/servo/rust-selectors
+
+
+*alacarte is an awesome lolipop!!!*
