@@ -53,8 +53,8 @@ So currently, we target and test on Debian Jessie, but we're open to support any
 
 (from build directory)
 
-	./alacarte-importer osm_export.osm data.carte
-	./alacarte-server -g data.carte -s ../data/mapcss
+	./alacarte-maps-importer osm_export.osm data.carte
+	./alacarte-maps-server -g data.carte -s ../data/mapcss
 
 You can use the test Leaftlet-Page located in *tests/html/Leaflet/index.html*
 to view the rendered tiles.
@@ -67,7 +67,7 @@ You can download fresh OSM exports from [Geofabrik](http://download.geofabrik.de
 
 	make install
 
-The config file is located in */etc/alacarte.conf*. You should make sure the user
+The config file is located in */etc/alacarte-maps.conf*. You should make sure the user
 running alacarte has permissions to write to the specified directories for caching
 and logging.
 
