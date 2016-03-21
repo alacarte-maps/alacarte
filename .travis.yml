@@ -12,6 +12,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:kalakris/cmake
   - sudo apt-get update -qq
   - sudo apt-get install -qq cmake g++-4.8 libboost1.55-all-dev libboost-log1.55-dev libcairo2-dev libpng12-dev
+    sudo apt-get install -qq doxygen
 
   #if GCC
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
