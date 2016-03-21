@@ -17,6 +17,7 @@ before_install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 before_script:
+  - sudo pip3 install ghp-import
   - mkdir build
   - cd build
   - cmake .. -DBUILD_TESTING=ON
@@ -24,6 +25,12 @@ before_script:
 script:
   - make
   - ctest -VV -E unitTests_server
+  - cd ..
+  - doxygen
+
+after-success:
+  - ghp-import -n doc/doxygen/html
+  - git push -fq https://${GH_TOKEN}@github.com/alacarte-maps/alacarte.git
 
 notifications:
   email:
