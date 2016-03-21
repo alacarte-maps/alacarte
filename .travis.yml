@@ -17,7 +17,7 @@ before_install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 before_script:
-  - sudo pip3 install ghp-import
+  - sudo pip install ghp-import
   - mkdir build
   - cd build
   - cmake .. -DBUILD_TESTING=ON
@@ -30,6 +30,9 @@ script:
 
 after-success:
   - ghp-import -n doc/doxygen/html
+    # GH_TOKEN is a github personal OAUTH tokens, create it here:
+    # https://github.com/settings/tokens/new (only needs “repo“ access.)
+    # Then, add them as hidden environment variable in the Travis project settings.
   - git push -fq https://${GH_TOKEN}@github.com/alacarte-maps/alacarte.git
 
 notifications:
