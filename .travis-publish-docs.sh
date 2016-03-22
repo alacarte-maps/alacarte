@@ -8,9 +8,9 @@ if [ "${TRAVIS}" = "true" ]; then
 	[ "${TRAVIS_PULL_REQUEST}" = "false" ] || skip "Not building docs for pull requests"
 	[ "${TRAVIS_BRANCH}" = "master" ] || skip "Only building docs for master branch"
 	[ "${TRAVIS_JOB_NUMBER}" = "${TRAVIS_BUILD_NUMBER}.1" ] || skip "Only build docs once"
-	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" doc/doxygen/html
 	git config user.name "Travis CI"
 	git config push.default simple
+	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" doc/doxygen/html
 	git push -fq "https://${GH_TOKEN}@github.com/alacarte-maps/alacarte.git" gh-pages
 	echo "documentation was pushed."
 fi
