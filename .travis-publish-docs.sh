@@ -3,7 +3,11 @@
 # GH_TOKEN is a github personal OAUTH tokens, create it here:
 # https://github.com/settings/tokens/new (only needs “repo“ access.)
 # Then, add them as hidden environment variable in the Travis project settings.
-if [ "${TRAVIS_BRANCH}" = "master" ] && ["${TRAVIS_PULL_REQUEST}" = "false"]; then
+
+if [ "${TRAVIS}" = "true" ]; then
+	[ "${TRAVIS_PULL_REQUEST}" = "false" ] || skip "Not building docs for pull requests"
+	[ "${TRAVIS_BRANCH}" = "master" ] || skip "Only building docs for master branch"
+	[ "${TRAVIS_JOB_NUMBER}" = "${TRAVIS_BUILD_NUMBER}.1" ] || skip "Only build docs once"
 	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" doc/doxygen/html
 	git config user.name "Travis CI"
 	git config push.default simple
