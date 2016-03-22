@@ -3,12 +3,12 @@
 
 # What is alaCarte? #
 
-![screenshot of Karlsruhe](http://github.com/alacarte-maps/alacarte/raw/master/screenshot.png "Karlsruhe")
+![screenshot of Karlsruhe](https://github.com/alacarte-maps/alacarte/raw/master/screenshot.png "Karlsruhe")
 
 alaCarte is a tile renderer for OpenStreetMap data written in C++11, using Cairo for
-rendering and Boost-Spirit for [MapCSS](http://wiki.openstreetmap.org/wiki/MapCSS) parsing.
+rendering and Boost-Spirit for [MapCSS](https://wiki.openstreetmap.org/wiki/MapCSS) parsing.
 
-The rendered tiles are served over HTTP using the [Slippy map tilenames](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) convention.
+The rendered tiles are served over HTTP using the [Slippy map tilenames](https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames) convention.
 
 To compute which data is needed for rendering a tile, alaCarte uses a variant of
 a STR-Tree.
@@ -17,16 +17,19 @@ alaCarte was designed with medium dataset size in mind. On a typical machine wit
 at leat 8GB RAM, alaCarte can handle a unfiltered export from the federal state
 of Baden-Wuerttemberg (Germany).
 
-alaCarte was developed as part of a lab course student software project at [KIT](http://algo2.iti.kit.edu).
+alaCarte was developed as part of a lab course student software project at [KIT](https://algo2.iti.kit.edu).
 For the old project files (mostly in German), see the [old project repository](https://bitbucket.org/TheMarex/alacarte).
 
+## alaCarte Links ##
+* [Website](http://alacarte-maps.github.io)
+* [Developer Documentation](https://alacarte-maps.github.io/alacarte/)
+* [github Project](https://github.com/alacarte-maps/alacarte)
 
-alaCarte also has a growing website at [http://alacarte-maps.github.io](http://alacarte-maps.github.io/).
 
 ## Features ##
 
 * easy to use
-* most MapCSS attributes are implemented (see [MapCSS wiki page](http://wiki.openstreetmap.org/wiki/MapCSS/0.2#Vocabulary) for comparison)
+* most MapCSS attributes are implemented (see [MapCSS wiki page](https://wiki.openstreetmap.org/wiki/MapCSS/0.2#Vocabulary) for comparison)
 * no need to filter OSM exports, you have full access to all attributes at runtime
 * stylesheets are updated at runtime (changes are detected automatically)
 * tiles can be rendered in groups ("meta tile") to speed up rendering
@@ -46,7 +49,7 @@ make -j $(nproc)
 Build the documentation with doxygen:
 
 ```bash
-doxygen
+make doc
 ```
 
 You'll then find the documentation at `doc/doxygen/html/index.html`.
