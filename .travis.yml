@@ -1,8 +1,10 @@
 language: cpp
 compiler: gcc
 
-# doxygen binary installation based on https://github.com/gadomski/fgt/blob/master/scripts/gh-pages.sh
 before_install:
+  # install doxygen 1.8.11 from binary, because older versions throw errors on markdown code with images inside links
+  # (like the build status in the readme) and it's the only way to get a newer doxygen in Ubuntu 14.04
+  # doxygen binary installation based on https://github.com/gadomski/fgt/blob/master/scripts/gh-pages.sh
   - export DOXYGEN_VER=doxygen-1.8.11
   - export DOXYGEN_TAR=${DOXYGEN_VER}.linux.bin.tar.gz
   - export DOXYGEN_URL="http://ftp.stack.nl/pub/users/dimitri/${DOXYGEN_TAR}"
