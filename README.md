@@ -37,8 +37,9 @@ For the old project files (mostly in German), see the [old project repository](h
 # How to build #
 
 ```bash
-mkdir build
-cd build
+git clone git@github.com:alacarte-maps/alacarte.git
+mkdir alacarte/build
+cd alacarte/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 # this starts one job per available core to build alacarte n times faster.
 # Just run “make” without parameters if you don’t want that or run into problems.
