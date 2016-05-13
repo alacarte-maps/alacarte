@@ -87,16 +87,5 @@ The config file is located in `/etc/alacarte-maps.conf`. You should make sure th
 running alacarte has permissions to write to the specified directories for caching
 and logging.
 
-# To Do #
-* Real database backend (Postgresql?)
-* Why can't we render tiles in svg / vector graphics format?
-  Should work in theory, but in practice, something in cario seems to rasterize the result in the end…
-* Better font rendering (Pango?)
-* Unicode support (alaCarte itself supports unicode, the problem is unicode font rendering using Cairo / Pango)
-* Implement MapCSS-include
-* Better caching of fonts and icons
-* Option to "tune" imported data for specific stylesheets
-* Use bloom filters for CSS matching, see e.g. https://github.com/servo/rust-selectors
-
 
 *alacarte is an awesome lolipop!!!*
