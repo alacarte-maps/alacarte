@@ -21,7 +21,7 @@ alaCarte was developed as part of a lab course student software project at [KIT]
 For the old project files (mostly in German), see the [old project repository](https://bitbucket.org/TheMarex/alacarte).
 
 ## alaCarte Links ##
-* [Website](http://alacarte-maps.github.io)
+* [Website](https://alacarte-maps.github.io)
 * [Developer Documentation](https://alacarte-maps.github.io/alacarte/)
 * [github Project](https://github.com/alacarte-maps/alacarte)
 
