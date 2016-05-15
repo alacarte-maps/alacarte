@@ -174,7 +174,7 @@ void StylesheetManager::onFileSystemEvent(const boost::system::error_code &ec, c
 		return;
 	}
 
-	fs::path path = fs::path(ev.filename);
+	fs::path path = fs::path(ev.path);
 
 	// only act on .mapcss files that additionally aren't hidden files
 	if (path.extension() == ".mapcss" && path.stem().string().find(".") != 0) {
