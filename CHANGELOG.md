@@ -26,6 +26,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - building with clang.
 - speed up build times a little.
 - possible segfault when some data is not present (#43).
+- fixed some problems with automatic file change detection by updating dir_monitor to a newer version.
 
 
 ## [0.3.0] - 2013-05-04 ##
