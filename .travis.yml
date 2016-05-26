@@ -20,7 +20,7 @@ before_install:
   # - sudo add-apt-repository --yes ppa:kedazo/doxygen-updates-precise
 
   - sudo apt-get update -qq
-  - sudo apt-get install -qq cmake g++-4.8 libboost1.55-all-dev libboost-log1.55-dev libcairo2-dev libpng12-dev
+  - sudo apt-get install -qq cmake g++-4.8 libboost1.55-all-dev libboost-log1.55-dev libcairo2-dev libpng12-dev asciidoc
   # - sudo apt-get install -qq doxygen
 
   #if GCC
@@ -38,6 +38,7 @@ script:
   - make
   - ctest -VV -E unitTests_server
   - make doc
+  - make man
 
 after_success:
   - cd ..

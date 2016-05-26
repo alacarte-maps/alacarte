@@ -4,7 +4,7 @@
 # https://github.com/settings/tokens/new (only needs “repo“ access.)
 # Then, add them as hidden environment variable in the Travis project settings.
 GH_REPO="alacarte-maps/alacarte"
-WEBROOT="doc/doxygen/html"
+DOXYGEN_OUTPUT="doc/doxygen/html"
 
 
 skip() {
@@ -17,9 +17,14 @@ if [ "${TRAVIS}" = "true" ]; then
 	[ "${TRAVIS_PULL_REQUEST}" = "false" ] || skip "Not building docs for pull requests"
 	[ "${TRAVIS_BRANCH}" = "master" ] || skip "Only building docs for master branch"
 	[ "${TRAVIS_JOB_NUMBER}" = "${TRAVIS_BUILD_NUMBER}.1" ] || skip "Only build docs once"
+	mkdir webroot
+	mv "${DOXYGEN_OUTPUT}" webroot/documentation
+	mkdir webroot/manpages
+	mv "build/manpages/alacarte-maps-server.1.html" "webroot/manpages"
+	mv "build/manpages/alacarte-maps-importer.1.html" "webroot/manpages"
 	git config user.name "Travis CI"
 	git config push.default simple
-	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" ${WEBROOT}
+	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" webroot
 	git push -fq "https://${GH_TOKEN}@github.com/${GH_REPO}.git" gh-pages
 	echo "documentation was pushed."
 fi
