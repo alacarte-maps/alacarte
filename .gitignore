@@ -21,7 +21,7 @@ tests/data/output/rendered/
 tests/data/output/diff/
 tests/config.hpp
 include/config.hpp
-data/config/alacarte.conf
+data/config/alacarte-maps.conf
 
 # ctags, cscope
 tags
