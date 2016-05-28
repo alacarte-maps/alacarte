@@ -47,13 +47,21 @@ make -j $(nproc)
 ```
 
 ## Build the Documentation #
-Build the documentation with doxygen:
+Build the developer documentation with doxygen:
 
 ```bash
 make doc
 ```
 
 You'll then find the documentation at `doc/doxygen/html/index.html`.
+
+The manpages are built with asciidoc:
+
+```bash
+make man
+```
+
+The results get stored in `build/manpages/`.
 
 
 ## Dependencies ##
@@ -67,10 +75,8 @@ So currently, we target and test on Debian Jessie, but we're open to support any
 
 ## Usage ##
 
-(from build directory)
-
-	./alacarte-maps-importer osm_export.osm data.carte
-	./alacarte-maps-server -g data.carte -s ../data/mapcss
+See the manpages of [alacarte-maps-importer](manpages/alacarte-maps-importer.1.adoc) and
+[alacarte-maps-server](manpages/alacarte-maps-server.1.adoc).
 
 You can use the test Leaftlet-Page located in `tests/html/Leaflet/index.html`
 to view the rendered tiles.

@@ -6,6 +6,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(CTest)
 
+add_subdirectory(manpages)
+
 #
 # Depends on boost version from Debian Jessie
 #
@@ -245,5 +247,3 @@ install(FILES data/default.png DESTINATION share/alacarte-maps)
 install(DIRECTORY data/mapcss/ DESTINATION share/alacarte-maps/styles)
 install(DIRECTORY data/img DESTINATION share/alacarte-maps)
 install(DIRECTORY data/icons DESTINATION share/alacarte-maps)
-install(FILES manpages/alacarte-maps-importer.1.gz DESTINATION /usr/share/man/man1)
-install(FILES manpages/alacarte-maps-server.1.gz DESTINATION /usr/share/man/man1)
