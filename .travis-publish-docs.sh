@@ -22,6 +22,7 @@ if [ "${TRAVIS}" = "true" ]; then
 	mkdir webroot/manpages
 	mv "build/manpages/alacarte-maps-server.1.html" "webroot/manpages"
 	mv "build/manpages/alacarte-maps-importer.1.html" "webroot/manpages"
+	mv "build/manpages/docbook-xsl.css" "webroot/manpages"
 	git config user.name "Travis CI"
 	git config push.default simple
 	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" webroot
