@@ -75,13 +75,15 @@ So currently, we target and test on Debian Jessie, but we're open to support any
 
 ## Usage ##
 
-See the manpages of [alacarte-maps-importer](manpages/alacarte-maps-importer.1.adoc) and
-[alacarte-maps-server](manpages/alacarte-maps-server.1.adoc).
+See the manpages of
+[alacarte-maps-importer](https://alacarte-maps.github.io/alacarte/manpages/alacarte-maps-importer.1.html)
+and
+[alacarte-maps-server](https://alacarte-maps.github.io/alacarte/manpages/alacarte-maps-server.1.html).
 
 You can use the test Leaftlet-Page located in `tests/html/Leaflet/index.html`
 to view the rendered tiles.
 
-You can download fresh OSM exports from [Geofabrik](http://download.geofabrik.de/).
+You can download fresh OSM exports from [Geofabrik](https://download.geofabrik.de/).
 
 ## Install ##
 
