@@ -22,7 +22,7 @@ For the old project files (mostly in German), see the [old project repository](h
 
 ## alaCarte Links ##
 * [Website](https://alacarte-maps.github.io)
-* [Developer Documentation](https://alacarte-maps.github.io/alacarte/)
+* [Developer Documentation](https://alacarte-maps.github.io/alacarte/documentation/)
 * [github Project](https://github.com/alacarte-maps/alacarte)
 
 
