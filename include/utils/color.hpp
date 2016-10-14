@@ -75,23 +75,28 @@ public:
 	inline Color& operator /=	(const Color& c)	{r /= c.r; g /= c.g; b /= c.b; a /= c.a; return *this;}
 	inline Color& operator /=	(const float f)		{r /= f; g /= f; b /= f; a /= f; return *this;}
 
-	inline Color operator + (const Color& _c)	{return Color(r + _c.r, g + _c.g, b + _c.b, a + _c.a);}
-	inline Color operator - (const Color& _c)	{return Color(r - _c.r, g - _c.g, b - _c.b, a - _c.a);}
-	inline Color operator - ()					{return Color(-r, -g, -b, a);}
-	inline Color operator * (const Color& _c)	{return Color(r * _c.r, g * _c.g, b * _c.b, a * _c.a);}
-	inline Color operator * (const float f)		{return Color(r * f, g * f, b * f, a * f);}
-	inline Color operator / (const Color& _c)	{return Color(r / _c.r, g / _c.g, b / _c.b, a / _c.a);}
-	inline Color operator / (const float f)		{return Color(r / f, g / f, b / f, a / f);}
+	inline Color operator + (const Color& _c) const	{return Color(r + _c.r, g + _c.g, b + _c.b, a + _c.a);}
+	inline Color operator - (const Color& _c) const	{return Color(r - _c.r, g - _c.g, b - _c.b, a - _c.a);}
+	inline Color operator - () const 					{return Color(-r, -g, -b, a);}
+	inline Color operator * (const Color& _c) const	{return Color(r * _c.r, g * _c.g, b * _c.b, a * _c.a);}
+	inline Color operator * (const float f) const		{return Color(r * f, g * f, b * f, a * f);}
+	inline Color operator / (const Color& _c) const	{return Color(r / _c.r, g / _c.g, b / _c.b, a / _c.a);}
+	inline Color operator / (const float f) const		{return Color(r / f, g / f, b / f, a / f);}
 
-	inline bool operator == (const Color& _c) {return (uint32)*this == (uint32)_c;}
-	inline bool operator != (const Color& _c) {return (uint32)*this != (uint32)_c;}
+	inline bool operator == (const Color& _c) const {return (uint32)*this == (uint32)_c;}
+	inline bool operator != (const Color& _c) const {return (uint32)*this != (uint32)_c;}
 
 
-	inline Color	negate()		{ return Color(1.0f - r, 1.0f - g, 1.0f - b, a); }
-	inline Color	negateA()		{ return Color(1.0f - r, 1.0f - g, 1.0f - b, 1.0f - a); }
-	inline Color	min(const Color& _c)	{ return Color(std::min(r, _c.r), std::min(g, _c.g), std::min(b, _c.b), std::min(a, _c.a)); }
-	inline Color	max(const Color& _c)	{ return Color(std::max(r, _c.r), std::max(g, _c.g), std::max(b, _c.b), std::max(a, _c.a)); }
+	inline Color	negate()  const		{ return Color(1.0f - r, 1.0f - g, 1.0f - b, a); }
+	inline Color	negateA() const		{ return Color(1.0f - r, 1.0f - g, 1.0f - b, 1.0f - a); }
+	inline Color	min(const Color& _c) const	{ return Color(std::min(r, _c.r), std::min(g, _c.g), std::min(b, _c.b), std::min(a, _c.a)); }
+	inline Color	max(const Color& _c) const	{ return Color(std::max(r, _c.r), std::max(g, _c.g), std::max(b, _c.b), std::max(a, _c.a)); }
 
+	friend std::ostream& operator<< (std::ostream& stream, const Color& color)
+	{
+		stream << "Color(" << color.r << "," << color.g << "," << color.b << "," << color.a << ")";
+		return stream;
+	}
 
 	//inline Color&	rand()			{ r = Random::Rand<float>(1.0f); greturn (*this); }
 
