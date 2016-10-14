@@ -33,11 +33,15 @@ class Relation : public GeoObject
 private:
 	friend class boost::serialization::access;
 public:
+	Relation() = default;
+	Relation(const Relation& other) = default;
+	Relation(Relation&& other) = default;
 	Relation(	const std::vector<NodeId>& nodeIDs, 
 				const DataMap<NodeId, CachedString>& nodeRoles,
 				const std::vector<WayId>& wayIDs,
 				const DataMap<WayId, CachedString>& wayRoles,
 				const DataMap<CachedString, CachedString>& tags);
+	virtual ~Relation() = default;
 	
 	TESTABLE const std::vector<WayId>& getWayIDs() const;
 	TESTABLE const std::vector<NodeId>& getNodeIDs() const;    
@@ -53,7 +57,6 @@ private:
 		ar & wayRoles;
 	}
 
-	Relation();
 private:
 	std::vector<NodeId> nodeIDs;
 	std::vector<WayId> wayIDs;

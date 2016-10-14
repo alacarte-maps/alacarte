@@ -33,11 +33,14 @@ class Way : public GeoObject
 private:
     friend class boost::serialization::access;
 public:
-
+	Way() = default;
+	Way(const Way& other) = default;
+	Way(Way&& other) = default;
 	Way(const std::vector<NodeId>& nodeIDs, const DataMap<CachedString, CachedString>& tags)
 	: GeoObject(tags)
 	, nodeIDs(nodeIDs)
 	{ }
+	virtual ~Way() = default;
 
 	inline const std::vector<NodeId>& getNodeIDs() const { return nodeIDs; }
 	inline bool isClosed() const { return (nodeIDs.front() == nodeIDs.back()); }
@@ -48,7 +51,6 @@ private:
 		GeoObject::serialize(ar, version);
 		ar & nodeIDs;
 	}
-	Way(){}
 
 private:
 	std::vector<NodeId> nodeIDs;

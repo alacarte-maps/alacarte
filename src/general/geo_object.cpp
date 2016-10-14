@@ -27,8 +27,6 @@ GeoObject::GeoObject(const DataMap<CachedString, CachedString>& tags)
 {
 }
 
-GeoObject::GeoObject() {}
-
 const DataMap<CachedString, CachedString>& GeoObject::getTags() const
 {
 	return tags;

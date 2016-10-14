@@ -36,8 +36,6 @@ Relation::Relation(	const std::vector<NodeId>& nodeIDs,
 {
 }
 
-Relation::Relation() {}
-
 const std::vector<WayId>& Relation::getWayIDs() const
 {
 	return wayIDs;
