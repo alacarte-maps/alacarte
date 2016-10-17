@@ -35,9 +35,12 @@ class GeoObject
 private:
 	friend class boost::serialization::access;
 public:
-	GeoObject();
+	GeoObject() = default;
+	GeoObject(const GeoObject& other) = default;
+	GeoObject(GeoObject&& other) = default;
 	GeoObject(const DataMap<CachedString, CachedString>& tags);
-	
+	virtual ~GeoObject() = default;
+
 	//! Returns a map with key-to-tag-mapping for osm-tags. 
 	TESTABLE const DataMap<CachedString, CachedString>& getTags() const;
 protected:

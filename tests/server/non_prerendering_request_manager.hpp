@@ -18,7 +18,7 @@ public:
 	{
 	}
 	
-	virtual ~NonPrerenderingRequestManager() {}
+	virtual ~NonPrerenderingRequestManager() = default;
 	//Disabled to prevent prerendering
 	void enqueue(const shared_ptr<TileIdentifier>& ti)
 	{

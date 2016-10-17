@@ -36,12 +36,12 @@ class Way;
 class Relation;
 class Geodata;
 
-class GeodataMock : public Geodata						//erbt von Geodata
+class GeodataMock : public Geodata
 {
 public:
-	GeodataMock();
+	GeodataMock() = default;
 	GeodataMock(const Geodata& data);
-	~GeodataMock();
+	virtual ~GeodataMock() = default;
 
 	TESTABLE void insertNodes(const shared_ptr<std::vector<Node> >& nodes);
 	TESTABLE void insertWays(const shared_ptr<std::vector<Way> >& ways);

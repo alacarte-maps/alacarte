@@ -39,16 +39,18 @@ private:
 		ar & y;
 	}
 public:
-	basic_vector2()	: x(T(0)), y(T(0))									{}
-	basic_vector2(const basic_vector2& _v)	: x(_v.x), y(_v.y)			{}
-	basic_vector2(const T _v)				: x(_v), y(_v)				{}
-	basic_vector2(const T _x, const T _y)	: x(_x), y(_y)				{}
+	basic_vector2()	: x(T(0)), y(T(0)) {}
+	basic_vector2(const basic_vector2& _v) = default;
+	basic_vector2(basic_vector2&& _v) = default;
+	basic_vector2(const T _v)             : x(_v), y(_v) {}
+	basic_vector2(const T _x, const T _y) : x(_x), y(_y) {}
 
 	// Casting-Operatoren
 	operator float* () {return (float*)(c);}
 
 	// Zuweisungsoperatoren
-	basic_vector2& operator = (const basic_vector2& v)	{x = v.x; y = v.y;		return (*this);}
+	basic_vector2& operator = (const basic_vector2& v) = default;
+	basic_vector2& operator = (basic_vector2&& v) = default;
 	basic_vector2& operator += (const basic_vector2& v)	{x += v.x; y += v.y;	return (*this);}
 	basic_vector2& operator -= (const basic_vector2& v)	{x -= v.x; y -= v.y;	return (*this);}
 	basic_vector2& operator *= (const basic_vector2& v)	{x *= v.x; y *= v.y;	return (*this);}

@@ -45,14 +45,6 @@
 #include "utils/rect.hpp"
 #include "utils/archive.hpp"
 
-Geodata::Geodata()
-{
-}
-
-Geodata::~Geodata()
-{
-}
-
 //! called when data is serialized to file
 void Geodata::buildTrees(const string& nodePath, const string& wayPath, const string& relationPath)
 {

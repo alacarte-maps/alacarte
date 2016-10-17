@@ -41,8 +41,8 @@ class RTree;
 class Geodata
 {
 public:
-	Geodata();
-	~Geodata();
+	Geodata() = default;
+	virtual ~Geodata() = default;
 
 	TESTABLE void insertNodes(const shared_ptr<std::vector<Node> >& nodes);
 	TESTABLE void insertWays(const shared_ptr<std::vector<Way> >& ways);

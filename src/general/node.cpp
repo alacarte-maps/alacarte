@@ -38,7 +38,6 @@ Node::Node(const FloatPoint& sphereLocation, const DataMap<CachedString, CachedS
 {
 	projectMercator(sphereLocation, location.x, location.y);
 }
-Node::Node() {}
 
 
 const FixedPoint& Node::getLocation() const

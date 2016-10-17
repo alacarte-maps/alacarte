@@ -30,11 +30,14 @@ class Node : public GeoObject
 private:
 	friend class boost::serialization::access;
 public:
+	Node() = default;
+	Node(const Node& other) = default;
+	Node(Node&& other) = default;
 	Node(const FloatPoint& location, const DataMap<CachedString, CachedString>& tags);
+	virtual ~Node() = default;
 
 	TESTABLE const FixedPoint& getLocation() const;
 private:
-	Node();
 	template<typename Archive>
 	void serialize(Archive &ar, const unsigned int version) {
 		GeoObject::serialize(ar, version);

@@ -20,12 +20,8 @@
 
 
 
-GeodataMock::GeodataMock()
-{
-}
-GeodataMock::GeodataMock(const Geodata& data) : Geodata(data) 
-{}
-GeodataMock::~GeodataMock()
+GeodataMock::GeodataMock(const Geodata& data)
+	: Geodata(data)
 {
 }
 
@@ -40,46 +36,44 @@ void GeodataMock::insertWays(const shared_ptr<std::vector<Way> >& ways)
 }
 
 void GeodataMock::insertRelations(const shared_ptr<std::vector<Relation> >& relations)
-{	
-		this->relations = relations;
+{
+	this->relations = relations;
 }
-
-
 
 shared_ptr<std::vector<NodeId> > GeodataMock::getNodeIDs(const FixedRect& rect) const
 {
 	shared_ptr<std::vector<NodeId> > nodeIDs = boost::make_shared< std::vector<NodeId> >();
- 	for(int i = 0; i < nodes->size(); i++) {
- 		if(rect.contains(nodes->at(i).getLocation())) {
- 			nodeIDs->push_back(NodeId(i));
- 		}
- 	}
+	for(int i = 0; i < nodes->size(); i++) {
+		if(rect.contains(nodes->at(i).getLocation())) {
+			nodeIDs->push_back(NodeId(i));
+		}
+	}
 	return nodeIDs;
 }
 
- shared_ptr<std::vector<WayId> > GeodataMock::getWayIDs(const FixedRect& rect) const
- {
- 	shared_ptr<std::vector<WayId> > wayIDs = boost::make_shared< std::vector<WayId> >();
- 	for(int i = 0; i < ways->size(); i++) {
- 		if(rect.intersects(calculateBoundingBox(&ways->at(i)))) {
- 				wayIDs->push_back(WayId(i));
- 		}
- 	}
- 	return wayIDs;
- }
+shared_ptr<std::vector<WayId> > GeodataMock::getWayIDs(const FixedRect& rect) const
+{
+	shared_ptr<std::vector<WayId> > wayIDs = boost::make_shared< std::vector<WayId> >();
+	for(int i = 0; i < ways->size(); i++) {
+		if(rect.intersects(calculateBoundingBox(&ways->at(i)))) {
+				wayIDs->push_back(WayId(i));
+		}
+	}
+	return wayIDs;
+}
 
 
- shared_ptr<std::vector<RelId> > GeodataMock::getRelationIDs(const FixedRect& rect) const
- {
+shared_ptr<std::vector<RelId> > GeodataMock::getRelationIDs(const FixedRect& rect) const
+{
 	shared_ptr<std::vector<RelId> > relationIDs = boost::make_shared< std::vector<RelId> >();
 
- 	for(int i = 0; i < relations->size(); i++) {
- 		if ( rect.intersects ( calculateBoundingBox(&relations->at(i)))) {
+	for(int i = 0; i < relations->size(); i++) {
+		if ( rect.intersects ( calculateBoundingBox(&relations->at(i)))) {
 			relationIDs->push_back(RelId(i));
- 		}
- 	}
- 	return relationIDs;
- }
+		}
+	}
+	return relationIDs;
+}
 
 Node* GeodataMock::getNode(NodeId id) const
 {
@@ -92,14 +86,13 @@ Way* GeodataMock::getWay(WayId id) const
 }
 
 
-FixedRect GeodataMock::calculateBoundingBox(const Way* way) const {
-
+FixedRect GeodataMock::calculateBoundingBox(const Way* way) const
+{
 	return calculateBoundingBox(way->getNodeIDs());
 }
 
-FixedRect GeodataMock::calculateBoundingBox(const Relation* relation) const {
-
-
+FixedRect GeodataMock::calculateBoundingBox(const Relation* relation) const
+{
 	coord_t maxX = std::numeric_limits<coord_t>::min();
 	coord_t maxY = std::numeric_limits<coord_t>::min();
 	coord_t minX = std::numeric_limits<coord_t>::max();
@@ -130,8 +123,8 @@ FixedRect GeodataMock::calculateBoundingBox(const Relation* relation) const {
 	return FixedRect(minX, minY, maxX, maxY);
 }
 
-FixedRect GeodataMock::calculateBoundingBox(const std::vector<NodeId>& nodeIDs) const {
-
+FixedRect GeodataMock::calculateBoundingBox(const std::vector<NodeId>& nodeIDs) const
+{
 	FixedPoint help;
 	coord_t maxX = std::numeric_limits<coord_t>::min();
 	coord_t maxY = std::numeric_limits<coord_t>::min();
