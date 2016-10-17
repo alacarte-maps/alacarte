@@ -59,7 +59,7 @@ public:
 
 	PNGRenderCanvas(unsigned int layerWidth, unsigned int layerHeight,
 					unsigned int sliceWidth, unsigned int sliceHeight);
-	virtual ~PNGRenderCanvas() {}
+	virtual ~PNGRenderCanvas() = default;
 	virtual void clear();
 	virtual CairoLayer* getImageLayers() { return layers; }
 	virtual CairoLayer& getSliceLayer() { return slice; }

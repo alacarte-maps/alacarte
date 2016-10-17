@@ -26,16 +26,6 @@
 
 
 /**
- * @brief Creats an empty configuration
- *
- **/
-Configuration::Configuration()
-{
-
-}
-
-
-/**
  * @brief Creates a new config and parses the command line and config file.
  *
  * Parses the command line arguments and stores them internally.

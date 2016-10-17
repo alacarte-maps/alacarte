@@ -73,7 +73,7 @@ public:
 		LAYER_NUM
 	};
 
-	virtual ~RenderCanvas() {}
+	virtual ~RenderCanvas() = default;
 
 	//! Clears every layer. Should always be called before use.
 	virtual void clear() = 0;

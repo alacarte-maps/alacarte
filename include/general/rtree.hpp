@@ -100,7 +100,7 @@ private:
 	};
 
 public:
-	RTree () {}
+	RTree() = default;
 	void build(std::vector<data_t>& data, const string& leafPath);
 	bool search ( boost::shared_ptr<std::vector<id_t> >& result,
 				  const FixedRect& rect, bool returnOnFirst = false ) const;

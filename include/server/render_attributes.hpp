@@ -38,10 +38,6 @@ class RenderAttributes
 public:
 	static const unsigned int ChunkSize = 1024;
 
-	/**
-	 * @brief Creates a new, empty RenderAttributes.
-	 */
-	RenderAttributes() {}
 	TESTABLE inline const boost::unordered_map<WayId, Style*>& getWayMap() const
 	{
 		return wayStyles;
@@ -62,8 +58,6 @@ public:
 	TESTABLE Style* getNewStyle(NodeId id)	{ return newStyle(id, nodeStyles); }
 	TESTABLE Style* getNewStyle(WayId id)	{ return newStyle(id, wayStyles); }
 	TESTABLE Style* getNewStyle(RelId id)	{ return newStyle(id, relationStyles); }
-
-
 
 private:
 	template<typename IdType>

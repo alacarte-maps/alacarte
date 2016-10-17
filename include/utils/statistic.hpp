@@ -52,7 +52,7 @@ public:
 	class JobMeasurement {
 		friend class Statistic;
 	public:
-		JobMeasurement(){};
+		JobMeasurement() = default;
 		JobMeasurement(const string& stylesheet, int zoom)
 			: stylesheet(stylesheet), zoom(zoom), nodes(0), ways(0), relations(0)
 		{

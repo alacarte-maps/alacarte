@@ -115,8 +115,7 @@ namespace opt {
 class Configuration : public boost::enable_shared_from_this<Configuration>
 {
 public:
-	Configuration();
-
+	Configuration() = default;
 	Configuration(	boost::program_options::options_description& cmd_desc,
 					boost::program_options::options_description& config_desc,
 					boost::program_options::positional_options_description& pos_desc,

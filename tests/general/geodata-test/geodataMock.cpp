@@ -20,12 +20,8 @@
 
 
 
-GeodataMock::GeodataMock()
-{
-}
-GeodataMock::GeodataMock(const Geodata& data) : Geodata(data) 
-{}
-GeodataMock::~GeodataMock()
+GeodataMock::GeodataMock(const Geodata& data)
+	: Geodata(data)
 {
 }
 
