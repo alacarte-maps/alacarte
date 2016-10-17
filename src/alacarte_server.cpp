@@ -180,7 +180,7 @@ protected:
 
 
 	/**
-	 * @brief Contains the main functionality for the server                                                                  
+	 * @brief Contains the main functionality for the server
 	 *
 	 * @param config the configuration for the application
 	 **/
