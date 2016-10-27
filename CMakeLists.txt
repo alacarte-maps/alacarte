@@ -242,7 +242,7 @@ endif(DOXYGEN_FOUND)
 #
 install(TARGETS alacarte-maps-server RUNTIME DESTINATION bin)
 install(TARGETS alacarte-maps-importer RUNTIME DESTINATION bin)
-install(FILES data/config/alacarte-maps.conf DESTINATION /etc)
+install(FILES data/config/alacarte-maps.conf DESTINATION etc)
 install(FILES data/default.png DESTINATION share/alacarte-maps)
 install(DIRECTORY data/mapcss/ DESTINATION share/alacarte-maps/styles)
 install(DIRECTORY data/img DESTINATION share/alacarte-maps)
