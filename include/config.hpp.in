@@ -4,6 +4,7 @@
 
 #define RENDER_LOCK @RENDER_LOCK@
 #define DEBUG_BUILD @DEBUG_BUILD@
+#define SYSCONFDIR "@SYSCONFDIR@"
 
 
 #endif
