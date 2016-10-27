@@ -78,6 +78,7 @@ The results get stored in `build/manpages/`.
 * Boost (>= 1.55) (Spirit)
 * libpng
 * cmake (>= 2.8.8)
+* asciidoc (>= 8.6.9) (optional, needed for manpage generation)
 
 alacarte's dependency policy is to depend on nothing that's not included or newer than Debian stable.
 So currently, we target and test on Debian Jessie, but we're open to support any other OS.
