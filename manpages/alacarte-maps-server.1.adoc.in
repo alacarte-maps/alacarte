@@ -31,7 +31,7 @@ to convert an osm xml file.
   Produce help message
 *-c, --config* <path> (=alacarte-maps.conf)::
   Specifies a config file which will be loaded at program start. Absolute and
-  relative paths are possible. Additionally we search in /etc/.
+  relative paths are possible. Additionally we search in @SYSCONFDIR@.
 *-l, --logfile* <path> (=log.txt)::
   Specifies the path of the logfile.
 *-g, --server.geo-data* <path>::

@@ -20,7 +20,7 @@ alaCarte importer converts data from an osm xml file to alaCarte's own file form
   Produce help message.
 *-c, --config* <path> (=alacarte-maps.conf)::
   Specifies a config file which will be loaded at program start. Absolute and
-  relative paths are possible. Additionally we search in /etc/.
+  relative paths are possible. Additionally we search in @SYSCONFDIR@.
 *-l, --logfile* <path> (=log.txt)::
   Specifies the location of the logfile.
 *-i, --importer.osm-data* <path>::

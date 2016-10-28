@@ -19,7 +19,7 @@
  */
 
 
-
+#include "config.hpp"
 #include "settings.hpp"
 
 #include "utils/application.hpp"
@@ -54,7 +54,7 @@ public:
 		cmd_desc.add_options()
 			(OPT(opt::help, "h"),																			"produce help message")
 			(OPT(opt::config, "c"),	value<string>()->default_value(DEFAULT_CONFIG_NAME),
-				"specifies a config file which will be loaded at program start.  Absolute and relative paths are possible. Additionally we search in /etc/.")
+				"specifies a config file which will be loaded at program start.  Absolute and relative paths are possible. Additionally we search in " SYSCONFDIR ".")
 			;
 
 		// in cmd and config

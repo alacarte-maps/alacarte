@@ -22,6 +22,7 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
+#include "config.hpp"
 #include "general/configuration.hpp"
 
 
@@ -62,7 +63,7 @@ Configuration::Configuration(	boost::program_options::options_description& cmd_d
 	// Adding a Directory? So don't forget to update the help of -c command of the server and importer
 	directories.push(""); //root
 	directories.push(path(argv[0]).parent_path()); // executable path
-	directories.push("/etc");
+	directories.push(SYSCONFDIR);
 
 	assert(options.count(opt::config));
 	path configFile = options[opt::config].as<string>();
