@@ -9,6 +9,7 @@ set(HTML_MAN_FILES)
 file(COPY ${CMAKE_SOURCE_DIR}/manpages DESTINATION ${CMAKE_BINARY_DIR})
 
 foreach(name IN LISTS MAN_NAMES)
+	configure_file("${CMAKE_BINARY_DIR}/manpages/${name}.adoc.in" "${CMAKE_BINARY_DIR}/manpages/${name}.adoc")
 	set(man_source ${CMAKE_BINARY_DIR}/manpages/${name}.adoc)
 	set(man_html ${CMAKE_BINARY_DIR}/manpages/${name}.html)
 	set(man_compiled ${CMAKE_BINARY_DIR}/manpages/${name})
