@@ -6,6 +6,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(CTest)
 
+
+set(SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc")
+if (CMAKE_INSTALL_PREFIX STREQUAL "/usr"
+ OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+	set(SYSCONFDIR "/etc")
+endif()
+
 add_subdirectory(manpages)
 
 #
@@ -119,12 +126,6 @@ message(STATUS "Release: ${CMAKE_CXX_FLAGS_RELEASE}")
 message(STATUS "Sanitize: ${CMAKE_CXX_FLAGS_SANITIZE}")
 
 
-
-set(SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc")
-if (CMAKE_INSTALL_PREFIX STREQUAL "/usr"
- OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
-	set(SYSCONFDIR "/etc")
-endif()
 
 #
 # Sources
