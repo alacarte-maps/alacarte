@@ -38,7 +38,6 @@ script:
   - make
   - ctest -VV -E unitTests_server
   - make doc
-  - make man
 
 after_success:
   - cd ..
