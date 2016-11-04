@@ -44,7 +44,7 @@ ENDIF(WIN32)
 
 find_package(Cairo REQUIRED)
 if(CAIRO_FOUND)
-	message(STATUS "Cairo Verison: ${CAIRO_VERSION}")
+	message(STATUS "Cairo Version: ${CAIRO_VERSION}")
 endif()
 find_package(Freetype REQUIRED)
 
