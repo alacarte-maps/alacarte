@@ -1,18 +1,32 @@
-The Test Guide
-=============
+# The Test Guide
+
 As you might already know, we use `boost::test`. This serves as an entry point to our current organization.
 For more detailed information, see the [documentation of the boost testing framework][].
 
 
 All tests are in the `tests` folder, which might come as a suprise to you.
-After compiling, there should be 4 test programs:
+After compiling, there should be few test executables of the form `unitTest_…` in `<build_dir>/tests/`.
 
-1. general
-2. utils
-3. importer
-4. server
+## Running unit tests
+(current working directory is your build directory)
+* To run all unit tests simply execute: `make test` or `ctest`
+* To run a single unit test module:
 
-In this folder, there's always a `…_test_module.cpp`. It only describes the test and does not need to be changed.
+~~~~~~~~~~~~
+	cd ./tests
+	./unitTests_<module name>
+~~~~~~~~~~~~
+
+* To run a specific test suit of a module:
+
+~~~~~~~~~~~~
+	cd ./tests
+	./unitTests_<module name> --run_test=<test suit name>
+~~~~~~~~~~~~
+
+## Adding a unit test module
+Every unit test module (folder) contains a `…_test_module.cpp`.
+It only describes the test and its name.
 Then you can add a subfolder for each class to test and place the tests in there.
 For example, if you want to add a test for the `Geodata` class, you do that in
 `tests/general/geodata-test/geodata_functional_test.cpp`.
