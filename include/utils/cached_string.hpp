@@ -34,7 +34,7 @@ class MaybeCachedString;
 /**
  * @brief Represents a string which is cached into an internal cache
  *
- * \Note It is not safe to use an instance of this class in more than one thread!!! 
+ * \Note It is not safe to use an instance of this class in more than one thread!!!
  *
  **/
 class CachedString
