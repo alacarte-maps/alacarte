@@ -56,9 +56,11 @@ struct cache_test
 		// tileIdentifier is not in valid range, so it wont be prerendered.
 		shared_ptr<TileIdentifier> ti1 = boost::make_shared<TileIdentifier>(200, 1, 1, "default", TileIdentifier::Format::PNG);
 		Tile::ImageType image = boost::make_shared<Tile::ImageType::element_type>();
+		
+		const std::string tileFilePath = config->get<string>(opt::server::cache_path) + "/default/1/200/1.png";
 		// tries to read file that doesn't exist.
-		if (boost::filesystem::exists(config->get<string>(opt::server::cache_path) + "/default/1-200-1.png")) {
-			boost::filesystem::remove(config->get<string>(opt::server::cache_path) + "/default/1-200-1.png");
+		if (boost::filesystem::exists(tileFilePath)) {
+			boost::filesystem::remove(tileFilePath);
 		}
 		shared_ptr<Tile> tile;
 		BOOST_CHECK_NO_THROW(tile = cache->getTile(ti1));
@@ -72,7 +74,7 @@ struct cache_test
 			BOOST_CHECK_NO_THROW(cache->getTile(ti2));
 		}
 		// Main tile should not be evicted, because its not rendered yet.So check if theres no image on harddisk
-		BOOST_CHECK(!boost::filesystem::exists(config->get<string>(opt::server::cache_path) + "/default/1-200-1.png"));
+		BOOST_CHECK(!boost::filesystem::exists(tileFilePath));
 		image->push_back('a');
 		tile->setImage(image);
 		// One more time access many tile to evict main tile.
@@ -81,7 +83,8 @@ struct cache_test
 			BOOST_CHECK_NO_THROW(cache->getTile(ti2));
 		}
 		// Check if main tile has been written to harddrive.
-		BOOST_CHECK(boost::filesystem::exists(config->get<string>(opt::server::cache_path) + "/default/1-200-1.png"));
+		const bool cacheWrittenToHDD = boost::filesystem::exists(tileFilePath);
+		BOOST_CHECK(cacheWrittenToHDD);
 		// Access a tile formerly evicted to hard drive. 
 		BOOST_CHECK_NO_THROW(cache->getTile(ti1));
 		// Change access rights on hdd
