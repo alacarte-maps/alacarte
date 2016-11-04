@@ -36,7 +36,7 @@ before_script:
 
 script:
   - make
-  - ctest -VV -E unitTests_server
+  - ctest -VV -E unitTests_renderer
   - make doc
 
 after_success:
