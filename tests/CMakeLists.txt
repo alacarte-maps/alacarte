@@ -23,6 +23,7 @@ file(GLOB_RECURSE UnitTests_importer_sources    importer/*.cpp)
 file(GLOB_RECURSE UnitTests_utils_sources       utils/*.cpp)
 file(GLOB_RECURSE UnitTests_eval_sources        eval/*.cpp)
 file(GLOB_RECURSE UnitTests_parser_sources      parser/*.cpp)
+file(GLOB_RECURSE UnitTests_renderer_sources    renderer/*.cpp)
 file(GLOB_RECURSE UnitTests_shared_sources      shared/*.cpp)
 
 #
@@ -91,6 +92,13 @@ add_executable(unitTests_eval
 	$<TARGET_OBJECTS:server-obj-test>
 	$<TARGET_OBJECTS:alacarte-obj-test>
 )
+add_executable(unitTests_renderer
+	EXCLUDE_FROM_ALL
+	${UnitTests_renderer_sources}
+	$<TARGET_OBJECTS:UnitTests-shared-obj>
+	$<TARGET_OBJECTS:server-obj-test>
+	$<TARGET_OBJECTS:alacarte-obj-test>
+)
 
 target_link_libraries(unitTests_utils       ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(unitTests_general     ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
@@ -101,6 +109,7 @@ if(GMOCK_FOUND)
 	target_link_libraries(unitTests_mapcss  ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} gmock gtest)
 endif(GMOCK_FOUND)
 target_link_libraries(unitTests_eval        ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
+target_link_libraries(unitTests_renderer    ${Boost_LIBRARIES} ${CAIRO_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SYSTEM_LIBRARIES})
 
 
 set(test_files
@@ -130,6 +139,7 @@ add_custom_target(tests ALL DEPENDS
 	unitTests_parser
 	unitTests_utils
 	unitTests_eval
+	unitTests_renderer
 	${test_files}
 )
 
@@ -139,6 +149,7 @@ add_test(unitTests_parser unitTests_parser)
 add_test(unitTests_general unitTests_general)
 add_test(unitTests_importer unitTests_importer)
 add_test(unitTests_server unitTests_server)
+add_test(unitTests_renderer unitTests_renderer)
 
 if(GMOCK_FOUND)
    add_test(unitTests_mapcss unitTests_mapcss)
