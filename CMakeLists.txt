@@ -147,8 +147,9 @@ file(GLOB_RECURSE alacarte_sources              src/general/*.cpp src/utils/*.cp
 #
 # Targets
 #
-configure_file("data/config/alacarte-maps.conf.in" "${CMAKE_SOURCE_DIR}/data/config/alacarte-maps.conf")
-configure_file("include/config.hpp.in" "${CMAKE_SOURCE_DIR}/include/config.hpp")
+configure_file("data/config/alacarte-maps.conf.in" "${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf")
+configure_file("include/config.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/config.hpp")
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/include")
 
 add_library(alacarte-obj OBJECT ${alacarte_sources})
 add_library(server-obj OBJECT ${server_sources})
@@ -197,7 +198,7 @@ endif(DOXYGEN_FOUND)
 #
 install(TARGETS alacarte-maps-server RUNTIME DESTINATION bin)
 install(TARGETS alacarte-maps-importer RUNTIME DESTINATION bin)
-install(FILES data/config/alacarte-maps.conf DESTINATION ${SYSCONFDIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf DESTINATION ${SYSCONFDIR})
 install(FILES data/default.png DESTINATION share/alacarte-maps)
 install(DIRECTORY data/mapcss/ DESTINATION share/alacarte-maps/styles)
 install(DIRECTORY data/img DESTINATION share/alacarte-maps)
