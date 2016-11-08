@@ -62,7 +62,7 @@ Build the developer documentation with doxygen:
 make doc
 ```
 
-You'll then find the documentation at `doc/doxygen/html/index.html`.
+You'll then find the documentation at `build/doxygen/html/index.html`.
 
 The manpages are built with asciidoc:
 

@@ -4,8 +4,12 @@
 # https://github.com/settings/tokens/new (only needs “repo“ access.)
 # Then, add them as hidden environment variable in the Travis project settings.
 GH_REPO="alacarte-maps/alacarte"
-DOXYGEN_OUTPUT="doc/doxygen/html"
-
+INPUT_BUILD_DIR="build"
+INPUT_DOXYGEN_DIR="${BUILD_DIR}/doxygen/html"
+INPUT_MANPAGE_DIR="${BUILD_DIR}/manpages"
+OUTPUT_DIR="webroot"
+OUTPUT_DOC_DIR="${OUTPUT_DIR}/documentation"
+OUTPUT_MANPAGE_DIR="${OUTPUT_DIR}/manpages"
 
 skip() {
 	echo "SKIPPING: $@" 1>&2
@@ -17,12 +21,12 @@ if [ "${TRAVIS}" = "true" ]; then
 	[ "${TRAVIS_PULL_REQUEST}" = "false" ] || skip "Not building docs for pull requests"
 	[ "${TRAVIS_BRANCH}" = "master" ] || skip "Only building docs for master branch"
 	[ "${TRAVIS_JOB_NUMBER}" = "${TRAVIS_BUILD_NUMBER}.1" ] || skip "Only build docs once"
-	mkdir webroot
-	mv "${DOXYGEN_OUTPUT}" webroot/documentation
-	mkdir webroot/manpages
-	mv "build/manpages/alacarte-maps-server.1.html" "webroot/manpages"
-	mv "build/manpages/alacarte-maps-importer.1.html" "webroot/manpages"
-	mv "build/manpages/docbook-xsl.css" "webroot/manpages"
+	mkdir -p ${OUTPUT_DIR}
+	mv "${INPUT_DOXYGEN_DIR}" "${OUTPUT_DOC_DIR}"
+	mkdir -p "${OUTPUT_MANPAGE_DIR}"
+	mv "${INPUT_MANPAGE_DIR}/alacarte-maps-server.1.html" "${MANPAGE_OUTPUT_DIR}"
+	mv "${INPUT_MANPAGE_DIR}/alacarte-maps-importer.1.html" "${MANPAGE_OUTPUT_DIR}"
+	mv "${INPUT_MANPAGE_DIR}/docbook-xsl.css" "${MANPAGE_OUTPUT_DIR}"
 	git config user.name "Travis CI"
 	git config push.default simple
 	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" webroot
