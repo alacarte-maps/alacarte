@@ -33,7 +33,7 @@
 
 
 /**
- * @brief Represents the Importer-Application                                                                     
+ * @brief Represents the Importer-Application
  *
  **/
 class AlacarteImporterApp
@@ -41,7 +41,7 @@ class AlacarteImporterApp
 {
 public:
 	/**
-	 * @brief Inits the Configuration descriptions                                                                      
+	 * @brief Inits the Configuration descriptions
 	 *
 	 **/
 	AlacarteImporterApp()
