@@ -174,7 +174,7 @@ protected:
 			keywords::file_name = config->get<string>(opt::server::access_log),
 			keywords::rotation_size = 10 * 1024 * 1024,
 			keywords::time_based_rotation = logging::sinks::file::rotation_at_time_point(0, 0, 0),
-			keywords::format = "<%TimeStamp%>: %Message%",
+			keywords::format = "%Message%",
 			keywords::filter = (logging::expressions::attr<std::string>("Channel") == "Access")
 			);
 	}
