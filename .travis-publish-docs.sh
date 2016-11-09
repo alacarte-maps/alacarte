@@ -21,7 +21,7 @@ if [ "${TRAVIS}" = "true" ]; then
 	[ "${TRAVIS_PULL_REQUEST}" = "false" ] || skip "Not building docs for pull requests"
 	[ "${TRAVIS_BRANCH}" = "master" ] || skip "Only building docs for master branch"
 	[ "${TRAVIS_JOB_NUMBER}" = "${TRAVIS_BUILD_NUMBER}.1" ] || skip "Only build docs once"
-	mkdir -p ${OUTPUT_DIR}
+	mkdir -p "${OUTPUT_DIR}"
 	mv "${INPUT_DOXYGEN_DIR}" "${OUTPUT_DOC_DIR}"
 	mkdir -p "${OUTPUT_MANPAGE_DIR}"
 	mv "${INPUT_MANPAGE_DIR}/alacarte-maps-server.1.html" "${MANPAGE_OUTPUT_DIR}"
