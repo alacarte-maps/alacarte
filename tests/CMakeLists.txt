@@ -1,6 +1,9 @@
 cmake_minimum_required( VERSION 2.8.8 )
 
-set(TEST_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+#set(TEST_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+set(AlaCarteStaticDataDirectory "${CMAKE_CURRENT_SOURCE_DIR}/../data")
+set(TestStaticDataDirectory     "${CMAKE_CURRENT_SOURCE_DIR}/data")
+set(TestDynamicDataDirectory    "${CMAKE_CURRENT_BINARY_DIR}/data")
 
 # We don't want statistics in our unittests.
 remove_definitions(-DStatistic_Activated)
@@ -29,7 +32,8 @@ file(GLOB_RECURSE UnitTests_shared_sources      shared/*.cpp)
 #
 # Targets
 #
-configure_file("config.hpp.in" "${CMAKE_CURRENT_SOURCE_DIR}/config.hpp")
+configure_file("testconfig.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/testconfig.hpp")
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 #
 #  Building tests
@@ -113,22 +117,23 @@ target_link_libraries(unitTests_renderer    ${Boost_LIBRARIES} ${CAIRO_LIBRARIES
 
 
 set(test_files
-	"${CMAKE_CURRENT_SOURCE_DIR}/data/input/karlsruhe_big.carte"
-	"${CMAKE_CURRENT_SOURCE_DIR}/data/input/renderer_test.carte"
-	"${CMAKE_CURRENT_SOURCE_DIR}/data/input/test_tiles.carte"
+	"${TestDynamicDataDirectory}/karlsruhe_big.carte"
+	"${TestDynamicDataDirectory}/renderer_test.carte"
+	"${TestDynamicDataDirectory}/test_tiles.carte"
 )
 
+file(MAKE_DIRECTORY ${TestDynamicDataDirectory})
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/data/input/karlsruhe_big.carte"
-    COMMAND alacarte-maps-importer "${CMAKE_CURRENT_SOURCE_DIR}/data/input/karlsruhe_big.osm" "${CMAKE_CURRENT_SOURCE_DIR}/data/input/karlsruhe_big.carte"
+    OUTPUT "${TestDynamicDataDirectory}/karlsruhe_big.carte"
+    COMMAND alacarte-maps-importer "${TestStaticDataDirectory}/karlsruhe_big.osm" "${TestDynamicDataDirectory}/karlsruhe_big.carte"
 )
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/data/input/test_tiles.carte"
-    COMMAND alacarte-maps-importer "${CMAKE_CURRENT_SOURCE_DIR}/data/input/test_tiles.osm" "${CMAKE_CURRENT_SOURCE_DIR}/data/input/test_tiles.carte"
+    OUTPUT "${TestDynamicDataDirectory}/test_tiles.carte"
+    COMMAND alacarte-maps-importer "${TestStaticDataDirectory}/test_tiles.osm" "${TestDynamicDataDirectory}/test_tiles.carte"
 )
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/data/input/renderer_test.carte"
-    COMMAND alacarte-maps-importer "${CMAKE_CURRENT_SOURCE_DIR}/data/input/renderer_test.osm" "${CMAKE_CURRENT_SOURCE_DIR}/data/input/renderer_test.carte"
+    OUTPUT "${TestDynamicDataDirectory}/renderer_test.carte"
+    COMMAND alacarte-maps-importer "${TestStaticDataDirectory}/renderer_test.osm" "${TestDynamicDataDirectory}/renderer_test.carte"
 )
 
 add_custom_target(tests ALL DEPENDS

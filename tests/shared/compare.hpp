@@ -6,12 +6,35 @@
 
 using boost::filesystem::path;
 
-path getTestDirectory();
-path getDataDirectory();
-path getInputDirectory();
-path getOutputDirectory();
+
+/**
+ * Returns a path like "<full-path-to-alacarte>/data"
+ * Only read files from this folder.
+ */
+path getAlaCarteStaticDataDirectory();
+
+/**
+ * Returns a path like "<full-path-to-alacarte>/tests/data"
+ * Only read files from this folder.
+ */
+path getTestStaticDataDirectory();
+
+/**
+ * Returns a path like "<build-dir>/tests/data"
+ * Read/write files from this folder.
+ */
+path getTestDynamicDataDirectory();
+
+/**
+ * Returns a path like "<build-dir>/tests/data/rendered"
+ * Read/write files from this folder.
+ */
 path getRenderedDirectory();
-path getDiffDirectory();
+
+/**
+ * Returns a path like "<full-path-to-alacarte>/tests/data/valid"
+ * Only read files from this folder.
+ */
 path getValidDirectory();
 
 void compareTile(const char* name);

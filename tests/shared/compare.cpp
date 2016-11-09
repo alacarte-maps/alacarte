@@ -1,6 +1,6 @@
 ﻿
 #include "../tests.hpp"
-#include "../config.hpp"
+#include "testconfig.hpp"
 
 #include "compare.hpp"
 
@@ -12,49 +12,45 @@
 #include <fstream>
 #include <iostream>
 
-path getTestDirectory()
+
+
+boost::filesystem::path getAlaCarteStaticDataDirectory()
 {
-	path dir = path(TEST_DIRECTORY);
+	static const path dir(AlaCarteStaticDataDirectory);
 	if(!boost::filesystem::exists(dir))
 		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
 	return dir;
 }
 
-path getDataDirectory()
+boost::filesystem::path getTestStaticDataDirectory()
 {
-	path dir = getTestDirectory() / "data";
+	static const path dir(TestStaticDataDirectory);
 	if(!boost::filesystem::exists(dir))
 		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
 	return dir;
 }
 
-path getOutputDirectory()
+boost::filesystem::path getTestDynamicDataDirectory()
 {
-	path dir = getDataDirectory() / "output";
-	if(!boost::filesystem::exists(dir))
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
-	return dir;
-}
-
-path getInputDirectory()
-{
-	path dir = getDataDirectory() / "input";
-	if(!boost::filesystem::exists(dir))
-		BOOST_THROW_EXCEPTION(excp::FileNotFoundException()  << excp::InfoFileName(dir.string()));
-	return dir;
-}
-
-path getRenderedDirectory()
-{
-	path dir = getOutputDirectory() / "rendered";
+	static const path dir(TestDynamicDataDirectory);
 	if(!boost::filesystem::exists(dir))
 		boost::filesystem::create_directory(dir);
 	return dir;
 }
 
-path getDiffDirectory()
+
+
+path getRenderedDirectory()
 {
-	path dir = getOutputDirectory() / "diff";
+	path dir = getTestDynamicDataDirectory() / "rendered";
+	if(!boost::filesystem::exists(dir))
+		boost::filesystem::create_directory(dir);
+	return dir;
+}
+
+static path getDiffDirectory()
+{
+	path dir = getTestDynamicDataDirectory() / "diff";
 	if(!boost::filesystem::exists(dir))
 		boost::filesystem::create_directory(dir);
 	return dir;
@@ -62,7 +58,7 @@ path getDiffDirectory()
 
 path getValidDirectory()
 {
-	path dir = getInputDirectory() / "valid";
+	path dir = getTestStaticDataDirectory() / "valid";
 	BOOST_CHECK(boost::filesystem::exists(dir));
 	return dir;
 }
