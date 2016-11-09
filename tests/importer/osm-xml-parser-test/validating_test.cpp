@@ -103,7 +103,7 @@ void PrintTags(std::ofstream& xml, const DataMap<CachedString, CachedString>& ma
 struct ValidatingFixture
 {
 	ValidatingFixture(int seed, const string& tempFile)
-		: path(getOutputDirectory() / "importer" / tempFile)
+		: path(getTestDynamicDataDirectory() / "importer" / tempFile)
 	{
 		srand(seed);
 
@@ -139,6 +139,7 @@ struct ValidatingFixture
 			relationIds.push_back(RelId(rand()));
 		}
 
+		boost::filesystem::create_directories(path.parent_path());
 		std::ofstream xml(path.string(), std::ios::out);
 
 		BOOST_REQUIRE(xml.is_open());

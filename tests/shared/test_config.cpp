@@ -34,13 +34,13 @@ shared_ptr<TestConfig> TestConfig::Create()
 	->add<int>(opt::server::num_threads, 			1)
 	->add<int>(opt::server::parse_timeout, 			750)
 	->add<string>(opt::server::path_to_default_style, "default")
-	->add<string>(opt::server::path_to_default_tile,(getTestDirectory() / "../data/default.png").string())
-	//->add<string>(opt::server::path_to_geodata, 	(getTestDirectory() / "/input/karlsruhe_big.carte").string())
+	->add<string>(opt::server::path_to_default_tile,(getAlaCarteStaticDataDirectory() / "default.png").string())
+	//->add<string>(opt::server::path_to_geodata, 	(getTestDynamicDataDirectory() / "/input/karlsruhe_big.carte").string())
 	->add<int>(opt::server::prerender_level, 		12)
 	->add<string>(opt::server::server_address, 		"localhost")
 	->add<string>(opt::server::server_port, 		"8080")
 	->add<string>(opt::server::log_mute_component, 	"comp1, comp2")
-	->add<string>(opt::server::style_source, 		(getTestDirectory() / "../data/mapcss/").string());
+	->add<string>(opt::server::style_source, 		(getAlaCarteStaticDataDirectory() / "mapcss/").string());
 }
 
 

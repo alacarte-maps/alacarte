@@ -1,0 +1,9 @@
+#pragma once
+#ifndef TESTCONFIG_HPP
+#define TESTCONFIG_HPP
+
+#define AlaCarteStaticDataDirectory "@AlaCarteStaticDataDirectory@"
+#define TestStaticDataDirectory "@TestStaticDataDirectory@"
+#define TestDynamicDataDirectory "@TestDynamicDataDirectory@"
+
+#endif

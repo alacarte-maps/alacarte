@@ -67,7 +67,7 @@ struct MapCSSParserTest
 
 ALAC_START_FIXTURE_TEST(MapCSSParserTest)
 
-	ALAC_FIXTURE_TEST(testDirectory, getInputDirectory() / "parser" / "mapcss");
+	ALAC_FIXTURE_TEST(testDirectory, getTestStaticDataDirectory() / "parser" / "mapcss");
 
 ALAC_END_FIXTURE_TEST();
 

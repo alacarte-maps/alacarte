@@ -45,7 +45,7 @@ struct feature_test
 	 */
 	feature_test(const char* input)
 	{
-		path testData = getInputDirectory() / input;
+		path testData = getTestDynamicDataDirectory() / input;
 		BOOST_TEST_MESSAGE("Loading data: " << testData.string());
 		BOOST_CHECK(boost::filesystem::exists(testData));
 
@@ -469,7 +469,7 @@ struct icon_test : feature_test {
 		Style nodeStyleDefault = Style();
 		nodeStyleDefault.color = Color(1.0f, 0.0f, 0.0f, 1.0f);
 		nodeStyleDefault.width = 2.0;
-		nodeStyleDefault.icon_image = (getInputDirectory() / "icons/fast-food-24.png").string();
+		nodeStyleDefault.icon_image = (getTestStaticDataDirectory() / "icons/fast-food-24.png").string();
 		nodeStyleDefault.icon_width = 24.0;
 		nodeStyleDefault.icon_height = 24.0;
 
@@ -501,10 +501,10 @@ struct icon_test : feature_test {
 		styles[CachedString("point_20")] = nodeStyle;
 		// different icons
 		nodeStyle = nodeStyleDefault;
-		nodeStyleDefault.icon_image = (getInputDirectory() / "icons/beer-24.png").string();
+		nodeStyleDefault.icon_image = (getTestStaticDataDirectory() / "icons/beer-24.png").string();
 		styles[CachedString("point_21")] = nodeStyle;
 		nodeStyle = nodeStyleDefault;
-		nodeStyleDefault.icon_image = (getInputDirectory() / "icons/airport-24.png").string();
+		nodeStyleDefault.icon_image = (getTestStaticDataDirectory() / "icons/airport-24.png").string();
 		styles[CachedString("point_22")] = nodeStyle;
 	}
 };
