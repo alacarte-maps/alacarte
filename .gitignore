@@ -5,23 +5,12 @@
 # sicherungsdateien
 *~
 *.backup
-*.carte
-
-.directory
 
 # Statisitics
 doc/statistics/*.log
 doc/statistics/*.htm
 doc/statistics/images/*.png
 doc/statistics/html.pyc
-
-
-tests/data/output/importer/
-tests/data/output/rendered/
-tests/data/output/diff/
-tests/config.hpp
-include/config.hpp
-data/config/alacarte-maps.conf
 
 # ctags, cscope
 tags
@@ -33,14 +22,8 @@ cscope.*
 compile_commands.json
 .gitbuild
 
-# Implementation
+# Build directory
 build/
-release/
-doc/doxygen/
-
-# Kdevelop
-.kdev4 #folder
-*.kdev4
 
 # Stylesheet
 *.error
