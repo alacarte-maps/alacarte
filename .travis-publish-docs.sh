@@ -5,9 +5,9 @@
 # Then, add them as hidden environment variable in the Travis project settings.
 GH_REPO="alacarte-maps/alacarte"
 INPUT_BUILD_DIR="build"
-INPUT_DOXYGEN_DIR="${BUILD_DIR}/doxygen/html"
-INPUT_MANPAGE_DIR="${BUILD_DIR}/manpages"
-OUTPUT_DIR="./webroot"
+INPUT_DOXYGEN_DIR="${INPUT_BUILD_DIR}/doxygen/html"
+INPUT_MANPAGE_DIR="${INPUT_BUILD_DIR}/manpages"
+OUTPUT_DIR="webroot"
 OUTPUT_DOC_DIR="${OUTPUT_DIR}/documentation"
 OUTPUT_MANPAGE_DIR="${OUTPUT_DIR}/manpages"
 
