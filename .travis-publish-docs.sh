@@ -7,7 +7,7 @@ GH_REPO="alacarte-maps/alacarte"
 INPUT_BUILD_DIR="build"
 INPUT_DOXYGEN_DIR="${BUILD_DIR}/doxygen/html"
 INPUT_MANPAGE_DIR="${BUILD_DIR}/manpages"
-OUTPUT_DIR="webroot"
+OUTPUT_DIR="./webroot"
 OUTPUT_DOC_DIR="${OUTPUT_DIR}/documentation"
 OUTPUT_MANPAGE_DIR="${OUTPUT_DIR}/manpages"
 
@@ -29,7 +29,7 @@ if [ "${TRAVIS}" = "true" ]; then
 	mv "${INPUT_MANPAGE_DIR}/docbook-xsl.css" "${MANPAGE_OUTPUT_DIR}"
 	git config user.name "Travis CI"
 	git config push.default simple
-	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" webroot
+	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" "${OUTPUT_DIR}"
 	git push -fq "https://${GH_TOKEN}@github.com/${GH_REPO}.git" gh-pages
 	echo "documentation was pushed."
 fi
