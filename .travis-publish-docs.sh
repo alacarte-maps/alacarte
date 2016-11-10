@@ -24,9 +24,9 @@ if [ "${TRAVIS}" = "true" ]; then
 	mkdir -p "${OUTPUT_DIR}"
 	mv "${INPUT_DOXYGEN_DIR}" "${OUTPUT_DOC_DIR}"
 	mkdir -p "${OUTPUT_MANPAGE_DIR}"
-	mv "${INPUT_MANPAGE_DIR}/alacarte-maps-server.1.html" "${MANPAGE_OUTPUT_DIR}"
-	mv "${INPUT_MANPAGE_DIR}/alacarte-maps-importer.1.html" "${MANPAGE_OUTPUT_DIR}"
-	mv "${INPUT_MANPAGE_DIR}/docbook-xsl.css" "${MANPAGE_OUTPUT_DIR}"
+	mv "${INPUT_MANPAGE_DIR}/alacarte-maps-server.1.html" "${OUTPUT_MANPAGE_DIR}"
+	mv "${INPUT_MANPAGE_DIR}/alacarte-maps-importer.1.html" "${OUTPUT_MANPAGE_DIR}"
+	mv "${INPUT_MANPAGE_DIR}/docbook-xsl.css" "${OUTPUT_MANPAGE_DIR}"
 	git config user.name "Travis CI"
 	git config push.default simple
 	ghp-import -n -m "Updated documentation from ${TRAVIS_COMMIT}" "${OUTPUT_DIR}"
