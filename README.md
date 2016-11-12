@@ -3,7 +3,7 @@
 
 # What is alaCarte? #
 
-![screenshot of Karlsruhe](https://github.com/alacarte-maps/alacarte/raw/master/screenshot.png "Karlsruhe")
+[![screenshot of Karlsruhe](https://github.com/alacarte-maps/alacarte/raw/master/screenshot.png "Karlsruhe")](https://alacarte-maps.github.io/stories/demo.html)
 
 alaCarte is a tile renderer for OpenStreetMap data written in C++11, using Cairo for
 rendering and Boost-Spirit for [MapCSS][] parsing.
