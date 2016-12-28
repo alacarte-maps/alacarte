@@ -79,6 +79,9 @@ The results get stored in `build/manpages/`.
 * libpng
 * cmake (>= 2.8.8)
 * asciidoc (>= 8.6.9) (optional, needed for manpage generation)
+* DejaVu font (this is the default font if no other font is specified).
+  * If your characters are not supported by DejaVu, try to use the Noto font.
+    See [data/mapcss/default.mapcss](data/mapcss/default.mapcss) for usage examples.
 
 alacarte's dependency policy is to depend on nothing that's not included or newer than Debian stable.
 So currently, we target and test on Debian Jessie, but we're open to support any other OS.

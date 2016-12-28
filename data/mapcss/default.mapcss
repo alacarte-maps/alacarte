@@ -1,3 +1,16 @@
+* {
+	font-family: "DejaVu";
+	/* Supports Latin and Cyrillic characters, no arabic */
+	/* Hint: don't forget to install the font on your server */
+	//font-family: "Noto Sans";
+	/* Supports Asian characters.
+	JP says that japanese characters are preferred to other languages,
+	can be changed to KR, SC, TC. */
+	//font-family: "Noto Sans CJK JP";
+	/* For Hindi use this: */
+	//font-family: "Noto Sans Devanagari";
+	/* Other examples can be found on https://www.google.com/get/noto/help/guidelines/ */
+}
 canvas {
 	fill-color: #fefefe;
 	fill-image: ../img/bg_light.png;
