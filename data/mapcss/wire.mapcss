@@ -1,76 +1,73 @@
 * {
-	font-family: "DejaVu";
+    font-family: "DejaVu";
 }
 canvas {
-	fill-color: #000000;
-	fill-image: ../img/bg.png;
+    fill-color: #000000;
+    fill-image: ../img/bg.png;
 }
 
 /* Streets */
-line [highway]
-{
+line [highway] {
     color: white;
-	width: 1.0;
+    width: 1.0;
 }
-line [highway=track]
-{
+line [highway=track] {
     color: rgba(0.8, 0.8, 0.8, 0.5);
-	width: 0.5;
+    width: 0.5;
 }
 line [highway=living_street],
 line [highway=pedestrian],
 line [highway=footway],
 line [highway=residential],
-line [highway=service]
-{
-	width: 0.5;
+line [highway=service] {
+    width: 0.5;
 }
 
 /* Trams */
 
 way [railway] {
-	width: 2.0;
-	casing-width: 0.5;
-	dashes: 8,4;
-	dashes: 8,4;
-	color: rgba(0.0, 0.0, 0.0, 0.8);
-	casing-color: rgba(1.0, 1.0, 1.0, 0.5);
+    width: 2.0;
+    casing-width: 0.5;
+    dashes: 8,4;
+    dashes: 8,4;
+    color: rgba(0.0, 0.0, 0.0, 0.8);
+    casing-color: rgba(1.0, 1.0, 1.0, 0.5);
 }
 
 relation [type=route] way {
-	color: rgba(0.0, 0.0, 0.0, 0.5);
+    color: rgba(0.0, 0.0, 0.0, 0.5);
 }
 
-relation|z14- [type=route] node{
-	z-index: 5;
-	width: 10;
-	casing-width: 1.0;
-	color: rgba(0.0, 0.0, 0.0, 0.1);
-	casing-color: rgba(0.5, 0.5, 0.5, 1.0);
-	font-size: 8;
-	text-color: #FFFFFF;
-	text-position: center;
-	text-halo-color: rgba(0.0, 0.0, 0.0, 0.8);
-	text-halo-radius: 2.0;
+relation|z14- [type=route] node {
+    z-index: 5;
+    width: 10;
+    casing-width: 1.0;
+    color: rgba(0.0, 0.0, 0.0, 0.1);
+    casing-color: rgba(0.5, 0.5, 0.5, 1.0);
+    font-size: 8;
+    text-color: #FFFFFF;
+    text-position: center;
+    text-halo-color: rgba(0.0, 0.0, 0.0, 0.8);
+    text-halo-radius: 2.0;
 }
-relation|z15 [type=route] node{ width: 8; }
-relation|z16- [type=route] node{ width: 8; }
+relation|z15 [type=route] node { width: 8; }
+relation|z16- [type=route] node { width: 8; }
 
 relation [type=route][name="4 Waldstadt - Hbf"] way {
-	z-index: 5;
-	color: rgba(1.0, 1.0, 0.3, 0.5);
+    z-index: 5;
+    color: rgba(1.0, 1.0, 0.3, 0.5);
 }
-relation [type=route][name="4 Waldstadt - Hbf"] node{
-	casing-color: rgba(1.0, 1.0, 0.3, 1.0);
-	text: name;
+relation [type=route][name="4 Waldstadt - Hbf"] node {
+    casing-color: rgba(1.0, 1.0, 0.3, 1.0);
+    text: name;
 }
 relation [type=route][name="1 Durlach - Oberreut"] way {
-	z-index: 5;
-	color: rgba(1.0, 0.3, 0.3, 1.0);
+    z-index: 5;
+    color: rgba(1.0, 0.3, 0.3, 1.0);
 }
-relation [type=route][name="1 Durlach - Oberreut"] node{
-	casing-color: rgba(1.0, 0.3, 0.3, 1.0);
-	text: name;
+relation [type=route][name="1 Durlach - Oberreut"] node {
+    casing-color: rgba(1.0, 0.3, 0.3, 1.0);
+    text: name;
 }
 
 /* Pubs and Bars */
@@ -104,7 +101,7 @@ node|z16 [shop=supermarket] { icon-image: ../icons/maki/grocery-12.png; }
 /* City districts */
 
 relation[admin_level=10] {
-	fill-color: eval("colgen(tag(name), #AAAAAA44)");
+    fill-color: eval("colgen(tag(name), #AAAAAA44)");
 }
 
 /* Buildings */
@@ -115,5 +112,5 @@ area|z15- [building] {
     color: rgba(0.0, 0.0, 0.0, 0.5);
     casing-color: rgba(1.0, 1.0, 1.0, 0.1);
     width: 1.0;
-	casing-width: 1.0;
+    casing-width: 1.0;
 }
