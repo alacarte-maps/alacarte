@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.4.0] - 2016-03-XY ##
+## [0.4.0] - 2016-12-XY ##
 ### Added ###
 - man pages for alacarte-importer and alacarte-server.
 - support for Debian Jessie (as it's the new stable).
@@ -13,8 +13,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - renamed everything necessary from alacarte to alacarte-maps
   to avoid clashes with the [GNOME menu editor alacarte](https://en.wikipedia.org/wiki/Alacarte).
 
-### Deprecated ###
-
 ### Removed ###
 - support for Debian Wheezy (as it's now oldstable and its boost version is now too old).
 - dependency on log4cpp.
@@ -23,6 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed ###
 - repaired & improved builds on Windows (32bit & 64bit) & FreeBSD.
+- cleaned up C++ and MapCSS code for better readability and understandability.
 - building with clang.
 - speed up build times a little.
 - possible segfault when some data is not present (#43).
