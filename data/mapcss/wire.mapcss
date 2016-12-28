@@ -1,3 +1,6 @@
+* {
+	font-family: "DejaVu";
+}
 canvas {
 	fill-color: #000000;
 	fill-image: ../img/bg.png;
