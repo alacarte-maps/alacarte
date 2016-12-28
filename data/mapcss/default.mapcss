@@ -16,9 +16,9 @@ canvas {
 	fill-image: ../img/bg_light.png;
 }
 
-/* Straßen */
+/* Streets */
 
-/*          Farben          */
+/*          Colors          */
 line[highway=motorway],
 line[highway=motorway_link],
 line[highway=trunk],
@@ -154,7 +154,7 @@ line[highway=path][bridge=yes], way[highway=track][bridge=yes] { casing-color: #
 line|z12-[tunnel=yes] { casing-color: rgba(1.0, 1.0, 1.0, 0.5)}
 
 
-/*          Größe           */
+/*          Dimensions           */
 line|z16- [highway] { linecap: "round"; casing-linecap: "round"; }
 line|z16- [highway][bridge=yes] { linecap: "square"; casing-linecap: "none"; }
 line|z16- [highway][tunnel=yes] { linecap: "none"; casing-linecap: "none"; }
@@ -509,7 +509,7 @@ line|z18 [highway=secondary_link]
 	casing-width: 2.0;
 }
 
-/* Bahn */
+/* Railways */
 line|z7-16 [railway=rail] {
     casing-linecap: "none";
     casing-color: #99a0a7;
@@ -535,7 +535,7 @@ line|z16- [railway=rail] {
 line|z17 [railway=rail] { width: 2; casing-width: 5; }
 line|z18 [railway=rail] { width: 3; casing-width: 8; }
 
-/* Pubs und Bars */
+/* Pubs and Bars */
 node|z18 [amenity=pub] { icon-image: ../icons/maki/pub-24.png; }
 node|z17 [amenity=pub] { icon-image: ../icons/maki/pub-18.png; }
 node|z16 [amenity=pub] { icon-image: ../icons/maki/pub-12.png; }
@@ -549,7 +549,7 @@ node|z18 [amenity=fast_food] { icon-image: ../icons/maki/fast-food-24.png; }
 node|z17 [amenity=fast_food] { icon-image: ../icons/maki/fast-food-18.png; }
 node|z16 [amenity=fast_food] { icon-image: ../icons/maki/fast-food-12.png; }
 
-/* Öffentliche Gebäude */
+/* Public places */
 node|z18 [amenity=place_of_worship] { icon-image: ../icons/maki/place-of-worship-24.png; }
 node|z17 [amenity=place_of_worship] { icon-image: ../icons/maki/place-of-worship-18.png; }
 node|z16 [amenity=place_of_worship] { icon-image: ../icons/maki/place-of-worship-12.png; }
@@ -563,7 +563,7 @@ node|z18 [shop=supermarket] { icon-image: ../icons/maki/grocery-24.png; }
 node|z17 [shop=supermarket] { icon-image: ../icons/maki/grocery-18.png; }
 node|z16 [shop=supermarket] { icon-image: ../icons/maki/grocery-12.png; }
 
-/* Gebäude */
+/* Buildings */
 area [landuse=industrial]
 {
     fill-color: #DDDDDD;
@@ -613,7 +613,7 @@ relation|z16- [building][amenity=university]
 	text-position: center;
 }
 
-/* Natur */
+/* Nature */
 
 area|z12- [landuse=allotments] { fill-color: rgba(0.521, 0.776, 0.22, 0.5); }
 area|z12- [landuse=farmland] { fill-color: rgba(0.851, 0.784, 0.302, 0.5); }
@@ -677,7 +677,7 @@ way|z14-[amenity=fountain]
 	fill-color: #4ecdc4;
 }
 
-/* Stadtnamen */
+/* City names */
 node|z6-14 [place=city]
 {
 	text: name;
@@ -706,7 +706,7 @@ node|z10-14 [place=village]
 	text-position: center;
 }
 
-/* Grenzen */
+/* Borders */
 relation|z-7[admin_level] way
 {
 	z-index: 10;
@@ -743,8 +743,7 @@ relation|z7-13[admin_level=2] way
 	casing-width: 2.0;
 }
 
-/* S-Bahn-Linien */
-/* Bahn */
+/* Tram */
 line|z12- [railway=tram] {
 	color: #556270;
 	width: 2.0;

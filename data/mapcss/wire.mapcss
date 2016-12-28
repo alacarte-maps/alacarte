@@ -6,7 +6,7 @@ canvas {
 	fill-image: ../img/bg.png;
 }
 
-/* Straßen */
+/* Streets */
 line [highway]
 {
     color: white;
@@ -26,7 +26,7 @@ line [highway=service]
 	width: 0.5;
 }
 
-/* Straßenbahnen */
+/* Trams */
 
 way [railway] {
 	width: 2.0;
@@ -73,7 +73,7 @@ relation [type=route][name="1 Durlach - Oberreut"] node{
 	text: name;
 }
 
-/* Pubs und Bars */
+/* Pubs and Bars */
 node|z18 [amenity=pub] { icon-image: ../icons/maki/pub-24.png; }
 node|z17 [amenity=pub] { icon-image: ../icons/maki/pub-18.png; }
 node|z16 [amenity=pub] { icon-image: ../icons/maki/pub-12.png; }
@@ -87,7 +87,7 @@ node|z18 [amenity=fast_food] { icon-image: ../icons/maki/fast-food-24.png; }
 node|z17 [amenity=fast_food] { icon-image: ../icons/maki/fast-food-18.png; }
 node|z16 [amenity=fast_food] { icon-image: ../icons/maki/fast-food-12.png; }
 
-/* Öffentliche Gebäude */
+/* Public places */
 node|z18 [amenity=place_of_worship] { icon-image: ../icons/maki/place-of-worship-24.png; }
 node|z17 [amenity=place_of_worship] { icon-image: ../icons/maki/place-of-worship-18.png; }
 node|z16 [amenity=place_of_worship] { icon-image: ../icons/maki/place-of-worship-12.png; }
@@ -101,13 +101,13 @@ node|z18 [shop=supermarket] { icon-image: ../icons/maki/grocery-24.png; }
 node|z17 [shop=supermarket] { icon-image: ../icons/maki/grocery-18.png; }
 node|z16 [shop=supermarket] { icon-image: ../icons/maki/grocery-12.png; }
 
-/* Stadtteile */
+/* City districts */
 
 relation[admin_level=10] {
 	fill-color: eval("colgen(tag(name), #AAAAAA44)");
 }
 
-/* Gebäude */
+/* Buildings */
 
 area|z15- [building] {
     z-index: 2;
