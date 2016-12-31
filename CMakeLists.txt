@@ -16,6 +16,9 @@ add_subdirectory(manpages)
 #
 # Depends on boost version from Debian Jessie
 #
+if(MSVC)
+    set(Boost_USE_STATIC_LIBS true)
+endif(MSVC)
 set(BOOST_MIN_VERSION_REQUIRED 1.55.0)
 
 if(MSVC)
@@ -80,6 +83,8 @@ endif()
 
 # Set windows version for windows and Inotify for non-windows targets
 if(WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601")
+    add_definitions(-D_WIN32_WINNT=0x0601)
     set(SYSTEM_LIBRARIES ws2_32 wsock32)
 else()
     include_directories(${INOTIFY_INCLUDE_DIRS})
