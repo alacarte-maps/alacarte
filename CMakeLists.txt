@@ -15,6 +15,9 @@ add_subdirectory(manpages)
 #
 # Depends on boost version from Debian Jessie
 #
+if(MSVC)
+    set(Boost_USE_STATIC_LIBS true)
+endif(MSVC)
 set(BOOST_MIN_VERSION_REQUIRED 1.55.0)
 find_package(Boost ${BOOST_MIN_VERSION_REQUIRED} COMPONENTS
 	system
@@ -74,8 +77,8 @@ endif()
 
 # Set windows version for MinGW and Inotify for non-mingw targets
 IF(MINGW)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0501")
-    add_definitions(-D_WIN32_WINNT=0x0501)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601")
+    add_definitions(-D_WIN32_WINNT=0x0601)
     set(SYSTEM_LIBRARIES ws2_32 wsock32)
 ELSE(MINGW)
     include_directories(${INOTIFY_INCLUDE_DIRS})
@@ -88,7 +91,7 @@ include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${FREETYP
 add_definitions(-DStatistic_Activated)
 
 if(MSVC)
-   ADD_DEFINITIONS(-D_WIN32_WINNT=0x0501)
+   ADD_DEFINITIONS(-D_WIN32_WINNT=0x0601)
    ADD_DEFINITIONS(-DNOMINMAX)
    ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
 else()
