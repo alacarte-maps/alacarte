@@ -150,7 +150,12 @@ file(GLOB_RECURSE alacarte_sources              src/general/*.cpp src/utils/*.cp
 #
 # Targets
 #
-configure_file("data/config/alacarte-maps.conf.in" "${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf")
+if(NOT WIN32)
+  configure_file("data/config/alacarte-maps.conf.in" "${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf")
+else()
+  configure_file("data/config/alacarte-maps.conf.windows.in" "${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf")
+endif()
+
 configure_file("include/config.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/config.hpp")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/include")
 
