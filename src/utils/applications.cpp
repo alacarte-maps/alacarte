@@ -107,7 +107,7 @@ void Application::appRun(int argc, char** argv)
 
 	if (config->get<string>(opt::config) != DEFAULT_CONFIG_NAME && !config->usedConfigFile())
 	{
-		const std::vector<string> &dirs = config->getSeachDirectories();
+		const std::vector<string> &dirs = config->getSearchDirectories();
 		LOG_SEV(app_log, error) << "The given config file was not found. Searched for:";
 
 		std::for_each(begin(dirs), end(dirs), [&](const string &dir)

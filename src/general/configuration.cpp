@@ -103,7 +103,7 @@ bool Configuration::usedConfigFile() const
 	return ConfigFileUsed;
 }
 
-const std::vector<string> & Configuration::getSeachDirectories() const
+const std::vector<string> & Configuration::getSearchDirectories() const
 {
 	return searchDirectories;
 }
