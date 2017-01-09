@@ -218,7 +218,11 @@ endif(DOXYGEN_FOUND)
 #
 install(TARGETS alacarte-maps-server RUNTIME DESTINATION bin)
 install(TARGETS alacarte-maps-importer RUNTIME DESTINATION bin)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf DESTINATION ${SYSCONFDIR})
+if(WIN32) #for windows config path is relative to bin
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf DESTINATION bin/${SYSCONFDIR}) 
+else()
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf DESTINATION ${SYSCONFDIR})
+endif()
 install(FILES data/default.png DESTINATION share/alacarte-maps)
 install(DIRECTORY data/mapcss/ DESTINATION share/alacarte-maps/styles)
 install(DIRECTORY data/img DESTINATION share/alacarte-maps)
