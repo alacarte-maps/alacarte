@@ -149,7 +149,7 @@ public:
 	 *
 	 * @return :queue< string, std::deque< string, std::allocator< string > > >
 	 **/
-	const std::vector<string>& getSeachDirectories() const;
+	const std::vector<string>& getSearchDirectories() const;
 protected:
 	TESTABLE const boost::any& getValueByKey(const string& key) const;
 
