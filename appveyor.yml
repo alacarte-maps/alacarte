@@ -29,6 +29,7 @@ before_build:
 
     cmake .. -DCMAKE_TOOLCHAIN_FILE=c:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX=c:/projects/alacarte/build_install/ -DBUILD_TESTING=ON
 build:
+  parallel: true
   project: C:/projects/alacarte/build/alacarte-maps.sln
   verbosity: minimal
 test_script:
@@ -47,4 +48,4 @@ before_package:
     xcopy c:\projects\vcpkg\installed\x86-windows\bin\*.dll c:\projects\alacarte\build_install\bin\ /sy
 artifacts:
 - path: build_install
-  name: zip archive
+  name: alacarte-maps
