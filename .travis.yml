@@ -63,7 +63,7 @@ matrix:
 
     - os: linux
       compiler: gcc
-      env: PLATFORM='linux' REAL_CC=gcc-5.4   REAL_CXX=g++-5       PACKAGE=g++-5     SUPPORT=
+      env: PLATFORM='linux' REAL_CC=gcc-5     REAL_CXX=g++-5       PACKAGE=g++-5     SUPPORT=
 
     - os: linux
       compiler: gcc
