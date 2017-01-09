@@ -4,10 +4,13 @@ cmake_minimum_required( VERSION 2.8.8 )
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc")
-if (CMAKE_INSTALL_PREFIX STREQUAL "/usr"
- OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+if(WIN32)
+  set(SYSCONFDIR "../etc") #on Windows program can be easily copy-pasted. So, hardcoding CMAKE_INSTALL_PREFIX isn't a good practice.
+else()
+  set(SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc")
+  if (CMAKE_INSTALL_PREFIX STREQUAL "/usr" OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
 	set(SYSCONFDIR "/etc")
+  endif()
 endif()
 
 add_subdirectory(manpages)
@@ -15,10 +18,18 @@ add_subdirectory(manpages)
 #
 # Depends on boost version from Debian Jessie
 #
-if(MSVC)
-    set(Boost_USE_STATIC_LIBS true)
-endif(MSVC)
 set(BOOST_MIN_VERSION_REQUIRED 1.55.0)
+
+if(MSVC)
+  option(ALACARTE_USE_STATIC_BOOST "use static boost" ON)
+else()
+  option(ALACARTE_USE_STATIC_BOOST "use static boost" OFF)
+endif()
+
+if(ALACARTE_USE_STATIC_BOOST)
+  set(Boost_USE_STATIC_LIBS ON)
+endif()
+
 find_package(Boost ${BOOST_MIN_VERSION_REQUIRED} COMPONENTS
 	system
 	filesystem
@@ -58,14 +69,18 @@ find_package(Doxygen)
 # Build options
 #
 
-# FIXME hack for old cairo and MinGW
-if(CAIRO_VERSION_V LESS 1 OR CAIRO_VERSION_MAJOR LESS 12 OR CAIRO_VERSION_MINOR LESS 2 OR MINGW)
+#Enable C++11
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# FIXME: enable render thread locking for old cairo and windows
+if(CAIRO_VERSION_V LESS 1 OR CAIRO_VERSION_MAJOR LESS 12 OR CAIRO_VERSION_MINOR LESS 2 OR WIN32)
     OPTION(RENDER_LOCK "Render lock for old cairo and Windows" ON)
-    if(MINGW)
-        message (STATUS "MinGW detected: enabling render lock.")
-    else(MINGW)
+    if(WIN32)
+        message (STATUS "Windows detected: enabling render lock.")
+    else()
         message (STATUS "${CAIRO_VERSION} < 1.12.2: enabling render lock.")
-    endif(MINGW)
+    endif()
 else()
     OPTION(RENDER_LOCK "Render lock for old cairo and Windows" OFF)
 endif()
@@ -75,22 +90,20 @@ else()
     set(RENDER_LOCK 0)
 endif()
 
-# Set windows version for MinGW and Inotify for non-mingw targets
-IF(MINGW)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0601")
-    add_definitions(-D_WIN32_WINNT=0x0601)
+# Set windows version for windows and Inotify for non-windows targets
+if(WIN32)
     set(SYSTEM_LIBRARIES ws2_32 wsock32)
-ELSE(MINGW)
+else()
     include_directories(${INOTIFY_INCLUDE_DIRS})
     set(SYSTEM_LIBRARIES ${INOTIFY_LIBRARY})
-ENDIF(MINGW)
+endif()
 
 link_directories(${Boost_LIBRARY_DIRS})
 include_directories(include ${Boost_INCLUDE_DIRS} ${CAIRO_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
 
 add_definitions(-DStatistic_Activated)
 
-if(MSVC)
+if(WIN32)
    ADD_DEFINITIONS(-D_WIN32_WINNT=0x0601)
    ADD_DEFINITIONS(-DNOMINMAX)
    ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
@@ -102,7 +115,6 @@ else()
     SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     SET(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ftest-coverage -fprofile-arcs -fprofile-values -fvpt -pg")
     SET(CMAKE_CXX_FLAGS_SANITIZE "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=thread -fno-omit-frame-pointer")
-    ADD_DEFINITIONS("-std=c++11")
     #ADD_DEFINITIONS("-fdiagnostics-color=auto")
     ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
     ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
@@ -150,7 +162,12 @@ file(GLOB_RECURSE alacarte_sources              src/general/*.cpp src/utils/*.cp
 #
 # Targets
 #
-configure_file("data/config/alacarte-maps.conf.in" "${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf")
+if(NOT WIN32)
+  configure_file("data/config/alacarte-maps.conf.in" "${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf")
+else()
+  configure_file("data/config/alacarte-maps.conf.windows.in" "${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf")
+endif()
+
 configure_file("include/config.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/config.hpp")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/include")
 
@@ -201,8 +218,16 @@ endif(DOXYGEN_FOUND)
 #
 install(TARGETS alacarte-maps-server RUNTIME DESTINATION bin)
 install(TARGETS alacarte-maps-importer RUNTIME DESTINATION bin)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf DESTINATION ${SYSCONFDIR})
+if(WIN32) #for windows config path is relative to bin
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf DESTINATION bin/${SYSCONFDIR}) 
+else()
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf DESTINATION ${SYSCONFDIR})
+endif()
 install(FILES data/default.png DESTINATION share/alacarte-maps)
 install(DIRECTORY data/mapcss/ DESTINATION share/alacarte-maps/styles)
 install(DIRECTORY data/img DESTINATION share/alacarte-maps)
 install(DIRECTORY data/icons DESTINATION share/alacarte-maps)
+if(WIN32)
+  install(DIRECTORY DESTINATION var/log/alacarte-maps)
+  install(DIRECTORY DESTINATION var/cache/alacarte-maps)
+endif()

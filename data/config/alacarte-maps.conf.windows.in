@@ -1,0 +1,11 @@
+[server]
+logfile=../var/log/alacarte-maps/info.log
+access-log=../var/log/alacarte-maps/access.log
+geo-data=../share/alacarte-maps/data.carte
+style-src=../share/alacarte-maps/styles
+default-tile=../share/alacarte-maps/default.png
+prerender-level=12
+address=0.0.0.0
+port=8080
+cache-size=1024
+cache-path=../var/cache/alacarte-maps

@@ -63,6 +63,7 @@ FIND_PATH(CAIRO_INCLUDE_DIR
 FIND_LIBRARY(CAIRO_LIBRARY
     NAMES
         cairo
+        cairo-static
     HINTS
         ${_CAIRO_LIBDIR}
         ${_CAIRO_ROOT_HINTS_AND_PATHS}
