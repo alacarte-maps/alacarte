@@ -1,0 +1,43 @@
+version: 1.0.{build}
+clone_depth: 1
+clone_folder: c:\projects\alacarte
+environment:
+  BOOST_ROOT: C:/Libraries/boost_1_62_0
+  BOOST_LIBRARYDIR: C:/Libraries/boost_1_62_0/lib32-msvc-14.0
+install:
+- cmd: >-
+    cd c:\projects
+
+    git clone https://github.com/Microsoft/vcpkg
+
+    cd vcpkg
+
+    powershell -exec bypass scripts\bootstrap.ps1
+
+    vcpkg integrate install
+
+    vcpkg install cairo freetype
+
+    cd ..
+before_build:
+- cmd: >-
+    cd C:\projects\alacarte
+
+    mkdir build
+
+    cd build
+
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=c:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX=c:/projects/alacarte/build_install/
+build:
+  project: C:/projects/alacarte/build/alacarte-maps.sln
+  verbosity: minimal
+before_package:
+- cmd: >-
+    cd c:/projects/alacarte/build/
+
+    cmake --build . --target INSTALL --config RelWithDebInfo
+
+    xcopy c:\projects\vcpkg\installed\x86-windows\bin\*.dll c:\projects\alacarte\build_install\bin\ /sy
+artifacts:
+- path: build_install
+  name: zip archive
