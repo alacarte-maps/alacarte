@@ -4,10 +4,13 @@ cmake_minimum_required( VERSION 2.8.8 )
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc")
-if (CMAKE_INSTALL_PREFIX STREQUAL "/usr"
- OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+if(WIN32)
+  set(SYSCONFDIR "../etc") #on Windows program can be easily copy-pasted. So, hardcoding CMAKE_INSTALL_PREFIX isn't a good practice.
+else()
+  set(SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc")
+  if (CMAKE_INSTALL_PREFIX STREQUAL "/usr" OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
 	set(SYSCONFDIR "/etc")
+  endif()
 endif()
 
 add_subdirectory(manpages)
