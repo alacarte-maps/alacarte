@@ -18,10 +18,18 @@ add_subdirectory(manpages)
 #
 # Depends on boost version from Debian Jessie
 #
-if(MSVC)
-    set(Boost_USE_STATIC_LIBS true)
-endif(MSVC)
 set(BOOST_MIN_VERSION_REQUIRED 1.55.0)
+
+if(MSVC)
+  option(ALACARTE_USE_STATIC_BOOST "use static boost" ON)
+else()
+  option(ALACARTE_USE_STATIC_BOOST "use static boost" OFF)
+endif()
+
+if(ALACARTE_USE_STATIC_BOOST)
+  set(Boost_USE_STATIC_LIBS ON)
+endif()
+
 find_package(Boost ${BOOST_MIN_VERSION_REQUIRED} COMPONENTS
 	system
 	filesystem
