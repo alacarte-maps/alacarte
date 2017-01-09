@@ -46,6 +46,10 @@ before_package:
     cmake --build . --target INSTALL --config RelWithDebInfo
 
     xcopy c:\projects\vcpkg\installed\x86-windows\bin\*.dll c:\projects\alacarte\build_install\bin\ /sy
+
+    cd c:/projects/alacarte/
+
+    7z a alacarte-maps.zip .\build_install\*
 artifacts:
-- path: build_install
+- path: alacarte-maps.zip
   name: alacarte-maps
