@@ -15,11 +15,15 @@ before_install:
 
   # for new gcc (4.8, 4.9, 5.4, 6.2)
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+
   # for new clang
   - wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
   - echo "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty main" | sudo tee -a /etc/apt/sources.list
+  - echo "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main" | sudo tee -a /etc/apt/sources.list
+
   # for new cairo (1.14.2)
   - sudo add-apt-repository --yes ppa:ricotz/testing
+  
   # for new cmake (3.2)
   - sudo add-apt-repository --yes ppa:george-edison55/cmake-3.x
 
@@ -59,7 +63,7 @@ matrix:
 
     - os: linux
       compiler: gcc
-      env: PLATFORM='linux' REAL_CC=gcc-5.4   REAL_CXX=g++-5.4     PACKAGE=g++-5   SUPPORT=
+      env: PLATFORM='linux' REAL_CC=gcc-5.4   REAL_CXX=g++-5       PACKAGE=g++-5     SUPPORT=
 
     - os: linux
       compiler: gcc
