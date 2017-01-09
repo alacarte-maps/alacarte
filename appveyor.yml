@@ -33,6 +33,10 @@ build:
   verbosity: minimal
 test_script:
 - cmd: >-
+    cd C:/projects/alacarte/build/
+
+    set PATH=c:/projects/vcpkg/installed/x86-windows/bin;%PATH%
+
     ctest -VV -E unitTests_renderer
 before_package:
 - cmd: >-
