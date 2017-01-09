@@ -27,10 +27,17 @@ before_build:
 
     cd build
 
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=c:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX=c:/projects/alacarte/build_install/
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=c:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX=c:/projects/alacarte/build_install/ -DBUILD_TESTING=ON
 build:
   project: C:/projects/alacarte/build/alacarte-maps.sln
   verbosity: minimal
+test_script:
+- cmd: >-
+    cd C:/projects/alacarte/build/
+
+    set PATH=c:/projects/vcpkg/installed/x86-windows/bin;%PATH%
+
+    ctest -VV -E unitTests_renderer
 before_package:
 - cmd: >-
     cd c:/projects/alacarte/build/
