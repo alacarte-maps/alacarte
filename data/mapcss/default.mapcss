@@ -580,6 +580,7 @@ area|z14- [leisure=nature_reserve] {
     text-position: center;
 }
 
+relation[landuse=forest],
 way|z8-[landuse=forest] {
     fill-color: #85c638;
 }
