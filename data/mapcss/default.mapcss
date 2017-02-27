@@ -580,6 +580,7 @@ area|z14- [leisure=nature_reserve] {
     text-position: center;
 }
 
+relation[landuse=forest],
 way|z8-[landuse=forest] {
     fill-color: #85c638;
 }
@@ -602,6 +603,7 @@ way|z10-[leisure=pitch] {
 
 way [natural=water],
 way [waterway=riverbank],
+relation [natural=water],
 relation [waterway=riverbank],
 way|z14-[amenity=fountain] {
     z-index: 1;
