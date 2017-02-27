@@ -1,6 +1,6 @@
+cmake_minimum_required( VERSION 2.8.12 )
 project(alacarte-maps)
 
-cmake_minimum_required( VERSION 2.8.8 )
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -56,8 +56,9 @@ find_package(Doxygen)
 #
 
 #Enable C++11
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_STANDARD 11)          # requires cmake 3.1
+# set(CMAKE_CXX_STANDARD_REQUIRED ON) # requires cmake 3.1
+add_compile_options("-std=c++11")
 
 # FIXME: enable render thread locking for old cairo and windows
 if(CAIRO_VERSION_V LESS 1 OR CAIRO_VERSION_MAJOR LESS 12 OR CAIRO_VERSION_MINOR LESS 2 OR WIN32)
