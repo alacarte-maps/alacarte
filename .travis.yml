@@ -1,3 +1,4 @@
+dist: trusty
 language: cpp
 compiler: gcc
 
@@ -20,7 +21,7 @@ before_install:
   # - sudo add-apt-repository --yes ppa:kedazo/doxygen-updates-precise
 
   - sudo apt-get update -qq
-  - sudo apt-get install -qq cmake g++-4.8 libboost1.55-all-dev libboost-log1.55-dev libcairo2-dev libpng12-dev asciidoc
+  - sudo apt-get install -qq cmake g++-4.8 libboost1.55-all-dev libboost-log1.55-dev libcairo2-dev libpng12-dev asciidoc cppcheck
   # - sudo apt-get install -qq doxygen
 
   #if GCC
@@ -35,6 +36,7 @@ before_script:
   - cmake .. -DBUILD_TESTING=ON
 
 script:
+  - ../.travis/cppcheck.sh .. .
   - make
   - ctest -VV -E unitTests_renderer
   - make doc
