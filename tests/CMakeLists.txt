@@ -148,15 +148,12 @@ add_custom_target(tests ALL DEPENDS
 	${test_files}
 )
 
-add_test(unitTests_utils unitTests_utils DEPENDS tests)
-add_test(unitTests_eval unitTests_eval)
-add_test(unitTests_parser unitTests_parser)
-add_test(unitTests_general unitTests_general)
+add_test(unitTests_utils    unitTests_utils DEPENDS tests)
+add_test(unitTests_eval     unitTests_eval)
+add_test(unitTests_parser   unitTests_parser)
+add_test(unitTests_general  unitTests_general)
 add_test(unitTests_importer unitTests_importer)
-#FIXME: failing on windows
-if(NOT WIN32)
-  add_test(unitTests_server unitTests_server)
-endif()
+add_test(unitTests_server   unitTests_server)
 add_test(unitTests_renderer unitTests_renderer)
 
 if(GMOCK_FOUND)
