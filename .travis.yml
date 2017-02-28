@@ -41,7 +41,7 @@ script:
 
 after_success:
   - cd ..
-  - ./.travis-publish-docs.sh
+  - ./.travis/travis-publish-docs.sh
 
 notifications:
   email:

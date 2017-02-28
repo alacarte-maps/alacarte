@@ -34,6 +34,6 @@ if [ "${TRAVIS}" = "true" ]; then
 	echo "documentation was pushed."
 fi
 
-# script from: https://github.com/alacarte-maps/alacarte/blob/master/.travis-publish-docs.sh
+# script from: https://github.com/alacarte-maps/alacarte/blob/master/.travis/travis-publish-docs.sh
 # based on: https://github.com/gadomski/fgt/blob/master/scripts/gh-pages.sh
 # TODO: it would be nice to be able to publish the docs of multiple branches in subfolders, e.g. master and stable
