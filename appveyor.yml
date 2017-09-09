@@ -8,14 +8,6 @@ install:
 - cmd: >-
     cd c:\projects
 
-    git clone https://github.com/Microsoft/vcpkg
-
-    cd vcpkg
-
-    powershell -exec bypass scripts\bootstrap.ps1
-
-    vcpkg integrate install
-
     vcpkg install cairo freetype
 
     cd ..
@@ -27,7 +19,7 @@ before_build:
 
     cd build
 
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=c:/projects/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX=c:/projects/alacarte/build_install/ -DBUILD_TESTING=ON
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX=c:/projects/alacarte/build_install/ -DBUILD_TESTING=ON
 build:
   parallel: true
   project: C:/projects/alacarte/build/alacarte-maps.sln
@@ -36,7 +28,7 @@ test_script:
 - cmd: >-
     cd C:/projects/alacarte/build/
 
-    set PATH=c:/projects/vcpkg/installed/x86-windows/bin;%PATH%
+    set PATH=c:/tools/vcpkg/installed/x86-windows/bin;%PATH%
 
     ctest -VV --exclude-regex "unitTests_(server|renderer)"
 before_package:
@@ -45,7 +37,7 @@ before_package:
 
     cmake --build . --target INSTALL --config RelWithDebInfo
 
-    xcopy c:\projects\vcpkg\installed\x86-windows\bin\*.dll c:\projects\alacarte\build_install\bin\ /sy
+    xcopy c:\tools\vcpkg\installed\x86-windows\bin\*.dll c:\projects\alacarte\build_install\bin\ /sy
 
     cd c:/projects/alacarte/
 
