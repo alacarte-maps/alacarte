@@ -22,9 +22,9 @@
 #ifndef HTTP_REQUEST_HPP
 #define HTTP_REQUEST_HPP
 
-
 #include "settings.hpp"
 #include <server/http/request_parser.hpp>
+#include <boost/array.hpp>
 
 class HttpServer;
 class Tile;
