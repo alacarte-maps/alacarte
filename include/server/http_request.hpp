@@ -24,7 +24,7 @@
 
 #include "settings.hpp"
 #include <server/http/request_parser.hpp>
-#include <boost/array.hpp>
+#include <array>
 
 class HttpServer;
 class Tile;
