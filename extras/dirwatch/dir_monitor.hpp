@@ -6,6 +6,8 @@
 //
 #pragma once
 
+#include <iostream>
+
 #include "basic_dir_monitor.hpp"
 #include <boost/predef/os.h>
 

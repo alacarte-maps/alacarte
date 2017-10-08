@@ -22,9 +22,9 @@
 #ifndef HTTP_REQUEST_HPP
 #define HTTP_REQUEST_HPP
 
-
 #include "settings.hpp"
 #include <server/http/request_parser.hpp>
+#include <array>
 
 class HttpServer;
 class Tile;
@@ -118,7 +118,7 @@ private:
 	/// Socket for the connection.
 	boost::asio::ip::tcp::socket socket;
 	/// Buffer for incoming data.
-	boost::array<char, 8192> buffer;
+	std::array<char, 8192> buffer;
 	/// The parser for the incoming request.
 	HttpRequestParser parser;
 	
