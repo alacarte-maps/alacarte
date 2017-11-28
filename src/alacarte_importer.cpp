@@ -64,6 +64,10 @@ public:
 			(OPT(opt::importer::path_to_geodata, "g"),	value<string>()->required()->default_value("ala.carte")/*->value_name("path")*/,	"path, where preprocessed data will be saved")
 			(OPT(opt::importer::check_xml_entities, "x"),	value<bool>()->required()->default_value(true)/*->value_name("path")*/,			
 				"Specifies weather the parser should not ignore unknown entities.")
+			(opt::importer::min_lat, value<double>(), "minimum node latitude")
+			(opt::importer::min_lon, value<double>(), "minimum node longitude")
+			(opt::importer::max_lat, value<double>(), "maximum node latitude")
+			(opt::importer::max_lon, value<double>(), "maximum node longitude")
 			;
 
 
