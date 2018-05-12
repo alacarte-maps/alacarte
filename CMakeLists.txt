@@ -39,9 +39,6 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 find_package(Cairo REQUIRED)
-if(CAIRO_FOUND)
-	message(STATUS "Cairo Version: ${CAIRO_VERSION}")
-endif()
 find_package(Freetype REQUIRED)
 
 find_package(Threads REQUIRED)
