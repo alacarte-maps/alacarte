@@ -61,7 +61,7 @@ else()
 endif()
 
 # FIXME: enable render thread locking for old cairo and windows
-if(CAIRO_VERSION_V LESS 1 OR CAIRO_VERSION_MAJOR LESS 12 OR CAIRO_VERSION_MINOR LESS 2 OR WIN32)
+if(CAIRO_VERSION VERSION_LESS 1.12.2 OR WIN32)
     OPTION(RENDER_LOCK "Render lock for old cairo and Windows" ON)
     if(WIN32)
         message (STATUS "Windows detected: enabling render lock.")
