@@ -4,10 +4,11 @@ project(alacarte-maps)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc")
-if (CMAKE_INSTALL_PREFIX STREQUAL "/usr"
- OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
-	set(SYSCONFDIR "/etc")
+include(GNUInstallDirs)
+set(SYSCONFDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}")
+if((CMAKE_VERSION VERSION_LESS 3.4 AND CMAKE_INSTALL_PREFIX STREQUAL "/usr")
+   OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+    set(SYSCONFDIR "/${CMAKE_INSTALL_SYSCONFDIR}")
 endif()
 
 add_subdirectory(manpages)
@@ -188,10 +189,10 @@ endif(DOXYGEN_FOUND)
 #
 # Installation
 #
-install(TARGETS alacarte-maps-server RUNTIME DESTINATION bin)
-install(TARGETS alacarte-maps-importer RUNTIME DESTINATION bin)
+install(TARGETS alacarte-maps-server RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS alacarte-maps-importer RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf DESTINATION ${SYSCONFDIR})
-install(FILES data/default.png DESTINATION share/alacarte-maps)
-install(DIRECTORY data/mapcss/ DESTINATION share/alacarte-maps/styles)
-install(DIRECTORY data/img DESTINATION share/alacarte-maps)
-install(DIRECTORY data/icons DESTINATION share/alacarte-maps)
+install(FILES data/default.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/alacarte-maps)
+install(DIRECTORY data/mapcss/ DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/alacarte-maps/styles)
+install(DIRECTORY data/img DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/alacarte-maps)
+install(DIRECTORY data/icons DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/alacarte-maps)
