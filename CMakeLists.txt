@@ -52,9 +52,13 @@ find_package(Doxygen)
 #
 
 #Enable C++11
-# set(CMAKE_CXX_STANDARD 11)          # requires cmake 3.1
-# set(CMAKE_CXX_STANDARD_REQUIRED ON) # requires cmake 3.1
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+if(CMAKE_VERSION VERSION_LESS 3.1 AND (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
+                                       CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+else()
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
 
 # FIXME: enable render thread locking for old cairo and windows
 if(CAIRO_VERSION_V LESS 1 OR CAIRO_VERSION_MAJOR LESS 12 OR CAIRO_VERSION_MINOR LESS 2 OR WIN32)
