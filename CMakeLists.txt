@@ -31,10 +31,6 @@ find_package(Boost ${BOOST_MIN_VERSION_REQUIRED} COMPONENTS
 	REQUIRED
 )
 
-if (NOT Boost_FOUND)
-    message(FATAL_ERROR "Fatal error: Boost (version >= ${BOOST_MIN_VERSION_REQUIRED}) required.\n")
-endif (NOT Boost_FOUND)
-
 #find other packages
 IF(WIN32)
 	SET(ENV{FREETYPE_DIR} ${CMAKE_FIND_ROOT_PATH})
