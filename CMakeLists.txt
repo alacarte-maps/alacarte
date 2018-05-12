@@ -71,11 +71,6 @@ if(CAIRO_VERSION VERSION_LESS 1.12.2 OR WIN32)
 else()
     OPTION(RENDER_LOCK "Render lock for old cairo and Windows" OFF)
 endif()
-if(RENDER_LOCK)
-    set(RENDER_LOCK 1)
-else()
-    set(RENDER_LOCK 0)
-endif()
 
 # Set windows version for windows and Inotify for non-windows targets
 if(WIN32)
