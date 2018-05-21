@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.4.0] - 2016-12-28 ##
 ### Added ###
 - man pages for alacarte-importer and alacarte-server.
+- The importer can now limit the area to import via `min-lat`, `max-lat`, `min-lon` and `max-lon` arguments
+  to reduce memory consumption if you don't need the whole area of your source data.
 - support for Debian Jessie (as it's the new stable).
 
 ### Changed ###
