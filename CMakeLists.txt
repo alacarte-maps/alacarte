@@ -17,6 +17,14 @@ add_subdirectory(manpages)
 # Depends on boost version from Debian Jessie
 #
 set(BOOST_MIN_VERSION_REQUIRED 1.55.0)
+
+if(MSVC)
+   set(BOOST_USE_STATIC_LIBS_DEFAULT ON)
+else()
+   set(BOOST_USE_STATIC_LIBS_DEFAULT OFF)
+endif()
+option(Boost_USE_STATIC_LIBS "Whether to link boost library statically." ${BOOST_USE_STATIC_LIBS_DEFAULT})
+
 find_package(Boost ${BOOST_MIN_VERSION_REQUIRED} COMPONENTS
 	system
 	filesystem

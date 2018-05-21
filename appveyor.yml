@@ -1,0 +1,47 @@
+version: 1.0.{build}
+clone_depth: 1
+clone_folder: c:\projects\alacarte
+environment:
+  BOOST_ROOT: C:/Libraries/boost_1_62_0
+  BOOST_LIBRARYDIR: C:/Libraries/boost_1_62_0/lib32-msvc-14.0
+install:
+- cmd: >-
+    cd c:\projects
+
+    vcpkg install cairo freetype
+
+    cd ..
+before_build:
+- cmd: >-
+    cd C:\projects\alacarte
+
+    mkdir build
+
+    cd build
+
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX=c:/projects/alacarte/build_install/ -DBUILD_TESTING=ON
+build:
+  parallel: true
+  project: C:/projects/alacarte/build/alacarte-maps.sln
+  verbosity: minimal
+test_script:
+- cmd: >-
+    cd C:/projects/alacarte/build/
+
+    set PATH=c:/tools/vcpkg/installed/x86-windows/bin;%PATH%
+
+    ctest -VV --exclude-regex "unitTests_(server|renderer)"
+before_package:
+- cmd: >-
+    cd c:/projects/alacarte/build/
+
+    cmake --build . --target INSTALL --config RelWithDebInfo
+
+    xcopy c:\tools\vcpkg\installed\x86-windows\bin\*.dll c:\projects\alacarte\build_install\bin\ /sy
+
+    cd c:/projects/alacarte/
+
+    7z a alacarte-maps.zip .\build_install\*
+artifacts:
+- path: alacarte-maps.zip
+  name: alacarte-maps
