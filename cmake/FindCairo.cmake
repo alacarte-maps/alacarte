@@ -40,8 +40,6 @@ SET(_CAIRO_ROOT_HINTS
 SET(_CAIRO_ROOT_PATHS
     ${CMAKE_FIND_ROOT_PATH}
     $ENV{CAIRO}/src
-    /usr
-    /usr/local
 )
 
 SET(_CAIRO_ROOT_HINTS_AND_PATHS
@@ -56,7 +54,6 @@ FIND_PATH(CAIRO_INCLUDE_DIR
         ${_CAIRO_INCLUDEDIR}
         ${_CAIRO_ROOT_HINTS_AND_PATHS}
     PATH_SUFFIXES
-        include
         "include/cairo"
 )
 
@@ -68,7 +65,6 @@ FIND_LIBRARY(CAIRO_LIBRARY
         ${_CAIRO_LIBDIR}
         ${_CAIRO_ROOT_HINTS_AND_PATHS}
     PATH_SUFFIXES
-        "lib"
         "local/lib"
 ) 
 
@@ -76,9 +72,10 @@ MARK_AS_ADVANCED(CAIRO_LIBRARY)
 SET(CAIRO_LIBRARIES ${CAIRO_LIBRARY})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(CAIRO "Could NOT find CAIRO, try to set the path to CAIRO root folder in the system variable CAIRO"
-    CAIRO_LIBRARIES
-    CAIRO_INCLUDE_DIR
+find_package_handle_standard_args(CAIRO
+    REQUIRED_VARS CAIRO_LIBRARIES CAIRO_INCLUDE_DIR
+    VERSION_VAR CAIRO_VERSION
+    FAIL_MESSAGE "Could NOT find CAIRO, try to set the path to CAIRO root folder in the system variable CAIRO"
 )
 
 MARK_AS_ADVANCED(CAIRO_INCLUDE_DIR CAIRO_LIBRARIES)

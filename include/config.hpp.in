@@ -2,7 +2,7 @@
 #ifndef CONFIG_HPP
 #define CONFIG_HPP
 
-#define RENDER_LOCK @RENDER_LOCK@
+#cmakedefine01 RENDER_LOCK
 #define DEBUG_BUILD @DEBUG_BUILD@
 #define SYSCONFDIR "@SYSCONFDIR@"
 

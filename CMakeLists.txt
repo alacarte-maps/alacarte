@@ -4,10 +4,11 @@ project(alacarte-maps)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc")
-if (CMAKE_INSTALL_PREFIX STREQUAL "/usr"
- OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
-	set(SYSCONFDIR "/etc")
+include(GNUInstallDirs)
+set(SYSCONFDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}")
+if((CMAKE_VERSION VERSION_LESS 3.4 AND CMAKE_INSTALL_PREFIX STREQUAL "/usr")
+   OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+    set(SYSCONFDIR "/${CMAKE_INSTALL_SYSCONFDIR}")
 endif()
 
 add_subdirectory(manpages)
@@ -31,10 +32,6 @@ find_package(Boost ${BOOST_MIN_VERSION_REQUIRED} COMPONENTS
 	REQUIRED
 )
 
-if (NOT Boost_FOUND)
-    message(FATAL_ERROR "Fatal error: Boost (version >= ${BOOST_MIN_VERSION_REQUIRED}) required.\n")
-endif (NOT Boost_FOUND)
-
 #find other packages
 IF(WIN32)
 	SET(ENV{FREETYPE_DIR} ${CMAKE_FIND_ROOT_PATH})
@@ -43,9 +40,6 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 find_package(Cairo REQUIRED)
-if(CAIRO_FOUND)
-	message(STATUS "Cairo Version: ${CAIRO_VERSION}")
-endif()
 find_package(Freetype REQUIRED)
 
 find_package(Threads REQUIRED)
@@ -56,12 +50,16 @@ find_package(Doxygen)
 #
 
 #Enable C++11
-# set(CMAKE_CXX_STANDARD 11)          # requires cmake 3.1
-# set(CMAKE_CXX_STANDARD_REQUIRED ON) # requires cmake 3.1
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+if(CMAKE_VERSION VERSION_LESS 3.1 AND (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
+                                       CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+else()
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
 
 # FIXME: enable render thread locking for old cairo and windows
-if(CAIRO_VERSION_V LESS 1 OR CAIRO_VERSION_MAJOR LESS 12 OR CAIRO_VERSION_MINOR LESS 2 OR WIN32)
+if(CAIRO_VERSION VERSION_LESS 1.12.2 OR WIN32)
     OPTION(RENDER_LOCK "Render lock for old cairo and Windows" ON)
     if(WIN32)
         message (STATUS "Windows detected: enabling render lock.")
@@ -70,11 +68,6 @@ if(CAIRO_VERSION_V LESS 1 OR CAIRO_VERSION_MAJOR LESS 12 OR CAIRO_VERSION_MINOR 
     endif()
 else()
     OPTION(RENDER_LOCK "Render lock for old cairo and Windows" OFF)
-endif()
-if(RENDER_LOCK)
-    set(RENDER_LOCK 1)
-else()
-    set(RENDER_LOCK 0)
 endif()
 
 # Set windows version for windows and Inotify for non-windows targets
@@ -115,11 +108,9 @@ SET( CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING
 set(DEBUG_BUILD 0)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(DEBUG_BUILD 1)
-endif ()
-if (CMAKE_BUILD_TYPE STREQUAL "Profile")
+elseif (CMAKE_BUILD_TYPE STREQUAL "Profile")
     set(DEBUG_BUILD 1)
-endif ()
-if (CMAKE_BUILD_TYPE STREQUAL "Sanitize")
+elseif (CMAKE_BUILD_TYPE STREQUAL "Sanitize")
     set(DEBUG_BUILD 1)
 endif ()
 if (DEBUG_BUILD)
@@ -198,10 +189,10 @@ endif(DOXYGEN_FOUND)
 #
 # Installation
 #
-install(TARGETS alacarte-maps-server RUNTIME DESTINATION bin)
-install(TARGETS alacarte-maps-importer RUNTIME DESTINATION bin)
+install(TARGETS alacarte-maps-server RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS alacarte-maps-importer RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/data/config/alacarte-maps.conf DESTINATION ${SYSCONFDIR})
-install(FILES data/default.png DESTINATION share/alacarte-maps)
-install(DIRECTORY data/mapcss/ DESTINATION share/alacarte-maps/styles)
-install(DIRECTORY data/img DESTINATION share/alacarte-maps)
-install(DIRECTORY data/icons DESTINATION share/alacarte-maps)
+install(FILES data/default.png DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/alacarte-maps)
+install(DIRECTORY data/mapcss/ DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/alacarte-maps/styles)
+install(DIRECTORY data/img DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/alacarte-maps)
+install(DIRECTORY data/icons DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/alacarte-maps)
