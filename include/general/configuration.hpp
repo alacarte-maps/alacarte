@@ -50,7 +50,20 @@ namespace opt {
 		static const char* path_to_geodata			= "importer.geo-data";
 
 		//! Check all xml entities
-		static const char* check_xml_entities = "importer.check-xml-entities";
+		static const char* check_xml_entities		= "importer.check-xml-entities";
+
+		//! minimum node latitude to include into imported data
+		static const char* min_lat					= "importer.min-lat";
+
+		//! minimum node longitude to include into imported data
+		static const char* min_lon					= "importer.min-lon";
+
+		//! maximum node latitude to include into imported data
+		static const char* max_lat					= "importer.max-lat";
+
+		//! maximum node longitude to include into imported data
+		static const char* max_lon					= "importer.max-lon";
+
 	}
 
 	namespace server {
@@ -133,6 +146,19 @@ public:
 	T get(const string& key)
 	{
 		return boost::any_cast<const T&>(getValueByKey(key));
+	}
+
+	/**
+	 * @brief Returns a value identified by a key or a default value if the key does not exist.
+	 *
+	 * @param key the key identifying the value
+	 * @param defaultValue the value that is returned if key does not exist
+	 * @return the value in the identified by the key casted to the wanted type or the default value
+	 **/
+	template<typename T>
+	T get(const string& key, const T& defaultValue)
+	{
+		return has(key)? get<T>(key) : defaultValue;
 	}
 
 	void printConfigToLog();

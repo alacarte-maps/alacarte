@@ -23,7 +23,8 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/filesystem/operations.hpp>
- #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/is_same.hpp>
+#include <unordered_set>
 
 #include "../../extras/eaglexml/eaglexml.hpp"
 #include "../../extras/eaglexml/eaglexml_iterators.hpp"
@@ -40,6 +41,7 @@
 
 
 using boost::filesystem::path;
+using nl = std::numeric_limits<double>;
 
 
 /**
@@ -66,8 +68,9 @@ public:
 	 * @brief Creates a new parser and sets default settings                                                                     
 	 *
 	 **/
-	OsmXmlParser(bool ignoreUnknownEntities)
+	OsmXmlParser(bool ignoreUnknownEntities, const FloatRect& bounds = { -nl::max(), -nl::max(), nl::max(), nl::max() })
 		: ignoreUnknownEntities(ignoreUnknownEntities)
+		, clippingBounds(bounds)
 		, alreadyRead(0)
 		, fileSize(0)
 		, segmentSize(1024 * 1024)
@@ -169,6 +172,16 @@ public:
 		assert(relations);
 		return relations;
 	}
+
+	/**
+	 * @brief Returns the number of clipped nodes
+	 * 
+	 * @return number of clipped nodes
+	 */
+	std::size_t getNumberOfClippedNodes() const
+	{
+		return clippedNodes.size();
+	}
 	
 private:
 	/**
@@ -200,7 +213,10 @@ private:
 			try{ 
 				(this->*(entityIt->second))(&*it);
 			}catch(excp::BadOsmIdException& e) {
-				LOG_SEV(importer_log, warning) << "Bad osm id[" << *boost::get_error_info<excp::InfoUnresolvableId>(e)  << "]. Entity is skipped!";
+				const auto id = *boost::get_error_info<excp::InfoUnresolvableId>(e);
+				if (!clippedNodes.count(id)) {
+					LOG_SEV(importer_log, warning) << "Bad osm id[" << id << "]. Entity is skipped!";
+				}
 			}
 		}
 	}
@@ -234,13 +250,16 @@ private:
 		extractAttributeFromNode("lon", node, &lon);
 		extractAttributeFromNode("lat", node, &lat);
 
+		FloatPoint loc = {lon, lat};
+		if (clippingBounds.contains(loc)) {
+			DataMap<CachedString, CachedString> tags;
+			parseProperties<Node>(node->first_node(), &tags, nullptr, nullptr, nullptr, nullptr);
 
-
-		DataMap<CachedString, CachedString> tags;
-		parseProperties<Node>(node->first_node(), &tags, nullptr, nullptr, nullptr, nullptr);
-
-		nodeIdMapping.insert(std::make_pair(id, NodeId(nodes->size())));
-		nodes->push_back(Node(FloatPoint(lon, lat), tags));
+			nodeIdMapping.insert(std::make_pair(id, NodeId(nodes->size())));
+			nodes->push_back(Node(loc, tags));
+		} else {
+			clippedNodes.insert(id);
+		}
 	}
 	
 	/**
@@ -467,12 +486,19 @@ private:
 	//! Specifies weather the parser should ignore unknown entities.
 	//! If this is false and an unknown entity appears an exception will be thrown
 	bool ignoreUnknownEntities;
+
+	//! Specifies the rectangular area in which the nodes are kept.
+	//! If a node lies outside of this area it is not added to the data!
+	const FloatRect clippingBounds;
 	
 	//! Mapping from osm ids to internal ids for nodes
 	boost::unordered_map<OsmIdType, NodeId>	nodeIdMapping;
 
 	//! Mapping from osm ids to internal ids for ways
 	boost::unordered_map<OsmIdType, WayId>	wayIdMapping;
+
+	//! Id of clipped nodes
+	std::unordered_set<OsmIdType> clippedNodes;
 
 	//! List to be filled with nodes
 	shared_ptr< std::vector<Node> > nodes;
@@ -521,7 +547,12 @@ Importer::Importer(const shared_ptr<Configuration>& config)
  **/
 shared_ptr<Geodata> Importer::importXML()
 {
-	OsmXmlParser parser(!config->get<bool>(opt::importer::check_xml_entities));
+	FloatRect bounds = {
+		FloatPoint(config->get(opt::importer::min_lon, -nl::max()), config->get(opt::importer::min_lat, -nl::max())),
+		FloatPoint(config->get(opt::importer::max_lon, nl::max()), config->get(opt::importer::max_lat, nl::max()))
+	};
+	LOG_SEV(importer_log, info) << "Clipping nodes with [lon: " << bounds.minX << " to " << bounds.maxX << ", lat: " << bounds.minY << " to " << bounds.maxY << "]";
+	OsmXmlParser parser(!config->get<bool>(opt::importer::check_xml_entities), bounds);
 	shared_ptr<Geodata>	geodata = boost::make_shared<Geodata>();
 
 	path xml_file = config->get<string>(opt::importer::path_to_osmdata);
@@ -532,6 +563,9 @@ shared_ptr<Geodata> Importer::importXML()
 	geodata->insertNodes(parser.getParsedNodes());
 	geodata->insertWays(parser.getParsedWays());
 	geodata->insertRelations(parser.getParsedRelations());
+
+	const auto node_count = parser.getParsedNodes()->size();
+	LOG_SEV(importer_log, info) << "Clipped " << parser.getNumberOfClippedNodes() << " / " << (parser.getNumberOfClippedNodes() + node_count) << " nodes. " << node_count << " nodes remaining.";
 
 	return geodata;
 }
