@@ -43,6 +43,11 @@ find_package(Boost ${BOOST_MIN_VERSION_REQUIRED} COMPONENTS
 	REQUIRED
 )
 
+# Workaround boosts (version < 1.58) crappy c++11 detection for clang
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND BOOST_VERSION VERSION_LESS 1.58)
+	add_definitions(-DBOOST_ASIO_HAS_CLANG_LIBCXX)
+endif()
+
 #find other packages
 IF(WIN32)
 	SET(ENV{FREETYPE_DIR} ${CMAKE_FIND_ROOT_PATH})
@@ -63,7 +68,7 @@ find_package(Doxygen)
 #Enable C++11
 if(CMAKE_VERSION VERSION_LESS 3.1 AND (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
                                        CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 else()
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
