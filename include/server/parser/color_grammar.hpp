@@ -22,6 +22,7 @@
 #ifndef COLOR_GRAMMAR_HPP
 #define COLOR_GRAMMAR_HPP
 
+#include <boost/spirit/home/qi/string/tst.hpp>
 #include <boost/spirit/home/qi/string/tst_map.hpp>
 
 #include "settings.hpp"
