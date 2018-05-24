@@ -1,0 +1,27 @@
+var class_http_request =
+[
+    [ "Header", "struct_http_request_1_1_header.html", "struct_http_request_1_1_header" ],
+    [ "Reply", "class_http_request_1_1_reply.html", "class_http_request_1_1_reply" ],
+    [ "RequestData", "struct_http_request_1_1_request_data.html", "struct_http_request_1_1_request_data" ],
+    [ "HttpRequest", "class_http_request.html#a5783fb9f8c4df7c11585a676d7a83f9d", null ],
+    [ "answer", "class_http_request.html#a64a383925c0542bebee1686986266184", null ],
+    [ "answer", "class_http_request.html#a907c078831617d2bfe631974aae90955", null ],
+    [ "answer", "class_http_request.html#ab41b5c868af41f8be0e682c300c1a8ab", null ],
+    [ "checkifAnswered", "class_http_request.html#a978fd5b14d8707304d97ad50a4654b80", null ],
+    [ "close", "class_http_request.html#a970869c3e73fb4cf6758793e5fa27471", null ],
+    [ "getSocket", "class_http_request.html#a79a6a83dea48228b07ac86a555d23940", null ],
+    [ "getURL", "class_http_request.html#a6e0a2ef9bdfe91aa67912e6282382a2d", null ],
+    [ "handleRead", "class_http_request.html#ab24acf0f79187919f83a2543d18a36be", null ],
+    [ "handleWrite", "class_http_request.html#aa96e350b1c757e05e6de909f91dbc523", null ],
+    [ "readSome", "class_http_request.html#ad3cefbdd8b7af0d2ab63b4666f88c1ac", null ],
+    [ "startCollectingData", "class_http_request.html#a66b917f0cc3618f8f13dbd1014758e47", null ],
+    [ "HttpRequestParser", "class_http_request.html#abbd983dbf47d1ea7f49150a1ec170302", null ],
+    [ "answered", "class_http_request.html#ae6b23b486cf01e11e31133f049c2a47b", null ],
+    [ "buffer", "class_http_request.html#a2ea3f52275378d33b9958efe87d942c4", null ],
+    [ "data", "class_http_request.html#aed9e79f5f3fd633e34a54631649eaa9b", null ],
+    [ "manager", "class_http_request.html#ae4b81cadf23ede3b412a3006f8356486", null ],
+    [ "parser", "class_http_request.html#aec8f7c0bcf277d3124a0dcfd13a14b73", null ],
+    [ "reply", "class_http_request.html#a483615a2b6cf477874af2e8d2af23a95", null ],
+    [ "server", "class_http_request.html#a84556a455585624f9a1d17927a2d297d", null ],
+    [ "socket", "class_http_request.html#ae061403a40d052d8e6a14469483dece3", null ]
+];

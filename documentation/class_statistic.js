@@ -1,0 +1,38 @@
+var class_statistic =
+[
+    [ "AvgMeasurement", "struct_statistic_1_1_avg_measurement.html", "struct_statistic_1_1_avg_measurement" ],
+    [ "JobMeasurement", "class_statistic_1_1_job_measurement.html", "class_statistic_1_1_job_measurement" ],
+    [ "duration", "class_statistic.html#a73cccd91e06553e260876e8da85d93a6", null ],
+    [ "ptime", "class_statistic.html#a783c9e7934adbb9177df7fd596e227a2", null ],
+    [ "Component", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889ab", [
+      [ "Cache", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889aba4c4359e00b3c28fb859ab2988e9d50d9", null ],
+      [ "ComputeRect", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889ababcd3c45cb73111fc6ef1ab6a1dea8367", null ],
+      [ "GeoNodes", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889abadfaebb8d49ba72de5028a996b4a43360", null ],
+      [ "GeoWays", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889abaa749affb27a7e3ff5719360c0bbd41c6", null ],
+      [ "GeoRelation", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889abaf0e2b8d9edc38da530261bf33ab8e5e4", null ],
+      [ "StylesheetMatch", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889aba72f40386dcb45c7bf8f148aeb7846317", null ],
+      [ "Renderer", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889aba6f7f8be4148feec732357457e55f3879", null ],
+      [ "GeoContainsData", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889abab06df925ae1d8dcf24a601ed10d2e5b6", null ],
+      [ "Slicing", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889abafd1561bcb6e7fd09ac8acae73a357db9", null ],
+      [ "Size", "class_statistic.html#a98a13ddf87f4f5d6614b0304f6d889abacfb3c7b6863935cebd6e97fd786c4aec", null ]
+    ] ],
+    [ "~Statistic", "class_statistic.html#a273cc8bd352a4fa0c18006971c008424", null ],
+    [ "Statistic", "class_statistic.html#aaae1837e5516b332b76c58642e45699d", null ],
+    [ "Statistic", "class_statistic.html#a7b10f7310c744c40be75af0e7383ba33", null ],
+    [ "componentToName", "class_statistic.html#a0ec42714dddc9b55f1c565d9de909544", null ],
+    [ "finished", "class_statistic.html#a7f9ddd1c7442351942db944335b69be7", null ],
+    [ "Get", "class_statistic.html#a54ae95b6f502816f7196e3b0f6e88473", null ],
+    [ "Init", "class_statistic.html#a24be4395b2551a8b6b5c5ff051ea3bd4", null ],
+    [ "printStatistic", "class_statistic.html#a977891aa1061641e6b45685f35725872", null ],
+    [ "setStats", "class_statistic.html#a363c7dd05a3a5f214878d44ef1568867", null ],
+    [ "start", "class_statistic.html#a9dae26f310c9656f96b730ff6bcdce94", null ],
+    [ "startNewMeasurement", "class_statistic.html#aa64cf38188be438013bc925b2254740c", null ],
+    [ "stop", "class_statistic.html#af786028110ee2f2020447714c72c0f49", null ],
+    [ "writeToFile", "class_statistic.html#af04a79554d70829bea15ef15ee514a60", null ],
+    [ "avgLock", "class_statistic.html#aec11a6449421f87ab7e726c634882223", null ],
+    [ "bufferLock", "class_statistic.html#ade0e2fa0335ec44c6f5bf631b09d467f", null ],
+    [ "componentAvgs", "class_statistic.html#a24fc0585bbffbe5dc21863f711757a12", null ],
+    [ "config", "class_statistic.html#a65ae871f461454ad01cc9ec71d66977c", null ],
+    [ "instance", "class_statistic.html#aacd1d81d0d5d20a3d66b520ca9c9e601", null ],
+    [ "measurementsBuffer", "class_statistic.html#a34c25535406c0ea07c80c907566843c0", null ]
+];

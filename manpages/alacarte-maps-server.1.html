@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>alacarte-maps-server</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets V1.78.1" /></head><body><div xml:lang="en" class="refentry" lang="en"><a id="idp47028113528080"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>alacarte-maps-server — an easy to use renderer and server for OpenStreetMap tiles.</p></div><div class="refsynopsisdiv"><a id="_synopsis"></a><h2>Synopsis</h2><p><span class="strong"><strong>alacarte-maps-server</strong></span> [<span class="emphasis"><em>OPTIONS</em></span>]</p></div><div class="refsect1"><a id="_description"></a><h2>DESCRIPTION</h2><p>alaCarte is a tile renderer for OpenStreetMap data written in C++11, using Cairo
+for rendering and Boost-Spirit for MapCSS parsing. It includes an HTTP server to
+serve the tiles using the Slippy map tilenames convention. With this you can run
+the whole rendering stack with just one command.</p><p>alaCarte was designed with medium dataset size in mind. On a typical machine
+with at leat 8GB RAM, alaCarte can handle a unfiltered export from the federal
+state of Baden-Wuerttemberg (Germany).</p><p>alaCarte was developed as part of a lab course student software project at KIT.</p><p>It uses its own file format. For this you can use the <span class="strong"><strong>alacarte-maps-importer</strong></span>
+to convert an osm xml file.</p></div><div class="refsect1"><a id="_options"></a><h2>OPTIONS</h2><div class="variablelist"><dl class="variablelist"><dt><span class="term">
+<span class="strong"><strong>-h, --help</strong></span>
+</span></dt><dd>
+  Produce help message
+</dd><dt><span class="term">
+<span class="strong"><strong>-c, --config</strong></span> &lt;path&gt; (=alacarte-maps.conf)
+</span></dt><dd>
+  Specifies a config file which will be loaded at program start. Absolute and
+  relative paths are possible. Additionally we search in /etc.
+</dd><dt><span class="term">
+<span class="strong"><strong>-l, --logfile</strong></span> &lt;path&gt; (=log.txt)
+</span></dt><dd>
+  Specifies the path of the logfile.
+</dd><dt><span class="term">
+<span class="strong"><strong>-g, --server.geo-data</strong></span> &lt;path&gt;
+</span></dt><dd>
+  Path where preprocessed data is saved.
+</dd><dt><span class="term">
+<span class="strong"><strong>-s, --server.style-src</strong></span> &lt;path&gt; (=.)
+</span></dt><dd>
+  Path to be observed for stylesheets, default current directory.
+</dd><dt><span class="term">
+<span class="strong"><strong>-a, --server.access-log</strong></span> &lt;path&gt; (=access_log.txt)
+</span></dt><dd>
+  File where server access will be logged.
+</dd><dt><span class="term">
+<span class="strong"><strong>-d, --server.default-style</strong></span> &lt;arg&gt; (=default)
+</span></dt><dd>
+  Name of the default stylesheet. The name is given without the suffix .mapcss
+</dd><dt><span class="term">
+<span class="strong"><strong>-t, --server.default-tile</strong></span> &lt;path&gt; (=default.png)
+</span></dt><dd>
+  Default tile, which is returned if an error occured. The path is relative to
+  current directory.
+</dd><dt><span class="term">
+<span class="strong"><strong>-n, --server.num-threads</strong></span> &lt;num&gt; (=4)
+</span></dt><dd>
+  Number of threads used to process a request.
+</dd><dt><span class="term">
+<span class="strong"><strong>-o, --server.parse-timeout</strong></span> &lt;num&gt; (=750)
+</span></dt><dd>
+  Maximal time in ms to parse a stylesheet.
+</dd><dt><span class="term">
+<span class="strong"><strong>-z, --server.prerender-level</strong></span> &lt;num&gt; (=12)
+</span></dt><dd>
+  Highest zoomlevel to enqueue for prerendering.
+</dd><dt><span class="term">
+<span class="strong"><strong>--server.address</strong></span> &lt;IP&gt; (=0.0.0.0)
+</span></dt><dd>
+  Address of the server.
+</dd><dt><span class="term">
+<span class="strong"><strong>-p, --server.port</strong></span> &lt;num&gt; (=8080)
+</span></dt><dd>
+  Port to bind the server.
+</dd><dt><span class="term">
+<span class="strong"><strong>-q, --server.max-queue</strong></span> &lt;num&gt; (=1024)
+</span></dt><dd>
+  Size for server queue.
+</dd><dt><span class="term">
+<span class="strong"><strong>--server.cache-size</strong></span> &lt;num&gt; (=1024)
+</span></dt><dd>
+  Maximal amount of tiles in cache in memory.
+</dd><dt><span class="term">
+<span class="strong"><strong>--server.cache-keep-tile</strong></span> &lt;num&gt; (=12)
+</span></dt><dd>
+  From 0 this zoomlevel, tiles are written to harddrive. Above they have to be
+  rendered again, whih may be faster than rading from hard drive for high zoomlevels.
+</dd><dt><span class="term">
+<span class="strong"><strong>--server.cache-path</strong></span> &lt;path&gt; (=cache)
+</span></dt><dd>
+  Path to store evicted prerendered tiles which can no loonger be kept in memory.
+  Relative to current directory.
+</dd><dt><span class="term">
+<span class="strong"><strong>--server.log-mute-component</strong></span> arg
+</span></dt><dd>
+  List of all components which should be muted.
+</dd><dt><span class="term">
+<span class="strong"><strong>--server.performance-log</strong></span> &lt;path&gt;
+</span></dt><dd>
+  Path where the performance log will be saved. If not set the performance log
+  will not be created.
+</dd></dl></div></div><div class="refsect1"><a id="_examples"></a><h2>EXAMPLES</h2><pre class="screen">$ alacarte-maps-server -g data.carte -s ../data/mapcss</pre></div><div class="refsect1"><a id="_see_also"></a><h2>SEE ALSO</h2><p><a class="ulink" href="alacarte-maps-importer.1.html" target="_top">alacarte-maps-importer(1)</a></p></div></div></body></html>

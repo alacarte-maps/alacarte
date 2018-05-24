@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>alacarte-maps-importer</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets V1.78.1" /></head><body><div xml:lang="en" class="refentry" lang="en"><a id="idp46535235693552"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>alacarte-maps-importer — utility for preprocessing data for alacarte-maps-server.</p></div><div class="refsynopsisdiv"><a id="_synopsis"></a><h2>Synopsis</h2><p><span class="strong"><strong>alacarte-maps-importer</strong></span> [<span class="emphasis"><em>OPTIONS</em></span>] <span class="emphasis"><em>INPUT</em></span> [<span class="emphasis"><em>OUTPUT</em></span>]</p></div><div class="refsect1"><a id="_description"></a><h2>DESCRIPTION</h2><p>alaCarte importer converts data from an osm xml file to alaCarte’s own file format.</p></div><div class="refsect1"><a id="_options"></a><h2>OPTIONS</h2><div class="variablelist"><dl class="variablelist"><dt><span class="term">
+<span class="strong"><strong>-h, --help</strong></span>
+</span></dt><dd>
+  Produce help message.
+</dd><dt><span class="term">
+<span class="strong"><strong>-c, --config</strong></span> &lt;path&gt; (=alacarte-maps.conf)
+</span></dt><dd>
+  Specifies a config file which will be loaded at program start. Absolute and
+  relative paths are possible. Additionally we search in /etc.
+</dd><dt><span class="term">
+<span class="strong"><strong>-l, --logfile</strong></span> &lt;path&gt; (=log.txt)
+</span></dt><dd>
+  Specifies the location of the logfile.
+</dd><dt><span class="term">
+<span class="strong"><strong>-i, --importer.osm-data</strong></span> &lt;path&gt;
+</span></dt><dd>
+  Path to a xml file containing osm data.
+</dd><dt><span class="term">
+<span class="strong"><strong>-g, --importer.geo-data</strong></span> &lt;path&gt; (=ala.carte)
+</span></dt><dd>
+  Path where preprocessed data will be saved.
+</dd><dt><span class="term">
+<span class="strong"><strong>-x, --importer.check-xml-entities</strong></span> &lt;num&gt; (=1)
+</span></dt><dd>
+  Specifies whether the parser should ignore unknown entities. If set to 0 it
+  ignores entities the importer doesn’t know, if set to 1 an exception is thrown
+  at unknown entities.
+</dd></dl></div></div><div class="refsect1"><a id="_examples"></a><h2>EXAMPLES</h2><pre class="screen">$ alacarte-maps-importer osm_export.osm data.carte</pre></div><div class="refsect1"><a id="_see_also"></a><h2>SEE ALSO</h2><p><a class="ulink" href="alacarte-maps-server.1.html" target="_top">alacarte-maps-server(1)</a></p></div></div></body></html>
