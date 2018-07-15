@@ -210,7 +210,9 @@ inline bool operator !=(const MaybeCachedString& first, const MaybeCachedString&
 template<typename Stream>
 Stream& operator >> (Stream& stream, CachedString& str)
 {
-	str = CachedString(static_cast<std::stringstream const&>(std::stringstream() << stream.rdbuf()).str());
+	std::string s;
+	stream >> s;
+	str = CachedString(s);
 
 	return stream;
 }
